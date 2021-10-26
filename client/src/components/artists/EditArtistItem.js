@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createArtist } from '../../actions/artist';
 
-//comment
 const EditArtistItem = ({
     theArtist,
   theArtist: {
