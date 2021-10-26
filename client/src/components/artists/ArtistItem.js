@@ -1,0 +1,43 @@
+import React from 'react';
+import {Link} from 'react-router-dom';
+import PropTypes from 'prop-types';
+
+const ArtistItem = ({ artist: {
+    _id,
+    firstName,
+    lastName,
+    stageName,
+    email,
+    slug,
+    squareImg,
+    genre,
+    repLink,
+    hometown
+} }) => {
+    return (
+        <div className="profile bg-light">
+            <img src={squareImg} alt="" className="round-img" />
+            <div>
+                <h2>{stageName}</h2>
+                <h4>({firstName} {lastName})</h4>
+                <p className="my-1">{genre}</p>
+                <p className="my-1">{hometown}</p>
+                {repLink ? (
+                    <a href={repLink} className='btn btn-primary' target="_blank" rel="noopener noreferrer">Check out {stageName}'s work</a>
+                ): ''}
+                <a href={`mailto:${email}`} className='btn btn-primary'><i className="fas fa-envelope"></i>
+                    <span> Email {firstName}</span>
+                </a>
+                {/* <Link to={`/artists/${slug}`} className='btn btn-primary'>
+                    View artist
+                </Link> */}
+            </div>
+        </div>
+    )
+}
+
+ArtistItem.propTypes = {
+    artists: PropTypes.object.isRequired,
+}
+
+export default ArtistItem
