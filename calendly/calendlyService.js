@@ -2,12 +2,12 @@ const request = require('request');
 //const User = require('../calendly/models/userModel');
 const config = require('config');
 
-const CLIENT_ID=config.get('calendlyID');
-const CLIENT_SECRET=config.get('calendlySecret'); 
-const CALENDLY_AUTH_BASE_URL='https://auth.calendly.com';
-const CALENDLY_API_BASE_URL='https://api.calendly.com';
-const REDIRECT_URI='http://localhost:3000';
-const CALENDLY_BASE_URL='https://calendly.com';
+const CLIENT_ID = config.get('calendlyID');
+const CLIENT_SECRET = config.get('calendlySecret'); 
+const CALENDLY_AUTH_BASE_URL = 'https://auth.calendly.com';
+const CALENDLY_API_BASE_URL = 'https://api.calendly.com';
+const REDIRECT_URI = 'http://localhost:3000';
+const CALENDLY_BASE_URL = 'https://calendly.com';
 
 // const {
 //     CALENDLY_AUTH_BASE_URL,
