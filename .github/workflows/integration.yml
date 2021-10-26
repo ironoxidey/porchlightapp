@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Continuous Deployment
 
 on:
   push:
@@ -6,13 +6,13 @@ on:
       - main
 
 jobs:
-  merge_pull_request:
-    runs-on: ubuntu-latest
+  deployment:
+    runs-on: self-hosted
     steps:
       - name: Checkout main branch
         uses: actions/checkout@v2
 
-      - name: Use Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
