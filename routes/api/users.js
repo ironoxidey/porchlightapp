@@ -67,7 +67,7 @@ router.post(
       };
       jwt.sign(
         payload,
-        process.env.jwtSecret, //config.get('jwtSecret'),
+        config.get('jwtSecret'),
         { expiresIn: 360000 }, //eventually change this to 3600
         (err, token) => {
           if (err) throw err;
@@ -113,7 +113,7 @@ router.put(
       };
       const resetToken = jwt.sign(
         payload,
-        process.env.resetPasswordKey, //config.get('resetPasswordKey'),
+        config.get('resetPasswordKey'),
         { expiresIn: '20m' }, //20 minutes
       );
 
@@ -162,7 +162,7 @@ router.put(
       
       jwt.verify(
         resetLink,
-        process.env.resetPasswordKey, //config.get('resetPasswordKey'),
+        config.get('resetPasswordKey'),
         async (err, decodedData) => {
             if(err){
               return res.status(401).json({
