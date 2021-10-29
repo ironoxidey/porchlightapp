@@ -75,11 +75,12 @@ export const forgotPassword = ({ email }) => async (dispatch) => {
   const body = JSON.stringify({ email });
 
   try {
-    const res = await axios.put('/api/users/forgot-password', body, config);
+    //const res = await axios.put('/api/users/forgot-password', body, config);
 
     dispatch({
       type: FORGOTPASSWORD_SUCCESS,
-      payload: res.data,
+      //payload: res.data,
+      payload: "it's getting this far",
     });
   } catch (err) {
     const errors = err.response.data.errors;

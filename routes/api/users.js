@@ -85,7 +85,7 @@ router.post(
 // @desc    Forgot Password
 // @access  Public
 router.put(
-  '/forgot-pwd',
+  '/forgot-password',
   [
     check('email', 'Please include a valid email').isEmail(),
   ],
