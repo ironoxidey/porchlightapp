@@ -85,7 +85,7 @@ router.post(
 // @desc    Forgot Password
 // @access  Public
 router.put(
-  '/forgot-password',
+  '/forgot-pwd',
   [
     check('email', 'Please include a valid email').isEmail(),
   ],
@@ -99,29 +99,29 @@ router.put(
 
     try {
       console.log("You should be seeing this right before the findOne()");
-      // await User.findOne({ email }).then(userDoc => {
-      //     const payload = {
-      //       user: {
-      //         id: userDoc.id
-      //       },
-      //     };
-      //     const resetToken = jwt.sign(
-      //       payload,
-      //       config.get('resetPasswordKey'),
-      //       { expiresIn: '20m' }, //20 minutes
-      //     );
-      //     const link = `http://reviewthearts.com/reset-password?token=${resetToken}`;
+      await User.findOne({ email }).then(userDoc => {
+          const payload = {
+            user: {
+              id: userDoc.id
+            },
+          };
+          const resetToken = jwt.sign(
+            payload,
+            config.get('resetPasswordKey'),
+            { expiresIn: '20m' }, //20 minutes
+          );
+          const link = `http://reviewthearts.com/reset-password?token=${resetToken}`;
 
-      //     userDoc.resetLink = resetToken;
+          userDoc.resetLink = resetToken;
 
-      //     user.markModified('resetLink');
+          user.markModified('resetLink');
 
-      //     user.save(err => console.log(err));
+          user.save(err => console.log(err));
 
-      //     res.send('An email should get sent now.');
-      //     sendEmail(email,"Password Reset Request",{name: user.name.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
+          res.send('An email should get sent now.');
+          sendEmail(email,"Password Reset Request",{name: user.name.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
 
-      // });
+      });
 
       /*let userDoc = await User.findOne({ email });
 
