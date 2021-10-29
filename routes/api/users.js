@@ -98,6 +98,7 @@ router.put(
     const { email } = req.body;
 
     try {
+      console.log("You should be seeing this right before the findOne()");
       let userDoc = await User.findOne({ email });
 
       if (!userDoc) {
@@ -120,7 +121,6 @@ router.put(
       //const link = `localhost:3000/reset-password?token=${resetToken}`;
       const link = `http://reviewthearts.com/reset-password?token=${resetToken}`;
       
-      console.log("You should be seeing this right before the updateOne()");
       //return User.updateOne({resetLink: resetToken}, (err, success) => {
       userDoc = await User.findOneAndUpdate({ email: email },{ $set: { resetLink: resetToken }}, (err) => {
           if (err) {

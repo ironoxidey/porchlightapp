@@ -87,7 +87,7 @@ export const forgotPassword = ({ email }) => async (dispatch) => {
     if (errors) {
       errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
     }
-    dispatch({ type: FORGOTPASSWORD_FAIL, errors: errors, email: email });
+    dispatch({ type: FORGOTPASSWORD_FAIL, errors: errors, rawErr: err, email: email });
   }
 };
 
