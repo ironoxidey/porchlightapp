@@ -120,6 +120,7 @@ router.put(
       //const link = `localhost:3000/reset-password?token=${resetToken}`;
       const link = `http://reviewthearts.com/reset-password?token=${resetToken}`;
       
+      console.log("You should be seeing this right before the updateOne()");
       //return User.updateOne({resetLink: resetToken}, (err, success) => {
       let updatedUser = await User.updateOne({ email: email },{resetLink: resetToken}).exec((err, success) => {
         if (err) {
