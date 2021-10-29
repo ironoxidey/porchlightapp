@@ -123,7 +123,7 @@ router.put(
       console.log("You should be seeing this right before the updateOne()");
       //return User.updateOne({resetLink: resetToken}, (err, success) => {
       async () => {
-        let updatedUser = await User.updateOne({ email: email },{resetLink: resetToken}).exec((err, success) => {
+        let updatedUser = await User.updateOne({ email: email },{$set:{resetLink: resetToken}}).exec((err, success) => {
           if (err) {
             return res
               .status(400)
