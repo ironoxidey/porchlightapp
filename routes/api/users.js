@@ -122,20 +122,22 @@ router.put(
       
       console.log("You should be seeing this right before the updateOne()");
       //return User.updateOne({resetLink: resetToken}, (err, success) => {
-      let updatedUser = await User.updateOne({ email: email },{resetLink: resetToken}).exec((err, success) => {
-        if (err) {
-          return res
-            .status(400)
-            .json({ errors: [{ error: 'reset password link error' }] });
-        }
-        else {
-          //res.status(500).send('An email should get sent now.');
-          res.send('An email should get sent now.');
-          sendEmail(email,"Password Reset Request",{name: user.name.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
-        }
-      });
+      async () => {
+        let updatedUser = await User.updateOne({ email: email },{resetLink: resetToken}).exec((err, success) => {
+          if (err) {
+            return res
+              .status(400)
+              .json({ errors: [{ error: 'reset password link error' }] });
+          }
+          else {
+            //res.status(500).send('An email should get sent now.');
+            res.send('An email should get sent now.');
+            sendEmail(email,"Password Reset Request",{name: user.name.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
+          }
+        });
 
-      return updatedUser;
+        return updatedUser;
+      }
 
       // return user.updateOne({resetLink: resetToken}, (err, success) => {
       //   if (err) {
