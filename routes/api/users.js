@@ -98,9 +98,9 @@ router.put(
     const { email } = req.body;
 
     try {
-      let user = await User.findOne({ email });
+      let userDoc = await User.findOne({ email });
 
-      if (!user) {
+      if (!userDoc) {
         return res
           .status(400)
           .json({ errors: [{ error: 'User with this email address does not exist.' }] });
@@ -108,7 +108,7 @@ router.put(
 
       const payload = {
         user: {
-          id: user.id
+          id: userDoc.id
         },
       };
       const resetToken = jwt.sign(
@@ -122,7 +122,7 @@ router.put(
       
       console.log("You should be seeing this right before the updateOne()");
       //return User.updateOne({resetLink: resetToken}, (err, success) => {
-      await User.updateOne({ email: email },{$set:{resetLink: resetToken}}).exec((err, success) => {
+      await userDoc.updateOne({ email: email },{ $set: { resetLink: resetToken }}, (err) => {
           if (err) {
             return res
               .status(400)
