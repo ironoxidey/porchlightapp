@@ -99,7 +99,31 @@ router.put(
 
     try {
       console.log("You should be seeing this right before the findOne()");
-      let userDoc = await User.findOne({ email });
+      await User.findOne({ email }).then(userDoc => {
+          const payload = {
+            user: {
+              id: userDoc.id
+            },
+          };
+          const resetToken = jwt.sign(
+            payload,
+            config.get('resetPasswordKey'),
+            { expiresIn: '20m' }, //20 minutes
+          );
+          const link = `http://reviewthearts.com/reset-password?token=${resetToken}`;
+
+          userDoc.resetLink = resetToken;
+
+          user.markModified('resetLink');
+
+          user.save(err => console.log(err));
+
+          res.send('An email should get sent now.');
+          sendEmail(email,"Password Reset Request",{name: user.name.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
+
+      });
+
+      /*let userDoc = await User.findOne({ email });
 
       if (!userDoc) {
         return res
@@ -122,19 +146,19 @@ router.put(
       const link = `http://reviewthearts.com/reset-password?token=${resetToken}`;
       
       //return User.updateOne({resetLink: resetToken}, (err, success) => {
-      // userDoc = await User.findOneAndUpdate({ email: email },{ $set: { resetLink: resetToken }}, (err) => {
-      //     if (err) {
-      //       return res
-      //         .status(400)
-      //         .json({ errors: [{ error: 'reset password link error' }] });
-      //     }
-      //     else {
-      //       //res.status(500).send('An email should get sent now.');
-      //       sendEmail(email,"Password Reset Request",{name: user.name.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
-      //       res.send('An email should get sent now.');
-      //     }
-      // });
-      
+      userDoc = await User.findOneAndUpdate({ email: email },{ $set: { resetLink: resetToken }}, (err) => {
+          if (err) {
+            return res
+              .status(400)
+              .json({ errors: [{ error: 'reset password link error' }] });
+          }
+          else {
+            //res.status(500).send('An email should get sent now.');
+            sendEmail(email,"Password Reset Request",{name: user.name.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
+            res.send('An email should get sent now.');
+          }
+      });
+      */
 
       // return user.updateOne({resetLink: resetToken}, (err, success) => {
       //   if (err) {
