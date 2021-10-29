@@ -122,7 +122,7 @@ router.put(
       
       console.log("You should be seeing this right before the updateOne()");
       //return User.updateOne({resetLink: resetToken}, (err, success) => {
-      await userDoc.updateOne({ email: email },{ $set: { resetLink: resetToken }}, (err) => {
+      userDoc = await User.findOneAndUpdate({ email: email },{ $set: { resetLink: resetToken }}, (err) => {
           if (err) {
             return res
               .status(400)

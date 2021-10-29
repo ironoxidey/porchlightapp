@@ -29,7 +29,7 @@ const ForgotPassword = ({ forgotPassword, isAuthenticated, forgotSuccess }) => {
     <Fragment>
       <h1 className='large text-primary'>Forgot your password?</h1>
       <p className='lead'>
-        <i className='fas fa-user'></i> Enter the email address associated with your account
+        <i className='fas fa-user'></i> Enter the email address associated with your Porchlight account
       </p>
       <form className='form' onSubmit={(e) => onSubmit(e)}>
         <div className='form-group'>
