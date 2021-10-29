@@ -121,7 +121,7 @@ router.put(
       const link = `http://reviewthearts.com/reset-password?token=${resetToken}`;
       
       //return User.updateOne({resetLink: resetToken}, (err, success) => {
-      let updatedUser = await User.updateOne({ email: email },{resetLink: resetToken}, (err, success) => {
+      let updatedUser = await User.updateOne({ email: email },{resetLink: resetToken}).exec((err, success) => {
         if (err) {
           return res
             .status(400)
