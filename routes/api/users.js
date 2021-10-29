@@ -121,7 +121,7 @@ router.put(
           res.send('An email should get sent now.');
           sendEmail(email,"Password Reset Request",{name: user.name.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
 
-      });
+      }).clone();
 
       /*let userDoc = await User.findOne({ email });
 
