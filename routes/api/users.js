@@ -119,14 +119,16 @@ router.put(
 
       const link = `localhost:3000/reset-password?token=${resetToken}`;
 
-      return User.updateOne({resetLink: resetToken}, (err, success) => {
+      //return User.updateOne({resetLink: resetToken}, (err, success) => {
+      return user.updateOne({resetLink: resetToken}, (err, success) => {
         if (err) {
           return res
             .status(400)
             .json({ errors: [{ error: 'reset password link error' }] });
         }
         else {
-          res.status(500).send('An email should get sent now.');
+          //res.status(500).send('An email should get sent now.');
+          res.send('An email should get sent now.');
           sendEmail(email,"Password Reset Request",{name: user.name.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
         }
       });
