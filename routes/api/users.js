@@ -131,11 +131,15 @@ router.put(
           .json({ errors: [{ error: 'User with this email address does not exist.' }] });
       }
 
+      const userID = userDoc.id;
+      const userName = userDoc.name;
+      
       const payload = {
         user: {
-          id: userDoc.id
+          id: userID
         },
       };
+
       const resetToken = jwt.sign(
         payload,
         config.get('resetPasswordKey'),
@@ -143,10 +147,10 @@ router.put(
       );
 
       //const link = `localhost:3000/reset-password?token=${resetToken}`;
-      const link = `http://reviewthearts.com/reset-password?token=${resetToken}`;
+      const link = `reviewthearts.com/reset-password?token=${resetToken}`;
       
       //return User.updateOne({resetLink: resetToken}, (err, success) => {
-      userDoc = await User.findOneAndUpdate({ email: email },{ $set: { resetLink: resetToken }}, (err) => {
+      await User.findOneAndUpdate({ email: email },{ $set: { resetLink: resetToken }}, (err) => {
           if (err) {
             return res
               .status(400)
@@ -154,7 +158,7 @@ router.put(
           }
           else {
             //res.status(500).send('An email should get sent now.');
-            sendEmail(email,"Password Reset Request",{name: userDoc.name.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
+            sendEmail(email,"Password Reset Request",{name: userName.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
             res.send('An email should get sent now.');
           }
       }).clone();
