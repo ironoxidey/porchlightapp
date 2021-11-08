@@ -1,6 +1,6 @@
 const express = require('express');
 const request = require('request');
-const config = require('config');
+const config = require('../../../porchlight-config/default.json'); //require('config');
 const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator');
@@ -361,9 +361,8 @@ router.get('/github/:username', (req, res) => {
       uri: encodeURI(
         `https://api.github.com/users/${
           req.params.username
-        }/repos?per_page=5&sort=created:asc&client_id=${config.get(
-          'githubClientId'
-        )}&client_secret=${config.get('githubSecret')}`
+        }/repos?per_page=5&sort=created:asc&client_id=${config[
+          'githubClientId']}&client_secret=${config['githubSecret']}`
       ),
       method: 'GET',
       headers: { 'user-agent': 'node.js' },

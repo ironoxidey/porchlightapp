@@ -27,6 +27,7 @@ const sendEmail = async (email, subject, payload, template) => {
     };
 
     // Send email
+    console.log("email should send now to "+email+" with the subject: "+subject);
     transporter.sendMail(options(), (error, info) => {
       if (error) {
         return error;

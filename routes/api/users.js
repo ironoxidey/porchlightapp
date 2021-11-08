@@ -3,7 +3,7 @@ const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('config');
+const config = require('../../../porchlight-config/default.json');//require('config');
 const { check, validationResult } = require('express-validator');
 
 const sendEmail = require('../../utils/email/sendEmail');
@@ -67,7 +67,7 @@ router.post(
       };
       jwt.sign(
         payload,
-        config.get('jwtSecret'),
+        config['jwtSecret'], //config.get('jwtSecret'),
         { expiresIn: 360000 }, //eventually change this to 3600
         (err, token) => {
           if (err) throw err;
@@ -142,7 +142,7 @@ router.put(
 
       const resetToken = jwt.sign(
         payload,
-        config.get('resetPasswordKey'),
+        config['resetPasswordKey'],//config.get('resetPasswordKey'),
         { expiresIn: '20m' }, //20 minutes
       );
 
@@ -207,7 +207,7 @@ router.put(
       
       jwt.verify(
         resetLink,
-        config.get('resetPasswordKey'),
+        config['resetPasswordKey'],//config.get('resetPasswordKey'),
         async (err, decodedData) => {
             if(err){
               return res.status(401).json({

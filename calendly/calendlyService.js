@@ -1,9 +1,9 @@
 const request = require('request');
 //const User = require('../calendly/models/userModel');
-const config = require('config');
+const config = require('../../porchlight-config/default.json'); //require('config');
 
-const CLIENT_ID = config.get('calendlyID');
-const CLIENT_SECRET = config.get('calendlySecret'); 
+const CLIENT_ID = config['calendlyID'];//config.get('calendlyID');
+const CLIENT_SECRET = config['calendlySecret']; 
 const CALENDLY_AUTH_BASE_URL = 'https://auth.calendly.com';
 const CALENDLY_API_BASE_URL = 'https://api.calendly.com';
 const REDIRECT_URI = 'http://localhost:3000';
