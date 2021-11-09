@@ -27,13 +27,13 @@ const sendEmail = async (email, subject, payload, template) => {
     };
 
     // Send email
-    console.log("email should send now to "+email+" with the subject: "+subject);
+    //console.log("email should send now to "+email+" with the subject: "+subject);
     transporter.sendMail(options(), (error, info) => {
       if (error) {
         //console.log(error);
         return error;
       } else {
-        console.log("Email should have sent successfully.");
+        //console.log("Email should have sent successfully.");
         return res.status(200).json({
           success: true,
         });

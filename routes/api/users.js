@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const request = require('request');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('../../../porchlight-config/default.json');//require('config');
 const { check, validationResult } = require('express-validator');
+const auth = require('../../middleware/auth');
 
 const sendEmail = require('../../utils/email/sendEmail');
 
@@ -252,5 +254,69 @@ router.put(
     }
   }
 );
+
+// @route   PUT api/users/calendly
+// @desc    Authenticate Calendly
+// @access  Private
+router.post(
+  '/calendly',
+  [
+    auth,
+    [    
+        check('calendlyAuthCode', 'Please include a Calendly auth code from the response URL variable').not().isEmpty(),
+    ] , 
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    
+    const { calendlyAuthCode } = req.body;
+
+    //hit up Calendly for Access Token and Refresh Token with Auth Code
+    const options = {
+      method: 'POST',
+      url: 'https://auth.calendly.com/oauth/token',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      form: {
+        grant_type: "authorization_code",
+        client_id: config['calendlyID'],
+        client_secret: config['calendlySecret'],
+        code: calendlyAuthCode,
+        redirect_uri: "http://localhost:3000",
+      }
+    };
+    
+    request(options, async (error, response, body) => {
+      if (error) throw new Error(error);
+      
+      const userFields = {};
+      userFields.user = req.user.id;
+
+      const { access_token, refresh_token, owner } = JSON.parse(body);
+
+      if (calendlyAuthCode) userFields.calendlyAuthCode = calendlyAuthCode;
+      if (access_token) userFields.calendlyToken = access_token;
+      if (refresh_token) userFields.calendlyRefreshToken = refresh_token;
+      if (owner) userFields.calendlyOwner = owner;
+
+      try {
+        let user = await User.findOneAndUpdate(
+          { _id: req.user.id },
+          { $set: userFields },
+          { new: true, upsert: true }
+        );
+        res.json(user);
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+      }  
+        
+      });
+    }
+    
+);
+
 
 module.exports = router;

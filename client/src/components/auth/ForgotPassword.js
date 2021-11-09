@@ -40,6 +40,7 @@ const ForgotPassword = ({ forgotPassword, isAuthenticated, forgotSuccess }) => {
             value={email}
             onChange={(e) => onChange(e)} //call seperate onChange function above
           />
+          <small>This is currently not working in production. Contact Rusty for a password reset link.</small>
         </div>
 
         <input type='submit' className='btn btn-primary' value='Submit' />

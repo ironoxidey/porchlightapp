@@ -25,7 +25,10 @@ const Dashboard = ({
       <p className='lead'>
         <i className='fas fa-user' /> Welcome {user && user.name}
       </p>
-      {profile !== null ? (
+      <Fragment>
+          <DashboardActions></DashboardActions>
+      </Fragment>
+      {/* {profile !== null ? (
         <Fragment>
           <DashboardActions></DashboardActions>
           <Experience experience={profile.experience}></Experience>
@@ -44,7 +47,9 @@ const Dashboard = ({
             Create Profile
           </Link>
         </Fragment>
-      )}
+        )} 
+        */}
+      
     </Fragment>
   );
 };

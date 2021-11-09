@@ -23,11 +23,11 @@ const ArtistItem = ({ artist: {
                 <p className="my-1">{genre}</p>
                 <p className="my-1">{hometown}</p>
                 {repLink ? (
-                    <a href={repLink} className='btn btn-primary' target="_blank" rel="noopener noreferrer">Check out {stageName}'s work</a>
+                    <a href={repLink} className='btn btn-primary' target="_blank" rel="noopener noreferrer">Check out {stageName}'s work <i className='fas fa-sign-out-alt'></i></a>
                 ): ''}
-                <a href={`mailto:${email}`} className='btn btn-primary'><i className="fas fa-envelope"></i>
+                {/* <a href={`mailto:${email}`} className='btn btn-primary'><i className="fas fa-envelope"></i>
                     <span> Email {firstName}</span>
-                </a>
+                </a> */}
                 {/* <Link to={`/artists/${slug}`} className='btn btn-primary'>
                     View artist
                 </Link> */}

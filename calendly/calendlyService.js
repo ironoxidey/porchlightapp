@@ -6,7 +6,7 @@ const CLIENT_ID = config['calendlyID'];//config.get('calendlyID');
 const CLIENT_SECRET = config['calendlySecret']; 
 const CALENDLY_AUTH_BASE_URL = 'https://auth.calendly.com';
 const CALENDLY_API_BASE_URL = 'https://api.calendly.com';
-const REDIRECT_URI = 'http://localhost:3000';
+const REDIRECT_URI = 'http://reviewthearts.com';
 const CALENDLY_BASE_URL = 'https://calendly.com';
 
 // const {
