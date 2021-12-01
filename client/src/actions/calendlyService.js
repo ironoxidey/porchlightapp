@@ -1,12 +1,14 @@
-const request = require('request');
+//import React from 'react';
+import { refreshCalendlyAuth } from './calendly';
+const axios = require('axios').default;
+//const request = require('request');
 //const User = require('../calendly/models/userModel');
-const config = require('../../porchlight-config/default.json'); //require('config');
+//const User = require('../../../models/User');
+//const config = require('../../../../porchlight-config/default.json'); //require('config');
 
-const CLIENT_ID = config['calendlyID'];//config.get('calendlyID');
-const CLIENT_SECRET = config['calendlySecret']; 
 const CALENDLY_AUTH_BASE_URL = 'https://auth.calendly.com';
 const CALENDLY_API_BASE_URL = 'https://api.calendly.com';
-const REDIRECT_URI = 'http://reviewthearts.com';
+const REDIRECT_URI = 'http://localhost:3000';
 const CALENDLY_BASE_URL = 'https://calendly.com';
 
 // const {
@@ -43,7 +45,7 @@ class CalendlyService {
             '/users/me',
             this.getRequestConfiguration()
         );
-
+        console.log('Tried getUserInfo and it came back with: '+data);
         return data;
     };
 
@@ -75,58 +77,14 @@ class CalendlyService {
         return data;
     };
 
-    requestNewAccessToken = () => {
-        try {
-            const options = {
-              uri: encodeURI(
-                `${CALENDLY_AUTH_BASE_URL}/oauth/token`
-              ),
-              client_id: CLIENT_ID,
-              client_secret: CLIENT_SECRET,
-              grant_type: 'refresh_token',
-              refresh_token: this.refreshToken,
-              method: 'POST',
-              headers: { 'user-agent': 'node.js' },
-            };
-        
-            request(options, (error, response, body) => {
-              if (error) console.error(error);
-        
-              if (response.statusCode !== 200) {
-                return res.status(404).json({ msg: 'No Calendly host found' });
-              }
-        
-              res.json(JSON.parse(body));
-            });
-          } catch (err) {
-            console.error(err.message);
-            res.status(500).send('Server Error');
-          }
-
-
-        // return axios.post(`${CALENDLY_AUTH_BASE_URL}/oauth/token`, {
-        //     client_id: CLIENT_ID,
-        //     client_secret: CLIENT_SECRET,
-        //     grant_type: 'refresh_token',
-        //     refresh_token: this.refreshToken
-        // });
-    };
-
     _onCalendlyError = async (error) => {
         if (error.response.status !== 401) return Promise.reject(error);
 
         this.request.interceptors.response.eject(this.requestInterceptor);
 
         try {
-            const response = await this.requestNewAccessToken();
+            const response = await refreshCalendlyAuth();
             const { access_token, refresh_token } = response.data;
-
-            const user = await User.findByAccessToken(this.accessToken);
-
-            await User.update(user.id, {
-                accessToken: access_token,
-                refreshToken: refresh_token
-            });
 
             this.accessToken = access_token;
             this.refreshToken = refresh_token;
@@ -141,4 +99,5 @@ class CalendlyService {
     };
 }
 
-module.exports = CalendlyService;
+//module.exports = CalendlyService;
+export default CalendlyService;

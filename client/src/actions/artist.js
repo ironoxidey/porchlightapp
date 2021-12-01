@@ -4,21 +4,21 @@ import { setAlert } from './alert';
 import { GET_ARTIST, GET_ARTISTS, UPDATE_ARTIST, ARTIST_ERROR, CLEAR_ARTIST, ACCOUNT_DELETED } from './types';
 
 //Get current user's profile
-export const getCurrentArtist = slug => async (dispatch) => {
-  try {
-    const res = await axios.get(`/api/artists/${slug}`);
-    dispatch({
-      type: GET_ARTIST,
-      payload: res.data,
-    });
-  } catch (err) {
-    dispatch({ type: CLEAR_ARTIST });
-    dispatch({
-      type: ARTIST_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
-    });
-  }
-};
+// export const getCurrentArtist = slug => async (dispatch) => {
+//   try {
+//     const res = await axios.get(`/api/artists/${slug}`);
+//     dispatch({
+//       type: GET_ARTIST,
+//       payload: res.data,
+//     });
+//   } catch (err) {
+//     dispatch({ type: CLEAR_ARTIST });
+//     dispatch({
+//       type: ARTIST_ERROR,
+//       payload: { msg: err.response.statusText, status: err.response.status },
+//     });
+//   }
+// };
 
 // Get all artists
 export const getArtists = () => async (dispatch) => {
@@ -37,7 +37,7 @@ export const getArtists = () => async (dispatch) => {
   }
 };
 
-// Get all artists
+// Get all artists to edit
 export const getEditArtists = () => async (dispatch) => {
     //dispatch({ type: CLEAR_ARTIST });
     try {
@@ -54,10 +54,10 @@ export const getEditArtists = () => async (dispatch) => {
     }
 };
 
-// Get profile by ID
-export const getProfileById = userId => async (dispatch) => {
+// Get artist by slug
+export const getArtistBySlug = artistSlug => async (dispatch) => {
   try {
-    const res = await axios.get(`/api/profile/user/${userId}`);
+    const res = await axios.get(`/api/artists/${artistSlug}`);
     dispatch({
       type: GET_ARTIST,
       payload: res.data,

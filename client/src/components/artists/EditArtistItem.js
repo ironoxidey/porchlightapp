@@ -47,6 +47,7 @@ const EditArtistItem = ({
   history,
 }) => {
   const [formData, setFormData] = useState({
+    slug: '',
     email: '',
     firstName: '',
     lastName: '',
@@ -80,12 +81,14 @@ const EditArtistItem = ({
     artistNotes: '',
     financialHopes: '',
     onboardDate: '',
+    bio: '',
   });
 
   const [displayEdit, toggleEdit] = useState(false);
 
   useEffect(() => {
     setFormData({
+      slug: loading || !theArtist.slug ? '' : theArtist.slug,
       email: loading || !theArtist.email ? '' : theArtist.email,
       firstName: loading || !theArtist.firstName ? '' : theArtist.firstName,
       lastName: loading || !theArtist.lastName ? '' : theArtist.lastName,
@@ -120,10 +123,12 @@ const EditArtistItem = ({
       artistNotes: loading || !theArtist.artistNotes ? '' : theArtist.artistNotes,
       financialHopes: loading || !theArtist.financialHopes ? '' : theArtist.financialHopes,
       onboardDate: loading || !theArtist.onboardDate ? '' : theArtist.onboardDate,
+      bio: loading || !theArtist.bio ? '' : theArtist.bio,
     });
   }, [loading]);
 
   const { 
+    slug,
     email,
     firstName,
     lastName,
@@ -157,10 +162,12 @@ const EditArtistItem = ({
     covidPrefs,
     artistNotes,
     financialHopes,
-    onboardDate 
+    onboardDate,
+    bio, 
   } = formData;
 
   const formDataArray = [
+    slug,
     email,
     firstName,
     lastName,
@@ -194,7 +201,8 @@ const EditArtistItem = ({
     covidPrefs,
     artistNotes,
     financialHopes,
-    onboardDate
+    onboardDate,
+    bio
   ];
 
   const onChange = (e) => {
@@ -225,7 +233,11 @@ What is it like there this time of year?`
       <div className={`post bg-white p-1 my-1 ${active ? "active" : ""}`}>
         <Fragment>
         <img src={squareImg} alt="" className="round-img" />
+        
         <h2 className='text-primary'>{stageName}</h2>
+        <Link to={`/artists/${slug}`} className='btn btn-primary'>
+            View Public Profile
+        </Link>
         {active && (
           <small>Active</small>
         )}
@@ -655,6 +667,16 @@ What is it like there this time of year?`
                   <small className='form-text'>
                   Onboard Date
                   </small>
+                </div>
+
+                <div className='form-group'>
+                  <textarea
+                      placeholder='Bio'
+                      name='bio'
+                      value={bio}
+                      onChange={(e) => onChange(e)}
+                  ></textarea>
+                  <small className='form-text'>Bio</small>
                 </div>
 
                 <input type='submit' className='btn btn-primary my-1' />

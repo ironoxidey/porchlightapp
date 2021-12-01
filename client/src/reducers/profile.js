@@ -4,6 +4,7 @@ import {
   CLEAR_PROFILE,
   UPDATE_PROFILE,
   GET_PROFILES,
+  REFRESH_CALENDLY
 } from '../actions/types';
 
 const initialState = {
@@ -18,6 +19,7 @@ export default function (state = initialState, action) {
   switch (type) {
     case GET_PROFILE:
     case UPDATE_PROFILE:
+    case REFRESH_CALENDLY:
       return {
         ...state,
         profile: payload,

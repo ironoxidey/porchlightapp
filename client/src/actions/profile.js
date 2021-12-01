@@ -3,36 +3,6 @@ import { setAlert } from './alert';
 
 import { GET_PROFILE, GET_PROFILES, UPDATE_PROFILE, PROFILE_ERROR, CLEAR_PROFILE, ACCOUNT_DELETED } from './types';
 
-// Add Calendly Code
-export const addCalendlyAuthCode = (formData, history) => async (dispatch) => {
-  try {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    const res = await axios.post('/api/users/calendly', formData, config);
-    dispatch({
-      type: UPDATE_PROFILE,
-      payload: res.data,
-    });
-
-    dispatch(setAlert('Calendly Added', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
-
-    history.push('/dashboard');
-  } catch (err) {
-    const errors = err.response.data.errors;
-
-    if (errors) {
-      errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
-    }
-    dispatch({
-      type: PROFILE_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
-    });
-  }
-};
-
 //Get current user's profile
 export const getCurrentProfile = () => async (dispatch) => {
   try {

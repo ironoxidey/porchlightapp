@@ -27,6 +27,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         artists: payload,
+        artist: null,
         loading: false
       }
     case ARTIST_ERROR:

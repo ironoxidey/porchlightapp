@@ -16,76 +16,11 @@ function convertToSlug(Text)
         ;
 }
 
-// @route    POST api/artists
-// @desc     Create or update artist
-// @access   Private
-router.post(
-  '/',
-  [
-    auth,
-    [
-      check('email', 'Please include a valid email').isEmail(),
-    ],
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const {
-        email,
-        firstName,
-        lastName,
-        stageName,
-        medium,
-        genre,
-        repLink,
-        helpKind,
-        typeformDate,
-        hadMeeting,
-        sentFollowUp,
-        active,
-        notes
-    } = req.body;
-
-    // Build artist object
-    const artistFields = {};
-    artistFields.email = email;
-    if (firstName) artistFields.firstName = firstName;
-    if (lastName) artistFields.lastName = lastName;
-    if (stageName) artistFields.stageName = stageName;
-    if (medium) artistFields.medium = medium;
-    if (genre) artistFields.genre = genre;
-    if (repLink) artistFields.repLink = repLink;
-    if (helpKind) artistFields.helpKind = helpKind;
-    if (typeformDate) artistFields.typeformDate = typeformDate;
-    if (hadMeeting) artistFields.hadMeeting = hadMeeting;
-    if (sentFollowUp) artistFields.sentFollowUp = sentFollowUp;
-    if (active) artistFields.active = active;
-    if (notes) artistFields.notes = notes;
-
-    try {
-      // Using upsert option (creates new doc if no match is found):
-      let artist = await Artist.findOneAndUpdate(
-        { email: email.toLowerCase() },
-        { $set: artistFields },
-        { new: true, upsert: true }
-      );
-      res.json(artist); //eventually remove this
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
-    }
-  }
-);
-
-
-// @route    POST api/artists/batch
+// @route    POST api/typeform/artist-application
 // @desc     Batch create or update artists
 // @access   Private
 router.post(
-  '/batch',
+  '/artist-application',
   [
     auth,
   ],
@@ -161,7 +96,7 @@ router.post(
 // @access   Public
 router.get('/', async (req, res) => {
   try {
-    const artists = await Artist.find({ active: true }).select('-email -phone -companionTravelers -artistNotes -schedule');
+    const artists = await Artist.find({ active: true }).select('-companionTravelers -artistNotes -schedule');
     res.json(artists);
   } catch (err) {
     console.error(err.message);
@@ -221,7 +156,7 @@ router.get('/:slug', async (req, res) => {
   try {
     const artist = await Artist.findOne({
       slug: req.params.slug,
-    }).select('-email -phone -companionTravelers -artistNotes -schedule');//ADD .select('-field'); to exclude [field] from the response 
+    });//ADD .select('-field'); to exclude [field] from the response 
 
     if (!artist) return res.status(400).json({ msg: 'Artist not found' });
 

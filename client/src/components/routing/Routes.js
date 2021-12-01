@@ -11,6 +11,7 @@ import AddEducation from '../profile-forms/AddEducation';
 import Profiles from '../profiles/Profiles';
 import Profile from '../profile/Profile';
 import Artists from '../artists/Artists';
+import Artist from '../artists/Artist';
 import EditArtists from '../artists/EditArtists';
 import Posts from '../posts/Posts';
 import Post from '../post/Post';
@@ -31,7 +32,7 @@ const Routes = () => {
       <Route exact path='/login' component={Login} />
       <Route exact path='/profiles' component={Profiles} />
       <Route exact path='/artists' component={Artists} />
-      {/* <Route exact path='/artists/:slug' component={Profile} /> */}
+      <Route exact path='/artists/:slug' component={Artist} />
       <Route exact path='/profile/:id' component={Profile} />
       <PrivateRoute exact path='/dashboard' component={Dashboard} />
       <PrivateRoute exact path='/create-profile' component={CreateProfile} />

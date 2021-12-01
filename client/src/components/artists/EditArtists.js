@@ -4,8 +4,9 @@ import {connect} from 'react-redux';
 import Spinner from '../layout/Spinner';
 import EditArtistItem from './EditArtistItem';
 import { getEditArtists } from '../../actions/artist';
+import { getCalendlyScheduledEvents, getCalendlyEventInvitee, getCalendlyUserInfo, refreshCalendlyAuth } from '../../actions/calendly';
 
-const EditArtists = ({ getEditArtists, auth: { user }, artist: { artists, loading }}) => {
+const EditArtists = ({ auth: {user}, artist: { artists, loading }, calendly, getEditArtists, getCalendlyUserInfo, getCalendlyScheduledEvents, getCalendlyEventInvitee, refreshCalendlyAuth }) => {
     
     const [filterBy, setFilterBy] = useState('');
     const [filterString, setFilterString] = useState('');
@@ -40,6 +41,37 @@ const EditArtists = ({ getEditArtists, auth: { user }, artist: { artists, loadin
     useEffect(() => {
         getEditArtists();
     }, [getEditArtists]);
+
+    // useEffect(() => {
+    //     if (user && user.calendly) {
+    //         refreshCalendlyAuth(); //just go ahead and refresh the token all the time... why not? ... is that bad practice?
+    //         getCalendlyUserInfo(user.calendly.accessToken);
+    //         getCalendlyScheduledEvents(user.calendly.accessToken, user.calendly.owner );
+            
+    //         if (calendly && calendly.events) {
+    //             console.log(calendly.events.data.collection[1].uri);
+    //             getCalendlyEventInvitee(user.calendly.accessToken, calendly.events.data.collection[1].uri );
+    //         }
+    //     }
+    // }, [getCalendlyScheduledEvents, getCalendlyEventInvitee, refreshCalendlyAuth]);
+    
+    useEffect(() => {
+        if (user && user.calendly) {
+            refreshCalendlyAuth(); //just go ahead and refresh the token all the time... why not? ... is that bad practice?
+            getCalendlyUserInfo(user.calendly.accessToken);
+            getCalendlyScheduledEvents(user.calendly.accessToken, user.calendly.owner );
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (calendly.events) {
+            //console.log("Access Token: " + user.calendly.accessToken + " | Event URI: " + calendly.events.data.collection[0].uri);
+            //console.log("Should run getCalendlyEventInvitee() now.");
+            getCalendlyEventInvitee(user.calendly.accessToken, calendly.events.data.collection[0].uri);
+        }
+    }, [calendly.events]);
+
+
     return (
         <Fragment>
            { loading ? <Spinner></Spinner> : <Fragment>
@@ -106,13 +138,19 @@ const EditArtists = ({ getEditArtists, auth: { user }, artist: { artists, loadin
 
 EditArtists.propTypes = {
    getEditArtists: PropTypes.func.isRequired, 
+   getCalendlyScheduledEvents: PropTypes.func.isRequired,
+   getCalendlyEventInvitee: PropTypes.func.isRequired,
+   getCalendlyUserInfo: PropTypes.func.isRequired,
+   refreshCalendlyAuth: PropTypes.func.isRequired,
    artist: PropTypes.object.isRequired,
    auth: PropTypes.object.isRequired,
+   calendly: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
     artist: state.artist,
     auth: state.auth,
+    calendly: state.calendly,
 });
 
-export default connect(mapStateToProps, {getEditArtists}) (EditArtists);
+export default connect(mapStateToProps, {getEditArtists, getCalendlyScheduledEvents, getCalendlyEventInvitee, getCalendlyUserInfo, refreshCalendlyAuth }) (EditArtists);

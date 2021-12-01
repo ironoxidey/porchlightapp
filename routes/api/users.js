@@ -255,11 +255,11 @@ router.put(
   }
 );
 
-// @route   PUT api/users/calendly
+// @route   POST api/users/calendlyAuth
 // @desc    Authenticate Calendly
 // @access  Private
 router.post(
-  '/calendly',
+  '/calendlyAuth',
   [
     auth,
     [    
@@ -292,14 +292,19 @@ router.post(
       if (error) throw new Error(error);
       
       const userFields = {};
-      userFields.user = req.user.id;
+      userFields.calendly = {};
 
-      const { access_token, refresh_token, owner } = JSON.parse(body);
+      //userFields.user = req.user.id; //I don't think I'm actually using this — 'user' is not in the Users Mongoose schema model
 
-      if (calendlyAuthCode) userFields.calendlyAuthCode = calendlyAuthCode;
-      if (access_token) userFields.calendlyToken = access_token;
-      if (refresh_token) userFields.calendlyRefreshToken = refresh_token;
-      if (owner) userFields.calendlyOwner = owner;
+      const { access_token, refresh_token, owner, organization, created_at, expires_in } = JSON.parse(body);
+
+      if (calendlyAuthCode) userFields.calendly.authCode = calendlyAuthCode;
+      if (access_token) userFields.calendly.accessToken = access_token;
+      if (refresh_token) userFields.calendly.refreshToken = refresh_token;
+      if (owner) userFields.calendly.owner = owner;
+      if (organization) userFields.calendly.organization = organization;
+      if (created_at) userFields.calendly.createdAt = created_at;
+      if (expires_in) userFields.calendly.expiresIn = expires_in;
 
       try {
         let user = await User.findOneAndUpdate(
@@ -317,6 +322,95 @@ router.post(
     }
     
 );
+
+// @route   POST api/users/calendlyRefresh
+// @desc    Calendly Authentication
+// @access  Private
+router.post(
+  '/calendlyRefresh',
+  [
+    auth,
+    [   
+    ] , 
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    //get refresh token from database
+    const dbCalendlyAuth = await User.findOne({
+      user: req.user.id,
+    }).select('calendly');
+
+    //console.log("Refresh Token: "+dbCalendlyAuth.calendly.refreshToken);
+    
+    const { refreshToken } = dbCalendlyAuth.calendly;
+
+    //hit up Calendly for new Access Tokens with old Refresh Token
+    const options = {
+      method: 'POST',
+      url: 'https://auth.calendly.com/oauth/token',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      form: {
+        client_id: config['calendlyID'],
+        client_secret: config['calendlySecret'],
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken,
+      }
+    };
+    
+    request(options, async (error, response, body) => {
+      if (error) throw new Error(error);
+      
+      const userFields = {};
+      userFields.calendly = {};
+
+      const { access_token, refresh_token, created_at, expires_in, owner, organization } = JSON.parse(body);
+
+      if (access_token) userFields.calendly.accessToken = access_token;
+      if (refresh_token) userFields.calendly.refreshToken = refresh_token;
+      if (created_at) userFields.calendly.createdAt = created_at;
+      if (expires_in) userFields.calendly.expiresIn = expires_in;
+      if (owner) userFields.calendly.owner = owner;
+      if (organization) userFields.calendly.organization = organization;
+
+      //console.log(userFields);
+
+      try {
+        let user = await User.findOneAndUpdate(
+          { _id: req.user.id },
+          { $set: userFields },
+          { new: true, upsert: true }
+        );
+        res.json(user);
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+      }  
+        
+      });
+    }
+    
+);
+
+router.get('/calendly', auth, async (req, res) => {
+  try {
+    const user = await User.findOne({
+      _id: req.user.id,
+    }).populate('calendly', ['accessToken']);
+
+    if (!user) {
+      return res.status(400).json({ msg: 'There is no user' });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
 
 module.exports = router;

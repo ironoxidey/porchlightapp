@@ -18,8 +18,10 @@ const ArtistItem = ({ artist: {
         <div className="profile bg-light">
             <img src={squareImg} alt="" className="round-img" />
             <div>
-                <h2>{stageName}</h2>
-                <h4>({firstName} {lastName})</h4>
+                <Link to={`/artists/${slug}`}>
+                    <h2>{stageName}</h2>
+                </Link>
+                {/* <h4>({firstName} {lastName})</h4> */}
                 <p className="my-1">{genre}</p>
                 <p className="my-1">{hometown}</p>
                 {repLink ? (

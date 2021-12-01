@@ -401,6 +401,9 @@ button {
 
 .profile-about {
   grid-area: about;
+  text-align: left;
+}
+.profile-about h2 {
   text-align: center;
 }
 

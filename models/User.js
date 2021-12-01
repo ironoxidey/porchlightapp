@@ -19,18 +19,30 @@ const UserSchema = new mongoose.Schema({
     enum : ['ARTIST','HOST', 'BOTH','ADMIN','ATTENDER'],
     default: 'ATTENDER'
   },
-  calendlyAuthCode: { //user pastes from 'code' url variable
-    type: String,
-  },
-  calendlyToken: {
-    type: String,
-  },
-  calendlyRefreshToken: {
-    type: String,
-  },
-  calendlyOwner: {
-    type: String,
-  },
+  calendly: 
+    {
+    authCode: { //user pastes from 'code' url variable
+      type: String,
+    },
+    accessToken: {
+      type: String,
+    },
+    refreshToken: {
+      type: String,
+    },
+    expiresIn: {
+      type: Number,
+    },
+    createdAt: {
+      type: Number,
+    },
+    owner: {
+      type: String,
+    },
+    organization: {
+      type: String,
+    },
+    },
   avatar: {
     type: String,
   },
