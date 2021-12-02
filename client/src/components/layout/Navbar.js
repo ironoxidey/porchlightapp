@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
 
+import Alert from '../layout/Alert';
+
 const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
   const adminLinks = (
     <ul>
@@ -63,9 +65,6 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
         </Link>
       </li>
       <li>
-        <Link to='/register'>Register</Link>
-      </li>
-      <li>
         <Link to='/login'>Login</Link>
       </li>
     </ul>
@@ -77,6 +76,7 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
           Porchlight | <small> Art + Hospitality </small>
         </Link>
       </h1>
+      <Alert />
       {!loading && (
         <Fragment>
           {(isAuthenticated && user.role === "ADMIN") ? (adminLinks) : isAuthenticated ? (attenderLinks) : guestLinks}

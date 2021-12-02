@@ -17,7 +17,7 @@ const CommentItem = ({
           <div>
             <Link to={`/profile/${user}`}>
               <img
-                class="round-img"
+                class=""
                 src={avatar}
                 alt=""
               />

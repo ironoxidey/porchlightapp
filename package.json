@@ -26,6 +26,7 @@
     "mongoose": "^6.0.9",
     "nodemailer": "^6.6.5",
     "request": "^2.88.2",
+    "spinners-react": "^1.0.6",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

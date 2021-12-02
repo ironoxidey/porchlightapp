@@ -15,8 +15,8 @@ const ArtistItem = ({ artist: {
     hometown
 } }) => {
     return (
-        <div className="profile bg-light">
-            <img src={squareImg} alt="" className="round-img" />
+        <div className="profile bg-dark p-1 my-1">
+            <img src={squareImg} alt="" className="profileImage" />
             <div>
                 <Link to={`/artists/${slug}`}>
                     <h2>{stageName}</h2>

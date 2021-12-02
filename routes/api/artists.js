@@ -133,7 +133,7 @@ router.post(
             covidPrefs,
             artistNotes,
             financialHopes,
-            onboardDate
+            onboardDate,
         } = artistFields;
 
         artistFields.slug = convertToSlug(stageName);

@@ -2,7 +2,6 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Register from '../auth/Register';
 import Login from '../auth/Login';
-import Alert from '../layout/Alert';
 import Dashboard from '../dashboard/Dashboard';
 import CreateProfile from '../profile-forms/CreateProfile';
 import EditProfile from '../profile-forms/EditProfile';
@@ -24,7 +23,6 @@ import ForgotPassword from '../auth/ForgotPassword';
 const Routes = () => {
    return (
     <section className='container'>
-    <Alert />
     <Switch>
       <Route exact path='/register' component={Register} />
       <Route exact path='/reset-password' component={ResetPassword} />

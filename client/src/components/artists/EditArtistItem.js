@@ -5,44 +5,8 @@ import { connect } from 'react-redux';
 import { createArtist } from '../../actions/artist';
 
 const EditArtistItem = ({
-    theArtist,
-  theArtist: {
-    loading,
-    // email,
-    // firstName,
-    // lastName,
-    // stageName,
-    // medium,
-    // genre,
-    // repLink,
-    // helpKind,
-    // typeformDate,
-    // hadMeeting,
-    // sentFollowUp,
-    // active,
-    // notes,
-    // phone,
-    // hometown,
-    // costStructure,
-    // namedPrice,
-    // bookingWhenWhere,
-    // setLength,
-    // schedule,
-    // overnight,
-    // openers,
-    // companionTravelers,
-    // hangout,
-    // merchTable,
-    // allergies,
-    // allowKids,
-    // soundSystem,
-    // wideImg,
-    // squareImg,
-    // covidPrefs,
-    // artistNotes,
-    // financialHopes,
-    // onboardDate
-},
+  theArtist,
+  theArtist: { loading },
   createArtist,
   history,
 }) => {
@@ -230,37 +194,39 @@ What is it like there this time of year?`
 );
 
   return (
-      <div className={`post bg-white p-1 my-1 ${active ? "active" : ""}`}>
+      <div className={`profile bg-dark p-1 my-1 ${active ? "active" : ""}`}>
         <Fragment>
-        <img src={squareImg} alt="" className="round-img" />
-        
-        <h2 className='text-primary'>{stageName}</h2>
-        <Link to={`/artists/${slug}`} className='btn btn-primary'>
-            View Public Profile
+        <img src={squareImg} alt="" className="profileImage" />
+        <div className="artistAdminButtons">
+        <Link to={`/artists/${slug}`} className='btn btn-primary profileBtn'>
+            View Frontend Profile
         </Link>
-        {active && (
-          <small>Active</small>
-        )}
-        <div className='artist-info'>
-            <p className='hometown'>{hometown}</p>
-            <p className='genre'>{genre}</p>
-            {repLink ? (
-                    <a href={repLink} className='btn btn-primary' target="_blank" rel="noopener noreferrer">Check out {stageName}'s work</a>
-                ): ''}
             <a href={`mailto:${email}?subject=${mailtoSubject}&body=${mailtoBody}`} className='btn btn-primary'><i className="fas fa-envelope"></i>
                 <span> Send a follow-up email</span>
             </a>
-
         </div>
-        <p className='lead'>
-        <button
+        
+        <div className='artist-info'>
+            <h2 className='text-primary stageName'>{stageName}</h2> 
+        {active && (
+          <small>Active</small>
+        )}
+            <p className='hometown'>{hometown}</p>
+            <p className='genre'>{genre}</p>
+            <p className='bio'>{bio}</p>
+            {repLink ? (
+                    <a href={repLink} className='btn btn-primary' target="_blank" rel="noopener noreferrer">Check out {stageName}'s work</a>
+                ): ''}
+                <button
             onClick={() => toggleEdit(!displayEdit)}
             type='button'
-            className='btn btn-light'
+            className='btn btn-light editBtn'
           >
             Edit
         </button>
-        </p>
+
+        </div>
+       
 
         {displayEdit && (
           <Fragment>

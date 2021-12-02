@@ -1,10 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300;600&family=Merriweather:wght@300&display=swap');
+
 /* Global Styles */
 :root {
-  --primary-color: #17a2b8;
-  --dark-color: #343a40;
-  --light-color: #f4f4f4;
+  --primary-color: #7a9492;
+  --link-color: #ffa14e;
+  --dark-color: #1b1f1e;
+  --secondary-dark-color: #100f0eaa;
+  --light-color: #ffffd9;
   --danger-color: #dc3545;
   --success-color: #28a745;
+
+  --primary-font: 'Merriweather', serif;
+  --secondary-font: 'Merriweather Sans', sans-serif;
 }
 
 * {
@@ -14,15 +21,33 @@
 }
 
 body {
-  font-family: 'Raleway', sans-serif;
+  font-family: var(--primary-font);
   font-size: 1rem;
   line-height: 1.6;
-  background-color: #fff;
-  color: #333;
+  background-color: var(--dark-color);
+  background-image: linear-gradient(180deg, #1b1f1ef6, #1b1f1eef),
+    url(./img/Porchlight_bg_design-01.png) !important;
+  background-size: contain;
+  background-repeat: repeat;
+  color: #fff;
+}
+
+.spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100vh;
+}
+
+.porchlightLogo {
+  max-height: 50vh;
+  width: auto;
 }
 
 a {
-  color: var(--primary-color);
+  color: var(--link-color);
   text-decoration: none;
 }
 
@@ -130,11 +155,19 @@ img {
   display: inline-block;
   background: var(--light-color);
   color: #333;
-  padding: 0.4rem 1.3rem;
-  font-size: 1rem;
+  padding: 0.6rem 1.8rem;
+  font-family: var(--secondary-font);
+  text-transform: uppercase;
+  font-weight: bold;
+  font-style: normal;
+  text-decoration: none;
+  letter-spacing: 1px;
+
+  font-size: 0.8rem;
   border: none;
   cursor: pointer;
   margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
   transition: opacity 0.2s ease-in;
   outline: none;
 }
@@ -149,11 +182,12 @@ img {
 }
 
 .alert {
-  padding: 0.8rem;
-  margin: 1rem 0;
+  padding: 0.4rem 0.8rem;
+  margin: 0 0;
   opacity: 0.9;
   background: var(--light-color);
   color: #333;
+  max-width: 100%;
 }
 
 .btn-primary,
@@ -176,7 +210,7 @@ img {
 .bg-dark,
 .badge-dark,
 .alert-dark {
-  background: var(--dark-color);
+  background: var(--secondary-dark-color);
   color: #fff;
 }
 
@@ -339,7 +373,14 @@ button {
 /* Landing Page */
 .landing {
   position: relative;
-  background: url('./img/showcase.jpg') no-repeat center center/cover;
+  background-image: linear-gradient(
+      180deg,
+      rgba(122, 148, 146, 0.9) 0%,
+      rgba(122, 148, 146, 0.8) 100%
+    ),
+    url(./img/Porchlight_bg_design-01.png) !important;
+  background-size: contain;
+  background-repeat: repeat;
   height: 100vh;
 }
 
@@ -358,12 +399,39 @@ button {
 /* Profiles Page */
 .profile {
   display: grid;
-  grid-template-columns: 2fr 4fr 2fr;
+  grid-template-columns: 2fr 4fr;
   align-items: center;
   grid-gap: 2rem;
   padding: 1rem;
   line-height: 1.8;
   margin-bottom: 1rem;
+}
+
+.profileImage {
+  grid-column-start: 1;
+}
+.profileBtn {
+  grid-column-start: 1;
+}
+.artist-info {
+  grid-column-start: 2;
+  grid-row-start: 1;
+}
+.artist-info .bio {
+  margin: 1rem 0;
+}
+.artistAdminButtons {
+  grid-column-start: 1;
+  grid-row-start: 2;
+  width: 100%;
+}
+.artistAdminButtons .btn {
+  width: 100%;
+}
+.form {
+  grid-column-start: 2;
+  grid-row-start: 2;
+  grid-row-end: span 2;
 }
 
 /* Profile Page */
