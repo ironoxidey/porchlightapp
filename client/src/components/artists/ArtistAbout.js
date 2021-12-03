@@ -13,11 +13,11 @@ const ArtistAbout = ({ artist: {
   bio
 }}) => {
     return (
-        <div class="profile-about bg-light p-2">
+        <div className="profile-about bg-light p-2">
         {bio && (
             <Fragment>
-            <h2 class="text-primary">About {stageName}</h2>
-          <div class="line"></div>
+            <h2 className="text-primary">About {stageName}</h2>
+          <div className="line"></div>
           <p>
             {bio}
           </p>

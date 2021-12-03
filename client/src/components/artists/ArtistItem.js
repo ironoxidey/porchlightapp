@@ -39,7 +39,7 @@ const ArtistItem = ({ artist: {
 }
 
 ArtistItem.propTypes = {
-    artists: PropTypes.object.isRequired,
+    //artists: PropTypes.object.isRequired,
 }
 
 export default ArtistItem

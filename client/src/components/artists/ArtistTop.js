@@ -12,14 +12,14 @@ const ArtistTop = ({ artist: {
     wideImg,
 }}) => {
     return (
-        <div class="profile-top bg-primary p-2">
+        <div className="profile-top bg-primary p-2">
           <img
-            class="my-1"
+            className="my-1"
             src={squareImg}
             alt=""
           />
-          <h1 class="large">{stageName}</h1>
-          <p class="lead">({firstName} {lastName})</p>
+          <h1 className="large">{stageName}</h1>
+          <p className="lead">({firstName} {lastName})</p>
           {/* <p>{location && <span>{location}</span>}</p>
           <div class="icons my-1">
           {

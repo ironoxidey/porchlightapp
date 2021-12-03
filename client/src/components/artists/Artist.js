@@ -27,7 +27,7 @@ const Artist = ({ getArtistBySlug, artist: { artist, loading }, auth, match }) =
                                 Edit Artist
                             </Link>
                         )}
-                    <div class="profile-grid my-1">
+                    <div className="profile-grid my-1">
                          <ArtistTop artist={artist} /> 
                          <ArtistAbout artist={artist} />
                          {/* <div className="profile-exp bg-white p-2">

@@ -10,7 +10,6 @@ const Landing = ({ isAuthenticated }) => {
   }
   return (
     <section className='landing'>
-      <div className='dark-overlay'>
         <div className='landing-inner'>
           {/* <h1 className='x-large'>Porchlight: Art + Hospitality</h1> */}
           <img src={porchlightLogo} alt="" className="porchlightLogo" />
@@ -26,7 +25,6 @@ const Landing = ({ isAuthenticated }) => {
             </Link>
           </div>
         </div>
-      </div>
     </section>
   );
 };
