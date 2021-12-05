@@ -3,26 +3,26 @@ import { setAlert } from './alert';
 
 import { GET_ARTIST, GET_ARTISTS, UPDATE_ARTIST, ARTIST_ERROR, CLEAR_ARTIST, ACCOUNT_DELETED } from './types';
 
-//Get current user's profile
-// export const getCurrentArtist = slug => async (dispatch) => {
-//   try {
-//     const res = await axios.get(`/api/artists/${slug}`);
-//     dispatch({
-//       type: GET_ARTIST,
-//       payload: res.data,
-//     });
-//   } catch (err) {
-//     dispatch({ type: CLEAR_ARTIST });
-//     dispatch({
-//       type: ARTIST_ERROR,
-//       payload: { msg: err.response.statusText, status: err.response.status },
-//     });
-//   }
-// };
+// Get current artist's profile
+export const getCurrentArtist = () => async (dispatch) => {
+  try {
+    const res = await axios.get(`/api/artists/me`);
+    dispatch({
+      type: GET_ARTIST,
+      payload: res.data,
+    });
+  } catch (err) {
+    //dispatch({ type: CLEAR_ARTIST });
+    dispatch({
+      type: ARTIST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
 
 // Get all artists
 export const getArtists = () => async (dispatch) => {
-  //dispatch({ type: CLEAR_ARTIST });
+  dispatch({ type: CLEAR_ARTIST });
   try {
     const res = await axios.get('/api/artists');
     dispatch({

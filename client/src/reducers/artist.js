@@ -40,8 +40,7 @@ export default function (state = initialState, action) {
     case CLEAR_ARTIST:
       return {
         ...state,
-        artist: null,
-        artists: [],
+        artist: null
       };
     default:
       return state;

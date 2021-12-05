@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addCalendlyAuthCode, getCalendlyUserInfo, refreshCalendlyAuth } from '../../actions/calendly';
@@ -59,8 +59,8 @@ const DashboardActions = ({ calendly: {calendly}, auth: { isAuthenticated, loadi
       </form>
       {/* <Link to='/edit-profile' className='btn btn-light'>
         <i className='fas fa-user-circle text-primary'></i> Edit Profile
-      </Link>
-      <Link to='/add-experience' className='btn btn-light'>
+      </Link> */}
+     {/*  <Link to='/add-experience' className='btn btn-light'>
         <i className='fab fa-black-tie text-primary'></i> Add Experience
       </Link>
       <Link to='/add-education' className='btn btn-light'>

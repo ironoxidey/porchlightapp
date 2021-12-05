@@ -13,6 +13,7 @@ import Profile from '../profile/Profile';
 import Artists from '../artists/Artists';
 import Artist from '../artists/Artist';
 import EditArtists from '../artists/EditArtists';
+import EditMyArtistProfile from '../artists/EditMyArtistProfile';
 import Posts from '../posts/Posts';
 import Post from '../post/Post';
 import NotFound from '../layout/NotFound';
@@ -26,10 +27,10 @@ import { useTransition, animated, config } from '@react-spring/web';
 const Routes = () => {
   const theLocation = useLocation();
   const transitions = useTransition(theLocation, {
-    from: {opacity: 0, transform: "scale(0.98)"},
-    enter: {opacity: 1, transform: "scale(1)"},
-    leave: {opacity: 0, transform: "scale(1.02)"},
-    config: config.slow
+    from: {opacity: 0, transform: "translate(0%,10vh) scale(0.98)"},
+    enter: {opacity: 1, transform: "translate(0%,0vh) scale(1)"},
+    leave: {opacity: 0, transform: "translate(0%,0vh) scale(1.02)"},
+    config: config.default
   });
 
   return (
@@ -50,8 +51,8 @@ const Routes = () => {
               <Route exact path='/profile/:id' component={Profile} />
               <PrivateRoute exact path='/dashboard' component={Dashboard} />
               <PrivateRoute exact path='/create-profile' component={CreateProfile} />
+              <PrivateRoute exact path='/edit-artist-profile' component={EditMyArtistProfile} />
               <PrivateRoute exact path='/edit-profile' component={EditProfile} />
-              {/* <PrivateRoute exact path='/edit-artists' component={EditArtists} /> */}
               <PrivateRoute exact path='/add-experience' component={AddExperience} />
               <PrivateRoute exact path='/add-education' component={AddEducation} />
               <PrivateRoute exact path='/posts' component={Posts} />
