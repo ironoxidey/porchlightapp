@@ -40,36 +40,23 @@ const EditArtists = ({ auth: {user}, artist: { artists, loading }, calendly, get
 
     useEffect(() => {
         getEditArtists();
-    }, [getEditArtists]);
-
+    }, []);
+    
     // useEffect(() => {
     //     if (user && user.calendly) {
     //         refreshCalendlyAuth(); //just go ahead and refresh the token all the time... why not? ... is that bad practice?
     //         getCalendlyUserInfo(user.calendly.accessToken);
     //         getCalendlyScheduledEvents(user.calendly.accessToken, user.calendly.owner );
-            
-    //         if (calendly && calendly.events) {
-    //             console.log(calendly.events.data.collection[1].uri);
-    //             getCalendlyEventInvitee(user.calendly.accessToken, calendly.events.data.collection[1].uri );
-    //         }
     //     }
-    // }, [getCalendlyScheduledEvents, getCalendlyEventInvitee, refreshCalendlyAuth]);
-    
-    useEffect(() => {
-        if (user && user.calendly) {
-            refreshCalendlyAuth(); //just go ahead and refresh the token all the time... why not? ... is that bad practice?
-            getCalendlyUserInfo(user.calendly.accessToken);
-            getCalendlyScheduledEvents(user.calendly.accessToken, user.calendly.owner );
-        }
-    }, [user]);
+    // }, [user]);
 
-    useEffect(() => {
-        if (calendly.events) {
-            //console.log("Access Token: " + user.calendly.accessToken + " | Event URI: " + calendly.events.data.collection[0].uri);
-            //console.log("Should run getCalendlyEventInvitee() now.");
-            getCalendlyEventInvitee(user.calendly.accessToken, calendly.events.data.collection[0].uri);
-        }
-    }, [calendly.events]);
+    // useEffect(() => {
+    //     if (calendly.events) {
+    //         //console.log("Access Token: " + user.calendly.accessToken + " | Event URI: " + calendly.events.data.collection[0].uri);
+    //         //console.log("Should run getCalendlyEventInvitee() now.");
+    //         getCalendlyEventInvitee(user.calendly.accessToken, calendly.events.data.collection[0].uri);
+    //     }
+    // }, [calendly.events]);
 
 
     return (
@@ -122,7 +109,7 @@ const EditArtists = ({ auth: {user}, artist: { artists, loading }, calendly, get
                 </div>
                <div className="artists">
                    {
-                        filterArtists(artists).length > 0 ? (
+                        (artists && filterArtists(artists).length) > 0 ? (
                             filterArtists(artists).map(theArtist => (
                                 <EditArtistItem key={theArtist._id} theArtist={theArtist}/>
                             ))

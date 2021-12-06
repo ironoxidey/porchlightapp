@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getCurrentArtist } from '../../actions/artist';
 import Spinner from '../layout/Spinner';
-import EditArtistItem from './EditArtistItem';
+import EditArtistForm from './EditArtistForm';
 
 const EditMyArtistProfile = ({
   getCurrentArtist,
@@ -18,7 +18,7 @@ const EditMyArtistProfile = ({
     <Fragment>
     { loading ? <Spinner></Spinner> : <Fragment>
       <h1 className='large text-primary'>Edit Your Artist Profile</h1>
-          <EditArtistItem key={artist._id} theArtist={artist}/>
+          <EditArtistForm theArtist={artist}/>
         <Link to='/dashboard' className='btn btn-light my-1'>
           Go Back
         </Link>

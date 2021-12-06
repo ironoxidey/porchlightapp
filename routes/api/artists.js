@@ -22,12 +22,13 @@ function convertToSlug(Text)
 // @access   Private
 router.get('/me', auth, async (req, res) => {
   try {
-    const thisUser = await User.findOne({
-      id: req.user.id,
-    });
+    // const thisUser = await User.findOne({
+    //   id: req.user.id,
+    // });
+    // console.log(req.user.email);
     const artist = await Artist.findOne({
-      email: thisUser.email,
-    }).select('-active -typeformDate -hadMeeting -sentFollowUp -zoomDate -notes');
+      email: req.user.email,
+    }).select('-hadMeeting -sentFollowUp -notes');
     if (!artist) {
       return res.status(400).json({ msg: 'There is no artist for this user' });
     }
@@ -117,70 +118,91 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-
+    //console.log(req.user);
     if ( req.body instanceof Array ) {
       let artistCount = 0;
       await Promise.all(req.body.map(async (artistFields) => {
-        const {
-            email,
-            firstName,
-            lastName,
-            stageName,
-            medium,
-            genre,
-            repLink,
-            helpKind,
-            typeformDate,
-            hadMeeting,
-            sentFollowUp,
-            active,
-            notes,
+        // const {
+        //     email,
+        //     firstName,
+        //     lastName,
+        //     stageName,
+        //     medium,
+        //     genre,
+        //     repLink,
+        //     helpKind,
+        //     typeformDate,
+        //     hadMeeting,
+        //     sentFollowUp,
+        //     active,
+        //     notes,
 
-            phone,
-            hometown,
-            costStructure,
-            namedPrice,
-            bookingWhenWhere,
-            setLength,
-            schedule,
-            overnight,
-            openers,
-            companionTravelers,
-            hangout,
-            merchTable,
-            allergies,
-            allowKids,
-            soundSystem,
-            wideImg,
-            squareImg,
-            covidPrefs,
-            artistNotes,
-            financialHopes,
-            onboardDate,
-        } = artistFields;
+        //     phone,
+        //     hometown,
+        //     costStructure,
+        //     namedPrice,
+        //     bookingWhenWhere,
+        //     setLength,
+        //     schedule,
+        //     overnight,
+        //     openers,
+        //     companionTravelers,
+        //     hangout,
+        //     merchTable,
+        //     allergies,
+        //     allowKids,
+        //     soundSystem,
+        //     wideImg,
+        //     squareImg,
+        //     covidPrefs,
+        //     artistNotes,
+        //     financialHopes,
+        //     onboardDate,
+        // } = artistFields;
 
-        artistFields.slug = convertToSlug(stageName);
+        (artistFields.stageName) ? artistFields.slug = convertToSlug(artistFields.stageName) : '';
 
-        try {
-          // Using upsert option (creates new doc if no match is found):
-          let artist = await Artist.findOneAndUpdate(
-            { email: email.toLowerCase() },
-            { $set: artistFields },
-            { new: true, upsert: true }
-          );
-          artistCount++;
-        } catch (err) {
-          console.error(err.message);
-          res.status(500).send('Server Error');
+        if (req.user.role === 'ADMIN') {
+          console.log("User is ADMIN and has authority to update all other users.");
+          try {
+            // Using upsert option (creates new doc if no match is found):
+            let artist = await Artist.findOneAndUpdate(
+              { email: artistFields.email.toLowerCase() },
+              { $set: artistFields },
+              { new: true, upsert: true }
+            );
+            artistCount++;
+          } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server Error');
+          }
+        }
+        else if (req.user.email === artistFields.email.toLowerCase() ) { //if the request user email matches the artist email they have authority to edit their own profile, removing admin things
+          try {
+            // Using upsert option (creates new doc if no match is found):
+            let artist = await Artist.findOneAndUpdate(
+              { email: artistFields.email.toLowerCase() },
+              { $set: artistFields },
+              { new: true, upsert: true }
+            );
+            artistCount++;
+          } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server Error');
+          }
+        }
+        else {
+          console.error("You don't have authority to make these changes.");
+          res.status(500).send('User does not have authority to make these changes.');
         }
       }));
-      res.json(artistCount + " artists submitted to the database."); //eventually remove this
+      res.json(artistCount + " artist(s) submitted to the database."); //eventually remove this
     }
   }
 );
 
 // @route    GET api/artists
-// @desc     Get all artists
+// @desc     Get all active artists
 // @access   Public
 router.get('/', async (req, res) => {
   try {
@@ -193,30 +215,35 @@ router.get('/', async (req, res) => {
 });
 
 // @route    GET api/artists/edit
-// @desc     Get all artists for editing (everything)
+// @desc     [ADMIN] Get all artists for editing (everything)
 // @access   Private
 router.get('/edit', 
 [
   auth,
 ],
 async (req, res) => {
-  try {
-    const artists = await Artist.find();
+  if (req.user.role === 'ADMIN') {
+    try {
+      const artists = await Artist.find();
 
-    artists.forEach(artist => {
-      //if no time exists in artist.zoomDate {
-      if (artist.zoomDate == null){
-        //async hit up Calendly for Scheduled events with artist.email as the invitee_email {
+      // artists.forEach(artist => {
+      //   //if no time exists in artist.zoomDate {
+      //   if (artist.zoomDate == null){
+      //     //async hit up Calendly for Scheduled events with artist.email as the invitee_email {
 
-          //store collection[collection.length()-1].start_time in artist.zoomDate
-      
-      }
-    });
+      //       //store collection[collection.length()-1].start_time in artist.zoomDate
+        
+      //   }
+      // });
 
-    res.json(artists);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+      res.json(artists);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  }
+  else {
+    res.status(500).send("Only ADMINs can edit all artists.");
   }
 });
 

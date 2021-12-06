@@ -83,7 +83,7 @@ export const createArtist = (formData, history, edit = false) => async (
     const formDataArray = [formData];
     const res = await axios.post('/api/artists/batch', formDataArray, config);
     dispatch({
-      type: GET_ARTIST,
+      type: UPDATE_ARTIST,
       payload: res.data,
     });
 

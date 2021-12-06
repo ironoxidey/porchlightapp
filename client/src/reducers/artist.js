@@ -10,6 +10,7 @@ const initialState = {
   artist: null,
   artists: [],
   loading: true,
+  msg: {},
   error: {},
 };
 
@@ -17,10 +18,15 @@ export default function (state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
     case GET_ARTIST:
-    case UPDATE_ARTIST:
       return {
         ...state,
         artist: payload,
+        loading: false,
+      };
+    case UPDATE_ARTIST:
+      return {
+        ...state,
+        msg: payload,
         loading: false,
       };
     case GET_ARTISTS:
