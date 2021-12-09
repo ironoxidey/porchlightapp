@@ -3,6 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/auth';
+import { TextField, Button } from '@mui/material';
 //import axios from 'axios';
 
 const Login = ({ login, isAuthenticated }) => {
@@ -34,26 +35,51 @@ const Login = ({ login, isAuthenticated }) => {
       </p>
       <form className='form' onSubmit={(e) => onSubmit(e)}>
         <div className='form-group'>
-          <input
+        <TextField 
+              name="email"
+              id="email" 
+              label="Email" 
+              type="email"
+              //variant="filled" 
+              value={email}
+              onChange={(e) => onChange(e)} //call seperate onChange function above
+            />
+          {/* <input
             type='email'
             placeholder='Email Address'
             name='email'
             value={email}
             onChange={(e) => onChange(e)} //call seperate onChange function above
-          />
+          /> */}
         </div>
         <div className='form-group'>
-          <input
+        <TextField 
+              name="password"
+              id="password" 
+              label="Password" 
+              type="password"
+              //variant="filled" 
+              value={password}
+              onChange={(e) => onChange(e)} //call seperate onChange function above
+            />
+
+          {/* <input
             type='password'
             placeholder='Password'
             name='password'
             minLength='6'
             value={password}
             onChange={(e) => onChange(e)} //call seperate onChange function above
-          />
+          /> */}
         </div>
 
-        <input type='submit' className='btn btn-primary' value='Login' />
+        <label htmlFor="submit">
+            <input type='submit' id='submit' value='Login' hidden />
+           <Button variant="contained" component="span">
+              Login
+            </Button>
+        </label>
+
       </form>
       <p className='my-1'>
         Don't have an account? <Link to='/register'>Sign Up</Link>

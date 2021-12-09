@@ -330,8 +330,6 @@ router.post(
   '/calendlyRefresh',
   [
     auth,
-    [   
-    ] , 
   ],
   async (req, res) => {
     const errors = validationResult(req);

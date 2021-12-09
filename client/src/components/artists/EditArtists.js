@@ -40,7 +40,8 @@ const EditArtists = ({ auth: {user}, artist: { artists, loading }, calendly, get
 
     useEffect(() => {
         getEditArtists();
-    }, []);
+        //console.log("There are "+filterArtists(artists).length+" artists to display.")
+    }, [getEditArtists]);
     
     // useEffect(() => {
     //     if (user && user.calendly) {
@@ -75,7 +76,7 @@ const EditArtists = ({ auth: {user}, artist: { artists, loading }, calendly, get
                         type='button'
                         className='btn btn-light'
                     >
-                        Show All {artists.length} Artists
+                        Show All {(artists) && artists.length} Artists
                     </button>
                     <button
                         onClick={() => {
@@ -85,7 +86,7 @@ const EditArtists = ({ auth: {user}, artist: { artists, loading }, calendly, get
                         type='button'
                         className='btn btn-light'
                     >
-                        Show Only {artists.filter((artist) => {return artist.active == false}).length} Inactive Artists
+                        Show Only {(artists) && artists.filter((artist) => {return artist.active == false}).length} Inactive Artists
                     </button>
                     <button
                         onClick={() => {
@@ -95,7 +96,7 @@ const EditArtists = ({ auth: {user}, artist: { artists, loading }, calendly, get
                         type='button'
                         className='btn btn-light'
                     >
-                        Show Only {artists.filter((artist) => {return artist.active == true}).length} Active Artists
+                        Show Only {(artists) && artists.filter((artist) => {return artist.active == true}).length} Active Artists
                     </button>
                     
                     <div className='form-group'>
@@ -109,7 +110,7 @@ const EditArtists = ({ auth: {user}, artist: { artists, loading }, calendly, get
                 </div>
                <div className="artists">
                    {
-                        (artists && filterArtists(artists).length) > 0 ? (
+                        (!loading && artists && filterArtists(artists).length > 0) ? (
                             filterArtists(artists).map(theArtist => (
                                 <EditArtistItem key={theArtist._id} theArtist={theArtist}/>
                             ))

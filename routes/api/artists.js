@@ -43,66 +43,66 @@ router.get('/me', auth, async (req, res) => {
 // @route    POST api/artists
 // @desc     Create or update artist
 // @access   Private
-router.post(
-  '/',
-  [
-    auth,
-    [
-      check('email', 'Please include a valid email').isEmail(),
-    ],
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+// router.post(
+//   '/',
+//   [
+//     auth,
+//     [
+//       check('email', 'Please include a valid email').isEmail(),
+//     ],
+//   ],
+//   async (req, res) => {
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//       return res.status(400).json({ errors: errors.array() });
+//     }
 
-    const {
-        email,
-        firstName,
-        lastName,
-        stageName,
-        medium,
-        genre,
-        repLink,
-        helpKind,
-        typeformDate,
-        hadMeeting,
-        sentFollowUp,
-        active,
-        notes
-    } = req.body;
+//     const {
+//         email,
+//         firstName,
+//         lastName,
+//         stageName,
+//         medium,
+//         genre,
+//         repLink,
+//         helpKind,
+//         typeformDate,
+//         hadMeeting,
+//         sentFollowUp,
+//         active,
+//         notes
+//     } = req.body;
 
-    // Build artist object
-    const artistFields = {};
-    artistFields.email = email;
-    if (firstName) artistFields.firstName = firstName;
-    if (lastName) artistFields.lastName = lastName;
-    if (stageName) artistFields.stageName = stageName;
-    if (medium) artistFields.medium = medium;
-    if (genre) artistFields.genre = genre;
-    if (repLink) artistFields.repLink = repLink;
-    if (helpKind) artistFields.helpKind = helpKind;
-    if (typeformDate) artistFields.typeformDate = typeformDate;
-    if (hadMeeting) artistFields.hadMeeting = hadMeeting;
-    if (sentFollowUp) artistFields.sentFollowUp = sentFollowUp;
-    if (active) artistFields.active = active;
-    if (notes) artistFields.notes = notes;
+//     // Build artist object
+//     const artistFields = {};
+//     artistFields.email = email;
+//     if (firstName) artistFields.firstName = firstName;
+//     if (lastName) artistFields.lastName = lastName;
+//     if (stageName) artistFields.stageName = stageName;
+//     if (medium) artistFields.medium = medium;
+//     if (genre) artistFields.genre = genre;
+//     if (repLink) artistFields.repLink = repLink;
+//     if (helpKind) artistFields.helpKind = helpKind;
+//     if (typeformDate) artistFields.typeformDate = typeformDate;
+//     if (hadMeeting) artistFields.hadMeeting = hadMeeting;
+//     if (sentFollowUp) artistFields.sentFollowUp = sentFollowUp;
+//     if (active) artistFields.active = active;
+//     if (notes) artistFields.notes = notes;
 
-    try {
-      // Using upsert option (creates new doc if no match is found):
-      let artist = await Artist.findOneAndUpdate(
-        { email: email.toLowerCase() },
-        { $set: artistFields },
-        { new: true, upsert: true }
-      );
-      res.json(artist); //eventually remove this
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
-    }
-  }
-);
+//     try {
+//       // Using upsert option (creates new doc if no match is found):
+//       let artist = await Artist.findOneAndUpdate(
+//         { email: email.toLowerCase() },
+//         { $set: artistFields },
+//         { new: true, upsert: true }
+//       );
+//       res.json(artist); //eventually remove this
+//     } catch (err) {
+//       console.error(err.message);
+//       res.status(500).send('Server Error');
+//     }
+//   }
+// );
 
 
 // @route    POST api/artists/batch
@@ -162,9 +162,10 @@ router.post(
 
         (artistFields.stageName) ? artistFields.slug = convertToSlug(artistFields.stageName) : '';
 
-        if (req.user.role === 'ADMIN') {
+        if (req.user.role === 'ADMIN' && artistFields.email !== '') {
           console.log("User is ADMIN and has authority to update all other users.");
           try {
+            console.log(artistFields);
             // Using upsert option (creates new doc if no match is found):
             let artist = await Artist.findOneAndUpdate(
               { email: artistFields.email.toLowerCase() },
@@ -179,6 +180,8 @@ router.post(
         }
         else if (req.user.email === artistFields.email.toLowerCase() ) { //if the request user email matches the artist email they have authority to edit their own profile, removing admin things
           try {
+            delete artistFields.active;
+            console.log(artistFields);
             // Using upsert option (creates new doc if no match is found):
             let artist = await Artist.findOneAndUpdate(
               { email: artistFields.email.toLowerCase() },

@@ -53,15 +53,20 @@ What is it like there this time of year?`
 
         </div>
        
-
-        {displayEdit && (
+        {!loading && (
           <Fragment>
             <div className="editArtistItem">
-              <EditArtistForm theArtist={theArtist} />
               <EditArtistAdmin theArtist={theArtist} />
+              {displayEdit && (
+                <Fragment>
+                    <EditArtistForm theArtist={theArtist} />
+                </Fragment>
+              )}
             </div>
           </Fragment>
-         )}
+        )}
+
+        
         </Fragment>
     </div>
   );

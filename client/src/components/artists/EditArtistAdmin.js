@@ -3,8 +3,8 @@ import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createArtist } from '../../actions/artist';
-import TextField from '@mui/material/TextField';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Switch, TextField, FormControlLabel } from '@mui/material';
 
 const darkTheme = createTheme({
   palette: {
@@ -14,9 +14,9 @@ const darkTheme = createTheme({
 
 const EditArtistAdmin = ({
   theArtist,
-  theArtist: { loading },
   createArtist,
   history,
+  artist
 }) => {
   const [formData, setFormData] = useState({
     email: '',
@@ -28,19 +28,17 @@ const EditArtistAdmin = ({
     onboardDate: '',
   });
 
-  const [displayEdit, toggleEdit] = useState(false);
-
   useEffect(() => {
     setFormData({
-      email: loading || !theArtist.email ? '' : theArtist.email,
-      typeformDate: loading || !theArtist.typeformDate ? '' : theArtist.typeformDate,
-      hadMeeting: loading || (theArtist.hadMeeting == null) ? false : theArtist.hadMeeting, //because it's a boolean variable, asking !theArtist.hadMeeting could result in it being set '' if theArtist.hadMeeting is FALSE in the database
-      sentFollowUp: loading || (theArtist.sentFollowUp == null)  ? false : theArtist.sentFollowUp,
-      active: loading || (theArtist.active == null) ? false : theArtist.active,
-      notes: loading || !theArtist.notes ? '' : theArtist.notes,
-      onboardDate: loading || !theArtist.onboardDate ? '' : theArtist.onboardDate,
+      email: !theArtist.email ? '' : theArtist.email,
+      typeformDate: !theArtist.typeformDate ? '' : theArtist.typeformDate,
+      hadMeeting: (theArtist.hadMeeting == null) ? false : theArtist.hadMeeting, //because it's a boolean variable, asking !theArtist.hadMeeting could result in it being set '' if theArtist.hadMeeting is FALSE in the database
+      sentFollowUp: (theArtist.sentFollowUp == null)  ? false : theArtist.sentFollowUp,
+      active: (theArtist.active == null) ? false : theArtist.active,
+      notes: !theArtist.notes ? '' : theArtist.notes,
+      onboardDate: !theArtist.onboardDate ? '' : theArtist.onboardDate,
     });
-  }, [loading]);
+  }, [artist]); //depends on changes to 'artist' in the state, because sometimes the email field wouldn't fill in and it would mess up the server update
 
   const { 
     email,
@@ -84,11 +82,35 @@ const EditArtistAdmin = ({
     <ThemeProvider theme={darkTheme}>
     <Fragment>
       <form className='form' onSubmit={(e) => onSubmit(e)}>
+          <div className='form-group'>
+            <TextField 
+              name="email"
+              id="email" 
+              label="What's your email address?" 
+              //variant="filled" 
+              value={email}
+              onChange={(e) => onChange(e)}
+              disabled
+            />
+          </div>
+
+          <div className='form-group'>
+            <FormControlLabel control={
+              <Switch name='active'
+                checked={!!active}
+                onChange={(e) => onChange(e)}
+                value={active}
+                />
+              } label="Active" />
+          
+          </div>
+
             <div className='form-group'>
             <TextField 
               name="typeformDate"
               id="typeformDate" 
-              label="Typeform Date" 
+              label="Typeform Date"
+              //type='date' 
               //variant="filled" 
               value={typeformDate}
               onChange={(e) => onChange(e)}
@@ -120,20 +142,6 @@ const EditArtistAdmin = ({
             />
             <small className='form-text'>
             Sent Follow-up
-            </small>
-          </div>
-
-          <div className='form-group'>
-            <input
-                type='checkbox'
-                placeholder='Active'
-                name='active'
-                value={active}
-                checked={!!active}
-                onChange={(e) => onChange(e)}
-            />
-            <small className='form-text'>
-            Active
             </small>
           </div>
 
@@ -170,10 +178,11 @@ const EditArtistAdmin = ({
 EditArtistAdmin.propTypes = {
   createArtist: PropTypes.func.isRequired,
   theArtist: PropTypes.object.isRequired,
+  artist: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-
+  artist: state.artist,
 });
 
 export default connect(mapStateToProps, { createArtist })(

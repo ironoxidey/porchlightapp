@@ -102,13 +102,31 @@ const ArtistSchema = new mongoose.Schema({
   hometown: {
     type: String,
   },
+  city: {
+    type: String,
+  },
+  state: {
+    type: String,
+  },
+  zip: {
+    type: Number,
+  },
   costStructure: {
     type: String,
   },
   namedPrice: {
     type: String,
   },
+  bookingWhen: {
+    type: [String],
+  },
   bookingWhenWhere: {
+    type: String,
+  },
+  payoutPlatform: {
+    type: String,
+  },
+  payoutHandle: {
     type: String,
   },
   setLength: {
@@ -118,10 +136,13 @@ const ArtistSchema = new mongoose.Schema({
     type: String,
   },
   overnight: {
-    type: Boolean,
+    type: String,
   },
   openers: {
     type: String,
+  },
+  travelingCompanions: {
+    type: Object,
   },
   companionTravelers: {
     type: String,

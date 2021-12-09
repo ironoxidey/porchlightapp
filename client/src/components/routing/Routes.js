@@ -27,10 +27,10 @@ import { useTransition, animated, config } from '@react-spring/web';
 const Routes = () => {
   const theLocation = useLocation();
   const transitions = useTransition(theLocation, {
-    from: {opacity: 0, transform: "translate(0%,10vh) scale(0.98)"},
-    enter: {opacity: 1, transform: "translate(0%,0vh) scale(1)"},
-    leave: {opacity: 0, transform: "translate(0%,0vh) scale(1.02)"},
-    config: config.default
+    from: {opacity: 0, transform: "scale(1.02)"},
+    enter: {opacity: 1, transform: "scale(1)"},
+    leave: {opacity: 0, transform: "scale(0.98)"},
+    config: config.stiff
   });
 
   return (

@@ -10,9 +10,16 @@ import store from './store';
 import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 //Consider checking out material-ui and https://material-kit-pro-react.devias.io/
 import './App.css';
 
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -24,15 +31,17 @@ const App = () => {
   }, []);
   return (
     <Provider store={store}>
-      <Router>
-        <Fragment>
-          <Navbar />
-          <Switch>
-          {/* <Route exact path='/' component={Landing} /> */}
-          <Route component={Routes} />
-          </Switch>
-        </Fragment>
-      </Router>
+      <ThemeProvider theme={darkTheme}>
+        <Router>
+          <Fragment>
+            <Navbar />
+            <Switch>
+            {/* <Route exact path='/' component={Landing} /> */}
+            <Route component={Routes} />
+            </Switch>
+          </Fragment>
+        </Router>
+      </ThemeProvider>
     </Provider>
   );
 };
