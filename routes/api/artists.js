@@ -163,9 +163,9 @@ router.post(
         (artistFields.stageName) ? artistFields.slug = convertToSlug(artistFields.stageName) : '';
 
         if (req.user.role === 'ADMIN' && artistFields.email !== '') {
-          console.log("User is ADMIN and has authority to update all other users.");
+          //console.log("User is ADMIN and has authority to update all other users.");
           try {
-            console.log(artistFields);
+            //console.log(artistFields);
             // Using upsert option (creates new doc if no match is found):
             let artist = await Artist.findOneAndUpdate(
               { email: artistFields.email.toLowerCase() },
@@ -175,7 +175,7 @@ router.post(
             artistCount++;
           } catch (err) {
             console.error(err.message);
-            res.status(500).send('Server Error');
+            res.status(500).send('Server Error: '+err.message);
           }
         }
         else if (req.user.email === artistFields.email.toLowerCase() ) { //if the request user email matches the artist email they have authority to edit their own profile, removing admin things
