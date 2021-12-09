@@ -160,7 +160,7 @@ router.post(
         //     onboardDate,
         // } = artistFields;
 
-        (artistFields.stageName) ? artistFields.slug = convertToSlug(artistFields.stageName) : '';
+        (artistFields.stageName && artistFields.stageName.length > 0) ? artistFields.slug = convertToSlug(artistFields.stageName) : '';
 
         if (req.user.role === 'ADMIN' && artistFields.email !== '') {
           //console.log("User is ADMIN and has authority to update all other users.");
