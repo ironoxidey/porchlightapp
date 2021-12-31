@@ -245,7 +245,7 @@ const EditArtistForm = ({
   }
 
   const uploadHandler = (e) => {
-    const uploadPath = "http://localhost:5000/api/uploads/files/"; //"../porchlight-uploads";
+    const uploadPath = "/api/uploads/files/"; //"../porchlight-uploads";
     let fileName = e.target.files[0].name;
     let targetValue = uploadPath + fileName;//e.target.value;
     const data = new FormData();
