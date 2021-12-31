@@ -4,11 +4,11 @@ const maxSize = 2 * 1024 * 1024;
 
 var uploadFolder = '../porchlight-uploads';
   
-if (!fs.existsSync(uploadFolder)){
-    fs.mkdirSync(uploadFolder);
+// if (!fs.existsSync(uploadFolder)){
+//     fs.mkdirSync(uploadFolder);
   
-    console.log('Folder Created Successfully.');
-}
+//     console.log('Folder Created Successfully.');
+// }
 
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
