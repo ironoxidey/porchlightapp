@@ -110,7 +110,7 @@ const EditArtists = ({ auth: {user}, artist: { artists, loading }, calendly, get
                 </div>
                <div className="artists">
                    {
-                        (!loading && artists && filterArtists(artists).length > 0) ? (
+                        (!loading && artists && filterArtists(artists) && filterArtists(artists).length > 0) ? (
                             filterArtists(artists).map(theArtist => (
                                 <EditArtistItem key={theArtist._id} theArtist={theArtist}/>
                             ))

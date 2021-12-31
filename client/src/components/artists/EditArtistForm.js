@@ -1,3 +1,4 @@
+import axios from 'axios'; //only for uploads as of December 31st, 2021
 import React, { Fragment, useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -17,12 +18,16 @@ import {
   InputAdornment,
   IconButton,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
 import MultipleDatesPicker from '../mui-multi-date-picker-lib';
 
+const UploadInput = styled('input')({
+  display: 'none',
+});
 
 const EditArtistForm = ({
   theArtist,
@@ -66,6 +71,7 @@ const EditArtistForm = ({
     allergies: '',
     allowKids: '',
     soundSystem: '',
+    agreeToPayAdminFee: '',
     wideImg: '',
     squareImg: '',
     covidPrefs: '',
@@ -110,6 +116,7 @@ const EditArtistForm = ({
       allergies: loading || !theArtist.allergies ? '' : theArtist.allergies,
       allowKids: loading || (theArtist.allowKids == null)  ? false : theArtist.allowKids,
       soundSystem: loading || !theArtist.soundSystem ? '' : theArtist.soundSystem,
+      agreeToPayAdminFee: loading || !theArtist.agreeToPayAdminFee ? '' : theArtist.agreeToPayAdminFee,
       wideImg: loading || !theArtist.wideImg ? '' : theArtist.wideImg,
       squareImg: loading || !theArtist.squareImg ? '' : theArtist.squareImg,
       covidPrefs: loading || !theArtist.covidPrefs ? '' : theArtist.covidPrefs,
@@ -154,6 +161,7 @@ const EditArtistForm = ({
     allergies,
     allowKids,
     soundSystem,
+    agreeToPayAdminFee,
     wideImg,
     squareImg,
     covidPrefs,
@@ -236,8 +244,18 @@ const EditArtistForm = ({
     setFormData({ ...formData, [e.target.name]: updatedField });
   }
 
+  const uploadHandler = (e) => {
+    const uploadPath = "http://localhost:5000/api/uploads/files/"; //"../porchlight-uploads";
+    let fileName = e.target.files[0].name;
+    let targetValue = uploadPath + fileName;//e.target.value;
+    const data = new FormData();
+    data.append('file', e.target.files[0]);
+    axios.post(`/api/uploads/upload`, data)
+      .then((res) => {
+        setFormData({ ...formData, [e.target.name]: targetValue });
+      });
+  }
     
-
   const onSubmit = (e) => {
     e.preventDefault();
     createArtist(formData, history, true);
@@ -509,8 +527,134 @@ const EditArtistForm = ({
           )}
           </div>
 
+  {/* 17 */}
+          <div className='form-group'>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Our heart at Porchlight is to cultivate relationships between artists and hosts. As such, we’d love to make time for a little hangout either before or after the show, just for you, your hosts, and maybe a couple people interested in meeting with artists like you in a more informal setting. What would be your preference regarding this?</FormLabel>
+              <RadioGroup
+                id="hangout"
+                value={hangout}
+                name="hangout"
+                onChange={(e) => onChange(e)}
+              >
+                <FormControlLabel value="I'd rather not." control={<Radio />} label="I'd rather not." />
+                <FormControlLabel value="That sounds great! I prefer a private hangout AFTER the show." control={<Radio />} label="That sounds great! I prefer a private hangout AFTER the show." />
+                <FormControlLabel value="That sounds great! I prefer a private hangout BEFORE the show." control={<Radio />} label="That sounds great! I prefer a private hangout BEFORE the show." />
+                <FormControlLabel value="That sounds great! Either before or after works for me." control={<Radio />} label="That sounds great! Either before or after works for me." />
+              </RadioGroup>
+            </FormControl>
+          </div>
+
+  {/* 18 */}
+          <div className='form-group'>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Will you need the host to provide a merch table?</FormLabel>
+              <RadioGroup
+                id="merchTable"
+                value={merchTable}
+                name="merchTable"
+                onChange={(e) => onChange(e)}
+              >
+                <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                <FormControlLabel value="false" control={<Radio />} label="No" />
+              </RadioGroup>
+            </FormControl>
+          </div>
+  
+
+  {/* 19 */}
+          <div className='form-group'>
+            <TextField 
+              name="allergies"
+              id="allergies" 
+              label="Please list any food allergies, pet allergies, or special needs you have."  
+              value={allergies}
+              onChange={(e) => onChange(e)}
+            />
+          </div>
+
+{/* 20 */}
+          <div className='form-group'>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Would these shows be open to children/young families?</FormLabel>
+              <RadioGroup
+                id="allowKids"
+                value={allowKids}
+                name="allowKids"
+                onChange={(e) => onChange(e)}
+              >
+                <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                <FormControlLabel value="false" control={<Radio />} label="No" />
+              </RadioGroup>
+            </FormControl>
+          </div>
+
+{/* 21 */}
+          <div className='form-group'>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Are you able to provide your own sound system for these shows?</FormLabel>
+              <RadioGroup
+                id="soundSystem"
+                value={soundSystem}
+                name="soundSystem"
+                onChange={(e) => onChange(e)}
+              >
+                <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                <FormControlLabel value="false" control={<Radio />} label="No" />
+              </RadioGroup>
+            </FormControl>
+          </div>
+
+{/* 22 */}
+          <div className='form-group'>
+            <TextField 
+              name="financialHopes"
+              multiline
+              id="financialHopes" 
+              label="What are your financial expectations and/or hopes for this show or tour?" 
+              value={financialHopes}
+              onChange={(e) => onChange(e)}
+            />
+          </div>
 
 
+{/* 23 */}
+          <div className='form-group'>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Porchlight charges an administrative fee of $100/show, unless other terms have been agreed to in writing. Do you agree to pay this fee upon completion of the show/tour?</FormLabel>
+              <RadioGroup
+                id="agreeToPayAdminFee"
+                value={agreeToPayAdminFee}
+                name="agreeToPayAdminFee"
+                onChange={(e) => onChange(e)}
+              >
+                <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                <FormControlLabel value="false" control={<Radio />} label="No" />
+              </RadioGroup>
+            </FormControl>
+          </div>
+
+{/* 23 */}
+          <div className='form-group'>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Please attach one high quality image, for promotional use, of this size: 2160x1080px<br/>
+            If the pixel size is bugging you, just make sure the image is 2:1 ratio, horizontal.</FormLabel>
+
+              <label htmlFor="wideImg">
+                <UploadInput accept="image/*" name="wideImg" id="wideImg" multiple type="file" onChange={(e) => uploadHandler(e)} />
+                <Button variant="contained" component="span">
+                  Upload
+                </Button>
+              </label>
+          </FormControl>
+          {(wideImg) ? (
+            <img
+              className="my-1"
+              src={wideImg}
+              alt=""
+            />
+          ): ''}
+          </div>
 
           <div className='form-group'>
             <TextField 
@@ -558,67 +702,6 @@ const EditArtistForm = ({
               id="schedule" 
               label='Porchlight shows typically start at about 7:00pm, with "doors open" at 6:30pm, and a hard wrap at about 9pm. Does this tentative schedule likely work for most of your shows?' 
               value={schedule}
-              onChange={(e) => onChange(e)}
-            />
-          </div>
-
-
-          <div className='form-group'>
-            <TextField 
-              name="hangout"
-              id="hangout" 
-              label="Hangout with host" 
-              value={hangout}
-              onChange={(e) => onChange(e)}
-            />
-          </div>
-
-          <div className='form-group'>
-            <TextField 
-              name="merchTable"
-              id="merchTable" 
-              label="Will you need the host to provide a merch table?" 
-              value={merchTable}
-              onChange={(e) => onChange(e)}
-            />
-          </div>
-
-          <div className='form-group'>
-            <TextField 
-              name="allergies"
-              id="allergies" 
-              label="Allergies" 
-              value={allergies}
-              onChange={(e) => onChange(e)}
-            />
-          </div>
-
-          <div className='form-group'>
-            <TextField 
-              name="allowKids"
-              id="allowKids" 
-              label="Would these shows be open to children/young families?" 
-              value={allowKids}
-              onChange={(e) => onChange(e)}
-            />
-          </div>
-
-          <div className='form-group'>
-            <TextField 
-              name="soundSystem"
-              id="soundSystem" 
-              label="Are you able to provide your own sound system for these shows?" 
-              value={soundSystem}
-              onChange={(e) => onChange(e)}
-            />
-          </div>
-
-          <div className='form-group'>
-            <TextField 
-              name="financialHopes"
-              id="financialHopes" 
-              label="What are your financial expectations and/or hopes for this show or tour?" 
-              value={financialHopes}
               onChange={(e) => onChange(e)}
             />
           </div>

@@ -162,6 +162,10 @@ const ArtistSchema = new mongoose.Schema({
   soundSystem: {
     type: String,
   },
+  agreeToPayAdminFee: {
+    type: Boolean,
+    default: false
+  },
   wideImg: {
     type: String,
   },
