@@ -1,8 +1,10 @@
+const fs = require('fs');
+
 const util = require("util");
 const multer = require("multer");
 const maxSize = 3 * 1024 * 1024;
 
-var uploadFolder = '../porchlight-uploads';
+// var uploadFolder = '../porchlight-uploads/';
   
 // if (!fs.existsSync(uploadFolder)){
 //     fs.mkdirSync(uploadFolder);
@@ -12,10 +14,18 @@ var uploadFolder = '../porchlight-uploads';
 
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadFolder);
+    const { artistSlug } = req;
+    const uploadDir = `../porchlight-uploads/${artistSlug}`;
+
+    if (!fs.existsSync(uploadDir)){
+      fs.mkdirSync(uploadDir);
+    
+      console.log(uploadDir + ' Created Successfully.');
+    }
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    console.log("upload.js: "+uploadFolder+'/'+file.originalname);
+    console.log("upload.js: "+file.originalname);
     cb(null, file.originalname);
   },
 });

@@ -245,7 +245,7 @@ const EditArtistForm = ({
   }
 
   const uploadHandler = (e) => {
-    const uploadPath = "/api/uploads/files/"; //"../porchlight-uploads";
+    const uploadPath = `/api/uploads/${slug}/`; //"../porchlight-uploads";
     let fileName = e.target.files[0].name;
     let targetValue = uploadPath + fileName;//e.target.value;
     const data = new FormData();
@@ -641,7 +641,7 @@ const EditArtistForm = ({
             If the pixel size is bugging you, just make sure the image is 2:1 ratio, horizontal.</FormLabel>
 
               <label htmlFor="wideImg">
-                <UploadInput accept="image/*" name="wideImg" id="wideImg" multiple type="file" onChange={(e) => uploadHandler(e)} />
+                <UploadInput accept="image/*" name="wideImg" id="wideImg" type="file" onChange={(e) => uploadHandler(e)} />
                 <Button variant="contained" component="span">
                   Upload
                 </Button>

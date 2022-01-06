@@ -1,3 +1,5 @@
+//NOT USING ANYMORE
+
 //Image Upload stuff - https://www.geeksforgeeks.org/node-js-image-upload-processing-and-resizing-using-sharp-package/
 //AND https://www.bezkoder.com/node-js-express-file-upload/#Define_Route_for_uploading_file
 const fs = require('fs');

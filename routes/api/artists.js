@@ -1,6 +1,6 @@
 const express = require('express');
-const request = require('request');
-const config = require('../../../porchlight-config/default.json');//require('config');
+//const request = require('request'); //I don't theink I need this. Maybe carried over from profile.js for github stuff ~ Jan 5th, 2022
+//const config = require('../../../porchlight-config/default.json');//require('config'); //I don't theink I need this. Maybe carried over from profile.js for github stuff ~ Jan 5th, 2022
 const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult, body } = require('express-validator');
