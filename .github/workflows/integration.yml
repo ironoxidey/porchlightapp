@@ -24,4 +24,6 @@ jobs:
       #   run: npm test
 
       - name: Build application
-        run: CI='' npm run build
+        run: |
+          cd client
+          npm run build
