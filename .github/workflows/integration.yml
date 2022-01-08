@@ -28,3 +28,7 @@ jobs:
           cd client
           npm ci
           npm run build
+          pm2 stop server
+          pm2 start server
+          pm2 save
+          sudo service nginx restart
