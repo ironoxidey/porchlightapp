@@ -26,4 +26,5 @@ jobs:
       - name: Build application
         run: |
           cd client
+          npm ci
           npm run build
