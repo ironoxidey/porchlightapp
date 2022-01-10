@@ -135,6 +135,8 @@ router.put(
 
       const userID = userDoc.id;
       const userName = userDoc.name;
+
+      console.log("userID: "+userID+" | userName: " + userName);
       
       const payload = {
         user: {
@@ -150,6 +152,8 @@ router.put(
 
       //const link = `localhost:3000/reset-password?token=${resetToken}`;
       const link = `reviewthearts.com/reset-password?token=${resetToken}`;
+
+      console.log(link);
       
       //return User.updateOne({resetLink: resetToken}, (err, success) => {
       await User.findOneAndUpdate({ email: email },{ $set: { resetLink: resetToken }}, (err) => {
