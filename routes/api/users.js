@@ -100,6 +100,7 @@ router.put(
     const { email } = req.body;
 
     try {
+      console.log(req.body);
       console.log("You should be seeing this right before the findOne()");
       // await User.findOne({ email }).then(userDoc => {
       //     const payload = {

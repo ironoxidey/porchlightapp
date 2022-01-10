@@ -23,13 +23,11 @@ jobs:
       # - name: Test application
       #   run: npm test
 
-      - name: Install Client Dependencies
+      - name: Install Client Dependencies and Build
         run: |
           cd client
           npm ci
-
-      - name: Build application
-        run: npm run build
+          npm run build
 
       - name: Restart server
         run: |
