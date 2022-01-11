@@ -28,9 +28,6 @@ jobs:
           cd client
           npm ci
           npm run build
-
-      - name: Restart server
-        run: |
           pm2 restart server
           pm2 save
           sudo service nginx restart
