@@ -5,6 +5,7 @@ const path = require("path");
 
 const sendEmail = async (email, subject, payload, template) => {
   try {
+    console.log("sendEmail");
     // create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
       host: 'mail.porchlight.art',
@@ -27,20 +28,20 @@ const sendEmail = async (email, subject, payload, template) => {
     };
 
     // Send email
-    //console.log("email should send now to "+email+" with the subject: "+subject);
+    console.log("email should send now to "+email+" with the subject: "+subject);
     transporter.sendMail(options(), (error, info) => {
       if (error) {
-        //console.log(error);
+        console.log(error);
         return error;
       } else {
-        //console.log("Email should have sent successfully.");
+        console.log("Email should have sent successfully.");
         return res.status(200).json({
           success: true,
         });
       }
     });
   } catch (error) {
-    //console.log(error);
+    console.log(error);
     return error;
   }
 };

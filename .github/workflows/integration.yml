@@ -31,7 +31,6 @@ jobs:
 
       - name: Restart server
         run: |
-          pm2 stop server
-          pm2 start server
+          pm2 restart server
           pm2 save
           sudo service nginx restart
