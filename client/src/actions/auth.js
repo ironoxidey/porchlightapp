@@ -81,13 +81,16 @@ export const forgotPassword = ({ email }) => async (dispatch) => {
       type: FORGOTPASSWORD_SUCCESS,
       payload: res.data,
     });
+    console.log("res.data: "+res.data);
+    // dispatch(setAlert(error.msg, 'success'));
   } catch (err) {
-    const errors = err.response.data.errors;
-
-    if (errors) {
-      errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
-    }
-    dispatch({ type: FORGOTPASSWORD_FAIL, errors: errors, rawErr: err, email: email });
+    //const errors = err.response.data.errors;
+    //console.log("errors: "+errors);
+    // if (errors) {
+    //   errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+    // }
+    dispatch(setAlert(err.message, 'danger'))
+    dispatch({ type: FORGOTPASSWORD_FAIL, errors: err.message, rawErr: err, email: email });
   }
 };
 
