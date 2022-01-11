@@ -9,7 +9,7 @@ const sendEmail = async (email, subject, payload, template) => {
     // create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
       host: 'mail.porchlight.art',
-      port: 587,
+      port: 465,
       auth: {
         user: 'passwordreset@porchlight.art',
         pass: 'ca&^w~GLvq5d',
@@ -34,7 +34,7 @@ const sendEmail = async (email, subject, payload, template) => {
         console.log(error);
         return error;
       } else {
-        console.log("Email should have sent successfully on port 587.");
+        console.log("Email should have sent successfully on port 465.");
         return res.status(200).json({
           success: true,
         });
