@@ -100,8 +100,8 @@ router.put(
     const { email } = req.body;
 
     try {
-      console.log(req.body);
-      console.log("You should be seeing this right before the findOne()");
+      //console.log(req.body);
+      //console.log("You should be seeing this right before the findOne()");
       // await User.findOne({ email }).then(userDoc => {
       //     const payload = {
       //       user: {
@@ -129,7 +129,7 @@ router.put(
       let userDoc = await User.findOne({ email });
 
       if (!userDoc) {
-        console.log("Could not find a user associated with "+email);
+        //console.log("Could not find a user associated with "+email);
         return res
           .status(400)
           .json({ errors: [{ msg: 'User with this email address does not exist.' }] });
@@ -138,7 +138,7 @@ router.put(
         const userID = userDoc.id;
         const userName = userDoc.name;
 
-        console.log("userID: "+userID+" | userName: " + userName);
+        //console.log("userID: "+userID+" | userName: " + userName);
         
         const payload = {
           user: {
@@ -155,7 +155,7 @@ router.put(
         //const link = `localhost:3000/reset-password?token=${resetToken}`;
         const link = `app.porchlight.art/reset-password?token=${resetToken}`;
 
-        console.log(link);
+        //console.log(link);
         
         //return User.updateOne({resetLink: resetToken}, (err, success) => {
         await User.findOneAndUpdate({ email: email },{ $set: { resetLink: resetToken }}, (err) => {
@@ -166,9 +166,9 @@ router.put(
                 .json({ errors: [{ msg: 'reset password link error' }] });
             }
             else {
-              console.log('The email will try to send now- userName: '+userName.trim().split(' ')[0]);
-              sendEmail(email,"Password Reset Request",{name: userName.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
-              console.log('The email should have been sent now');
+              //console.log('The email will try to send now- userName: '+userName.trim().split(' ')[0]);
+              sendEmail(email,{name: userName.trim().split(' ')[0], link: link,});
+              //console.log('The email should have been sent now');
             }
         }).clone();
       }

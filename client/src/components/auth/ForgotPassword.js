@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { forgotPassword } from '../../actions/auth';
 //import axios from 'axios';
+import { 
+  TextField, 
+  Button,
+} from '@mui/material';
 
 const ForgotPassword = ({ forgotPassword, isAuthenticated, forgotSuccess }) => {
   const [formData, setFormData] = useState({
@@ -33,14 +37,14 @@ const ForgotPassword = ({ forgotPassword, isAuthenticated, forgotSuccess }) => {
       </p>
       <form className='form' onSubmit={(e) => onSubmit(e)}>
         <div className='form-group'>
-          <input
-            type='email'
-            placeholder='Email Address'
-            name='email'
-            value={email}
-            onChange={(e) => onChange(e)} //call seperate onChange function above
+          <TextField 
+              name="email"
+              id="email" 
+              label="Email Address"  
+              value={email}
+              onChange={(e) => onChange(e)}
           />
-          <small>This is currently not working in production. Contact Rusty for a password reset link.</small>
+          {/* <small>This is currently not working in production. Contact Rusty for a password reset link.</small> */}
         </div>
 
         <input type='submit' className='btn btn-primary' value='Submit' />

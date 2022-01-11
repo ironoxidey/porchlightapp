@@ -4,6 +4,10 @@ import { Redirect, useLocation } from 'react-router-dom';
 import { setAlert } from '../../actions/alert';
 import { resetPassword } from '../../actions/auth';
 import PropTypes from 'prop-types';
+import { 
+  TextField, 
+  Button,
+} from '@mui/material';
 
 // A custom hook that builds on useLocation to parse the query string for you.
 function useQuery() {
@@ -52,24 +56,26 @@ const ResetPassword = ({ setAlert, resetPassword, isAuthenticated, resetSuccess 
       </p>
       <form className='form' onSubmit={(e) => onSubmit(e)}>
         <div className='form-group'>
-          <input
-            type='password'
-            placeholder='Password'
-            name='password'
-            minLength='6'
-            value={password}
-            onChange={(e) => onChange(e)} //call seperate onChange function above
-          />
+          <TextField 
+              name="password"
+              id="password" 
+              label="Password" 
+              type="password"
+              //variant="filled" 
+              value={password}
+              onChange={(e) => onChange(e)} //call seperate onChange function above
+            />
         </div>
         <div className='form-group'>
-          <input
-            type='password'
-            placeholder='Confirm Password'
-            name='password2'
-            minLength='6'
-            value={password2}
-            onChange={(e) => onChange(e)} //call seperate onChange function above
-          />
+          <TextField 
+              name="password2"
+              id="password" 
+              label="Confirm Password" 
+              type="password"
+              //variant="filled" 
+              value={password2}
+              onChange={(e) => onChange(e)} //call seperate onChange function above
+            />
         </div>
         <input type='submit' className='btn btn-primary' value='Reset Password' />
       </form>

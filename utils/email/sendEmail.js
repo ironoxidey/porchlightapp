@@ -3,7 +3,7 @@ const { CourierClient } = require("@trycourier/courier");
 
 const courier = CourierClient({ authorizationToken: "dk_prod_GK12EN67ST45AYHV2XV9ZEN0YN2R" });
 
-const sendEmail = async (email, subject, payload, template) => {
+const sendEmail = async (email, payload) => {
   const { messageId } = await courier.send({
     brand: "NK705MB72F4RXKQETMZE65SW4BS7",
     eventId: "WH46YVMBJ0MHFTGTP7T4CN7J1JQE",
