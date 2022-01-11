@@ -152,20 +152,24 @@ router.put(
       );
 
       //const link = `localhost:3000/reset-password?token=${resetToken}`;
-      const link = `reviewthearts.com/reset-password?token=${resetToken}`;
+      const link = `app.porchlight.art/reset-password?token=${resetToken}`;
 
       console.log(link);
       
       //return User.updateOne({resetLink: resetToken}, (err, success) => {
       await User.findOneAndUpdate({ email: email },{ $set: { resetLink: resetToken }}, (err) => {
-          if (err) {
+          
+        if (err) {
             return res
               .status(400)
               .json({ errors: [{ error: 'reset password link error' }] });
           }
           else {
             //res.status(500).send('An email should get sent now.');
+            console.log('The email will try to send now- userName: '+userName.trim().split(' ')[0]);
             sendEmail(email,"Password Reset Request",{name: userName.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
+            console.log('The email should have been sent now');
+
             res.send('An email should get sent now.');
           }
       }).clone();
