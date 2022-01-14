@@ -1,9 +1,15 @@
-import React, { useReducer, useCallback, useEffect, Fragment } from 'react'
+import React, { useReducer, useCallback, useEffect, Fragment, useState } from 'react'
 import PropTypes from 'prop-types'
 import DateUtilities from './utils'
 import Calendar from './Calendar'
 //import { Dialog } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+
+import { setSelectedDates } from '../../../../actions/types';
+
+import { withRouter } from 'react-router-dom';
+import { connect, useDispatch } from 'react-redux';
+
 
 const useStyles = makeStyles(theme => ({
   dialogPaper: {
@@ -16,28 +22,29 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function initState (selectedDates) {
-  return {
-    selectedDates: selectedDates ? [...selectedDates] : [],
-    minDate: null,
-    maxDate: null
-  }
-}
+// function initState (selectedDates) {
+//   return {
+//     selectedDates: selectedDates ? [...selectedDates] : [],
+//     minDate: null,
+//     maxDate: null
+//   }
+// }
 
-function reducer (state, action) {
-  switch (action.type) {
-    case 'setSelectedDates':
-      return { ...state, selectedDates: action.payload }
-    default:
-      return new Error('wrong action type in multiple date picker reducer')
-  }
-}
+// function reducer (state, action) {
+//   switch (action.type) {
+//     case setSelectedDates:
+//       return { ...state, selectedDates: action.payload }
+//     default:
+//       return new Error('wrong action type in multiple date picker reducer')
+//   }
+// }
 
 const DatePicker = ({
+  datepicker,
   open,
   readOnly,
   onCancel,
-  onSubmit,
+  //onSubmit,
   name,
   value,
   onChange,
@@ -51,11 +58,29 @@ const DatePicker = ({
     cancelButtonText = readOnly ? 'Clear' : 'Clear'
   }
 
-  const [{ selectedDates, minDate, maxDate }, dispatch] = useReducer(
-    reducer,
-    outerSelectedDates,
-    initState
-  )
+  const [dateData, setDateData] = useState({
+    selectedDates: [],
+    minDate: null,
+    maxDate: null
+  });
+
+  useEffect(() => {
+    if (datepicker){
+      setDateData({
+        selectedDates: !datepicker.selectedDates ? [] : datepicker.selectedDates,
+      });
+    }
+  }, [datepicker.selectedDates]);
+
+  const { selectedDates, minDate, maxDate } = dateData;
+
+  // const [{ selectedDates, minDate, maxDate }, dispatch] = useReducer(
+  //   reducer,
+  //   outerSelectedDates,
+  //   initState
+  // )
+
+  const dispatch = useDispatch();
 
   const classes = useStyles()
 
@@ -66,12 +91,12 @@ const DatePicker = ({
 
       if (DateUtilities.dateIn(selectedDates, day)) {
         dispatch({
-          type: 'setSelectedDates',
+          type: setSelectedDates,
           payload: selectedDates.filter(date => !DateUtilities.isSameDay(date, day))
         })
         onChange({name: name, value: selectedDates.filter(date => !DateUtilities.isSameDay(date, day)) })
       } else {
-        dispatch({ type: 'setSelectedDates', payload: [...selectedDates, day] })
+        dispatch({ type: setSelectedDates, payload: [...selectedDates, day] })
         onChange({name: name, value: [...selectedDates, day]})
       }
     },
@@ -86,7 +111,7 @@ const DatePicker = ({
       if (index > -1) {
         newDates.splice(index, 1)
       }
-      dispatch({ type: 'setSelectedDates', payload: newDates })
+      dispatch({ type: setSelectedDates, payload: newDates })
       onChange({name: name, value: newDates})
     },
     [selectedDates, dispatch, readOnly]
@@ -94,7 +119,7 @@ const DatePicker = ({
 
   const dismiss = useCallback(
     () => {
-      dispatch({ type: 'setSelectedDates', payload: [] })
+      dispatch({ type: setSelectedDates, payload: [] })
       onCancel()
     },
     [dispatch, onCancel]
@@ -112,9 +137,12 @@ const DatePicker = ({
     e => {
       e.preventDefault()
       if (readOnly) return
-      onSubmit(selectedDates)
+      //onSubmit(selectedDates)
     },
-    [onSubmit, selectedDates, readOnly]
+    [ //onSubmit, 
+      selectedDates, 
+      readOnly
+    ]
   )
 
   useEffect(
@@ -127,7 +155,7 @@ const DatePicker = ({
         }
         //console.log(outerSelectedDatesDated);
         dispatch({
-          type: 'setSelectedDates',
+          type: setSelectedDates,
           payload: outerSelectedDatesDated != null ? outerSelectedDatesDated : []
         })
       }
@@ -172,13 +200,22 @@ DatePicker.propTypes = {
   open: PropTypes.bool.isRequired,
   readOnly: PropTypes.bool,
   onCancel: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  //onSubmit: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   selectedDates: PropTypes.array,
   cancelButtonText: PropTypes.string,
   submitButtonText: PropTypes.string,
-  selectedDatesTitle: PropTypes.string
+  selectedDatesTitle: PropTypes.string,
+  datepicker: PropTypes.object,
 }
 
-export default DatePicker
+//export default DatePicker
+
+const mapStateToProps = (state) => ({
+  datepicker: state.datepicker,
+});
+
+export default connect(mapStateToProps, { })(
+  withRouter(DatePicker)
+); //withRouter allows us to pass history objects

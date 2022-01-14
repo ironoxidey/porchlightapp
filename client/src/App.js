@@ -19,6 +19,7 @@ const darkTheme = createTheme({
   palette: {
     mode: 'dark',
   },
+  spacing: 8,
 });
 
 if (localStorage.token) {

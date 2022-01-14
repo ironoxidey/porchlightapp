@@ -5,5 +5,6 @@ import profile from './profile';
 import post from './post';
 import artist from './artist';
 import calendly from './calendly';
+import datepicker from './datepicker';
 
-export default combineReducers({ alert, auth, profile, post, artist, calendly });
+export default combineReducers({ alert, auth, profile, post, artist, calendly, datepicker });

@@ -1,0 +1,22 @@
+.theContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 70vh;
+}
+
+.animatedFormGroup {
+  position: absolute;
+  max-width: 600px;
+  max-height: 500px;
+  will-change: transform, opacity;
+}
+
+/* .form-group {
+  position: absolute;
+  max-width: 500px;
+  max-height: 500px;
+  width: 350px;
+  will-change: transform, opacity;
+} */

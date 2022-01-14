@@ -81,9 +81,9 @@ const Login = ({ login, isAuthenticated }) => {
         </label>
 
       </form>
-      {/* <p className='my-1'>
+      <p className='my-1'>
         Don't have an account? <Link to='/register'>Sign Up</Link>
-      </p> */}
+      </p>
       <p className='my-1'>
         Forgot your password? <Link to='/forgot-password'>Request a reset link</Link>
       </p>

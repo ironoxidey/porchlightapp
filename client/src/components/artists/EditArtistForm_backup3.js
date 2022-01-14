@@ -19,8 +19,6 @@ import {
   IconButton,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useTheme } from '@mui/styles';
-
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
@@ -28,7 +26,6 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import MultipleDatesPicker from '../mui-multi-date-picker-lib';
 
 import { useTransition, animated, config } from '@react-spring/web';
-import styles from '../../formCards.css';
 
 const UploadInput = styled('input')({
   display: 'none',
@@ -319,18 +316,20 @@ const EditArtistForm = ({
 
   const [open, setOpen] = React.useState(true);
 
-  const theme = useTheme();
+  return (
+    <Fragment>
+      <form className='form' onSubmit={(e) => onSubmit(e)}>
 
-  const formGroups = [
-      <div className='form-group' num='1'>
+  {/* 1 & 2 */}
+        <div className='form-group'>
           <TextField 
             name="firstName"
             id="firstName" 
             label="What's your first name?"  
             value={firstName}
             onChange={(e) => onChange(e)}
-            autoFocus={true}
           />
+          
           <TextField 
             name="lastName"
             id="lastName" 
@@ -338,8 +337,10 @@ const EditArtistForm = ({
             value={lastName}
             onChange={(e) => onChange(e)}
           />
-        </div>,
-        <div className='form-group' num='3'>
+        </div>
+
+  {/* 3 */}
+          <div className='form-group'>
             <TextField 
               name="stageName"
               id="stageName" 
@@ -347,8 +348,10 @@ const EditArtistForm = ({
               value={stageName}
               onChange={(e) => onChange(e)}
             />
-          </div>,
-          <div className='form-group' num='4'>
+          </div>
+
+  {/* 4 */}
+          <div className='form-group'>
             <TextField 
               name="email"
               id="email" 
@@ -357,8 +360,10 @@ const EditArtistForm = ({
               onChange={(e) => onChange(e)}
               disabled
             />
-          </div>,
-          <div className='form-group' num='5'>
+          </div>
+
+  {/* 5 */}
+          <div className='form-group'>
             <TextField 
               name="phone"
               id="phone" 
@@ -367,8 +372,17 @@ const EditArtistForm = ({
               onChange={(e) => onChange(e)}
               helperText="In case we need to reach you quickly leading up to a show."
             />
-          </div>,
-          <div className='form-group' num='6'>
+          </div>
+
+  {/* 6 */}
+          <div className='form-group'>
+            {/* <TextField 
+              name="costStructure"
+              id="costStructure" 
+              label="Cost Structure"  
+              value={costStructure}
+              onChange={(e) => onChange(e)}
+            /> */}
             <FormControl component="fieldset">
               <FormLabel component="legend">What cost structure would you prefer?<br/><small>*We currently offer very few guaranteed shows, for bands selected at our discretion.</small></FormLabel>
               <RadioGroup
@@ -381,8 +395,10 @@ const EditArtistForm = ({
                 <FormControlLabel value="Free RSVP, with a suggested donation" control={<Radio />} label="Free RSVP, with a suggested donation" />
               </RadioGroup>
             </FormControl>
-          </div>,
-          <div className='form-group' num='7'>
+          </div>
+
+  {/* 7 */}
+          <div className='form-group'>
             <TextField 
               name="namedPrice"
               id="namedPrice" 
@@ -394,8 +410,10 @@ const EditArtistForm = ({
                   startAdornment: <InputAdornment position="start">$</InputAdornment>,
               }}
             />
-          </div>,
-          <div className='form-group' num='8'>
+          </div>
+
+  {/* 8 */}
+          <div className='form-group'>
 
             {/* <FormLabel component="legend">For show payout, what digital payment platform do you prefer?</FormLabel> */}
             <FormControl variant="outlined" sx={{ minWidth: 520, m: "8px 8px 8px 0" }}>
@@ -424,8 +442,10 @@ const EditArtistForm = ({
               onChange={(e) => onChange(e)}
               helperText=""
             />
-          </div>,
-          <div className='form-group' num='9'>
+          </div>
+
+  {/* 9 */}
+          <div className='form-group'>
             <FormLabel component="legend">Please select the dates you'd like to try to play a show:</FormLabel>
             <MultipleDatesPicker
               id="bookingWhen"
@@ -434,12 +454,17 @@ const EditArtistForm = ({
               selectedDates={bookingWhen}
               value={bookingWhen}
               onCancel={() => setOpen(false)}
-              //onSubmit={dates => console.log('selected dates', dates)}
+              onSubmit={dates => console.log('selected dates', dates)}
               onChange={target => onCalendarChange(target)}
             />
-          </div>,
-          <div className='form-group' num='10'>
-            <p>Where are you based out of?</p>
+            {/* <select style={{display: "none"}} name="bookingWhen" id="bookingWhen" multiple >
+              {(bookingWhen && bookingWhen.length > 0) ? bookingWhen.map(date => <option key={`${date.toString()}`} value={`${date.toString()}`} selected>{`${date.toString()}`}</option>):''}
+            </select> */}
+          </div>
+  
+  {/* 10 */}
+          <div className='form-group'>
+          <p>Where are you based out of?</p>
             <TextField 
               name="city"
               id="city" 
@@ -461,8 +486,10 @@ const EditArtistForm = ({
               value={zip}
               onChange={(e) => onChange(e)}
             />
-          </div>,
-          <div className='form-group' num='11'>
+          </div>
+
+  {/* 11 */}
+          <div className='form-group'>
             <TextField 
               sx={{ minWidth: 450 }}
               name="setLength"
@@ -475,8 +502,18 @@ const EditArtistForm = ({
                   endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
               }}
             />
-          </div>,
-          <div className='form-group' num='14'>
+          </div>
+
+  {/* 14 */}
+          <div className='form-group'>
+            {/* <TextField 
+              name="overnight"
+              id="overnight" 
+              label="Would you like for your host to accommodate/arrange for your overnight hosting?" 
+              value={overnight}
+              onChange={(e) => onChange(e)}
+            /> */}
+
             <FormControl component="fieldset">
               <FormLabel component="legend">Would you like for your host to accommodate/arrange for your overnight hosting?<br/><small>60% of Porchlight Hosts are interested in putting up musicians overnight!</small></FormLabel>
               <RadioGroup
@@ -489,8 +526,10 @@ const EditArtistForm = ({
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
-          </div>,
-          <div className='form-group' num='15'>
+          </div>
+
+  {/* 15 */}
+          <div className='form-group'>
             <FormControl component="fieldset">
               <FormLabel component="legend">Let's talk openers. What's your preference?</FormLabel>
               <RadioGroup
@@ -505,40 +544,44 @@ const EditArtistForm = ({
                 <FormControlLabel value="I have no preference." control={<Radio />} label="I have no preference." />
               </RadioGroup>
             </FormControl>
-          </div>,
-          <div className='form-group' num='16'>
-            <FormLabel component="legend">Will anybody be travelling with you?</FormLabel>
-            {(travelingCompanions && travelingCompanions.length > 0) ? travelingCompanions.map((travelingCompanion, idx) => (
-              <div className="travelingCompanion" key={`travelingCompanion${idx}`}>
-                <TextField 
-                  name="travelingCompanions"
-                  id={`travelingCompanionName${idx}`}
-                  label={`Traveling Companion #${idx + 1} name`} 
-                  value={travelingCompanion.name}
-                  onChange={(e) => onMultiTextChange("name", travelingCompanions, idx, e)}
-                />
-                <TextField 
-                  name="travelingCompanions"
-                  id={`travelingCompanionRole${idx}`}
-                  label={`Role`} 
-                  value={travelingCompanion.role}
-                  onChange={(e) => onMultiTextChange("role", travelingCompanions, idx, e)}
-                />
-                <IconButton onClick={(e) => handleRemoveMultiTextField("travelingCompanions", travelingCompanions, idx)}>
-                  <DeleteIcon />
-                </IconButton>
-              </div>
-            )): ''}
-          
-            <IconButton onClick={(e) => handleAddMultiTextField("travelingCompanions", travelingCompanions)}>
-              <PersonAddIcon/>
-            </IconButton>
+          </div>
 
-            {companionTravelers && (
-              <p><small>Companion travelers from Typeform: {companionTravelers}</small></p>
-            )}
-          </div>,
-          <div className='form-group' num='17'>
+  {/* 16 */}
+          <div className='form-group'>
+          <FormLabel component="legend">Will anybody be travelling with you?</FormLabel>
+          {(travelingCompanions && travelingCompanions.length > 0) ? travelingCompanions.map((travelingCompanion, idx) => (
+            <div className="travelingCompanion" key={`travelingCompanion${idx}`}>
+              <TextField 
+                name="travelingCompanions"
+                id={`travelingCompanionName${idx}`}
+                label={`Traveling Companion #${idx + 1} name`} 
+                value={travelingCompanion.name}
+                onChange={(e) => onMultiTextChange("name", travelingCompanions, idx, e)}
+              />
+              <TextField 
+                name="travelingCompanions"
+                id={`travelingCompanionRole${idx}`}
+                label={`Role`} 
+                value={travelingCompanion.role}
+                onChange={(e) => onMultiTextChange("role", travelingCompanions, idx, e)}
+              />
+              <IconButton onClick={(e) => handleRemoveMultiTextField("travelingCompanions", travelingCompanions, idx)}>
+                <DeleteIcon />
+              </IconButton>
+            </div>
+          )): ''}
+        
+          <IconButton onClick={(e) => handleAddMultiTextField("travelingCompanions", travelingCompanions)}>
+            <PersonAddIcon/>
+          </IconButton>
+
+          {companionTravelers && (
+            <p><small>Companion travelers from Typeform: {companionTravelers}</small></p>
+          )}
+          </div>
+
+  {/* 17 */}
+          <div className='form-group'>
             <FormControl component="fieldset">
               <FormLabel component="legend">Our heart at Porchlight is to cultivate relationships between artists and hosts. As such, we’d love to make time for a little hangout either before or after the show, just for you, your hosts, and maybe a couple people interested in meeting with artists like you in a more informal setting. What would be your preference regarding this?</FormLabel>
               <RadioGroup
@@ -553,8 +596,10 @@ const EditArtistForm = ({
                 <FormControlLabel value="That sounds great! Either before or after works for me." control={<Radio />} label="That sounds great! Either before or after works for me." />
               </RadioGroup>
             </FormControl>
-          </div>,
-          <div className='form-group' num='18'>
+          </div>
+
+  {/* 18 */}
+          <div className='form-group'>
             <FormControl component="fieldset">
               <FormLabel component="legend">Will you need the host to provide a merch table?</FormLabel>
               <RadioGroup
@@ -567,8 +612,11 @@ const EditArtistForm = ({
                 <FormControlLabel value="false" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
-          </div>,
-          <div className='form-group' num='19'>
+          </div>
+  
+
+  {/* 19 */}
+          <div className='form-group'>
             <TextField 
               name="allergies"
               id="allergies" 
@@ -576,8 +624,10 @@ const EditArtistForm = ({
               value={allergies}
               onChange={(e) => onChange(e)}
             />
-          </div>,
-          <div className='form-group' num='20'>
+          </div>
+
+{/* 20 */}
+          <div className='form-group'>
             <FormControl component="fieldset">
               <FormLabel component="legend">Would these shows be open to children/young families?</FormLabel>
               <RadioGroup
@@ -590,8 +640,10 @@ const EditArtistForm = ({
                 <FormControlLabel value="false" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
-          </div>,
-          <div className='form-group' num='21'>
+          </div>
+
+{/* 21 */}
+          <div className='form-group'>
             <FormControl component="fieldset">
               <FormLabel component="legend">Are you able to provide your own sound system for these shows?</FormLabel>
               <RadioGroup
@@ -604,8 +656,10 @@ const EditArtistForm = ({
                 <FormControlLabel value="false" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
-          </div>,
-          <div className='form-group'  num='22'>
+          </div>
+
+{/* 22 */}
+          <div className='form-group'>
             <TextField 
               name="financialHopes"
               multiline
@@ -614,8 +668,11 @@ const EditArtistForm = ({
               value={financialHopes}
               onChange={(e) => onChange(e)}
             />
-          </div>,
-          <div className='form-group' num='23'>
+          </div>
+
+
+{/* 23 */}
+          <div className='form-group'>
             <FormControl component="fieldset">
               <FormLabel component="legend">Porchlight charges an administrative fee of $100/show, unless other terms have been agreed to in writing. Do you agree to pay this fee upon completion of the show/tour?</FormLabel>
               <RadioGroup
@@ -628,8 +685,10 @@ const EditArtistForm = ({
                 <FormControlLabel value="false" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
-          </div>,
-          <div className='form-group'  num='24'>
+          </div>
+
+{/* 23 */}
+          <div className='form-group'>
           <FormControl component="fieldset">
             <FormLabel component="legend">Please attach one high quality image, for promotional use, of this size: 2160x1080px<br/>
             If the pixel size is bugging you, just make sure the image is 2:1 ratio, horizontal.</FormLabel>
@@ -648,7 +707,8 @@ const EditArtistForm = ({
               alt=""
             />
           ): ''}
-          </div>,
+          </div>
+
           <div className='form-group'>
             <TextField 
               name="medium"
@@ -657,7 +717,8 @@ const EditArtistForm = ({
               value={medium}
               onChange={(e) => onChange(e)}
             />
-          </div>,
+          </div>
+
           <div className='form-group'>
             <TextField 
               name="genre"
@@ -666,7 +727,8 @@ const EditArtistForm = ({
               value={genre}
               onChange={(e) => onChange(e)}
             />
-          </div>,
+          </div>
+
           <div className='form-group'>
             <TextField 
               name="repLink"
@@ -675,7 +737,8 @@ const EditArtistForm = ({
               value={repLink}
               onChange={(e) => onChange(e)}
             />
-          </div>,
+          </div>
+
           <div className='form-group'>
             <TextField 
               name="helpKind"
@@ -684,7 +747,8 @@ const EditArtistForm = ({
               value={helpKind}
               onChange={(e) => onChange(e)}
             />
-          </div>,
+          </div>
+
           <div className='form-group'>
             <TextField 
               name="schedule"
@@ -693,7 +757,8 @@ const EditArtistForm = ({
               value={schedule}
               onChange={(e) => onChange(e)}
             />
-          </div>,
+          </div>
+
           <div className='form-group'>
             <TextField 
               name="covidPrefs"
@@ -702,7 +767,8 @@ const EditArtistForm = ({
               value={covidPrefs}
               onChange={(e) => onChange(e)}
             />
-          </div>,
+          </div>
+
           <div className='form-group'>
             <TextField 
               name="artistNotes"
@@ -712,7 +778,8 @@ const EditArtistForm = ({
               value={artistNotes}
               onChange={(e) => onChange(e)}
             />
-          </div>,
+          </div>
+
           <div className='form-group'>
             <TextField 
               name="bio"
@@ -723,69 +790,13 @@ const EditArtistForm = ({
               onChange={(e) => onChange(e)}
             />
           </div>
-  ];
 
-  const [formCardIndex, setIndex] = useState(0);
-  const [formCardDirection, setDirection] = useState(1);
-  const transitions = useTransition(formCardIndex, {
-    key: formCardIndex,
-    from: { opacity: 0, transform: `translateX(${formCardDirection * 100}%)` },
-    enter: { opacity: 1, transform: 'translateX(0%)' },
-    leave: { opacity: 0, transform: `translateX(${formCardDirection * -100}%)` },
-    config: config.molasses,
-    // onRest: (_a, _b, item) => {
-    //   if (formCardIndex === item) {
-    //     set(cardIndex => (cardIndex + 1) % formGroups.length)
-    //   }
-    // },
-    exitBeforeEnter: false,
-  });
-  const nextCard = () => {
-    setDirection(1);
-    setIndex(cardIndex => (cardIndex + 1) % formGroups.length)
-  };
-  const previousCard = () => {
-    setDirection(-1);
-    setIndex(cardIndex => {
-      if (cardIndex == 0){
-        cardIndex = formGroups.length;
-      }
-      console.log(cardIndex);
-      return (cardIndex - 1);
-    });
-  };
-
-  return (
-    <Fragment>
-      <form className='form' onSubmit={(e) => onSubmit(e)}>
-        <div className={'theContainer'}>
-
-          {transitions((style, i) => (
-            <animated.div
-              className={'animatedFormGroup'}
-              key={i}
-              style={{
-                ...style,
-              }}
-            >{formGroups[i]}</animated.div>
-          ))}
-        </div>
-
-        <Button variant="contained" component="span" onClick={() => previousCard()}>
-          Previous
-        </Button>
-        <Button variant="contained" component="span" onClick={() => nextCard()}>
-          Next
-        </Button>
-
-        <br/>
-          
-        <label htmlFor="submit">
-          <input id="submit" type="submit" hidden/>
-          <Button variant="contained" component="span">
-            Submit
-          </Button>
-        </label>
+          <label htmlFor="submit">
+            <input id="submit" type="submit" hidden/>
+            <Button variant="contained" component="span">
+              Submit
+            </Button>
+          </label>
           {/* <input type='submit' className='btn btn-primary my-1' /> */}
       </form>
     </Fragment>
