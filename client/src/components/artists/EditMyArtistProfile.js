@@ -17,11 +17,11 @@ const EditMyArtistProfile = ({
   return (
     <Fragment>
     { loading ? <Spinner></Spinner> : <Fragment>
-      <h1 className='large text-primary'>Edit Your Artist Profile</h1>
+      {/* <h1 className='large text-primary'>Edit Your Artist Profile</h1> */}
           <EditArtistForm theArtist={artist}/>
-        <Link to='/dashboard' className='btn btn-light my-1'>
+        {/* <Link to='/dashboard' className='btn btn-light my-1'>
           Go Back
-        </Link>
+        </Link> */}
     </Fragment>
     }
     </Fragment>

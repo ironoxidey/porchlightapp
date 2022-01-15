@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { createArtist } from '../../actions/artist';
 import { 
   TextField, 
-  Button, 
+  //Button, 
   Radio, 
   RadioGroup, 
   FormControlLabel, 
@@ -17,18 +17,26 @@ import {
   MenuItem, 
   InputAdornment,
   IconButton,
+  Grid,
+  Box
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useTheme } from '@mui/styles';
+
+import Button from '../layout/SvgButton';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import SaveIcon from '@mui/icons-material/Save';
+
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
 import MultipleDatesPicker from '../mui-multi-date-picker-lib';
 
 import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
+import { textAlign } from '@mui/system';
 
 const UploadInput = styled('input')({
   display: 'none',
@@ -227,42 +235,6 @@ const EditArtistForm = ({
     bio, 
   } = formData;
 
-  // const formDataArray = [
-  //   slug,
-  //   email,
-  //   firstName,
-  //   lastName,
-  //   stageName,
-  //   medium,
-  //   genre,
-  //   repLink,
-  //   helpKind,
-  //   // typeformDate,
-  //   // active,
-  //   phone,
-  //   hometown,
-  //   costStructure,
-  //   namedPrice,
-  //   bookingWhenWhere,
-  //   setLength,
-  //   schedule,
-  //   overnight,
-  //   openers,
-  //   companionTravelers,
-  //   hangout,
-  //   merchTable,
-  //   allergies,
-  //   allowKids,
-  //   soundSystem,
-  //   wideImg,
-  //   squareImg,
-  //   covidPrefs,
-  //   artistNotes,
-  //   financialHopes,
-  //   // onboardDate,
-  //   bio
-  // ];
-
   const onChange = (e) => {
     console.log(e.target.type);
     let targetValue = e.target.value;
@@ -282,7 +254,7 @@ const EditArtistForm = ({
   }
 
   const handleAddMultiTextField = (targetName, theFieldObj ) => { //super helpful: https://goshacmd.com/array-form-inputs/
-    let updatedField = theFieldObj.concat([{ name: "", role: "" }]);
+    let updatedField = theFieldObj.concat([{ name: '', role: '', email: ''}]);
     setFormData({ ...formData, [targetName]: updatedField });
   }
   const handleRemoveMultiTextField = (targetName, theFieldObj, idx) => {
@@ -314,116 +286,165 @@ const EditArtistForm = ({
     
   const onSubmit = (e) => {
     e.preventDefault();
+    //console.log('Submitting...');
     createArtist(formData, history, true);
   };
 
   const [open, setOpen] = React.useState(true);
 
-  const theme = useTheme();
-
   const formGroups = [
-      <div className='form-group' num='1'>
-          <TextField 
-            name="firstName"
-            id="firstName" 
-            label="What's your first name?"  
-            value={firstName}
-            onChange={(e) => onChange(e)}
-            autoFocus={true}
-          />
-          <TextField 
-            name="lastName"
-            id="lastName" 
-            label="And your last name?"  
-            value={lastName}
-            onChange={(e) => onChange(e)}
-          />
+        <div className='form-group' num='1'>
+          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+              <Grid item xs={12}>
+                  <FormLabel component="legend">First things first: what's your first and last name?</FormLabel>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField 
+                  variant="standard"
+                  name="firstName"
+                  id="firstName" 
+                  label="My first name is"  
+                  value={firstName}
+                  onChange={(e) => onChange(e)}
+                  autoFocus={true}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField  
+                  variant="standard"
+                  name="lastName"
+                  id="lastName" 
+                  label="and my last name is"  
+                  value={lastName}
+                  onChange={(e) => onChange(e)}
+                />
+              </Grid>
+          </Grid>
         </div>,
         <div className='form-group' num='3'>
-            <TextField 
-              name="stageName"
-              id="stageName" 
-              label="What's your band or stage name?"  
-              value={stageName}
-              onChange={(e) => onChange(e)}
-            />
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+              <Grid item xs={12}>
+                  <FormLabel component="legend">What is your band name?</FormLabel>
+              </Grid>
+              <Grid item>
+                <TextField  
+                  variant="standard"
+                  name="stageName"
+                  id="stageName" 
+                  label="My band name is"  
+                  value={stageName}
+                  onChange={(e) => onChange(e)}
+                />
+              </Grid>
+            </Grid>
           </div>,
-          <div className='form-group' num='4'>
-            <TextField 
-              name="email"
-              id="email" 
-              label="What's your email address?"  
-              value={email}
-              onChange={(e) => onChange(e)}
-              disabled
-            />
-          </div>,
+          // <div className='form-group' num='4'>
+          //   <TextField 
+          //     name="email"
+          //     id="email" 
+          //     label="What's your email address?"  
+          //     value={email}
+          //     onChange={(e) => onChange(e)}
+          //     disabled
+          //   />
+          // </div>,
           <div className='form-group' num='5'>
-            <TextField 
-              name="phone"
-              id="phone" 
-              label="Would you provide your phone number?"  
-              value={phone}
-              onChange={(e) => onChange(e)}
-              helperText="In case we need to reach you quickly leading up to a show."
-            />
+          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+              <Grid item xs={12}>
+                  <FormLabel component="legend">Would you provide your phone number?</FormLabel>
+              </Grid>
+              <Grid item>
+                <TextField  
+                  variant="standard"
+                  name="phone"
+                  id="phone" 
+                  label="Sure! My phone number is"  
+                  value={phone}
+                  onChange={(e) => onChange(e)}
+                  helperText=""
+                />
+              </Grid>
+            </Grid>
           </div>,
           <div className='form-group' num='6'>
+          
             <FormControl component="fieldset">
-              <FormLabel component="legend">What cost structure would you prefer?<br/><small>*We currently offer very few guaranteed shows, for bands selected at our discretion.</small></FormLabel>
-              <RadioGroup
-                id="costStructure"
-                value={costStructure}
-                name="costStructure"
-                onChange={(e) => onChange(e)}
-              >
-                <FormControlLabel value="Ticketed" control={<Radio />} label="Ticketed" />
-                <FormControlLabel value="Free RSVP, with a suggested donation" control={<Radio />} label="Free RSVP, with a suggested donation" />
-              </RadioGroup>
+              <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+                <Grid item xs={12}>
+                  <FormLabel component="legend">What cost structure would you prefer?<br/><small>*We currently offer very few guaranteed shows, for bands selected at our discretion.</small></FormLabel>
+                </Grid>
+                <Grid item>
+                  <RadioGroup
+                    id="costStructure"
+                    value={costStructure}
+                    name="costStructure"
+                    onChange={(e) => onChange(e)}
+                  >
+                    <FormControlLabel value="ticket" control={<Radio />} label="Ticketed" />
+                    <FormControlLabel value="donation" control={<Radio />} label="Free RSVP, with a suggested donation" />
+                  </RadioGroup>
+                </Grid>
+              </Grid>
             </FormControl>
           </div>,
           <div className='form-group' num='7'>
-            <TextField 
-              name="namedPrice"
-              id="namedPrice" 
-              label="Name your price"  
-              value={namedPrice}
-              onChange={(e) => onChange(e)}
-              type="number"
-              InputProps={{
-                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
-              }}
-            />
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+                <Grid item xs={12}>
+                    <FormLabel component="legend">Name your price.</FormLabel>
+                </Grid>
+                <Grid item>
+                  <TextField  
+                    variant="standard"
+                    name="namedPrice"
+                    id="namedPrice" 
+                    label={costStructure == 'donation' ? "I'd suggest a donation of" : "Tickets should cost"}
+                    value={namedPrice}
+                    onChange={(e) => onChange(e)}
+                    type="number"
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    }}
+                  />
+              </Grid>
+            </Grid>   
           </div>,
           <div className='form-group' num='8'>
-
-            {/* <FormLabel component="legend">For show payout, what digital payment platform do you prefer?</FormLabel> */}
-            <FormControl variant="outlined" sx={{ minWidth: 520, m: "8px 8px 8px 0" }}>
-              <InputLabel id="payoutPlatformLabel">For show payout, what digital payment platform do you prefer?</InputLabel>
-              <Select
-                labelId="payoutPlatformLabel"
-                id="payoutPlatform"
-                name="payoutPlatform"
-                value={payoutPlatform}
-                onChange={(e) => onChange(e)}
-                label="For show payout, what digital payment platform do you prefer?"
-              >
-                <MenuItem value="PayPal">PayPal</MenuItem>
-                <MenuItem value="Venmo">Venmo</MenuItem>
-                <MenuItem value="Zelle">Zelle</MenuItem>
-                <MenuItem value="Cash App">Cash App</MenuItem>
-              </Select>
-            </FormControl>
-
-            <TextField 
-              sx={{ minWidth: 520, m: "8px 8px 8px 0" }}
-              name="payoutHandle"
-              id="payoutHandle" 
-              label={"What is the handle associated with your "+payoutPlatform+" account?"} 
-              value={payoutHandle}
-              onChange={(e) => onChange(e)}
-              helperText=""
-            />
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+                <Grid item xs={12}>
+                    <FormLabel component="legend">For show payout, what digital payment platform do you prefer?</FormLabel>
+                </Grid>
+                <Grid item>
+                  <FormControl variant="outlined" sx={{ minWidth: 160, m: "8px 8px 8px 0" }}>
+                    <InputLabel id="payoutPlatformLabel">I prefer using</InputLabel>
+                    <Select
+                      //variant="standard"
+                      labelId="payoutPlatformLabel"
+                      id="payoutPlatform"
+                      name="payoutPlatform"
+                      value={payoutPlatform}
+                      onChange={(e) => onChange(e)}
+                      label="I prefer using"
+                    >
+                      <MenuItem value="PayPal">PayPal</MenuItem>
+                      <MenuItem value="Venmo">Venmo</MenuItem>
+                      <MenuItem value="Zelle">Zelle</MenuItem>
+                      <MenuItem value="Cash App">Cash App</MenuItem>
+                    </Select>
+                  </FormControl>
+              </Grid>  
+              <Grid item>
+                <TextField 
+                  variant="standard"
+                  sx={{ minWidth: 420, m: "8px 8px 8px 0" }}
+                  name="payoutHandle"
+                  id="payoutHandle" 
+                  label={"The handle for my "+payoutPlatform+" account is"} 
+                  value={payoutHandle}
+                  onChange={(e) => onChange(e)}
+                  helperText=""
+                />
+              </Grid>
+            </Grid> 
           </div>,
           <div className='form-group' num='9'>
             <FormLabel component="legend">Please select the dates you'd like to try to play a show:</FormLabel>
@@ -439,46 +460,71 @@ const EditArtistForm = ({
             />
           </div>,
           <div className='form-group' num='10'>
-            <p>Where are you based out of?</p>
-            <TextField 
-              name="city"
-              id="city" 
-              label="City" 
-              value={city}
-              onChange={(e) => onChange(e)}
-            />
-            <TextField 
-              name="state"
-              id="state" 
-              label="State" 
-              value={state}
-              onChange={(e) => onChange(e)}
-            />
-            <TextField 
-              name="zip"
-              id="zip" 
-              label="Zip" 
-              value={zip}
-              onChange={(e) => onChange(e)}
-            />
+          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+                <Grid item xs={12}>
+                    <FormLabel component="legend">Where are you based out of?</FormLabel>
+                </Grid>
+                <Grid item>
+                  <TextField 
+                    variant="standard"
+                    name="city"
+                    id="city" 
+                    label="I live in the city of" 
+                    value={city}
+                    onChange={(e) => onChange(e)}
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField 
+                    variant="standard"
+                    name="state"
+                    id="state" 
+                    label="in the state of" 
+                    value={state}
+                    onChange={(e) => onChange(e)}
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField 
+                    variant="standard"
+                    name="zip"
+                    id="zip" 
+                    label="and my zip code is" 
+                    value={zip}
+                    onChange={(e) => onChange(e)}
+                  />
+                </Grid>
+              </Grid>
           </div>,
           <div className='form-group' num='11'>
-            <TextField 
-              sx={{ minWidth: 450 }}
-              name="setLength"
-              id="setLength" 
-              label="How long will your set be (in minutes)?"  
-              value={setLength}
-              type="number"
-              onChange={(e) => onChange(e)}
-              InputProps={{
-                  endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
-              }}
-            />
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+                <Grid item xs={12}>
+                    <FormLabel component="legend">How long will your set be (in minutes)?</FormLabel>
+                </Grid>
+                <Grid item>
+                  <TextField 
+                    variant="standard"
+                    sx={{ minWidth: 250 }}
+                    name="setLength"
+                    id="setLength" 
+                    label="I expect to play for"  
+                    value={setLength}
+                    type="number"
+                    onChange={(e) => onChange(e)}
+                    InputProps={{
+                        endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
+                    }}
+                  />
+              </Grid>
+            </Grid>
           </div>,
           <div className='form-group' num='14'>
             <FormControl component="fieldset">
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+                <Grid item xs={12}>
               <FormLabel component="legend">Would you like for your host to accommodate/arrange for your overnight hosting?<br/><small>60% of Porchlight Hosts are interested in putting up musicians overnight!</small></FormLabel>
+              </Grid>
+              <Grid item>
               <RadioGroup
                 id="overnight"
                 value={overnight}
@@ -488,6 +534,8 @@ const EditArtistForm = ({
                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
+              </Grid>
+            </Grid>
             </FormControl>
           </div>,
           <div className='form-group' num='15'>
@@ -507,51 +555,151 @@ const EditArtistForm = ({
             </FormControl>
           </div>,
           <div className='form-group' num='16'>
-            <FormLabel component="legend">Will anybody be travelling with you?</FormLabel>
+          <Grid container spacing={2} sx={{margin: '0px auto', width: '100%'}}>
+                <Grid item xs={12}>
+                    <FormLabel component="legend">Will anybody be travelling with you?</FormLabel>
+                </Grid>
             {(travelingCompanions && travelingCompanions.length > 0) ? travelingCompanions.map((travelingCompanion, idx) => (
-              <div className="travelingCompanion" key={`travelingCompanion${idx}`}>
-                <TextField 
-                  name="travelingCompanions"
-                  id={`travelingCompanionName${idx}`}
-                  label={`Traveling Companion #${idx + 1} name`} 
-                  value={travelingCompanion.name}
-                  onChange={(e) => onMultiTextChange("name", travelingCompanions, idx, e)}
-                />
-                <TextField 
-                  name="travelingCompanions"
-                  id={`travelingCompanionRole${idx}`}
-                  label={`Role`} 
-                  value={travelingCompanion.role}
-                  onChange={(e) => onMultiTextChange("role", travelingCompanions, idx, e)}
-                />
-                <IconButton onClick={(e) => handleRemoveMultiTextField("travelingCompanions", travelingCompanions, idx)}>
-                  <DeleteIcon />
-                </IconButton>
-              </div>
+                <Grid 
+                    className="travelingCompanion" 
+                    key={`travelingCompanion${idx}`} 
+                    container 
+                    direction="row" 
+                    justifyContent="space-around" 
+                    alignItems="start" 
+                    spacing={2}
+                    sx={{
+                      // borderColor: 'primary.dark',
+                      // borderWidth: '2px',
+                      // borderStyle: 'solid',
+                      backgroundColor: 'rgba(0,0,0,0.15)',
+                      '&:hover': {
+                        
+                      },
+                      padding: '0 10px 10px',
+                      margin: '0px auto',
+                      width: '100%',
+                    }}
+                >
+          
+                  <Grid item xs={12} md={3}>
+                    <TextField 
+                      variant="standard"
+                      name="travelingCompanions"
+                      id={`travelingCompanionName${idx}`}
+                      label={travelingCompanions.length > 1 ? `One of their names is`: `The person's name is`} 
+                      value={travelingCompanion.name}
+                      onChange={(e) => onMultiTextChange("name", travelingCompanions, idx, e)}
+                      sx={{width: '100%'}}
+
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={2}>
+                    <TextField 
+                      variant="standard"
+                      name="travelingCompanions"
+                      id={`travelingCompanionRole${idx}`}
+                      label={ travelingCompanion.name ? `${travelingCompanion.name.split(' ')[0]}'s role is` : `Thier role is` } 
+                      value={travelingCompanion.role}
+                      onChange={(e) => onMultiTextChange("role", travelingCompanions, idx, e)}
+                      sx={{width: '100%'}}
+
+                    />
+                  </Grid>
+                  <Grid item xs={10} md={true}>
+                    <TextField 
+                      variant="standard"
+                      name="travelingCompanions"
+                      id={`travelingCompanionEmail${idx}`}
+                      label={ travelingCompanion.name ? `${travelingCompanion.name.split(' ')[0]}'s email is` : `Thier email is` } 
+                      value={travelingCompanion.email}
+                      onChange={(e) => onMultiTextChange("email", travelingCompanions, idx, e)}
+                      sx={{ width: '100%' }}
+
+                    />
+                  </Grid>
+                  <Grid item xs={2} md={.65}>
+                    <IconButton onClick={(e) => handleRemoveMultiTextField("travelingCompanions", travelingCompanions, idx)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Grid>
+                </Grid>
             )): ''}
           
-            <IconButton onClick={(e) => handleAddMultiTextField("travelingCompanions", travelingCompanions)}>
-              <PersonAddIcon/>
-            </IconButton>
+            <Grid container item direction="row" justifyContent="center" alignItems="center" xs={12}>
+              <Button onClick={(e) => handleAddMultiTextField("travelingCompanions", travelingCompanions)}>
+                <PersonAddIcon/>Add person
+              </Button>
+            </Grid>
+          </Grid>
 
-            {companionTravelers && (
+            {/* {companionTravelers && (
               <p><small>Companion travelers from Typeform: {companionTravelers}</small></p>
-            )}
+            )} */}
           </div>,
           <div className='form-group' num='17'>
             <FormControl component="fieldset">
-              <FormLabel component="legend">Our heart at Porchlight is to cultivate relationships between artists and hosts. As such, we’d love to make time for a little hangout either before or after the show, just for you, your hosts, and maybe a couple people interested in meeting with artists like you in a more informal setting. What would be your preference regarding this?</FormLabel>
-              <RadioGroup
-                id="hangout"
-                value={hangout}
-                name="hangout"
-                onChange={(e) => onChange(e)}
-              >
-                <FormControlLabel value="I'd rather not." control={<Radio />} label="I'd rather not." />
-                <FormControlLabel value="That sounds great! I prefer a private hangout AFTER the show." control={<Radio />} label="That sounds great! I prefer a private hangout AFTER the show." />
-                <FormControlLabel value="That sounds great! I prefer a private hangout BEFORE the show." control={<Radio />} label="That sounds great! I prefer a private hangout BEFORE the show." />
-                <FormControlLabel value="That sounds great! Either before or after works for me." control={<Radio />} label="That sounds great! Either before or after works for me." />
-              </RadioGroup>
+            <Grid container 
+                    direction="column" 
+                    justifyContent="center" 
+                    alignItems="center" 
+                    spacing={2}
+                    sx={{
+                      width: '100%',
+                      margin: '0 auto'
+                      }}
+            >
+              <Grid  
+                    container item 
+                    justifyContent="center" 
+                    alignItems="center" 
+                    spacing={2}
+                    sx={{
+                      borderColor: 'primary.dark',
+                      borderWidth: '2px',
+                      borderStyle: 'solid',
+                      backgroundColor: 'rgba(0,0,0,0.15)',
+                      '&:hover': {
+                        
+                      },
+                      padding: '0 10px 10px',
+                      margin: '0px auto',
+                      width: '100%',
+                    }}
+                >
+                  <FormLabel 
+                    component="legend" 
+                    className='small' 
+                    sx={{
+                      textAlign:'left!important',
+                      width: '100%',
+                      fontSize: '1rem!important',
+	                    lineHeight: '1.3em!important',
+                      }}
+                    >
+                      Our heart at Porchlight is to cultivate relationships between artists and hosts. As such, we’d love to make time for a little hangout either before or after the show, just for you, your hosts, and maybe a couple people interested in meeting with artists like you in a more informal setting.
+                  </FormLabel>
+              </Grid>
+  
+                <Grid item xs={12}>
+                  <FormLabel component="legend" sx={{}}>
+                    What would be your preference regarding this?
+                  </FormLabel>
+                </Grid>
+                <Grid item>
+                  <RadioGroup
+                    id="hangout"
+                    value={hangout}
+                    name="hangout"
+                    onChange={(e) => onChange(e)}
+                  >
+                    <FormControlLabel value="I'd rather not." control={<Radio />} label="I'd rather not." />
+                    <FormControlLabel value="That sounds great! I prefer a private hangout AFTER the show." control={<Radio />} label="That sounds great! I prefer a private hangout AFTER the show." />
+                    <FormControlLabel value="That sounds great! I prefer a private hangout BEFORE the show." control={<Radio />} label="That sounds great! I prefer a private hangout BEFORE the show." />
+                    <FormControlLabel value="That sounds great! Either before or after works for me." control={<Radio />} label="That sounds great! Either before or after works for me." />
+                  </RadioGroup>
+                </Grid>
+              </Grid>
             </FormControl>
           </div>,
           <div className='form-group' num='18'>
@@ -725,13 +873,15 @@ const EditArtistForm = ({
           </div>
   ];
 
-  const [formCardIndex, setIndex] = useState(0);
+  const [formCardIndex, setIndex] = useState( 0 );
+  const cardIndex = formCardIndex;
+  
   const [formCardDirection, setDirection] = useState(1);
   const transitions = useTransition(formCardIndex, {
     key: formCardIndex,
-    from: { opacity: 0, transform: `translateX(${formCardDirection * 100}%)` },
+    from: { opacity: 0, transform: `translateX(${formCardDirection * 60}vw)` },
     enter: { opacity: 1, transform: 'translateX(0%)' },
-    leave: { opacity: 0, transform: `translateX(${formCardDirection * -100}%)` },
+    leave: { opacity: 0, transform: `translateX(${formCardDirection * -60}vw)` },
     config: config.molasses,
     // onRest: (_a, _b, item) => {
     //   if (formCardIndex === item) {
@@ -758,35 +908,42 @@ const EditArtistForm = ({
   return (
     <Fragment>
       <form className='form' onSubmit={(e) => onSubmit(e)}>
-        <div className={'theContainer'}>
-
-          {transitions((style, i) => (
-            <animated.div
-              className={'animatedFormGroup'}
-              key={i}
-              style={{
-                ...style,
-              }}
-            >{formGroups[i]}</animated.div>
-          ))}
-        </div>
-
-        <Button variant="contained" component="span" onClick={() => previousCard()}>
-          Previous
-        </Button>
-        <Button variant="contained" component="span" onClick={() => nextCard()}>
-          Next
-        </Button>
-
-        <br/>
+      <Grid container spacing={2} sx={{padding:'20px!important'}}>
+        <Grid container item sx={{width:'100%'}} direction="row" justifyContent="center" alignItems="center">
           
-        <label htmlFor="submit">
-          <input id="submit" type="submit" hidden/>
-          <Button variant="contained" component="span">
-            Submit
-          </Button>
-        </label>
-          {/* <input type='submit' className='btn btn-primary my-1' /> */}
+          <Grid item>
+           {/* { cardIndex > 0 ? (  */}
+            <Button variant="contained" component="span" onClick={() => previousCard()}>
+              <ArrowBackIcon></ArrowBackIcon>Previous
+            </Button>
+            {/* ) : '' } */}
+          </Grid>
+          <Grid item>
+            <label htmlFor="submit">
+              <input id="submit" type="submit" hidden/>
+              <Button variant="contained" component="span" onClick={(e) => onSubmit(e)}>
+                Save <SaveIcon></SaveIcon>
+              </Button>
+            </label>
+          </Grid>
+          <Grid item>
+          {/* { cardIndex < formGroups.length - 1 ? ( */}
+            <Button variant="contained" component="span" onClick={() => nextCard()}>
+              Next<ArrowForwardIcon></ArrowForwardIcon>
+            </Button> 
+            {/* ) : ''} */}
+          </Grid>
+        </Grid>
+        </Grid>
+        {transitions((style, i) => (
+              <animated.div
+                className={'animatedFormGroup'}
+                key={i}
+                style={{
+                  ...style,
+                }}
+              >{formGroups[i]}</animated.div>
+            ))}
       </form>
     </Fragment>
     

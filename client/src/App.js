@@ -18,8 +18,16 @@ import './App.css';
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
+    primary: {
+      main: '#6f8785',
+    },
+    secondary: {
+      main: '#fb9c4d',
+    },
   },
-  spacing: 8,
+  typography: {
+    fontFamily: 'Merriweather'
+  }
 });
 
 if (localStorage.token) {

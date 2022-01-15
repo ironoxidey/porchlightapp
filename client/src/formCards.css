@@ -1,16 +1,22 @@
-.theContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  height: 70vh;
+legend.MuiFormLabel-root {
+	text-align: center;
+	font-size: 1.5em;
+	color: #6f8785;
 }
 
 .animatedFormGroup {
-  position: absolute;
-  max-width: 600px;
-  max-height: 500px;
-  will-change: transform, opacity;
+	position: absolute;
+	display: flex;
+	align-items: start;
+	justify-content: center;
+	width: 100%;
+	min-height: 80vh;
+	will-change: transform, opacity;
+	top: 100px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 20px;
 }
 
 /* .form-group {
