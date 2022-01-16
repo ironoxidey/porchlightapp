@@ -8,6 +8,7 @@ const ButtonRoot = React.forwardRef(function ButtonRoot(props, ref) {
   const { children, ...other } = props;
 
   return (
+    <ButtonBase> 
     <svg width="200" height="50" {...other} ref={ref}>
       <polygon points="0,50 0,0 200,0 200,50" className="bg" />
       <polygon points="0,50 0,0 200,0 200,50" className="borderEffect" />
@@ -15,6 +16,7 @@ const ButtonRoot = React.forwardRef(function ButtonRoot(props, ref) {
         <div className="content">{children}</div>
       </foreignObject>
     </svg>
+    </ButtonBase>
   );
 });
 
@@ -108,7 +110,7 @@ const CustomButtonRoot = styled(ButtonRoot)(
 );
 
 const SvgButton = React.forwardRef(function SvgButton(props, ref) {
-  return <ButtonBase><ButtonUnstyled {...props} component={CustomButtonRoot} ref={ref} /></ButtonBase>;
+  return <ButtonUnstyled {...props} component={CustomButtonRoot} ref={ref} />;
 });
 
 export default SvgButton;

@@ -9,7 +9,7 @@ legend.MuiFormLabel-root {
 	display: flex;
 	align-items: start;
 	justify-content: center;
-	width: 100%;
+	width: 100vw;
 	min-height: 80vh;
 	will-change: transform, opacity;
 	top: 100px;

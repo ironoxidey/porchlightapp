@@ -4,7 +4,7 @@
 :root {
 	--primary-color: #7a9492;
 	--link-color: #ffa14e;
-	--dark-color: #1b1f1e;
+	--dark-color: #4d5553;
 	--secondary-dark-color: #100f0eaa;
 	--light-color: #ffffd9;
 	--danger-color: #dc3545;
@@ -22,6 +22,9 @@
 	bottom: 0;
 	left: 0;
 	right: 0;
+}
+.inputTextColor:-webkit-autofill {
+	-webkit-text-fill-color: #f90;
 }
 
 * {
@@ -78,12 +81,12 @@ img {
 
 /* Utilities */
 .container {
-	max-width: 1100px;
+	/* max-width: 1100px; */
 	margin: auto;
 	/* overflow: hidden; */
 	/* padding: 0 2rem; */
-	margin-top: 6rem;
-	margin-bottom: 3rem;
+	/* margin-top: 6rem;
+	margin-bottom: 3rem; */
 	position: relative;
 }
 

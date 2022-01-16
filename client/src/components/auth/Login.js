@@ -3,7 +3,18 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/auth';
-import { TextField, Button } from '@mui/material';
+import { 
+  TextField, 
+  Button ,
+  Grid,
+  Box,
+  FormLabel,
+  FormControlLabel,
+  Checkbox,
+  Paper,
+} from '@mui/material';
+import porchlightLogo from '../../img/Porchlight_logo05-17.svg';
+
 //import axios from 'axios';
 
 const Login = ({ login, isAuthenticated }) => {
@@ -29,64 +40,69 @@ const Login = ({ login, isAuthenticated }) => {
 
   return (
     <Fragment>
-      <h1 className='large text-primary'>Sign In</h1>
-      <p className='lead'>
-        <i className='fas fa-user'></i> Sign into Your Account
-      </p>
-      <form className='form' onSubmit={(e) => onSubmit(e)}>
-        <div className='form-group'>
-        <TextField 
-              name="email"
-              id="email" 
-              label="Email" 
-              type="email"
-              //variant="filled" 
-              value={email}
-              onChange={(e) => onChange(e)} //call seperate onChange function above
-            />
-          {/* <input
-            type='email'
-            placeholder='Email Address'
-            name='email'
-            value={email}
-            onChange={(e) => onChange(e)} //call seperate onChange function above
-          /> */}
-        </div>
-        <div className='form-group'>
-        <TextField 
-              name="password"
-              id="password" 
-              label="Password" 
-              type="password"
-              //variant="filled" 
-              value={password}
-              onChange={(e) => onChange(e)} //call seperate onChange function above
-            />
-
-          {/* <input
-            type='password'
-            placeholder='Password'
-            name='password'
-            minLength='6'
-            value={password}
-            onChange={(e) => onChange(e)} //call seperate onChange function above
-          /> */}
-        </div>
-
-        <label htmlFor="submit">
-            <input type='submit' id='submit' value='Login' hidden />
-           <Button variant="contained" component="span">
+    
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+        <Box component="form" noValidate onSubmit={(e) => onSubmit(e)} sx={{ mt: 3, maxWidth: '500px' }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sx={{textAlign:'center'}}>
+                  <FormLabel component="legend">Let's get you logged in! What's your email address and password?</FormLabel>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="standard"
+                  required
+                  fullWidth
+                  id="email"
+                  label="My email address is"
+                  name="email"
+                  autoComplete="email"
+                  onChange={(e) => onChange(e)} //call seperate onChange function above
+                  value={email}
+                  type="email"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="standard"
+                  required
+                  fullWidth
+                  name="password"
+                  label="And my password is"
+                  type="password"
+                  id="password"
+                  value={password}
+                  autoComplete="password"
+                  onChange={(e) => onChange(e)} //call seperate onChange function above
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
               Login
             </Button>
-        </label>
-
-      </form>
-      <p className='my-1'>
-        Don't have an account? <Link to='/register'>Sign Up</Link>
-      </p>
-      <p className='my-1'>
-        Forgot your password? <Link to='/forgot-password'>Request a reset link</Link>
-      </p>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                Don't have an account? <Link to='/register'>Sign Up</Link>
+              </Grid>
+            </Grid>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                Forgot your password? <Link to='/forgot-password'>Request a reset link</Link>
+              </Grid>
+            </Grid>
+          </Box>
+          </Box>
     </Fragment>
   );
 };

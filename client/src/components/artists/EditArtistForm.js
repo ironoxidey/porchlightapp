@@ -1,5 +1,5 @@
 import axios from 'axios'; //only for uploads as of December 31st, 2021
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useRef } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -18,7 +18,10 @@ import {
   InputAdornment,
   IconButton,
   Grid,
-  Box
+  Box,
+  Paper,
+  BottomNavigationAction,
+  BottomNavigation,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -28,7 +31,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SaveIcon from '@mui/icons-material/Save';
+import SaveTwoToneIcon from '@mui/icons-material/SaveTwoTone';
+import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
 
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
@@ -270,6 +274,12 @@ const EditArtistForm = ({
       return { ...fieldObj, [theFieldKey]: e.target.value }; //updates travelingCompanion[tFidx].name
     });
     setFormData({ ...formData, [e.target.name]: updatedField });
+  }
+
+  const uploadButtonRef = useRef();
+
+  const clickUpload = () => {
+    uploadButtonRef.current.click();
   }
 
   const uploadHandler = (e) => {
@@ -599,7 +609,7 @@ const EditArtistForm = ({
                       variant="standard"
                       name="travelingCompanions"
                       id={`travelingCompanionRole${idx}`}
-                      label={ travelingCompanion.name ? `${travelingCompanion.name.split(' ')[0]}'s role is` : `Thier role is` } 
+                      label={ travelingCompanion.name ? `${travelingCompanion.name.split(' ')[0]}'s role is` : `Their role is` } 
                       value={travelingCompanion.role}
                       onChange={(e) => onMultiTextChange("role", travelingCompanions, idx, e)}
                       sx={{width: '100%'}}
@@ -611,7 +621,7 @@ const EditArtistForm = ({
                       variant="standard"
                       name="travelingCompanions"
                       id={`travelingCompanionEmail${idx}`}
-                      label={ travelingCompanion.name ? `${travelingCompanion.name.split(' ')[0]}'s email is` : `Thier email is` } 
+                      label={ travelingCompanion.name ? `${travelingCompanion.name.split(' ')[0]}'s email is` : `Their email is` } 
                       value={travelingCompanion.email}
                       onChange={(e) => onMultiTextChange("email", travelingCompanions, idx, e)}
                       sx={{ width: '100%' }}
@@ -781,11 +791,11 @@ const EditArtistForm = ({
           <FormControl component="fieldset">
             <FormLabel component="legend">Please attach one high quality image, for promotional use, of this size: 2160x1080px<br/>
             If the pixel size is bugging you, just make sure the image is 2:1 ratio, horizontal.</FormLabel>
-
+            
+            <UploadInput ref={uploadButtonRef} accept="image/*" name="wideImg" id="wideImg" type="file" onChange={(e) => uploadHandler(e)} />
               <label htmlFor="wideImg">
-                <UploadInput accept="image/*" name="wideImg" id="wideImg" type="file" onChange={(e) => uploadHandler(e)} />
-                <Button variant="contained" component="span">
-                  Upload
+                <Button variant="contained" component="span" onClick={(e) => {clickUpload()}} >
+                  <AddPhotoAlternateTwoToneIcon></AddPhotoAlternateTwoToneIcon>Upload
                 </Button>
               </label>
           </FormControl>
@@ -873,12 +883,13 @@ const EditArtistForm = ({
           </div>
   ];
 
-  const [formCardIndex, setIndex] = useState( 0 );
+  const [formCardIndex, setIndex] = useState( 19 );
   const cardIndex = formCardIndex;
   
   const [formCardDirection, setDirection] = useState(1);
   const transitions = useTransition(formCardIndex, {
     key: formCardIndex,
+    initial: null,
     from: { opacity: 0, transform: `translateX(${formCardDirection * 60}vw)` },
     enter: { opacity: 1, transform: 'translateX(0%)' },
     leave: { opacity: 0, transform: `translateX(${formCardDirection * -60}vw)` },
@@ -922,7 +933,7 @@ const EditArtistForm = ({
             <label htmlFor="submit">
               <input id="submit" type="submit" hidden/>
               <Button variant="contained" component="span" onClick={(e) => onSubmit(e)}>
-                Save <SaveIcon></SaveIcon>
+                Save <SaveTwoToneIcon></SaveTwoToneIcon>
               </Button>
             </label>
           </Grid>
@@ -944,7 +955,17 @@ const EditArtistForm = ({
                 }}
               >{formGroups[i]}</animated.div>
             ))}
-      </form>
+            {/* <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+          <BottomNavigation
+            showLabels
+          >
+            <BottomNavigationAction label="Previous" onClick={() => previousCard()} icon={<ArrowBackIcon />} />
+            <BottomNavigationAction label="Save" onClick={(e) => onSubmit(e)} icon={<SaveIcon />} />
+            <BottomNavigationAction label="Next" onClick={() => nextCard()} icon={<ArrowForwardIcon />} />
+          </BottomNavigation>
+        </Paper> */}
+        </form>
+        
     </Fragment>
     
   );
