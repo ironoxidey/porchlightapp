@@ -38,3 +38,5 @@ export const REFRESH_CALENDLY = 'REFRESH_CALENDLY';
 export const OPEN_NAV_DRAWER = 'OPEN_NAV_DRAWER';
 export const CLOSE_NAV_DRAWER = 'CLOSE_NAV_DRAWER';
 export const setSelectedDates = 'setSelectedDates';
+export const UPDATE_AVATAR = "UPDATE_AVATAR";
+export const UPDATE_ERROR = "UPDATE_ERROR";

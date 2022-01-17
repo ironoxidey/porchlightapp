@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -29,8 +29,26 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 import Alert from '../layout/Alert';
 
-const Navbar = ({ auth: { isAuthenticated, loading, user }, logout, openNavDrawer, closeNavDrawer, app: { navDrawer } }) => {
+const Navbar = ({ 
+  auth: { 
+    isAuthenticated, 
+    loading, 
+    user
+  },
+  logout, 
+  openNavDrawer, 
+  closeNavDrawer, 
+  app: { navDrawer },
+ }) => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const [avatar, setAvatar] = useState();
+
+  useEffect(() => {
+    if (user && user.avatar){
+      setAvatar(user.avatar);
+    }
+  }, [user]);
 
   const handleOpenNavMenu = (event) => {
     openNavDrawer();
@@ -108,7 +126,11 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout, openNavDrawe
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Rusty Hein" src="/api/uploads/band-from-the-local-walmart/3L5A4639_adj_1.jpg" />
+              {user && user.name && user.avatar !== null ? (
+                <Avatar alt={`${user.name}`} src={`${user.avatar}`} />
+              ) : (
+                <Avatar />
+              )}
               </IconButton>
             </Tooltip>
             <Menu

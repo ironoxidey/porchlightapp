@@ -40,6 +40,29 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
+// @route    GET api/artists/me
+// @desc     Get current users artist
+// @access   Private
+router.get('/my-avatar', auth, async (req, res) => {
+  try {
+    // const thisUser = await User.findOne({
+    //   id: req.user.id,
+    // });
+    console.log(req.user);
+    const artist = await Artist.findOne({
+      email: req.user.email,
+    }).select('wideImg');
+    if (!artist) {
+      return res.status(400).json({ msg: 'There is no artist for this user' });
+    }
+
+    res.json(artist);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route    POST api/artists
 // @desc     Create or update artist
 // @access   Private

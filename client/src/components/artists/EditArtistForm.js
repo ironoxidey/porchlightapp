@@ -4,6 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createArtist } from '../../actions/artist';
+import { updateUserAvatar } from '../../actions/auth';
 import { 
   TextField, 
   //Button, 
@@ -51,7 +52,8 @@ const EditArtistForm = ({
   //theArtist: { loading },
   createArtist,
   history,
-  auth
+  auth,
+  updateUserAvatar
 }) => {
   const loading = false; //a bunch of things are dependent on it; I should really just take it out.
   
@@ -285,14 +287,23 @@ const EditArtistForm = ({
   const uploadHandler = (e) => {
     const uploadPath = `/api/uploads/${slug}/`; //"../porchlight-uploads";
     let fileName = e.target.files[0].name;
+    let fileExtension = e.target.files[0].type.replace(/(.*)\//g, '');
     let targetValue = uploadPath + fileName;//e.target.value;
     const data = new FormData();
     data.append('file', e.target.files[0]);
     axios.post(`/api/uploads/upload`, data)
       .then((res) => {
         setFormData({ ...formData, [e.target.name]: targetValue });
-      });
+      }); 
+    if (e.target.name == 'wideImg') {
+      updateUserAvatar({'avatar': targetValue }, history);
+    }
   }
+
+  const [changesMade, setChangesMade] = useState(false);
+  useEffect(() => {
+    setChangesMade(true);
+  }, [formData]); //NEED TO FIX: formData triggers this when page first loads
     
   const onSubmit = (e) => {
     e.preventDefault();
@@ -300,7 +311,7 @@ const EditArtistForm = ({
     createArtist(formData, history, true);
   };
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
 
   const formGroups = [
         <div className='form-group' num='1'>
@@ -883,7 +894,7 @@ const EditArtistForm = ({
           </div>
   ];
 
-  const [formCardIndex, setIndex] = useState( 19 );
+  const [formCardIndex, setIndex] = useState( 0 );
   const cardIndex = formCardIndex;
   
   const [formCardDirection, setDirection] = useState(1);
@@ -901,11 +912,15 @@ const EditArtistForm = ({
     // },
     exitBeforeEnter: false,
   });
-  const nextCard = () => {
+  const nextCard = (e) => {
     setDirection(1);
-    setIndex(cardIndex => (cardIndex + 1) % formGroups.length)
+    setIndex(cardIndex => (cardIndex + 1) % formGroups.length);
+    if (changesMade) {
+      onSubmit(e);
+      setChangesMade(false);
+    }
   };
-  const previousCard = () => {
+  const previousCard = (e) => {
     setDirection(-1);
     setIndex(cardIndex => {
       if (cardIndex == 0){
@@ -914,6 +929,10 @@ const EditArtistForm = ({
       console.log(cardIndex);
       return (cardIndex - 1);
     });
+    if (changesMade) {
+      onSubmit(e);
+      setChangesMade(false);
+    }
   };
 
   return (
@@ -924,7 +943,7 @@ const EditArtistForm = ({
           
           <Grid item>
            {/* { cardIndex > 0 ? (  */}
-            <Button variant="contained" component="span" onClick={() => previousCard()}>
+            <Button variant="contained" component="span" onClick={(e) => previousCard(e)}>
               <ArrowBackIcon></ArrowBackIcon>Previous
             </Button>
             {/* ) : '' } */}
@@ -939,7 +958,7 @@ const EditArtistForm = ({
           </Grid>
           <Grid item>
           {/* { cardIndex < formGroups.length - 1 ? ( */}
-            <Button variant="contained" component="span" onClick={() => nextCard()}>
+            <Button variant="contained" component="span" onClick={(e) => nextCard(e)}>
               Next<ArrowForwardIcon></ArrowForwardIcon>
             </Button> 
             {/* ) : ''} */}
@@ -975,12 +994,13 @@ EditArtistForm.propTypes = {
   createArtist: PropTypes.func.isRequired,
   theArtist: PropTypes.object,
   auth: PropTypes.object.isRequired,
+  updateUserAvatar: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps, { createArtist })(
+export default connect(mapStateToProps, { createArtist, updateUserAvatar })(
   withRouter(EditArtistForm)
 ); //withRouter allows us to pass history objects

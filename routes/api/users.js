@@ -263,6 +263,40 @@ router.put(
   }
 );
 
+// @route   PUT api/users/update-avatar
+// @desc    Update Avatar
+// @access  Private
+router.put(
+  '/update-avatar',
+  [
+    auth,
+    [    
+        check('avatar', 'Please include an avatar URL').not().isEmpty(),
+    ] , 
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { avatar } = req.body;
+    const userFields = {};
+    if (avatar) userFields.avatar = avatar;
+    try {
+      let user = await User.findOneAndUpdate(
+        { _id: req.user.id },
+        { $set: userFields },
+        { new: true, upsert: true }
+      );
+      res.json(user);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    } 
+  }
+);
+
 // @route   POST api/users/calendlyAuth
 // @desc    Authenticate Calendly
 // @access  Private

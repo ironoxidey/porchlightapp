@@ -10,7 +10,9 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
-  ACCOUNT_DELETED
+  ACCOUNT_DELETED,
+  UPDATE_AVATAR,
+  UPDATE_ERROR
 } from '../actions/types';
 
 const intialState = {
@@ -31,6 +33,15 @@ export default function (state = intialState, action) {
         isAuthenticated: true,
         loading: false,
         user: payload,
+      };
+    case UPDATE_AVATAR:
+    case UPDATE_ERROR:
+      return {
+        ...state,
+        user: { 
+          ...state.user,
+          avatar: payload,
+        },
       };
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:

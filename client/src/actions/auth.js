@@ -13,6 +13,8 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   CLEAR_PROFILE,
+  UPDATE_AVATAR,
+  UPDATE_ERROR
 } from './types';
 import setAuthToken from '../utils/setAuthToken';
 
@@ -24,6 +26,7 @@ export const loadUser = () => async (dispatch) => {
 
   try {
     const res = await axios.get('/api/auth');
+    //res.data.avatar = await axios.get('/api/artists/my-avatar');
 
     dispatch({
       type: USER_LOADED,
@@ -118,6 +121,35 @@ export const resetPassword = ({ newPass, resetLink }) => async (dispatch) => {
       errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
     }
     dispatch({ type: RESETPASSWORD_FAIL });
+  }
+};
+
+//Update User Avatar
+export const updateUserAvatar = (formData, history) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const res = await axios.put('/api/users/update-avatar', formData, config);
+    
+    dispatch({
+      type: UPDATE_AVATAR,
+      payload: res.data.avatar,
+    });
+
+    dispatch(setAlert('User Avatar Updated', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+    }
+    dispatch({
+      type: UPDATE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
   }
 };
 
