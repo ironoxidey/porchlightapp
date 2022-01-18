@@ -28,9 +28,13 @@ jobs:
           cd client
           npm install
 
-      - name: Build and restart server
+      - name: Build Client
         run: |
+          cd client
           npm run build
+
+      - name: Restart server
+        run: |
           pm2 restart server
           pm2 save
           sudo service nginx restart
