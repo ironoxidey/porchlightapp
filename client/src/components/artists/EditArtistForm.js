@@ -242,7 +242,8 @@ const EditArtistForm = ({
   } = formData;
 
   const onChange = (e) => {
-    console.log(e.target.type);
+    //console.log(e.target.type);
+    changesMade.current = true;
     let targetValue = e.target.value;
     switch (e.target.type) {
       case 'checkbox':
@@ -255,6 +256,7 @@ const EditArtistForm = ({
   }
 
   const onCalendarChange = (target) => {
+    changesMade.current = true;
     let targetValue = target.value;
     setFormData({ ...formData, [target.name]: targetValue });
   }
@@ -269,6 +271,7 @@ const EditArtistForm = ({
   }
 
   const onMultiTextChange = (theFieldKey, theFieldObj, idx, e) => {
+    changesMade.current = true;
     let targetValue = e.target.value;
     targetValue = e.target.value;
     let updatedField = theFieldObj.map((fieldObj, tFidx) => {
@@ -285,6 +288,7 @@ const EditArtistForm = ({
   }
 
   const uploadHandler = (e) => {
+    changesMade.current = true;
     const uploadPath = `/api/uploads/${slug}/`; //"../porchlight-uploads";
     let fileName = e.target.files[0].name;
     let fileExtension = e.target.files[0].type.replace(/(.*)\//g, '');
@@ -300,15 +304,15 @@ const EditArtistForm = ({
     }
   }
 
-  const [changesMade, setChangesMade] = useState(false);
-  useEffect(() => {
-    setChangesMade(true);
-  }, [formData]); //NEED TO FIX: formData triggers this when page first loads
-    
+  //const [changesMade, setChangesMade] = useState(false);
+  const changesMade = useRef(false);
+  const firstLoad = useRef(true);
+   
   const onSubmit = (e) => {
     e.preventDefault();
     //console.log('Submitting...');
     createArtist(formData, history, true);
+    changesMade.current = false;
   };
 
   const [open, setOpen] = useState(true);
@@ -327,7 +331,6 @@ const EditArtistForm = ({
                   label="My first name is"  
                   value={firstName}
                   onChange={(e) => onChange(e)}
-                  autoFocus={true}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
@@ -915,9 +918,8 @@ const EditArtistForm = ({
   const nextCard = (e) => {
     setDirection(1);
     setIndex(cardIndex => (cardIndex + 1) % formGroups.length);
-    if (changesMade) {
+    if (changesMade.current) {
       onSubmit(e);
-      setChangesMade(false);
     }
   };
   const previousCard = (e) => {
@@ -929,9 +931,8 @@ const EditArtistForm = ({
       console.log(cardIndex);
       return (cardIndex - 1);
     });
-    if (changesMade) {
+    if (changesMade.current) {
       onSubmit(e);
-      setChangesMade(false);
     }
   };
 
