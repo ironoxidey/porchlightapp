@@ -32,6 +32,8 @@ jobs:
         run: |
           cd client
           npm run build
+        env:
+          CI: false
 
       - name: Restart server
         run: |
