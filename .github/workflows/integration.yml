@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deployment:
+  installation:
     runs-on: self-hosted
     steps:
       - name: Checkout main branch
@@ -24,17 +24,25 @@ jobs:
       #   run: npm test
 
       - name: Install Client Dependencies
-        run: |
-          cd client
-          npm ci
+        run: npm ci
+        working-directory: ./client
 
+  build_client:
+    needs: installation
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
       - name: Build Client
-        run: |
-          cd client
-          npm run build
+        run: npm run build
         env:
           CI: false
 
+  restart_server:
+    needs: build
+    runs-on: self-hosted
+    steps:
       - name: Restart server
         run: |
           pm2 restart server
