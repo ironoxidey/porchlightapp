@@ -26,7 +26,7 @@ export default function (state = initialState, action) {
     case UPDATE_ARTIST:
       return {
         ...state,
-        msg: payload,
+        artist: payload,
         loading: false,
       };
     case GET_ARTISTS:

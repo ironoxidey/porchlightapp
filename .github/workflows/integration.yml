@@ -26,7 +26,7 @@ jobs:
       - name: Install Client Dependencies
         run: |
           cd client
-          npm install
+          npm ci
 
       - name: Build Client
         run: |

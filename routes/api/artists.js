@@ -212,6 +212,7 @@ router.post(
               { new: true, upsert: true }
             );
             artistCount++;
+            res.json(artistFields);
           } catch (err) {
             console.error(err.message);
             res.status(500).send('Server Error');
@@ -222,7 +223,7 @@ router.post(
           res.status(500).send('User does not have authority to make these changes.');
         }
       }));
-      res.json(artistCount + " artist(s) submitted to the database."); //eventually remove this
+      //res.json(artistCount + " artist(s) submitted to the database."); //eventually remove this
     }
   }
 );

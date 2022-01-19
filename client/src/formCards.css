@@ -1,7 +1,23 @@
-legend.MuiFormLabel-root {
+legend.MuiFormLabel-root,
+p.MuiFormLabel-root {
 	text-align: center;
 	font-size: 1.5em;
-	color: #6f8785;
+	color: var(--primary-color);
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+/* form numbers before the inquiry */
+legend.MuiFormLabel-root::before {
+	content: var(--form-num);
+	display: inline-flex;
+	border: 1px solid;
+	width: 35px;
+	height: 35px;
+	margin-right: 8px;
+	justify-content: center;
+	align-items: center;
+	border-radius: 18px;
 }
 
 .animatedFormGroup {
@@ -19,10 +35,6 @@ legend.MuiFormLabel-root {
 	padding: 20px;
 }
 
-/* .form-group {
-  position: absolute;
-  max-width: 500px;
-  max-height: 500px;
-  width: 350px;
-  will-change: transform, opacity;
-} */
+.form-group {
+	padding-bottom: 80px;
+}

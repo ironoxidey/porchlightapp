@@ -28,11 +28,11 @@ const ArtistSchema = new mongoose.Schema({
   medium: {
     type: String,
   },
-  genre: {
-    type: String,
+  genres: {
+    type: Object,
   },
-  repLink: {
-    type: String,
+  repLinks: {
+    type: Object,
   },
   helpKind: {
     type: String,
@@ -154,7 +154,7 @@ const ArtistSchema = new mongoose.Schema({
     type: Boolean,
   },
   allergies: {
-    type: String,
+    type: Object,
   },
   allowKids: {
     type: Boolean,
