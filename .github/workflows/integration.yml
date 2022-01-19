@@ -40,7 +40,7 @@ jobs:
           CI: false
 
   restart_server:
-    needs: build
+    needs: build_client
     runs-on: self-hosted
     steps:
       - name: Restart server
