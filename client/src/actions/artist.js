@@ -94,11 +94,10 @@ export const createArtist =
 				type: UPDATE_ARTIST,
 				payload: res.data,
 			});
-
 			dispatch(setAlert(edit ? 'Artist Updated' : 'Artist Created', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
 		} catch (err) {
 			const errors = err.response.data.errors;
-
+			console.log('error: ' + err);
 			if (errors) {
 				errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
 			}
@@ -106,6 +105,7 @@ export const createArtist =
 				type: UPDATE_ARTIST_ERROR,
 				payload: { msg: err.response.statusText, status: err.response.status },
 			});
+			dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
 		}
 	};
 

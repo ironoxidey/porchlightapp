@@ -33,8 +33,18 @@ legend.MuiFormLabel-root::before {
 	left: 0;
 	right: 0;
 	padding: 20px;
+	margin-top: 20px;
 }
-
 .form-group {
 	padding-bottom: 80px;
+}
+
+@media (max-width: 700px) {
+	.animatedFormGroup {
+		top: 170px;
+		padding-top: 0;
+	}
+	.form .form-group {
+		margin-top: 0;
+	}
 }

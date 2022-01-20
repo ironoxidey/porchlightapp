@@ -83,6 +83,12 @@ const EditArtistForm = ({
 		bookingWhenWhere: '',
 		setLength: '',
 		schedule: '',
+		showSchedule: {
+			startTime: '19:00',
+			doorsOpen: '18:30',
+			hardWrap: '21:00',
+			flexible: true,
+		},
 		overnight: '',
 		openers: '',
 		travelingCompanions: [],
@@ -95,7 +101,7 @@ const EditArtistForm = ({
 		agreeToPayAdminFee: true,
 		wideImg: '',
 		squareImg: '',
-		covidPrefs: '',
+		covidPrefs: [],
 		artistNotes: '',
 		financialHopes: '',
 		// onboardDate: '',
@@ -139,6 +145,15 @@ const EditArtistForm = ({
 						: theArtist.bookingWhenWhere,
 				setLength: loading || !theArtist.setLength ? '' : theArtist.setLength,
 				schedule: loading || !theArtist.schedule ? '' : theArtist.schedule,
+				showSchedule:
+					loading || !theArtist.showSchedule
+						? {
+								startTime: '19:00',
+								doorsOpen: '18:30',
+								hardWrap: '21:00',
+								flexible: true,
+						  }
+						: theArtist.showSchedule,
 				overnight: loading || !theArtist.overnight ? '' : theArtist.overnight,
 				openers: loading || !theArtist.openers ? '' : theArtist.openers,
 				travelingCompanions:
@@ -161,13 +176,13 @@ const EditArtistForm = ({
 				soundSystem:
 					loading || !theArtist.soundSystem ? '' : theArtist.soundSystem,
 				agreeToPayAdminFee:
-					loading || !theArtist.agreeToPayAdminFee
+					loading || theArtist.agreeToPayAdminFee == null
 						? true
 						: theArtist.agreeToPayAdminFee,
 				wideImg: loading || !theArtist.wideImg ? '' : theArtist.wideImg,
 				squareImg: loading || !theArtist.squareImg ? '' : theArtist.squareImg,
 				covidPrefs:
-					loading || !theArtist.covidPrefs ? '' : theArtist.covidPrefs,
+					loading || !theArtist.covidPrefs ? [] : theArtist.covidPrefs,
 				artistNotes:
 					loading || !theArtist.artistNotes ? '' : theArtist.artistNotes,
 				financialHopes:
@@ -203,6 +218,12 @@ const EditArtistForm = ({
 					bookingWhenWhere: '',
 					setLength: '',
 					schedule: '',
+					showSchedule: {
+						startTime: '19:00',
+						doorsOpen: '18:30',
+						hardWrap: '21:00',
+						flexible: true,
+					},
 					overnight: '',
 					openers: '',
 					travelingCompanions: [],
@@ -215,7 +236,7 @@ const EditArtistForm = ({
 					agreeToPayAdminFee: true,
 					wideImg: '',
 					squareImg: '',
-					covidPrefs: '',
+					covidPrefs: [],
 					artistNotes: '',
 					financialHopes: '',
 					// onboardDate: '',
@@ -250,6 +271,7 @@ const EditArtistForm = ({
 		bookingWhenWhere,
 		setLength,
 		schedule,
+		showSchedule,
 		overnight,
 		openers,
 		travelingCompanions,
@@ -270,7 +292,7 @@ const EditArtistForm = ({
 	} = formData;
 
 	const onChange = (e) => {
-		//console.log(e.target.value);
+		//console.log(e.target.name);
 		//console.log(Object.keys(formGroups).length);
 		changesMade.current = true;
 		let targetValue = e.target.value;
@@ -281,7 +303,21 @@ const EditArtistForm = ({
 			default:
 				targetValue = e.target.value;
 		}
-		setFormData({ ...formData, [e.target.name]: targetValue });
+		const targetName = e.target.name.split('.');
+		//console.log(targetName + ': ' + targetValue);
+		//setFormData({ ...formData, [e.target.name]: targetValue });
+		if (targetName.length === 1) {
+			setFormData({ ...formData, [targetName[0]]: targetValue });
+		} else {
+			setFormData((prevData) => ({
+				...prevData,
+				[targetName[0]]: {
+					...prevData[targetName[0]],
+					[targetName[1]]: targetValue,
+				},
+			}));
+			//console.log(formData);
+		}
 	};
 	const onAutocompleteTagChange = (e, theFieldName, val) => {
 		//console.log(theFieldName);
@@ -1257,11 +1293,48 @@ const EditArtistForm = ({
 		//     onChange={(e) => onChange(e)}
 		//   />
 		// </div>,
-		schedule: [
+		showSchedule: [
 			<FormLabel component='legend'>
-				Porchlight shows typically start at about 7:00pm, with "doors open" at
-				6:30pm, and a hard wrap at about 9pm. Does this tentative schedule
-				likely work for most of your shows?
+				Porchlight shows typically start at about{' '}
+				<TextField
+					variant='standard'
+					id='startTime'
+					//label='Alarm clock'
+					type='time'
+					name='showSchedule.startTime'
+					value={showSchedule.startTime || ''}
+					onChange={(e) => onChange(e)}
+					inputProps={{
+						step: 900, // 15 min
+					}}
+				/>
+				, with "doors open" at{' '}
+				<TextField
+					variant='standard'
+					id='doorsOpen'
+					//label='Alarm clock'
+					type='time'
+					name='showSchedule.doorsOpen'
+					value={showSchedule.doorsOpen || ''}
+					onChange={(e) => onChange(e)}
+					inputProps={{
+						step: 900, // 15 min
+					}}
+				/>
+				, and a hard wrap at about{' '}
+				<TextField
+					variant='standard'
+					id='hardWrap'
+					//label='Alarm clock'
+					type='time'
+					name='showSchedule.hardWrap'
+					value={showSchedule.hardWrap || ''}
+					onChange={(e) => onChange(e)}
+					inputProps={{
+						step: 900, // 15 min
+					}}
+				/>
+				. Does this tentative schedule likely work for most of your shows?
 				<br />
 				<small>
 					Schedules often get shifted by hosts or musicians, but it's really
@@ -1269,26 +1342,66 @@ const EditArtistForm = ({
 					like to propose an alternative schedule for your shows, list it below:
 				</small>
 			</FormLabel>,
-			<TextField
-				name='schedule'
-				id='schedule'
-				label='Porchlight shows typically start at about 7:00pm, with "doors open" at 6:30pm, and a hard wrap at about 9pm. Does this tentative schedule likely work for most of your shows?'
-				value={schedule}
-				onChange={(e) => onChange(e)}
-			/>,
+			// <TextField
+			// 	name='schedule'
+			// 	id='schedule'
+			// 	label='Porchlight shows typically start at about 7:00pm, with "doors open" at 6:30pm, and a hard wrap at about 9pm. Does this tentative schedule likely work for most of your shows?'
+			// 	value={schedule}
+			// 	onChange={(e) => onChange(e)}
+			// />,
 		],
 		covidPrefs: [
 			<FormLabel component='legend'>
 				Do you have Covid guidelines you’d like these events to adhere to,
 				beyond local guidelines and host preferences?
 			</FormLabel>,
-			<TextField
+			<Grid item xs={12} sx={{ width: '100%' }}>
+				<Autocomplete
+					id='covidPrefs'
+					multiple
+					disableCloseOnSelect
+					value={covidPrefs}
+					options={[
+						'everyone passes a fever check',
+						'everyone presents a negative Covid test',
+						'everyone presents a vaccination passport',
+						'everyone social distances',
+						'everyone wears masks',
+						'everything is outdoors',
+					]}
+					onChange={(event, value) =>
+						onAutocompleteTagChange(event, 'covidPrefs', value)
+					}
+					renderTags={(value, getTagProps) =>
+						value.map((option, index) => (
+							<Chip
+								variant='outlined'
+								name='covidPrefs'
+								label={option}
+								{...getTagProps({ index })}
+							/>
+						))
+					}
+					renderInput={(params) => (
+						<TextField
+							{...params}
+							sx={{ width: '100%' }}
+							variant='standard'
+							label={`I would feel most comfortable if`}
+							name='covidPrefs'
+						/>
+					)}
+				/>
+			</Grid>,
+			{
+				/* <TextField
 				name='covidPrefs'
 				id='covidPrefs'
 				label='Do you have Covid guidelines you’d like these events to adhere to, beyond local guidelines and host preferences?'
 				value={covidPrefs}
 				onChange={(e) => onChange(e)}
-			/>,
+			/>, */
+			},
 		],
 		artistNotes: [
 			<FormLabel component='legend'>
@@ -1326,7 +1439,7 @@ const EditArtistForm = ({
 	};
 
 	//// CARD INDEX ///////
-	const [formCardIndex, setIndex] = useState(21);
+	const [formCardIndex, setIndex] = useState(24);
 
 	const cardIndex = formCardIndex;
 
