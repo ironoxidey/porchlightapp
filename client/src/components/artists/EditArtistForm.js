@@ -1101,7 +1101,7 @@ const EditArtistForm = ({
 			[
 				<FormControl component='fieldset'>
 					<UploadInput
-						ref={uploadButtonRef}
+						ref={uploadWideButtonRef}
 						accept='image/*'
 						name='wideImg'
 						id='wideImg'
@@ -1143,7 +1143,7 @@ const EditArtistForm = ({
 			[
 				<FormControl component='fieldset'>
 					<UploadInput
-						ref={uploadButtonRef}
+						ref={uploadSquareButtonRef}
 						accept='image/*'
 						name='squareImg'
 						id='squareImg'
