@@ -27,6 +27,16 @@ jobs:
         run: npm ci
         working-directory: ./client
 
+  restart_server:
+    needs: installation
+    runs-on: self-hosted
+    steps:
+      - name: Restart server
+        run: |
+          pm2 restart server
+          pm2 save
+          sudo service nginx restart
+
   build_client:
     needs: installation
     runs-on: self-hosted
@@ -38,13 +48,3 @@ jobs:
         run: npm run build
         env:
           CI: false
-
-  restart_server:
-    needs: build_client
-    runs-on: self-hosted
-    steps:
-      - name: Restart server
-        run: |
-          pm2 restart server
-          pm2 save
-          sudo service nginx restart

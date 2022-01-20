@@ -318,10 +318,14 @@ const EditArtistForm = ({
 		setFormData({ ...formData, [e.target.name]: updatedField });
 	};
 
-	const uploadButtonRef = useRef();
+	const uploadSquareButtonRef = useRef();
+	const clickSquareUpload = () => {
+		uploadSquareButtonRef.current.click();
+	};
 
-	const clickUpload = () => {
-		uploadButtonRef.current.click();
+	const uploadWideButtonRef = useRef();
+	const clickWideUpload = () => {
+		uploadWideButtonRef.current.click();
 	};
 
 	const uploadHandler = (e) => {
@@ -1077,7 +1081,11 @@ const EditArtistForm = ({
 						onChange={(e) => onChange(e)}
 					>
 						<FormControlLabel value='true' control={<Radio />} label='Yes' />
-						<FormControlLabel value='false' control={<Radio />} label='No' />
+						<FormControlLabel
+							value='false'
+							control={<Radio />}
+							label="I'd like to discuss this further."
+						/>
 					</RadioGroup>
 				</FormControl>,
 			],
@@ -1105,7 +1113,7 @@ const EditArtistForm = ({
 							variant='contained'
 							component='span'
 							onClick={(e) => {
-								clickUpload();
+								clickWideUpload();
 							}}
 						>
 							<AddPhotoAlternateTwoToneIcon></AddPhotoAlternateTwoToneIcon>
@@ -1147,7 +1155,7 @@ const EditArtistForm = ({
 							variant='contained'
 							component='span'
 							onClick={(e) => {
-								clickUpload();
+								clickSquareUpload();
 							}}
 						>
 							<AddPhotoAlternateTwoToneIcon></AddPhotoAlternateTwoToneIcon>
