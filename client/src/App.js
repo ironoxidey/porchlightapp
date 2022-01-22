@@ -17,44 +17,44 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './App.css';
 
 const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#6f8785',
-    },
-    secondary: {
-      main: '#fb9c4d',
-    },
-  },
-  typography: {
-    fontFamily: 'Merriweather'
-  }
+	palette: {
+		mode: 'dark',
+		primary: {
+			main: '#6f8785',
+		},
+		secondary: {
+			main: '#fb9c4d',
+		},
+	},
+	typography: {
+		fontFamily: 'Merriweather',
+	},
 });
 
 if (localStorage.token) {
-  setAuthToken(localStorage.token);
+	setAuthToken(localStorage.token);
 }
 
 const App = () => {
-  useEffect(() => {
-    store.dispatch(loadUser());
-  }, []);
-  return (
-    <Provider store={store}>
-      <ThemeProvider theme={darkTheme}>
-        <Router>
-          <Fragment>
-            <Navbar />
-            <SwipeableDrawer />
-            <Switch>
-            {/* <Route exact path='/' component={Landing} /> */}
-            <Route component={Routes} />
-            </Switch>
-          </Fragment>
-        </Router>
-      </ThemeProvider>
-    </Provider>
-  );
+	useEffect(() => {
+		store.dispatch(loadUser());
+	}, []);
+	return (
+		<Provider store={store}>
+			<ThemeProvider theme={darkTheme}>
+				<Router>
+					<Fragment>
+						<Navbar />
+						<SwipeableDrawer />
+						<Switch>
+							{/* <Route exact path='/' component={Landing} /> */}
+							<Route component={Routes} />
+						</Switch>
+					</Fragment>
+				</Router>
+			</ThemeProvider>
+		</Provider>
+	);
 };
 
 export default App;

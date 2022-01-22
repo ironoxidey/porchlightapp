@@ -23,8 +23,24 @@
 	left: 0;
 	right: 0;
 }
-.inputTextColor:-webkit-autofill {
-	-webkit-text-fill-color: #f90;
+input {
+	background-color: transparent;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+	-webkit-transition-delay: 99999s;
+}
+input:-webkit-autofill {
+	-webkit-text-fill-color: var(--primary-color);
+	-webkit-box-shadow: 0 0 0 100px transparent inset;
+}
+
+h2.MuiTypography-root {
+	text-align: center;
+	font-size: 1.5em;
+	color: var(--primary-color);
 }
 
 * {
@@ -62,7 +78,7 @@ body {
 }
 
 .porchlightLogo {
-	max-height: 50vh;
+	max-height: 40vh;
 	width: auto;
 }
 

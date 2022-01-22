@@ -1,5 +1,8 @@
-import React from 'react';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Route, Switch, useLocation, withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import Page from './Page';
 import Landing from '../layout/Landing';
 import Register from '../auth/Register';
 import Login from '../auth/Login';
@@ -24,47 +27,176 @@ import ForgotPassword from '../auth/ForgotPassword';
 
 import { useTransition, animated, config } from '@react-spring/web';
 
-const Routes = () => {
-  const theLocation = useLocation();
-  const transitions = useTransition(theLocation, {
-    from: {opacity: 0, transform: "scale(1.02)"},
-    enter: {opacity: 1, transform: "scale(1)"},
-    leave: {opacity: 0, transform: "scale(0.98)"},
-    config: config.stiff
-  });
+const Routes = ({ app }) => {
+	const theLocation = useLocation();
+	const transitions = useTransition(theLocation, {
+		from: { opacity: 0, transform: 'scale(1.02)' },
+		enter: { opacity: 1, transform: 'scale(1)' },
+		leave: { opacity: 0, transform: 'scale(0.98)' },
+		config: config.stiff,
+	});
 
-  return (
-    <section className='container'>
-      {transitions(( style, location ) => {
-        return (
-          <animated.div style={style} className='animatedRoute'>
-            <Switch location={location}>
-              <Route exact path='/' component={Landing} />
+	useEffect(() => {
+		document.title = app.pageTitle;
+	}, [app.pageTitle]);
 
-              <Route exact path='/register' component={Register} />
-              <Route exact path='/reset-password' component={ResetPassword} />
-              <Route exact path='/forgot-password' component={ForgotPassword} />
-              <Route exact path='/login' component={Login} />
-              <Route exact path='/profiles' component={Profiles} />
-              <Route exact path='/artists' component={Artists} />
-              <Route exact path='/artists/:slug' component={Artist} />
-              <Route exact path='/profile/:id' component={Profile} />
-              <PrivateRoute exact path='/dashboard' component={Dashboard} />
-              <PrivateRoute exact path='/create-profile' component={CreateProfile} />
-              <PrivateRoute exact path='/edit-artist-profile' component={EditMyArtistProfile} />
-              <PrivateRoute exact path='/edit-profile' component={EditProfile} />
-              <PrivateRoute exact path='/add-experience' component={AddExperience} />
-              <PrivateRoute exact path='/add-education' component={AddEducation} />
-              <PrivateRoute exact path='/posts' component={Posts} />
-              <PrivateRoute exact path='/posts/:id' component={Post} />
-              <AdminPrivateRoute exact path='/edit-artists' component={EditArtists} />
-              <Route component={NotFound} />
-            </Switch>
-          </animated.div> 
-        )
-      })}
-    </section>
-   ) 
-}
+	return (
+		<section className='container'>
+			{transitions((style, location) => {
+				return (
+					<animated.div style={style} className='animatedRoute'>
+						<Switch location={location}>
+							<Route
+								exact
+								path='/'
+								render={(props) => (
+									<Page>
+										<Landing {...props} />
+									</Page>
+								)}
+							/>
+							<Route
+								exact
+								path='/register'
+								render={(props) => (
+									<Page title='Register'>
+										<Register {...props} />
+									</Page>
+								)}
+							/>
+							<Route
+								exact
+								path='/reset-password'
+								render={(props) => (
+									<Page title='Reset Password'>
+										<ResetPassword {...props} />
+									</Page>
+								)}
+							/>
+							<Route
+								exact
+								path='/forgot-password'
+								render={(props) => (
+									<Page title='Forgot Password'>
+										<ForgotPassword {...props} />
+									</Page>
+								)}
+							/>
+							<Route
+								exact
+								path='/login'
+								render={(props) => (
+									<Page title='Login'>
+										<Login {...props} />
+									</Page>
+								)}
+							/>
+							<Route
+								exact
+								path='/profiles'
+								render={(props) => (
+									<Page title='Profiles'>
+										<Profiles {...props} />
+									</Page>
+								)}
+							/>
+							<Route
+								exact
+								path='/artists'
+								render={(props) => (
+									<Page title='Artists'>
+										<Artists {...props} />
+									</Page>
+								)}
+							/>
+							<Route exact path='/artists/:slug' component={Artist} />
+							<Route
+								exact
+								path='/profile/:id'
+								render={(props) => (
+									<Page title='Profile'>
+										<Profile {...props} />
+									</Page>
+								)}
+							/>
+							<PrivateRoute
+								exact
+								path='/dashboard'
+								component={Dashboard}
+								title='Dashboard'
+							/>
+							<PrivateRoute
+								exact
+								path='/create-profile'
+								component={CreateProfile}
+								title='Create Your Profile'
+							/>
+							<PrivateRoute
+								exact
+								path='/edit-artist-profile'
+								component={EditMyArtistProfile}
+								title='Edit Your Artist Profile'
+							/>
+							<PrivateRoute
+								exact
+								path='/edit-profile'
+								component={EditProfile}
+								title='Edit Your Page'
+							/>
 
-export default Routes;
+							<PrivateRoute
+								exact
+								path='/add-experience'
+								component={AddExperience}
+								title='Add Experience'
+							/>
+							<PrivateRoute
+								exact
+								path='/add-education'
+								component={AddEducation}
+								title='Add Education'
+							/>
+							<PrivateRoute
+								exact
+								path='/posts'
+								component={Posts}
+								title='Posts'
+							/>
+							<PrivateRoute
+								exact
+								path='/posts/:id'
+								component={Post}
+								title='A Post'
+							/>
+							<AdminPrivateRoute
+								exact
+								path='/edit-artists'
+								component={EditArtists}
+								title='Edit Artists'
+							/>
+							<Route
+								render={(props) => (
+									<Page title='Page Not Found'>
+										<NotFound {...props} />
+									</Page>
+								)}
+							/>
+						</Switch>
+					</animated.div>
+				);
+			})}
+		</section>
+	);
+};
+
+// export default Routes;
+
+Routes.propTypes = {
+	app: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+	app: state.app,
+});
+
+export default connect(mapStateToProps)(withRouter(Routes)); //withRouter allows us to pass history objects

@@ -41,3 +41,5 @@ export const CLOSE_NAV_DRAWER = 'CLOSE_NAV_DRAWER';
 export const setSelectedDates = 'setSelectedDates';
 export const UPDATE_AVATAR = 'UPDATE_AVATAR';
 export const UPDATE_ERROR = 'UPDATE_ERROR';
+export const IMAGE_UPLOAD = 'IMAGE_UPLOAD';
+export const PAGE_LOAD = 'PAGE_LOAD';

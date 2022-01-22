@@ -1,77 +1,185 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
 
-const ArtistTop = ({ artist: {
-    firstName,
-    genre,
-    lastName,
-    medium,
-    repLink,
-    stageName,
-    squareImg,
-    wideImg,
-}}) => {
-    return (
-        <div className="profile-top bg-primary p-2">
-          <img
-            className="my-1"
-            src={squareImg}
-            alt=""
-          />
-          <h1 className="large">{stageName}</h1>
-          <p className="lead">({firstName} {lastName})</p>
-          {/* <p>{location && <span>{location}</span>}</p>
-          <div class="icons my-1">
-          {
-              website && (
-                <a href={website} target="_blank" rel="noopener noreferrer">
-                <i class="fas fa-globe fa-2x"></i>
-                </a>
-              )
-          }
-          {
-              social && social.twitter && (
-                <a href={social.twitter} target="_blank" rel="noopener noreferrer">
-                <i class="fab fa-twitter fa-2x"></i>
-                </a>
-              )
-          }
-          {
-            social && social.facebook && (
-                <a href={social.facebook} target="_blank" rel="noopener noreferrer">
-              <i class="fab fa-facebook fa-2x"></i>
-            </a>
-            )
-          }
-          {
-            social && social.linkedin && (
-                <a href={social.linkedin}  target="_blank" rel="noopener noreferrer">
-              <i class="fab fa-linkedin fa-2x"></i>
-            </a>
-            )
-          }
-          {
-            social && social.youtube && (
-                <a href={social.youtube}  target="_blank" rel="noopener noreferrer">
-              <i class="fab fa-youtube fa-2x"></i>
-            </a>
-            )
-          }
-          {
-            social && social.instagram && (
-                <a href={social.instagram}  target="_blank" rel="noopener noreferrer">
-              <i class="fab fa-instagram fa-2x"></i>
-            </a>
-            )
-          } 
-           
-          </div>*/}
-        </div>
-    )
-}
+import {
+	TextField,
+	//Button,
+	Radio,
+	RadioGroup,
+	FormControlLabel,
+	FormControl,
+	FormLabel,
+	Select,
+	InputLabel,
+	MenuItem,
+	InputAdornment,
+	IconButton,
+	Grid,
+	Box,
+	Paper,
+	BottomNavigationAction,
+	BottomNavigation,
+	Autocomplete,
+	Chip,
+	Typography,
+	withStyles,
+} from '@mui/material';
+import Button from '../layout/SvgButton';
+import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
+
+import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+
+const ArtistTop = ({
+	artist,
+	artist: {
+		slug,
+		email,
+		firstName,
+		lastName,
+		stageName,
+		medium,
+		genres,
+		repLinks,
+		helpKind,
+		phone,
+		hometown,
+		city,
+		state,
+		zip,
+		costStructure,
+		namedPrice,
+		payoutPlatform,
+		payoutHandle,
+		bookingWhen,
+		bookingWhenWhere,
+		setLength,
+		schedule,
+		showSchedule,
+		overnight,
+		openers,
+		travelingCompanions,
+		companionTravelers,
+		hangout,
+		merchTable,
+		allergies,
+		allowKids,
+		soundSystem,
+		agreeToPayAdminFee,
+		wideImg,
+		squareImg,
+		covidPrefs,
+		artistNotes,
+		financialHopes,
+		bio,
+	},
+}) => {
+	return (
+		<Fragment>
+			{wideImg ? (
+				<Grid
+					container
+					sx={{
+						padding: '20px!important',
+						height: '30vh',
+						width: 'calc(100% - 40px)',
+						margin: '0 auto',
+						borderRadius: '8px',
+						backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0)), url("${wideImg}")`,
+						backgroundPosition: '50% 25%',
+						backgroundSize: 'cover',
+					}}
+				>
+					<Grid
+						item
+						container
+						justifyContent='center'
+						sx={{ height: '100%', padding: '0 20px!important' }}
+					>
+						<Grid
+							item
+							container
+							spacing={2}
+							sx={{ marginTop: '0' }}
+							direction='row'
+							alignItems='center'
+						>
+							{artist.squareImg ? (
+								<Grid
+									item
+									sx={{
+										height: '100px',
+										width: '100px',
+										maxHeight: '100px',
+										maxWidth: '100px',
+										borderRadius: '50%',
+										overflow: 'hidden',
+										backgroundImage: `url("${artist.squareImg}")`,
+										backgroundPosition: '50% 25%',
+										backgroundSize: 'cover',
+										outlineOffset: '4px',
+										outline: '1px solid var(--primary-color)',
+									}}
+								></Grid>
+							) : (
+								''
+							)}
+							<Grid
+								item
+								container
+								xs={10}
+								sx={{ marginTop: '0', textShadow: '0 0 10px rgba(0,0,0,.8)' }}
+								direction='column'
+								alignItems='start'
+							>
+								{artist.stageName ? (
+									<Grid item>
+										<Typography component='h2'>{artist.stageName}</Typography>
+									</Grid>
+								) : (
+									''
+								)}
+								<Grid item>
+									{artist.genres && artist.genres.length > 0
+										? artist.genres.map((genre, key) => (
+												<Chip
+													key={key}
+													label={genre}
+													size='small'
+													sx={{ margin: '0 4px' }}
+												></Chip>
+										  ))
+										: ''}
+								</Grid>
+								{artist.city && artist.state ? (
+									<Grid
+										item
+										container
+										alignItems='center'
+										sx={{ marginTop: '8px' }}
+									>
+										<HomeTwoToneIcon
+											sx={{ marginRight: '8px' }}
+										></HomeTwoToneIcon>
+										<Typography component='h3'>
+											{artist.city}, {artist.state}
+										</Typography>
+									</Grid>
+								) : (
+									''
+								)}
+							</Grid>
+						</Grid>
+					</Grid>
+				</Grid>
+			) : (
+				''
+			)}
+		</Fragment>
+	);
+};
 
 ArtistTop.propTypes = {
-    artist: PropTypes.object.isRequired,
-}
+	artist: PropTypes.object.isRequired,
+};
 
-export default ArtistTop
+export default ArtistTop;

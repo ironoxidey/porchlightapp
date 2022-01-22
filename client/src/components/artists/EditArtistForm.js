@@ -2,7 +2,9 @@ import axios from 'axios'; //only for uploads as of December 31st, 2021
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
+import { IMAGE_UPLOAD } from '../../actions/types';
+import { setAlert } from '../../actions/alert';
 import { createArtist } from '../../actions/artist';
 import { updateUserAvatar } from '../../actions/auth';
 import {
@@ -25,7 +27,9 @@ import {
 	BottomNavigation,
 	Autocomplete,
 	Chip,
+	withStyles,
 } from '@mui/material';
+import ReactPhoneInput from 'react-phone-input-mui';
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
 
@@ -57,6 +61,7 @@ const EditArtistForm = ({
 	updateUserAvatar,
 }) => {
 	const loading = false; //a bunch of things are dependent on it; I should really just take it out.
+	const dispatch = useDispatch();
 
 	const [formData, setFormData] = useState({
 		slug: '',
@@ -244,7 +249,7 @@ const EditArtistForm = ({
 				});
 			}
 		}
-	}, [auth.loading]);
+	}, [auth.loading, createArtist]);
 
 	const {
 		slug,
@@ -292,7 +297,7 @@ const EditArtistForm = ({
 	} = formData;
 
 	const onChange = (e) => {
-		//console.log(e.target.name);
+		//console.log(e);
 		//console.log(Object.keys(formGroups).length);
 		changesMade.current = true;
 		let targetValue = e.target.value;
@@ -318,6 +323,11 @@ const EditArtistForm = ({
 			}));
 			//console.log(formData);
 		}
+	};
+	const onPhoneChange = (theFieldName, val) => {
+		changesMade.current = true;
+		let targetValue = val;
+		setFormData({ ...formData, [theFieldName]: targetValue });
 	};
 	const onAutocompleteTagChange = (e, theFieldName, val) => {
 		//console.log(theFieldName);
@@ -372,12 +382,28 @@ const EditArtistForm = ({
 		let targetValue = uploadPath + fileName; //e.target.value;
 		const data = new FormData();
 		data.append('file', e.target.files[0]);
-		axios.post(`/api/uploads/upload`, data).then((res) => {
-			setFormData({ ...formData, [e.target.name]: targetValue });
-		});
-		if (e.target.name == 'squareImg') {
-			updateUserAvatar({ avatar: targetValue }, history);
-		}
+		axios
+			.post(`/api/uploads/upload`, data)
+			.then((res) => {
+				setFormData({ ...formData, [e.target.name]: targetValue });
+				console.log('Should dispatch IMAGE_UPLOAD with: ' + res.data);
+				dispatch({
+					type: IMAGE_UPLOAD,
+					payload: res.data,
+				});
+				dispatch(setAlert(res.data.msg, 'success'));
+				if (e.target.name == 'squareImg') {
+					updateUserAvatar({ avatar: targetValue }, history);
+				}
+			})
+			.catch((err) => {
+				console.log(err.response.data.msg);
+				dispatch({
+					type: IMAGE_UPLOAD,
+					payload: err.response.data,
+				});
+				dispatch(setAlert(err.response.data.msg, 'danger'));
+			});
 	};
 
 	//const [changesMade, setChangesMade] = useState(false);
@@ -542,14 +568,23 @@ const EditArtistForm = ({
 			</FormLabel>,
 			[
 				<Grid item>
-					<TextField
-						variant='standard'
+					<ReactPhoneInput
 						name='phone'
 						id='phone'
-						label='Sure! My phone number is'
-						value={phone}
-						onChange={(e) => onChange(e)}
+						value={phone || ''}
+						onChange={(val) => onPhoneChange('phone', val)}
 						helperText=''
+						component={TextField}
+						inputExtraProps={{
+							name: 'phone',
+							variant: 'standard',
+							label: 'My phone number is',
+						}}
+						autoFormat={true}
+						defaultCountry={'us'}
+						onlyCountries={['us']}
+						disableCountryCode={true}
+						placeholder={''}
 					/>
 				</Grid>,
 			],
@@ -646,7 +681,7 @@ const EditArtistForm = ({
 				<Grid item>
 					<TextField
 						variant='standard'
-						sx={{ minWidth: 420, m: '8px 8px 8px 0' }}
+						sx={{ width: 420, maxWidth: '90vw', m: '0 0 0 0' }}
 						name='payoutHandle'
 						id='payoutHandle'
 						label={'The handle for my ' + payoutPlatform + ' account is'}
@@ -941,6 +976,7 @@ const EditArtistForm = ({
 							width: '100%',
 							fontSize: '1rem!important',
 							lineHeight: '1.3em!important',
+							padding: '8px 16px',
 						}}
 					>
 						Our heart at Porchlight is to cultivate relationships between
@@ -1159,11 +1195,14 @@ const EditArtistForm = ({
 				</FormControl>,
 				wideImg ? (
 					<img
-						className='my-1'
+						className='wideImg-image uploaded-image'
 						src={wideImg}
 						alt=''
 						style={{
+							marginTop: '16px',
 							maxHeight: '60vh',
+							maxWidth: '90vw',
+							height: 'auto',
 							width: 'auto',
 						}}
 					/>
@@ -1201,11 +1240,14 @@ const EditArtistForm = ({
 				</FormControl>,
 				squareImg ? (
 					<img
-						className='my-1'
+						className='squareImg-image uploaded-image'
 						src={squareImg}
 						alt=''
 						style={{
+							marginTop: '16px',
 							maxHeight: '60vh',
+							maxWidth: '90vw',
+							height: 'auto',
 							width: 'auto',
 						}}
 					/>
@@ -1439,7 +1481,7 @@ const EditArtistForm = ({
 	};
 
 	//// CARD INDEX ///////
-	const [formCardIndex, setIndex] = useState(24);
+	const [formCardIndex, setIndex] = useState(3);
 
 	const cardIndex = formCardIndex;
 
@@ -1485,7 +1527,7 @@ const EditArtistForm = ({
 	return (
 		<Fragment>
 			<form className='form' onSubmit={(e) => onSubmit(e)}>
-				<Grid container spacing={2} sx={{ padding: '20px!important' }}>
+				<Grid container sx={{ padding: '20px!important' }}>
 					<Grid
 						container
 						item
@@ -1544,7 +1586,7 @@ const EditArtistForm = ({
 								direction='column'
 								justifyContent='center'
 								alignItems='center'
-								spacing={2}
+								//spacing={2}
 								sx={{
 									width: '100%',
 									margin: '0 auto',

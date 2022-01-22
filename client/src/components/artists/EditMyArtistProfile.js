@@ -7,36 +7,44 @@ import Spinner from '../layout/Spinner';
 import EditArtistForm from './EditArtistForm';
 
 const EditMyArtistProfile = ({
-  getCurrentArtist,
-  artist: { artist, loading },
+	auth,
+	getCurrentArtist,
+	artist: { artist, loading },
 }) => {
-  useEffect(() => {
-    getCurrentArtist();
-  }, [getCurrentArtist]);
+	useEffect(() => {
+		// if (auth.user.email) {
+		getCurrentArtist();
+		// }
+	}, [getCurrentArtist, auth]);
 
-  return (
-    <Fragment>
-    { loading ? <Spinner></Spinner> : <Fragment>
-      {/* <h1 className='large text-primary'>Edit Your Artist Profile</h1> */}
-          <EditArtistForm theArtist={artist}/>
-        {/* <Link to='/dashboard' className='btn btn-light my-1'>
+	return (
+		<Fragment>
+			{loading ? (
+				<Spinner></Spinner>
+			) : (
+				<Fragment>
+					{/* <h1 className='large text-primary'>Edit Your Artist Profile</h1> */}
+					<EditArtistForm theArtist={artist} />
+					{/* <Link to='/dashboard' className='btn btn-light my-1'>
           Go Back
         </Link> */}
-    </Fragment>
-    }
-    </Fragment>
-  )
-}
+				</Fragment>
+			)}
+		</Fragment>
+	);
+};
 
 EditMyArtistProfile.propTypes = {
-  getCurrentArtist: PropTypes.func.isRequired,
-  artist: PropTypes.object.isRequired,
+	getCurrentArtist: PropTypes.func.isRequired,
+	artist: PropTypes.object.isRequired,
+	auth: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  artist: state.artist,
+	artist: state.artist,
+	auth: state.auth,
 });
 
 export default connect(mapStateToProps, { getCurrentArtist })(
-  withRouter(EditMyArtistProfile)
+	withRouter(EditMyArtistProfile)
 ); //withRouter allows us to pass history objects
