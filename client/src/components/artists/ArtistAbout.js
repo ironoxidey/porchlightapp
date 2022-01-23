@@ -31,7 +31,7 @@ import MultipleDatesPicker from '../mui-multi-date-picker-lib';
 const ArtistAbout = ({ artist }) => {
 	return (
 		<Fragment>
-			<Grid container sx={{ padding: '0 20px 80px!important' }}>
+			<Grid container sx={{ padding: '0 20px 20px!important' }}>
 				<Grid
 					item
 					container

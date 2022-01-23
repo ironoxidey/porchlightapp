@@ -35,6 +35,7 @@ input:-webkit-autofill:active {
 input:-webkit-autofill {
 	-webkit-text-fill-color: var(--primary-color);
 	-webkit-box-shadow: 0 0 0 100px transparent inset;
+	font-family: var(--primary-font) !important;
 }
 
 h2.MuiTypography-root {
@@ -75,6 +76,7 @@ body {
 	position: absolute;
 	width: 100%;
 	transform-origin: 50% 0%;
+	padding-bottom: 80px;
 }
 
 .porchlightLogo {

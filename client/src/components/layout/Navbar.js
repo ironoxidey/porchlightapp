@@ -5,171 +5,187 @@ import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
 import { openNavDrawer, closeNavDrawer } from '../../actions/app';
 
-import { 
-  Avatar,
-  Button,
-  AppBar,
-  Container,
-  Box,
-  Toolbar,
-  MenuItem,
-  Tooltip,
-  IconButton,
-  Menu,
-  Typography,
-  ListItemIcon,
-  
+import {
+	Avatar,
+	Button,
+	AppBar,
+	Container,
+	Box,
+	Toolbar,
+	MenuItem,
+	Tooltip,
+	IconButton,
+	Menu,
+	Typography,
+	ListItemIcon,
 } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
-import MenuIcon from '@mui/icons-material/Menu'
+import MenuIcon from '@mui/icons-material/Menu';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DashboardTwoToneIcon from '@mui/icons-material/DashboardTwoTone';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-
 import Alert from '../layout/Alert';
 
-const Navbar = ({ 
-  auth: { 
-    isAuthenticated, 
-    loading, 
-    user
-  },
-  logout, 
-  openNavDrawer, 
-  closeNavDrawer, 
-  app: { navDrawer },
- }) => {
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+const Navbar = ({
+	auth: { isAuthenticated, loading, user },
+	logout,
+	openNavDrawer,
+	closeNavDrawer,
+	app: { navDrawer },
+	artist,
+}) => {
+	const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  const [avatar, setAvatar] = useState();
+	const [avatar, setAvatar] = useState();
 
-  useEffect(() => {
-    if (user && user.avatar){
-      setAvatar(user.avatar);
-    }
-  }, [user]);
+	useEffect(() => {
+		if (user && user.avatar) {
+			setAvatar(user.avatar);
+		}
+	}, [user]);
 
-  const handleOpenNavMenu = (event) => {
-    openNavDrawer();
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
+	const handleOpenNavMenu = (event) => {
+		openNavDrawer();
+	};
+	const handleOpenUserMenu = (event) => {
+		setAnchorElUser(event.currentTarget);
+	};
 
-  const handleCloseNavMenu = () => {
-    closeNavDrawer();
-  };
+	const handleCloseNavMenu = () => {
+		closeNavDrawer();
+	};
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-  
-  const loggedInLinks = [
-      <Link to='/dashboard'>
-          <ListItemIcon>
-              <DashboardTwoToneIcon></DashboardTwoToneIcon>
-          </ListItemIcon>
-          Dashboard
-      </Link>,
-      <Link to='/edit-artist-profile'>
-          <ListItemIcon>
-              <EditTwoToneIcon></EditTwoToneIcon>
-          </ListItemIcon>
-          Edit Profile
-      </Link>,
-      <a onClick={logout} href='#!'>
-      <ListItemIcon> 
-          <LogoutIcon></LogoutIcon>
-      </ListItemIcon>
-      Logout
-      </a>
-  ];
-  const loggedOutLink = [
-      <Link to='/login'>
-          <ListItemIcon>
-              <LoginIcon></LoginIcon>
-          </ListItemIcon>
-          Login
-      </Link>
-  ];
+	const handleCloseUserMenu = () => {
+		setAnchorElUser(null);
+	};
 
-  let userLinks = isAuthenticated ? loggedInLinks : loggedOutLink;
+	const loggedInLinks = [
+		<Link to='/dashboard'>
+			<ListItemIcon>
+				<DashboardTwoToneIcon></DashboardTwoToneIcon>
+			</ListItemIcon>
+			My Dashboard
+		</Link>,
+		<Link to='/edit-artist-profile'>
+			<ListItemIcon>
+				<EditTwoToneIcon></EditTwoToneIcon>
+			</ListItemIcon>
+			Edit My Profile
+		</Link>,
+		artist && artist.artist && artist.artist.slug ? (
+			<Link to={'/artists/' + artist.artist.slug}>
+				<ListItemIcon>
+					<EditTwoToneIcon></EditTwoToneIcon>
+				</ListItemIcon>
+				My Profile
+			</Link>
+		) : (
+			''
+		),
+		<a onClick={logout} href='#!'>
+			<ListItemIcon>
+				<LogoutIcon></LogoutIcon>
+			</ListItemIcon>
+			Logout
+		</a>,
+	];
+	const loggedOutLink = [
+		<Link to='/login'>
+			<ListItemIcon>
+				<LoginIcon></LoginIcon>
+			</ListItemIcon>
+			Login
+		</Link>,
+	];
 
-  return (
-    <AppBar position="sticky" sx={{borderBottom: '1px solid var(--primary-color)', backgroundImage: 'none', backgroundColor: 'var(--secondary-dark-color)'}}>
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={!navDrawer ? handleOpenNavMenu : handleCloseNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            
-          </Box>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }}
-          >
-            <Alert />
-          </Typography>
+	let userLinks = isAuthenticated ? loggedInLinks : loggedOutLink;
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              {user && user.name && user.avatar !== null ? (
-                <Avatar alt={`${user.name}`} src={`${user.avatar}`} />
-              ) : (
-                <Avatar />
-              )}
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {userLinks.map((userLink, index) => (
-                <MenuItem key={index} onClick={handleCloseNavMenu}>
-                  {userLink}
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
-  );
+	return (
+		<AppBar
+			position='sticky'
+			sx={{
+				borderBottom: '1px solid var(--primary-color)',
+				backgroundImage: 'none',
+				backgroundColor: 'var(--secondary-dark-color)',
+			}}
+		>
+			<Container maxWidth='xl'>
+				<Toolbar disableGutters>
+					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }}>
+						<IconButton
+							size='large'
+							aria-label='account of current user'
+							aria-controls='menu-appbar'
+							aria-haspopup='true'
+							onClick={!navDrawer ? handleOpenNavMenu : handleCloseNavMenu}
+							color='inherit'
+						>
+							<MenuIcon />
+						</IconButton>
+					</Box>
+					<Typography
+						variant='h6'
+						noWrap
+						component='div'
+						sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }}
+					>
+						<Alert />
+					</Typography>
+
+					<Box sx={{ flexGrow: 0 }}>
+						<Tooltip title='Open settings'>
+							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+								{user && user.name && user.avatar !== null ? (
+									<Avatar alt={`${user.name}`} src={`${user.avatar}`} />
+								) : (
+									<Avatar />
+								)}
+							</IconButton>
+						</Tooltip>
+						<Menu
+							sx={{ mt: '45px' }}
+							id='menu-appbar'
+							anchorEl={anchorElUser}
+							anchorOrigin={{
+								vertical: 'top',
+								horizontal: 'right',
+							}}
+							keepMounted
+							transformOrigin={{
+								vertical: 'top',
+								horizontal: 'right',
+							}}
+							open={Boolean(anchorElUser)}
+							onClose={handleCloseUserMenu}
+						>
+							{userLinks.map((userLink, index) => (
+								<MenuItem key={index} onClick={handleCloseNavMenu}>
+									{userLink}
+								</MenuItem>
+							))}
+						</Menu>
+					</Box>
+				</Toolbar>
+			</Container>
+		</AppBar>
+	);
 };
 
 Navbar.propTypes = {
-  logout: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  app: PropTypes.object.isRequired,
+	logout: PropTypes.func.isRequired,
+	auth: PropTypes.object.isRequired,
+	app: PropTypes.object.isRequired,
+	artist: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
-  auth: state.auth,
-  app: state.app
+	auth: state.auth,
+	app: state.app,
+	artist: state.artist,
 });
-export default connect(mapStateToProps, { logout, openNavDrawer, closeNavDrawer })(Navbar);
+export default connect(mapStateToProps, {
+	logout,
+	openNavDrawer,
+	closeNavDrawer,
+})(Navbar);

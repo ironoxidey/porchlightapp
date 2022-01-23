@@ -17,7 +17,7 @@ const Page = (props) => {
 			});
 		}
 	}, []);
-	console.log(props.children);
+	//console.log(props.children);
 	return props.children;
 };
 

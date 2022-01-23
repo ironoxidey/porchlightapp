@@ -1,37 +1,45 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import ButtonBase from '@mui/material/ButtonBase';
-import ButtonUnstyled, { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
+import ButtonUnstyled, {
+	buttonUnstyledClasses,
+} from '@mui/base/ButtonUnstyled';
 import { styled } from '@mui/system';
 
 const ButtonRoot = React.forwardRef(function ButtonRoot(props, ref) {
-  const { children, ...other } = props;
-
-  return (
-    <ButtonBase> 
-    <svg width="200" height="50" {...other} ref={ref}>
-      <polygon points="0,50 0,0 200,0 200,50" className="bg" />
-      <polygon points="0,50 0,0 200,0 200,50" className="borderEffect" />
-      <foreignObject x="0" y="0" width="200" height="50">
-        <div className="content">{children}</div>
-      </foreignObject>
-    </svg>
-    </ButtonBase>
-  );
+	const { children, ...other } = props;
+	const btnwidth = props.btnwidth || '200';
+	return (
+		<ButtonBase style={{ color: 'var(--light-color)' }}>
+			<svg width={btnwidth} height='50' {...other} ref={ref}>
+				<polygon
+					points={'0,50 0,0 ' + btnwidth + ',0 ' + btnwidth + ',50'}
+					className='bg'
+				/>
+				<polygon
+					points={'0,50 0,0 ' + btnwidth + ',0 ' + btnwidth + ',50'}
+					className='borderEffect'
+				/>
+				<foreignObject x='0' y='0' width={btnwidth} height='50'>
+					<div className='content'>{children}</div>
+				</foreignObject>
+			</svg>
+		</ButtonBase>
+	);
 });
 
 ButtonRoot.propTypes = {
-  children: PropTypes.node,
+	children: PropTypes.node,
 };
 
 const yellow = {
-  100: '#ffffd9',
-  800: '#ffffed66',
-  900: '#ffffd922',
+	100: '#ffffd9',
+	800: '#ffffd940', //'#ffffed66',
+	900: '#ffffd922',
 };
 
 const CustomButtonRoot = styled(ButtonRoot)(
-  ({ theme }) => `
+	(props) => `
   overflow: visible;
   cursor: pointer;
   --main-color: ${yellow[100]};
@@ -56,8 +64,10 @@ const CustomButtonRoot = styled(ButtonRoot)(
   & .borderEffect {
     stroke: var(--main-color);
     stroke-width: 2;
-    stroke-dasharray: 150 600;
-    stroke-dashoffset: 150;
+    stroke-dasharray: ${(props.btnwidth || 200) * 0.75} ${
+		(props.btnwidth || 200) * 3
+	};
+    stroke-dashoffset: ${(props.btnwidth || 200) * 0.75};
     fill: transparent;
   }
 
@@ -65,7 +75,7 @@ const CustomButtonRoot = styled(ButtonRoot)(
   &.${buttonUnstyledClasses.focusVisible} {
     box-shadow: 0 0 5px var(--main-color);
     .borderEffect {
-      stroke-dashoffset: -600;
+      stroke-dashoffset: -${(props.btnwidth || 200) * 3};
     }
 
     .bg {
@@ -106,11 +116,15 @@ const CustomButtonRoot = styled(ButtonRoot)(
     & svg {
       margin: 0 5px;
     }
-  }`,
+  }`
 );
 
+CustomButtonRoot.propTypes = {
+	children: PropTypes.node,
+};
+
 const SvgButton = React.forwardRef(function SvgButton(props, ref) {
-  return <ButtonUnstyled {...props} component={CustomButtonRoot} ref={ref} />;
+	return <ButtonUnstyled {...props} component={CustomButtonRoot} ref={ref} />;
 });
 
 export default SvgButton;

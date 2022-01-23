@@ -1481,7 +1481,7 @@ const EditArtistForm = ({
 	};
 
 	//// CARD INDEX ///////
-	const [formCardIndex, setIndex] = useState(3);
+	const [formCardIndex, setIndex] = useState(0);
 
 	const cardIndex = formCardIndex;
 
@@ -1575,12 +1575,12 @@ const EditArtistForm = ({
 				{transitions((style, i) => (
 					<animated.div
 						className={'animatedFormGroup'}
-						key={i}
+						key={'animatedFormGroup' + i}
 						style={{
 							...style,
 						}}
 					>
-						<div className='form-group'>
+						<div className='form-group' key={'form-group' + i}>
 							<Grid
 								container
 								direction='column'
