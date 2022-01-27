@@ -16,6 +16,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 //Consider checking out material-ui and https://material-kit-pro-react.devias.io/
 import './App.css';
 
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import { faGlobeAmericas } from '@fortawesome/free-solid-svg-icons';
+library.add(fab, faGlobeAmericas);
+
 const darkTheme = createTheme({
 	palette: {
 		mode: 'dark',

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
 import { openNavDrawer, closeNavDrawer } from '../../actions/app';
+import { getCurrentArtist } from '../../actions/artist';
 
 import {
 	Avatar,
@@ -32,6 +33,7 @@ const Navbar = ({
 	logout,
 	openNavDrawer,
 	closeNavDrawer,
+	getCurrentArtist,
 	app: { navDrawer },
 	artist,
 }) => {
@@ -44,6 +46,10 @@ const Navbar = ({
 			setAvatar(user.avatar);
 		}
 	}, [user]);
+
+	useEffect(() => {
+		getCurrentArtist();
+	}, [getCurrentArtist]);
 
 	const handleOpenNavMenu = (event) => {
 		openNavDrawer();
@@ -73,8 +79,8 @@ const Navbar = ({
 			</ListItemIcon>
 			Edit My Profile
 		</Link>,
-		artist && artist.artist && artist.artist.slug ? (
-			<Link to={'/artists/' + artist.artist.slug}>
+		artist && artist.me && artist.me.slug ? (
+			<Link to={'/artists/' + artist.me.slug}>
 				<ListItemIcon>
 					<EditTwoToneIcon></EditTwoToneIcon>
 				</ListItemIcon>
@@ -159,8 +165,37 @@ const Navbar = ({
 							open={Boolean(anchorElUser)}
 							onClose={handleCloseUserMenu}
 						>
+							{user && user.name && user.avatar !== null ? (
+								<Box
+									sx={{
+										width: '100%',
+										padding: '20px 20px 0px 20px',
+										display: 'flex',
+										alignItems: 'center',
+										flexDirection: 'column',
+									}}
+								>
+									<Typography sx={{ textAlign: 'center' }}>
+										{artist.me
+											? artist.me.stageName
+											: user && user.name
+											? user.name
+											: ''}
+									</Typography>
+									<Typography sx={{ opacity: 0.2, fontSize: '.7em' }}>
+										({user && user.email})
+									</Typography>
+								</Box>
+							) : (
+								''
+							)}
 							{userLinks.map((userLink, index) => (
-								<MenuItem key={index} onClick={handleCloseNavMenu}>
+								<MenuItem
+									key={index}
+									onClick={handleCloseNavMenu}
+									sx={{ padding: 0 }}
+									className='drawerListItems'
+								>
 									{userLink}
 								</MenuItem>
 							))}
@@ -188,4 +223,5 @@ export default connect(mapStateToProps, {
 	logout,
 	openNavDrawer,
 	closeNavDrawer,
+	getCurrentArtist,
 })(Navbar);

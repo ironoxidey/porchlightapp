@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const ArtistSchema = new mongoose.Schema(
 	{
+		user: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'user',
+		},
 		firstName: {
 			type: String,
 			required: true,
@@ -32,7 +36,13 @@ const ArtistSchema = new mongoose.Schema(
 		genres: {
 			type: Object,
 		},
+		soundsLike: {
+			type: Object,
+		},
 		repLinks: {
+			type: Object,
+		},
+		socialLinks: {
 			type: Object,
 		},
 		helpKind: {
@@ -41,35 +51,10 @@ const ArtistSchema = new mongoose.Schema(
 		artistStatementVideo: {
 			type: String,
 		},
-		streamingPlatforms: {
-			amazon: {
-				type: String,
-			},
-			spotify: {
-				type: String,
-			},
-			soundcloud: {
-				type: String,
-			},
-			bandcamp: {
-				type: String,
-			},
-			youtube: {
-				type: String,
-			},
+		livePerformanceVideo: {
+			type: String,
 		},
-		social: {
-			twitter: {
-				type: String,
-			},
-			facebook: {
-				type: String,
-			},
-			instagram: {
-				type: String,
-			},
-		},
-		website: {
+		artistWebsite: {
 			type: String,
 		},
 		zoomDate: {
@@ -94,10 +79,13 @@ const ArtistSchema = new mongoose.Schema(
 			type: String,
 		},
 		promotionApproval: {
-			type: Boolean,
+			type: String,
 		},
 		//booking info
 		phone: {
+			type: String,
+		},
+		website: {
 			type: String,
 		},
 		hometown: {
@@ -116,6 +104,9 @@ const ArtistSchema = new mongoose.Schema(
 			type: String,
 		},
 		namedPrice: {
+			type: String,
+		},
+		tourVibe: {
 			type: String,
 		},
 		bookingWhen: {
@@ -137,6 +128,10 @@ const ArtistSchema = new mongoose.Schema(
 			type: String,
 		},
 		showSchedule: {
+			setupTime: {
+				type: String,
+				default: '17:45',
+			},
 			startTime: {
 				type: String,
 				default: '19:00',
@@ -185,6 +180,10 @@ const ArtistSchema = new mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
+		agreeToPromote: {
+			type: Boolean,
+			default: false,
+		},
 		wideImg: {
 			type: String,
 		},
@@ -200,7 +199,13 @@ const ArtistSchema = new mongoose.Schema(
 		financialHopes: {
 			type: String,
 		},
+		fanActions: {
+			type: Object,
+		},
 		onboardDate: {
+			type: Date,
+		},
+		artistUpdated: {
 			type: Date,
 		},
 		//extra info

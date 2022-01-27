@@ -3,8 +3,10 @@ import { setAlert } from './alert';
 
 import {
 	GET_ARTIST,
+	GET_ARTIST_ME,
 	GET_ARTISTS,
 	UPDATE_ARTIST,
+	UPDATE_ARTIST_ME,
 	UPDATE_ARTIST_ERROR,
 	ARTIST_ERROR,
 	CLEAR_ARTIST,
@@ -16,7 +18,7 @@ export const getCurrentArtist = () => async (dispatch) => {
 	try {
 		const res = await axios.get(`/api/artists/me`);
 		dispatch({
-			type: GET_ARTIST,
+			type: GET_ARTIST_ME,
 			payload: res.data,
 		});
 	} catch (err) {
@@ -77,6 +79,41 @@ export const getArtistBySlug = (artistSlug) => async (dispatch) => {
 		});
 	}
 };
+
+// Create or update artist
+export const createMyArtist =
+	(formData, history, edit = false) =>
+	async (dispatch) => {
+		try {
+			const config = {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			};
+			const formDataArray = [formData];
+			const res = await axios.post(
+				'/api/artists/updateMe',
+				formDataArray,
+				config
+			);
+			dispatch({
+				type: UPDATE_ARTIST_ME,
+				payload: res.data,
+			});
+			dispatch(setAlert(edit ? 'Artist Updated' : 'Artist Created', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+		} catch (err) {
+			const errors = err.response.data.errors;
+			console.log('error: ' + err);
+			if (errors) {
+				errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+			}
+			dispatch({
+				type: UPDATE_ARTIST_ERROR,
+				payload: { msg: err.response.statusText, status: err.response.status },
+			});
+			dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+		}
+	};
 
 // Create or update artist
 export const createArtist =

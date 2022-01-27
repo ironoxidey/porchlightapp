@@ -28,86 +28,105 @@ import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
 import Button from '../layout/SvgButton';
 import MultipleDatesPicker from '../mui-multi-date-picker-lib';
 
+import {
+	youTubeEmbed,
+	getFontAwesomeIcon,
+	pullDomainFrom,
+} from '../../actions/app';
+
 const ArtistAbout = ({ artist }) => {
 	return (
 		<Fragment>
-			<Grid container sx={{ padding: '0 20px 20px!important' }}>
+			<Grid
+				container
+				sx={{
+					maxWidth: '960px',
+					width: 'calc(100% - 40px)',
+					margin: '0 auto',
+				}}
+			>
+				{pullDomainFrom(artist.artistStatementVideo) === 'youtube' ? (
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						direction='row'
+						alignItems='start'
+						className='artistStatementVideo'
+						md={8}
+						xs={12}
+					>
+						{youTubeEmbed(artist.artistStatementVideo)}
+					</Grid>
+				) : (
+					''
+				)}
 				<Grid
 					item
 					container
 					spacing={2}
 					sx={{ marginTop: '0' }}
 					direction='row'
-					alignItems='center'
+					alignContent='start'
+					className='rightSidebar'
+					md={4}
+					xs={12}
 				>
-					{artist.squareImg ? (
+					{artist.bio ? (
 						<Grid
 							item
-							sx={{
-								height: '100px',
-								width: '100px',
-								maxHeight: '100px',
-								maxWidth: '100px',
-								borderRadius: '50%',
-								overflow: 'hidden',
-								backgroundImage: `url("${artist.squareImg}")`,
-								backgroundPosition: '50% 25%',
-								backgroundSize: 'cover',
-							}}
+							spacing={2}
+							sx={{ marginTop: '0' }}
+							direction='row'
+							alignItems='start'
+							className='socialIcons'
+							xs={12}
 						>
-							{/* <img
-								className='squareImg-image'
-								src={artist.squareImg}
-								alt=''
-								style={{
-									maxHeight: '20vh',
-									maxWidth: '90vw',
-									height: 'auto',
-									width: 'auto',
+							<Typography
+								sx={{
+									fontSize: '.9em',
+									lineHeight: 1.7,
 								}}
-							/> */}
+							>
+								{artist.bio}
+							</Typography>
 						</Grid>
 					) : (
 						''
 					)}
 					<Grid
 						item
-						container
-						xs={10}
+						spacing={2}
 						sx={{ marginTop: '0' }}
-						direction='column'
+						direction='row'
 						alignItems='start'
+						className='socialIcons'
+						xs={12}
 					>
-						{artist.stageName ? (
-							<Grid item>
-								<Typography component='h2'>{artist.stageName}</Typography>
-							</Grid>
-						) : (
-							''
-						)}
-						<Grid item>
-							{artist.genres && artist.genres.length > 0
-								? artist.genres.map((genre, key) => (
-										<Chip
-											key={key}
-											label={genre}
-											size='small'
-											sx={{ margin: '0 4px' }}
-										></Chip>
-								  ))
-								: ''}
-						</Grid>
-						{artist.city && artist.state ? (
+						{artist.socialLinks &&
+						Object.keys(artist.socialLinks).length > 0 ? (
 							<Grid
-								item
 								container
-								alignItems='center'
-								sx={{ marginTop: '8px' }}
+								item
+								direction='row'
+								justifyContent='right'
+								sx={{
+									margin: '0px auto',
+									width: '100%',
+								}}
 							>
-								<HomeTwoToneIcon sx={{ marginRight: '8px' }}></HomeTwoToneIcon>
-								<Typography component='h3'>
-									{artist.city}, {artist.state}
-								</Typography>
+								{artist.socialLinks.map((eachSocialLink, idx) => (
+									<Grid
+										item
+										xs={1}
+										//md={0.5}
+										className='link-icon'
+										key={`eachSocialLink${idx}`}
+									>
+										<a href={eachSocialLink.link} target='_blank'>
+											{getFontAwesomeIcon(eachSocialLink.link)}
+										</a>
+									</Grid>
+								))}
 							</Grid>
 						) : (
 							''

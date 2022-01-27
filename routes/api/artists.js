@@ -219,6 +219,68 @@ router.post('/batch', [auth], async (req, res) => {
 	}
 });
 
+// @route    POST api/artists/updateMe
+// @desc     Create or update my artist profile (copy of /batch)
+// @access   Private
+router.post('/updateMe', [auth], async (req, res) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+	if (req.body instanceof Array) {
+		let artistCount = 0;
+		await Promise.all(
+			req.body.map(async (artistFields) => {
+				artistFields.stageName && artistFields.stageName.length > 0
+					? (artistFields.slug = convertToSlug(artistFields.stageName))
+					: '';
+
+				if (req.user.role === 'ADMIN' && artistFields.email !== '') {
+					//console.log("User is ADMIN and has authority to update all other users.");
+					try {
+						//console.log(artistFields);
+						// Using upsert option (creates new doc if no match is found):
+						let artist = await Artist.findOneAndUpdate(
+							{ email: artistFields.email.toLowerCase() },
+							{ $set: artistFields },
+							{ new: true, upsert: true }
+						);
+						artistCount++;
+						res.json(artistFields);
+					} catch (err) {
+						console.error(err.message);
+						res.status(500).send('Server Error: ' + err.message);
+					}
+				} else if (req.user.email === artistFields.email.toLowerCase()) {
+					//if the request user email matches the artist email they have authority to edit their own profile, removing admin things
+					try {
+						delete artistFields.active;
+						artistFields.user = req.user.id;
+						console.log(artistFields);
+						// Using upsert option (creates new doc if no match is found):
+						let artist = await Artist.findOneAndUpdate(
+							{ email: artistFields.email.toLowerCase() },
+							{ $set: artistFields },
+							{ new: true, upsert: true }
+						);
+						artistCount++;
+						res.json(artistFields);
+					} catch (err) {
+						console.error(err.message);
+						res.status(500).send('Server Error');
+					}
+				} else {
+					console.error("You don't have authority to make these changes.");
+					res
+						.status(500)
+						.send('User does not have authority to make these changes.');
+				}
+			})
+		);
+		//res.json(artistCount + " artist(s) submitted to the database."); //eventually remove this
+	}
+});
+
 // @route    GET api/artists
 // @desc     Get all active artists
 // @access   Public

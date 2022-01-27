@@ -84,6 +84,11 @@ body {
 	width: auto;
 }
 
+.drawerListItems a {
+	width: 100%;
+	padding: 8px 16px;
+}
+
 a {
 	color: var(--link-color);
 	text-decoration: none;

@@ -19,7 +19,7 @@ const Dashboard = ({
 	auth: { user },
 	profile: { profile, loading },
 	getCurrentArtist,
-	artist: { artist },
+	artist: { me },
 }) => {
 	useEffect(() => {
 		getCurrentProfile();
@@ -101,7 +101,7 @@ const Dashboard = ({
 							margin: '8px auto',
 						}}
 					>
-						{artist !== null ? (
+						{me !== null ? (
 							<Fragment>
 								<Link to='/edit-artist-profile'>
 									<Button btnwidth='300' className=''>

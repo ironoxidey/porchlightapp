@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD } from '../../actions/types';
 import { setAlert } from '../../actions/alert';
-import { createArtist } from '../../actions/artist';
+import { createMyArtist } from '../../actions/artist';
 import { updateUserAvatar } from '../../actions/auth';
 import {
 	TextField,
@@ -48,6 +48,8 @@ import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
 import { textAlign } from '@mui/system';
 
+import { youTubeEmbed, getFontAwesomeIcon } from '../../actions/app';
+
 const UploadInput = styled('input')({
 	display: 'none',
 });
@@ -55,7 +57,7 @@ const UploadInput = styled('input')({
 const EditArtistForm = ({
 	theArtist,
 	//theArtist: { loading },
-	createArtist,
+	createMyArtist,
 	history,
 	auth,
 	updateUserAvatar,
@@ -70,8 +72,10 @@ const EditArtistForm = ({
 		lastName: '',
 		stageName: '',
 		genres: [],
+		soundsLike: [],
 		medium: '',
 		repLinks: [],
+		socialLinks: [],
 		helpKind: '',
 		// typeformDate: '',
 		// active: '',
@@ -80,15 +84,21 @@ const EditArtistForm = ({
 		city: '',
 		state: '',
 		zip: '',
+		promotionApproval: '',
+		artistWebsite: '',
+		artistStatementVideo: '',
+		livePerformanceVideo: '',
 		costStructure: '',
 		namedPrice: '',
 		payoutPlatform: 'PayPal',
 		payoutHandle: '',
+		tourVibe: '',
 		bookingWhen: [],
 		bookingWhenWhere: '',
 		setLength: '',
 		schedule: '',
 		showSchedule: {
+			setupTime: '17:45',
 			startTime: '19:00',
 			doorsOpen: '18:30',
 			hardWrap: '21:00',
@@ -104,13 +114,16 @@ const EditArtistForm = ({
 		allowKids: false,
 		soundSystem: '',
 		agreeToPayAdminFee: true,
+		agreeToPromote: false,
 		wideImg: '',
 		squareImg: '',
 		covidPrefs: [],
 		artistNotes: '',
 		financialHopes: '',
+		fanActions: [],
 		// onboardDate: '',
 		bio: '',
+		artistUpdated: new Date(),
 	});
 
 	useEffect(() => {
@@ -123,7 +136,11 @@ const EditArtistForm = ({
 				stageName: loading || !theArtist.stageName ? '' : theArtist.stageName,
 				medium: loading || !theArtist.medium ? '' : theArtist.medium,
 				genres: loading || !theArtist.genres ? [] : theArtist.genres,
+				soundsLike:
+					loading || !theArtist.soundsLike ? [] : theArtist.soundsLike,
 				repLinks: loading || !theArtist.repLinks ? [] : theArtist.repLinks,
+				socialLinks:
+					loading || !theArtist.socialLinks ? [] : theArtist.socialLinks,
 				helpKind: loading || !theArtist.helpKind ? '' : theArtist.helpKind,
 				// typeformDate: loading || !theArtist.typeformDate ? '' : theArtist.typeformDate,
 				// active: loading || (theArtist.active == null) ? false : theArtist.active,
@@ -132,6 +149,20 @@ const EditArtistForm = ({
 				city: loading || !theArtist.city ? '' : theArtist.city,
 				state: loading || !theArtist.state ? '' : theArtist.state,
 				zip: loading || !theArtist.zip ? '' : theArtist.zip,
+				promotionApproval:
+					loading || !theArtist.promotionApproval
+						? ''
+						: theArtist.promotionApproval,
+				artistWebsite:
+					loading || !theArtist.artistWebsite ? '' : theArtist.artistWebsite,
+				artistStatementVideo:
+					loading || !theArtist.artistStatementVideo
+						? ''
+						: theArtist.artistStatementVideo,
+				livePerformanceVideo:
+					loading || !theArtist.livePerformanceVideo
+						? ''
+						: theArtist.livePerformanceVideo,
 				costStructure:
 					loading || !theArtist.costStructure ? '' : theArtist.costStructure,
 				namedPrice:
@@ -142,6 +173,7 @@ const EditArtistForm = ({
 						: theArtist.payoutPlatform,
 				payoutHandle:
 					loading || !theArtist.payoutHandle ? '' : theArtist.payoutHandle,
+				tourVibe: loading || !theArtist.tourVibe ? '' : theArtist.tourVibe,
 				bookingWhen:
 					loading || !theArtist.bookingWhen ? [] : theArtist.bookingWhen,
 				bookingWhenWhere:
@@ -153,6 +185,7 @@ const EditArtistForm = ({
 				showSchedule:
 					loading || !theArtist.showSchedule
 						? {
+								setupTime: '17:45',
 								startTime: '19:00',
 								doorsOpen: '18:30',
 								hardWrap: '21:00',
@@ -184,6 +217,10 @@ const EditArtistForm = ({
 					loading || theArtist.agreeToPayAdminFee == null
 						? true
 						: theArtist.agreeToPayAdminFee,
+				agreeToPromote:
+					loading || theArtist.agreeToPromote == null
+						? false
+						: theArtist.agreeToPromote,
 				wideImg: loading || !theArtist.wideImg ? '' : theArtist.wideImg,
 				squareImg: loading || !theArtist.squareImg ? '' : theArtist.squareImg,
 				covidPrefs:
@@ -192,12 +229,19 @@ const EditArtistForm = ({
 					loading || !theArtist.artistNotes ? '' : theArtist.artistNotes,
 				financialHopes:
 					loading || !theArtist.financialHopes ? '' : theArtist.financialHopes,
+				fanActions:
+					loading || !theArtist.fanActions ? [] : theArtist.fanActions,
 				// onboardDate: loading || !theArtist.onboardDate ? '' : theArtist.onboardDate,
 				bio: loading || !theArtist.bio ? '' : theArtist.bio,
+				artistUpdated: new Date(),
 			});
 		} else {
 			if (!auth.loading) {
-				console.log('else: ' + auth.user.email);
+				console.log(
+					'An artist profile couldn’t be found for: ' +
+						auth.user.email +
+						'. No worries! We’ll make one!'
+				);
 				setFormData({
 					email: auth.user.email,
 					slug: '',
@@ -205,8 +249,10 @@ const EditArtistForm = ({
 					lastName: auth.user.name.split(' ')[1],
 					stageName: '',
 					genres: [],
+					soundsLike: [],
 					medium: '',
 					repLinks: [],
+					socialLinks: [],
 					helpKind: '',
 					// typeformDate: '',
 					// active: '',
@@ -215,15 +261,21 @@ const EditArtistForm = ({
 					city: '',
 					state: '',
 					zip: '',
+					promotionApproval: '',
+					artistWebsite: '',
+					artistStatementVideo: '',
+					livePerformanceVideo: '',
 					costStructure: '',
 					namedPrice: '',
 					payoutPlatform: 'PayPal',
 					payoutHandle: '',
+					tourVibe: '',
 					bookingWhen: [],
 					bookingWhenWhere: '',
 					setLength: '',
 					schedule: '',
 					showSchedule: {
+						setupTime: '17:45',
 						startTime: '19:00',
 						doorsOpen: '18:30',
 						hardWrap: '21:00',
@@ -239,17 +291,19 @@ const EditArtistForm = ({
 					allowKids: false,
 					soundSystem: '',
 					agreeToPayAdminFee: true,
+					agreeToPromote: false,
 					wideImg: '',
 					squareImg: '',
 					covidPrefs: [],
 					artistNotes: '',
 					financialHopes: '',
+					fanActions: [],
 					// onboardDate: '',
 					bio: '',
 				});
 			}
 		}
-	}, [auth.loading, createArtist]);
+	}, [auth.loading, createMyArtist]);
 
 	const {
 		slug,
@@ -259,7 +313,9 @@ const EditArtistForm = ({
 		stageName,
 		medium,
 		genres,
+		soundsLike,
 		repLinks,
+		socialLinks,
 		helpKind,
 		// typeformDate,
 		// active,
@@ -268,9 +324,14 @@ const EditArtistForm = ({
 		city,
 		state,
 		zip,
+		promotionApproval,
+		artistWebsite,
+		artistStatementVideo,
+		livePerformanceVideo,
 		costStructure,
 		payoutPlatform,
 		payoutHandle,
+		tourVibe,
 		namedPrice,
 		bookingWhen,
 		bookingWhenWhere,
@@ -287,11 +348,13 @@ const EditArtistForm = ({
 		allowKids,
 		soundSystem,
 		agreeToPayAdminFee,
+		agreeToPromote,
 		wideImg,
 		squareImg,
 		covidPrefs,
 		artistNotes,
 		financialHopes,
+		fanActions,
 		// onboardDate,
 		bio,
 	} = formData;
@@ -345,7 +408,12 @@ const EditArtistForm = ({
 
 	const handleAddMultiTextField = (targetName, theFieldObj) => {
 		//super helpful: https://goshacmd.com/array-form-inputs/
-		let updatedField = theFieldObj.concat([{ name: '', role: '', email: '' }]);
+		let updatedField = theFieldObj.concat([{}]);
+		if (targetName === 'travelingCompanions') {
+			let updatedField = theFieldObj.concat([
+				{ name: '', role: '', email: '' },
+			]);
+		}
 		setFormData({ ...formData, [targetName]: updatedField });
 	};
 	const handleRemoveMultiTextField = (targetName, theFieldObj, idx) => {
@@ -413,7 +481,7 @@ const EditArtistForm = ({
 	const onSubmit = (e) => {
 		e.preventDefault();
 		//console.log('Submitting...');
-		createArtist(formData, history, true);
+		createMyArtist(formData, history, true);
 		changesMade.current = false;
 	};
 
@@ -422,7 +490,7 @@ const EditArtistForm = ({
 	const formGroups = {
 		firstName: [
 			<FormLabel component='legend'>
-				First things first: what's your first and last name?
+				First things first: what’s your first and last name?
 			</FormLabel>,
 			<Grid
 				container
@@ -462,6 +530,7 @@ const EditArtistForm = ({
 				<Autocomplete
 					id='medium'
 					value={medium}
+					disableClearable
 					options={[
 						'music',
 						'spoken word poems',
@@ -488,15 +557,6 @@ const EditArtistForm = ({
 					)}
 				/>
 			</Grid>,
-			{
-				/* <TextField 
-            name="medium"
-            id="medium" 
-            label="Medium"  
-            value={medium}
-            onChange={(e) => onChange(e)}
-        /> */
-			},
 		],
 		stageName: [
 			<FormLabel component='legend'>
@@ -518,7 +578,7 @@ const EditArtistForm = ({
 		],
 		genres: [
 			<FormLabel component='legend'>
-				What genres fit "{stageName}" best?
+				What genres fit {stageName} best?
 			</FormLabel>,
 			<Grid item xs={12} sx={{ width: '100%' }}>
 				<Autocomplete
@@ -552,6 +612,42 @@ const EditArtistForm = ({
 				/>
 			</Grid>,
 		],
+		soundsLike: [
+			<FormLabel component='legend'>
+				Who/what does {stageName} sound like?
+			</FormLabel>,
+			<Grid item xs={12} sx={{ width: '100%' }}>
+				<Autocomplete
+					multiple
+					id='soundsLike'
+					value={soundsLike}
+					options={[]}
+					freeSolo
+					onChange={(event, value) =>
+						onAutocompleteTagChange(event, 'soundsLike', value)
+					}
+					renderTags={(value, getTagProps) =>
+						value.map((option, index) => (
+							<Chip
+								variant='outlined'
+								name='soundsLike'
+								label={option}
+								{...getTagProps({ index })}
+							/>
+						))
+					}
+					renderInput={(params) => (
+						<TextField
+							{...params}
+							sx={{ width: '100%' }}
+							variant='standard'
+							label={`${stageName} sounds like `}
+							name='soundsLike'
+						/>
+					)}
+				/>
+			</Grid>,
+		],
 		// <div className='form-group' num='4'>
 		//   <TextField
 		//     name="email"
@@ -562,6 +658,49 @@ const EditArtistForm = ({
 		//     disabled
 		//   />
 		// </div>,
+		city: [
+			<FormLabel component='legend'>
+				Where is {stageName} based out of?
+			</FormLabel>,
+			<Grid
+				container
+				direction='row'
+				justifyContent='center'
+				alignItems='center'
+				spacing={2}
+			>
+				<Grid item>
+					<TextField
+						variant='standard'
+						name='city'
+						id='city'
+						label='In the city of'
+						value={city}
+						onChange={(e) => onChange(e)}
+					/>
+				</Grid>
+				<Grid item>
+					<TextField
+						variant='standard'
+						name='state'
+						id='state'
+						label='in the state of'
+						value={state}
+						onChange={(e) => onChange(e)}
+					/>
+				</Grid>
+				<Grid item>
+					<TextField
+						variant='standard'
+						name='zip'
+						id='zip'
+						label='with the zip code'
+						value={zip}
+						onChange={(e) => onChange(e)}
+					/>
+				</Grid>
+			</Grid>,
+		],
 		phone: [
 			<FormLabel component='legend'>
 				Would you provide your phone number?
@@ -587,6 +726,485 @@ const EditArtistForm = ({
 						placeholder={''}
 					/>
 				</Grid>,
+			],
+		],
+		artistWebsite: [
+			<FormLabel component='legend'>
+				Does {stageName} have a website?
+			</FormLabel>,
+			[
+				<Grid item xs={12} sx={{ width: '100%' }}>
+					<TextField
+						variant='standard'
+						name='artistWebsite'
+						id='artistWebsite'
+						label={`Yeah! The website is`}
+						value={artistWebsite}
+						onChange={(e) => onChange(e)}
+						sx={{ width: '100%' }}
+					/>
+				</Grid>,
+			],
+		],
+		socialLinks: [
+			<FormLabel component='legend'>
+				Would you supply the social media and streaming profile links for{' '}
+				{stageName}?
+				<br />
+				<small>
+					(These will appear in your profile in the order you enter them here.)
+				</small>
+			</FormLabel>,
+			[
+				socialLinks && Object.keys(socialLinks).length > 0
+					? socialLinks.map((eachSocialLink, idx) => (
+							<Grid
+								className='eachSocialLink'
+								key={`eachSocialLink${idx}`}
+								container
+								direction='row'
+								justifyContent='space-around'
+								alignItems='end'
+								spacing={2}
+								sx={{
+									// borderColor: 'primary.dark',
+									// borderWidth: '2px',
+									// borderStyle: 'solid',
+									backgroundColor: 'rgba(0,0,0,0.15)',
+									'&:hover': {},
+									padding: '0 10px 10px',
+									margin: '0px auto',
+									width: '100%',
+								}}
+							>
+								<Grid item xs={2} md={0.5} className='link-icon'>
+									{getFontAwesomeIcon(eachSocialLink.link)}
+								</Grid>
+								<Grid item xs={10}>
+									<TextField
+										variant='standard'
+										name='socialLinks'
+										id={`socialLinkLink${idx}`}
+										label={
+											idx > 0 ? `and at ` : `Yeah! Check out "${stageName}" at `
+										}
+										value={eachSocialLink.link}
+										onChange={(e) =>
+											onMultiTextChange('link', socialLinks, idx, e)
+										}
+										sx={{ width: '100%' }}
+									/>
+								</Grid>
+								<Grid item xs={2} md={1}>
+									<IconButton
+										onClick={(e) =>
+											handleRemoveMultiTextField(
+												'socialLinks',
+												socialLinks,
+												idx
+											)
+										}
+									>
+										<DeleteIcon />
+									</IconButton>
+								</Grid>
+							</Grid>
+					  ))
+					: '',
+				<Grid
+					container
+					item
+					direction='row'
+					justifyContent='center'
+					alignItems='center'
+					xs={12}
+				>
+					<Button
+						onClick={(e) => handleAddMultiTextField('socialLinks', socialLinks)}
+					>
+						<PersonAddIcon />
+						Add link
+					</Button>
+				</Grid>,
+			],
+		],
+		squareImg: [
+			<FormLabel component='legend'>
+				Please attach a square image, for promotional use on social media.
+			</FormLabel>,
+			[
+				<FormControl component='fieldset'>
+					<UploadInput
+						ref={uploadSquareButtonRef}
+						accept='image/*'
+						name='squareImg'
+						id='squareImg'
+						type='file'
+						onChange={(e) => uploadHandler(e)}
+					/>
+					<label htmlFor='squareImg'>
+						<Button
+							variant='contained'
+							component='span'
+							onClick={(e) => {
+								clickSquareUpload();
+							}}
+						>
+							<AddPhotoAlternateTwoToneIcon></AddPhotoAlternateTwoToneIcon>
+							Upload
+						</Button>
+					</label>
+				</FormControl>,
+				squareImg ? (
+					<img
+						className='squareImg-image uploaded-image'
+						src={squareImg}
+						alt=''
+						style={{
+							marginTop: '16px',
+							maxHeight: '60vh',
+							maxWidth: '90vw',
+							height: 'auto',
+							width: 'auto',
+						}}
+					/>
+				) : (
+					''
+				),
+			],
+		],
+
+		wideImg: [
+			<FormLabel component='legend'>
+				Please attach one high quality image, for promotional use, of this size:
+				2160x1080px
+				<br />
+				If the pixel size is bugging you, just make sure the image is 2:1 ratio,
+				horizontal.
+			</FormLabel>,
+			[
+				<FormControl component='fieldset'>
+					<UploadInput
+						ref={uploadWideButtonRef}
+						accept='image/*'
+						name='wideImg'
+						id='wideImg'
+						type='file'
+						onChange={(e) => uploadHandler(e)}
+					/>
+					<label htmlFor='wideImg'>
+						<Button
+							variant='contained'
+							component='span'
+							onClick={(e) => {
+								clickWideUpload();
+							}}
+						>
+							<AddPhotoAlternateTwoToneIcon></AddPhotoAlternateTwoToneIcon>
+							Upload
+						</Button>
+					</label>
+				</FormControl>,
+				wideImg ? (
+					<img
+						className='wideImg-image uploaded-image'
+						src={wideImg}
+						alt=''
+						style={{
+							marginTop: '16px',
+							maxHeight: '60vh',
+							maxWidth: '90vw',
+							height: 'auto',
+							width: 'auto',
+						}}
+					/>
+				) : (
+					''
+				),
+			],
+		],
+
+		bio: [
+			<FormLabel component='legend'>
+				Tell us about {stageName}. Who are you? What are you about?
+			</FormLabel>,
+			<Grid item xs={12} sx={{ width: '100%' }}>
+				<TextField
+					variant='standard'
+					name='bio'
+					multiline
+					id='bio'
+					label='Bio'
+					value={bio}
+					onChange={(e) => onChange(e)}
+					sx={{ width: '100%' }}
+				/>
+			</Grid>,
+		],
+		artistStatementVideo: [
+			<FormLabel component='legend'>
+				Please record a short video introducing {stageName} and explaining what
+				your{' '}
+				{medium === 'music' || medium === 'visual art'
+					? medium + ' is '
+					: medium + ' are '}{' '}
+				about. Upload it to YouTube, and paste the link here. <br />
+				<small>
+					(Looking for something like:
+					‘https://www.youtube.com/watch?v=lEBBFsWtWDo’)
+				</small>
+			</FormLabel>,
+			[
+				<Grid item xs={12} sx={{ width: '100%' }}>
+					<TextField
+						variant='standard'
+						name='artistStatementVideo'
+						id='artistStatementVideo'
+						label={`My artist statement video can be viewed at`}
+						value={artistStatementVideo}
+						onChange={(e) => onChange(e)}
+						sx={{ width: '100%' }}
+					/>
+				</Grid>,
+				artistStatementVideo ? youTubeEmbed(artistStatementVideo) : '',
+			],
+		],
+		repLinks: [
+			<FormLabel component='legend'>
+				Would you supply some links where we could experience your {medium}?
+			</FormLabel>,
+			[
+				repLinks && Object.keys(repLinks).length > 0
+					? repLinks.map((eachLink, idx) => (
+							<Grid
+								className='eachLink'
+								key={`eachLink${idx}`}
+								container
+								direction='row'
+								justifyContent='space-around'
+								alignItems='start'
+								spacing={2}
+								sx={{
+									// borderColor: 'primary.dark',
+									// borderWidth: '2px',
+									// borderStyle: 'solid',
+									backgroundColor: 'rgba(0,0,0,0.15)',
+									'&:hover': {},
+									padding: '0 10px 10px',
+									margin: '0px auto',
+									width: '100%',
+								}}
+							>
+								<Grid item xs={11}>
+									<TextField
+										variant='standard'
+										name='repLinks'
+										id={`repLinkLink${idx}`}
+										label={
+											idx > 0 ? `and at ` : `Yeah! Check out "${stageName}" at `
+										}
+										value={eachLink.link}
+										onChange={(e) =>
+											onMultiTextChange('link', repLinks, idx, e)
+										}
+										sx={{ width: '100%' }}
+									/>
+								</Grid>
+								<Grid item xs={2} md={0.65}>
+									<IconButton
+										onClick={(e) =>
+											handleRemoveMultiTextField('repLinks', repLinks, idx)
+										}
+									>
+										<DeleteIcon />
+									</IconButton>
+								</Grid>
+							</Grid>
+					  ))
+					: '',
+				<Grid
+					container
+					item
+					direction='row'
+					justifyContent='center'
+					alignItems='center'
+					xs={12}
+				>
+					<Button
+						onClick={(e) => handleAddMultiTextField('repLinks', repLinks)}
+					>
+						<PersonAddIcon />
+						Add link
+					</Button>
+				</Grid>,
+			],
+		],
+		livePerformanceVideo: [
+			<FormLabel component='legend'>
+				Do you have any video of {stageName} performing live?
+				<br />
+				<small>
+					(Looking for something like:
+					‘https://www.youtube.com/watch?v=lEBBFsWtWDo’)
+				</small>
+			</FormLabel>,
+			[
+				<Grid item xs={12} sx={{ width: '100%' }}>
+					<TextField
+						variant='standard'
+						name='livePerformanceVideo'
+						id='livePerformanceVideo'
+						label={`Here’s a video of ${stageName} performing live`}
+						value={livePerformanceVideo}
+						onChange={(e) => onChange(e)}
+						sx={{ width: '100%' }}
+					/>
+				</Grid>,
+				livePerformanceVideo ? youTubeEmbed(livePerformanceVideo) : '',
+			],
+		],
+
+		// <div className='form-group'>
+		//   <TextField
+		//     name="helpKind"
+		//     id="helpKind"
+		//     label="How can we help?"
+		//     value={helpKind}
+		//     onChange={(e) => onChange(e)}
+		//   />
+		// </div>,
+		tourVibe: [
+			<FormLabel component='legend'>
+				Describe the content or vibe of this tour. Is this a faith-based show?
+				Will your {medium} appeal specifically to a particular audience?{' '}
+			</FormLabel>,
+			[
+				<Grid item>
+					<TextField
+						variant='standard'
+						name='tourVibe'
+						multiline
+						id='tourVibe'
+						label='I’m thinking that '
+						placeholder='[plural noun]'
+						value={tourVibe}
+						onChange={(e) => onChange(e)}
+						helperText='are my audience.'
+						InputLabelProps={{ shrink: true }}
+					/>
+				</Grid>,
+			],
+		],
+		bookingWhen: [
+			<FormLabel component='legend'>
+				Please select the dates you’d like to try to play a show:
+			</FormLabel>,
+			[
+				<MultipleDatesPicker
+					id='bookingWhen'
+					name='bookingWhen'
+					open={true}
+					selectedDates={bookingWhen}
+					value={bookingWhen}
+					onCancel={() => setOpen(false)}
+					//onSubmit={dates => console.log('selected dates', dates)}
+					onChange={(target) => onCalendarChange(target)}
+				/>,
+			],
+		],
+		setLength: [
+			<FormLabel component='legend'>
+				How long will your set be (in minutes)?
+			</FormLabel>,
+			[
+				<Grid item>
+					<TextField
+						variant='standard'
+						sx={{ minWidth: 250 }}
+						name='setLength'
+						id='setLength'
+						label='I expect to play for'
+						value={setLength}
+						type='number'
+						onChange={(e) => onChange(e)}
+						InputProps={{
+							endAdornment: (
+								<InputAdornment position='end'>minutes</InputAdornment>
+							),
+						}}
+					/>
+				</Grid>,
+			],
+		],
+		merchTable: [
+			<FormLabel component='legend'>
+				Will you need the host to provide a merch table?
+			</FormLabel>,
+			[
+				<FormControl component='fieldset'>
+					<RadioGroup
+						id='merchTable'
+						value={merchTable}
+						name='merchTable'
+						onChange={(e) => onChange(e)}
+					>
+						<FormControlLabel value='true' control={<Radio />} label='Yes' />
+						<FormControlLabel value='false' control={<Radio />} label='No' />
+					</RadioGroup>
+				</FormControl>,
+			],
+		],
+		promotionApproval: [
+			<FormLabel component='legend'>
+				Do you approve Porchlight to use video, photo, and audio captured, for
+				promotional purposes?
+			</FormLabel>,
+			[
+				<FormControl component='fieldset'>
+					<RadioGroup
+						id='promotionApproval'
+						value={promotionApproval}
+						name='promotionApproval'
+						onChange={(e) => onChange(e)}
+					>
+						<FormControlLabel value='yes' control={<Radio />} label='Yes' />
+						<FormControlLabel value='no' control={<Radio />} label='No' />
+					</RadioGroup>
+				</FormControl>,
+			],
+		],
+		openers: [
+			<FormLabel component='legend'>
+				Let’s talk openers. What’s your preference?
+			</FormLabel>,
+			[
+				<RadioGroup
+					id='openers'
+					value={openers}
+					name='openers'
+					onChange={(e) => onChange(e)}
+				>
+					<FormControlLabel
+						value='I plan on travelling with an opener.'
+						control={<Radio />}
+						label='I plan on travelling with an opener.'
+					/>
+					<FormControlLabel
+						value="I'd like Porchlight Hosts to invite local openers."
+						control={<Radio />}
+						label="I'd like Porchlight Hosts to invite local openers."
+					/>
+					<FormControlLabel
+						value="I'd prefer a solo set."
+						control={<Radio />}
+						label="I'd prefer a solo set."
+					/>
+					<FormControlLabel
+						value='I have no preference.'
+						control={<Radio />}
+						label='I have no preference.'
+					/>
+				</RadioGroup>,
 			],
 		],
 		costStructure: [
@@ -692,146 +1310,147 @@ const EditArtistForm = ({
 				</Grid>
 			</Grid>,
 		],
-		bookingWhen: [
+		allowKids: [
 			<FormLabel component='legend'>
-				Please select the dates you'd like to try to play a show:
+				Would these shows be open to children/young families?
 			</FormLabel>,
 			[
-				<MultipleDatesPicker
-					id='bookingWhen'
-					name='bookingWhen'
-					open={true}
-					selectedDates={bookingWhen}
-					value={bookingWhen}
-					onCancel={() => setOpen(false)}
-					//onSubmit={dates => console.log('selected dates', dates)}
-					onChange={(target) => onCalendarChange(target)}
-				/>,
+				<FormControl component='fieldset'>
+					<RadioGroup
+						id='allowKids'
+						value={allowKids}
+						name='allowKids'
+						onChange={(e) => onChange(e)}
+					>
+						<FormControlLabel value='true' control={<Radio />} label='Yes' />
+						<FormControlLabel value='false' control={<Radio />} label='No' />
+					</RadioGroup>
+				</FormControl>,
 			],
 		],
-		city: [
-			<FormLabel component='legend'>Where are you based out of?</FormLabel>,
-			<Grid
-				container
-				direction='row'
-				justifyContent='center'
-				alignItems='center'
-				spacing={2}
-			>
-				<Grid item>
-					<TextField
-						variant='standard'
-						name='city'
-						id='city'
-						label='I live in the city of'
-						value={city}
-						onChange={(e) => onChange(e)}
-					/>
-				</Grid>
-				<Grid item>
-					<TextField
-						variant='standard'
-						name='state'
-						id='state'
-						label='in the state of'
-						value={state}
-						onChange={(e) => onChange(e)}
-					/>
-				</Grid>
-				<Grid item>
-					<TextField
-						variant='standard'
-						name='zip'
-						id='zip'
-						label='and my zip code is'
-						value={zip}
-						onChange={(e) => onChange(e)}
-					/>
-				</Grid>
-			</Grid>,
-		],
-		setLength: [
+		soundSystem: [
 			<FormLabel component='legend'>
-				How long will your set be (in minutes)?
+				Are you able to provide your own sound system for these shows?
+			</FormLabel>,
+			[
+				<FormControl component='fieldset'>
+					<RadioGroup
+						id='soundSystem'
+						value={soundSystem}
+						name='soundSystem'
+						onChange={(e) => onChange(e)}
+					>
+						<FormControlLabel value='true' control={<Radio />} label='Yes' />
+						<FormControlLabel value='false' control={<Radio />} label='No' />
+					</RadioGroup>
+				</FormControl>,
+			],
+		],
+		financialHopes: [
+			<FormLabel component='legend'>
+				What are your financial expectations and/or hopes for this show or tour?
 			</FormLabel>,
 			[
 				<Grid item>
 					<TextField
 						variant='standard'
-						sx={{ minWidth: 250 }}
-						name='setLength'
-						id='setLength'
-						label='I expect to play for'
-						value={setLength}
-						type='number'
+						name='financialHopes'
+						multiline
+						id='financialHopes'
+						label='What are your financial expectations and/or hopes for this show or tour?'
+						value={financialHopes}
 						onChange={(e) => onChange(e)}
-						InputProps={{
-							endAdornment: (
-								<InputAdornment position='end'>minutes</InputAdornment>
-							),
-						}}
 					/>
 				</Grid>,
 			],
 		],
-		overnight: [
+		fanActions: [
 			<FormLabel component='legend'>
-				Would you like for your host to accommodate/arrange for your overnight
-				hosting?
-				<br />
-				<small>
-					(60% of Porchlight Hosts are interested in putting up musicians
-					overnight!)
-				</small>
+				What are the top ONE or TWO actions you’d like to see new fans make?
 			</FormLabel>,
 			[
-				<Grid item>
-					<FormControl component='fieldset'>
-						<RadioGroup
-							id='overnight'
-							value={overnight}
-							name='overnight'
-							onChange={(e) => onChange(e)}
-						>
-							<FormControlLabel value='Yes' control={<Radio />} label='Yes' />
-							<FormControlLabel value='No' control={<Radio />} label='No' />
-						</RadioGroup>
-					</FormControl>
+				<Grid item xs={12} sx={{ width: '100%' }}>
+					<Autocomplete
+						multiple
+						id='fanActions'
+						value={fanActions}
+						options={[]}
+						freeSolo
+						onChange={(event, value) =>
+							onAutocompleteTagChange(event, 'fanActions', value)
+						}
+						renderTags={(value, getTagProps) =>
+							value.map((option, index) => (
+								<Chip
+									variant='outlined'
+									name='fanActions'
+									label={option}
+									{...getTagProps({ index })}
+								/>
+							))
+						}
+						renderInput={(params) => (
+							<TextField
+								{...params}
+								sx={{ width: '100%' }}
+								variant='standard'
+								label={`New fans of ${stageName} should `}
+								name='fanActions'
+							/>
+						)}
+					/>
 				</Grid>,
 			],
 		],
-		openers: [
+		agreeToPayAdminFee: [
 			<FormLabel component='legend'>
-				Let's talk openers. What's your preference?
+				Porchlight charges an administrative fee of 20% gross ticket sales,
+				tips, merch sales (unless other terms have been agreed to in writing).
+				Do you agree to pay this fee upon completion of the show/tour?
 			</FormLabel>,
 			[
-				<RadioGroup
-					id='openers'
-					value={openers}
-					name='openers'
-					onChange={(e) => onChange(e)}
-				>
-					<FormControlLabel
-						value='I plan on travelling with an opener.'
-						control={<Radio />}
-						label='I plan on travelling with an opener.'
-					/>
-					<FormControlLabel
-						value="I'd like Porchlight Hosts to invite local openers."
-						control={<Radio />}
-						label="I'd like Porchlight Hosts to invite local openers."
-					/>
-					<FormControlLabel
-						value="I'd prefer a solo set."
-						control={<Radio />}
-						label="I'd prefer a solo set."
-					/>
-					<FormControlLabel
-						value='I have no preference.'
-						control={<Radio />}
-						label='I have no preference.'
-					/>
-				</RadioGroup>,
+				<FormControl component='fieldset'>
+					<RadioGroup
+						id='agreeToPayAdminFee'
+						value={agreeToPayAdminFee}
+						name='agreeToPayAdminFee'
+						onChange={(e) => onChange(e)}
+					>
+						<FormControlLabel value='true' control={<Radio />} label='Yes' />
+						<FormControlLabel
+							value='false'
+							control={<Radio />}
+							label="I'd like to discuss this further."
+						/>
+					</RadioGroup>
+				</FormControl>,
+			],
+		],
+		agreeToPromote: [
+			<FormLabel component='legend'>
+				Do you agree to promote each show to your audience, including email
+				sends and social media?
+			</FormLabel>,
+			[
+				<FormControl component='fieldset'>
+					<RadioGroup
+						id='agreeToPromote'
+						value={agreeToPromote}
+						name='agreeToPromote'
+						onChange={(e) => onChange(e)}
+					>
+						<FormControlLabel
+							value='true'
+							control={<Radio />}
+							label='Yes, to the best of my ability.'
+						/>
+						<FormControlLabel
+							value='false'
+							control={<Radio />}
+							label="No, I'm not willing to commit to that."
+						/>
+					</RadioGroup>
+				</FormControl>,
 			],
 		],
 		travelingCompanions: [
@@ -949,6 +1568,51 @@ const EditArtistForm = ({
 				</Grid>,
 			],
 		],
+		overnight: [
+			<FormLabel component='legend'>
+				Would you like for your host to accommodate/arrange for you{' '}
+				{travelingCompanions ? ' and your traveling companions ' : ''} to stay
+				overnight?
+				<br />
+				<small>
+					(60% of Porchlight Hosts are interested in putting up musicians
+					overnight!)
+				</small>
+			</FormLabel>,
+			[
+				<Grid item>
+					<FormControl component='fieldset'>
+						<RadioGroup
+							id='overnight'
+							value={overnight}
+							name='overnight'
+							onChange={(e) => onChange(e)}
+						>
+							<FormControlLabel
+								value='1'
+								control={<Radio />}
+								label='Yes, 1 bed, please.'
+							/>
+							{travelingCompanions && travelingCompanions.length > 0
+								? travelingCompanions.map((travelingCompanion, idx) => (
+										<FormControlLabel
+											key={idx}
+											value={idx + 2}
+											control={<Radio />}
+											label={'Yes, ' + (idx + 2) + ' beds, please.'}
+										/>
+								  ))
+								: ''}
+							<FormControlLabel
+								value='0'
+								control={<Radio />}
+								label='No, thank you.'
+							/>
+						</RadioGroup>
+					</FormControl>
+				</Grid>,
+			],
+		],
 		hangout: [
 			[
 				<Grid
@@ -1027,24 +1691,6 @@ const EditArtistForm = ({
 				</Grid>,
 			],
 		],
-		merchTable: [
-			<FormLabel component='legend'>
-				Will you need the host to provide a merch table?
-			</FormLabel>,
-			[
-				<FormControl component='fieldset'>
-					<RadioGroup
-						id='merchTable'
-						value={merchTable}
-						name='merchTable'
-						onChange={(e) => onChange(e)}
-					>
-						<FormControlLabel value='true' control={<Radio />} label='Yes' />
-						<FormControlLabel value='false' control={<Radio />} label='No' />
-					</RadioGroup>
-				</FormControl>,
-			],
-		],
 		allergies: [
 			<FormLabel component='legend'>
 				Please list any food allergies, pet allergies, or special needs you
@@ -1084,313 +1730,74 @@ const EditArtistForm = ({
 				</Grid>,
 			],
 		],
-		allowKids: [
+
+		showSchedule: [
 			<FormLabel component='legend'>
-				Would these shows be open to children/young families?
-			</FormLabel>,
-			[
-				<FormControl component='fieldset'>
-					<RadioGroup
-						id='allowKids'
-						value={allowKids}
-						name='allowKids'
-						onChange={(e) => onChange(e)}
-					>
-						<FormControlLabel value='true' control={<Radio />} label='Yes' />
-						<FormControlLabel value='false' control={<Radio />} label='No' />
-					</RadioGroup>
-				</FormControl>,
-			],
-		],
-		soundSystem: [
-			<FormLabel component='legend'>
-				Are you able to provide your own sound system for these shows?
-			</FormLabel>,
-			[
-				<FormControl component='fieldset'>
-					<RadioGroup
-						id='soundSystem'
-						value={soundSystem}
-						name='soundSystem'
-						onChange={(e) => onChange(e)}
-					>
-						<FormControlLabel value='true' control={<Radio />} label='Yes' />
-						<FormControlLabel value='false' control={<Radio />} label='No' />
-					</RadioGroup>
-				</FormControl>,
-			],
-		],
-		financialHopes: [
-			<FormLabel component='legend'>
-				What are your financial expectations and/or hopes for this show or tour?
+				Schedules often get shifted by hosts or artists, but it’s really helpful
+				to have a “proposed schedule” and tweak from there. Please edit the
+				times below to best represent the schedule you propose.
 			</FormLabel>,
 			[
 				<Grid item>
+					{stageName} will need to start setting up at
 					<TextField
 						variant='standard'
-						name='financialHopes'
-						multiline
-						id='financialHopes'
-						label='What are your financial expectations and/or hopes for this show or tour?'
-						value={financialHopes}
+						id='setupTime'
+						//label='Alarm clock'
+						type='time'
+						name='showSchedule.setupTime'
+						value={showSchedule.setupTime || ''}
 						onChange={(e) => onChange(e)}
+						inputProps={{
+							step: 900, // 15 min
+						}}
+						sx={{ padding: '0 8px' }}
+					/>{' '}
+					to have “doors open” at
+					<TextField
+						variant='standard'
+						id='doorsOpen'
+						//label='Alarm clock'
+						type='time'
+						name='showSchedule.doorsOpen'
+						value={showSchedule.doorsOpen || ''}
+						onChange={(e) => onChange(e)}
+						inputProps={{
+							step: 900, // 15 min
+						}}
+						sx={{ padding: '0 8px' }}
 					/>
+					for the show starting at
+					<TextField
+						variant='standard'
+						id='startTime'
+						//label='Alarm clock'
+						type='time'
+						name='showSchedule.startTime'
+						value={showSchedule.startTime || ''}
+						onChange={(e) => onChange(e)}
+						inputProps={{
+							step: 900, // 15 min
+						}}
+						sx={{ padding: '0 0 0 8px' }}
+					/>
+					with a hard wrap at about{' '}
+					<TextField
+						variant='standard'
+						id='hardWrap'
+						//label='Alarm clock'
+						type='time'
+						name='showSchedule.hardWrap'
+						value={showSchedule.hardWrap || ''}
+						onChange={(e) => onChange(e)}
+						inputProps={{
+							step: 900, // 15 min
+						}}
+						sx={{ padding: '0 0 0 8px' }}
+					/>
+					.
 				</Grid>,
 			],
-		],
-		agreeToPayAdminFee: [
-			<FormLabel component='legend'>
-				Porchlight charges an administrative fee of 20% gross ticket sales,
-				tips, merch sales (unless other terms have been agreed to in writing).
-				Do you agree to pay this fee upon completion of the show/tour?
-			</FormLabel>,
-			[
-				<FormControl component='fieldset'>
-					<RadioGroup
-						id='agreeToPayAdminFee'
-						value={agreeToPayAdminFee}
-						name='agreeToPayAdminFee'
-						onChange={(e) => onChange(e)}
-					>
-						<FormControlLabel value='true' control={<Radio />} label='Yes' />
-						<FormControlLabel
-							value='false'
-							control={<Radio />}
-							label="I'd like to discuss this further."
-						/>
-					</RadioGroup>
-				</FormControl>,
-			],
-		],
-		wideImg: [
-			<FormLabel component='legend'>
-				Please attach one high quality image, for promotional use, of this size:
-				2160x1080px
-				<br />
-				If the pixel size is bugging you, just make sure the image is 2:1 ratio,
-				horizontal.
-			</FormLabel>,
-			[
-				<FormControl component='fieldset'>
-					<UploadInput
-						ref={uploadWideButtonRef}
-						accept='image/*'
-						name='wideImg'
-						id='wideImg'
-						type='file'
-						onChange={(e) => uploadHandler(e)}
-					/>
-					<label htmlFor='wideImg'>
-						<Button
-							variant='contained'
-							component='span'
-							onClick={(e) => {
-								clickWideUpload();
-							}}
-						>
-							<AddPhotoAlternateTwoToneIcon></AddPhotoAlternateTwoToneIcon>
-							Upload
-						</Button>
-					</label>
-				</FormControl>,
-				wideImg ? (
-					<img
-						className='wideImg-image uploaded-image'
-						src={wideImg}
-						alt=''
-						style={{
-							marginTop: '16px',
-							maxHeight: '60vh',
-							maxWidth: '90vw',
-							height: 'auto',
-							width: 'auto',
-						}}
-					/>
-				) : (
-					''
-				),
-			],
-		],
-		squareImg: [
-			<FormLabel component='legend'>
-				Please attach a square image, for promotional use on social media.
-			</FormLabel>,
-			[
-				<FormControl component='fieldset'>
-					<UploadInput
-						ref={uploadSquareButtonRef}
-						accept='image/*'
-						name='squareImg'
-						id='squareImg'
-						type='file'
-						onChange={(e) => uploadHandler(e)}
-					/>
-					<label htmlFor='squareImg'>
-						<Button
-							variant='contained'
-							component='span'
-							onClick={(e) => {
-								clickSquareUpload();
-							}}
-						>
-							<AddPhotoAlternateTwoToneIcon></AddPhotoAlternateTwoToneIcon>
-							Upload
-						</Button>
-					</label>
-				</FormControl>,
-				squareImg ? (
-					<img
-						className='squareImg-image uploaded-image'
-						src={squareImg}
-						alt=''
-						style={{
-							marginTop: '16px',
-							maxHeight: '60vh',
-							maxWidth: '90vw',
-							height: 'auto',
-							width: 'auto',
-						}}
-					/>
-				) : (
-					''
-				),
-			],
-		],
-		repLinks: [
-			<FormLabel component='legend'>
-				Would you supply some links where we could experience your {medium}?
-			</FormLabel>,
-			[
-				repLinks && Object.keys(repLinks).length > 0
-					? repLinks.map((eachLink, idx) => (
-							<Grid
-								className='eachLink'
-								key={`eachLink${idx}`}
-								container
-								direction='row'
-								justifyContent='space-around'
-								alignItems='start'
-								spacing={2}
-								sx={{
-									// borderColor: 'primary.dark',
-									// borderWidth: '2px',
-									// borderStyle: 'solid',
-									backgroundColor: 'rgba(0,0,0,0.15)',
-									'&:hover': {},
-									padding: '0 10px 10px',
-									margin: '0px auto',
-									width: '100%',
-								}}
-							>
-								<Grid item xs={11}>
-									<TextField
-										variant='standard'
-										name='repLinks'
-										id={`reLinkLink${idx}`}
-										label={
-											idx > 0 ? `and at ` : `Yeah! Check out "${stageName}" at `
-										}
-										value={eachLink.link}
-										onChange={(e) =>
-											onMultiTextChange('link', repLinks, idx, e)
-										}
-										sx={{ width: '100%' }}
-									/>
-								</Grid>
-								<Grid item xs={2} md={0.65}>
-									<IconButton
-										onClick={(e) =>
-											handleRemoveMultiTextField('repLinks', repLinks, idx)
-										}
-									>
-										<DeleteIcon />
-									</IconButton>
-								</Grid>
-							</Grid>
-					  ))
-					: '',
-				<Grid
-					container
-					item
-					direction='row'
-					justifyContent='center'
-					alignItems='center'
-					xs={12}
-				>
-					<Button
-						onClick={(e) => handleAddMultiTextField('repLinks', repLinks)}
-					>
-						<PersonAddIcon />
-						Add link
-					</Button>
-				</Grid>,
-			],
-		],
-		// <div className='form-group'>
-		//   <TextField
-		//     name="helpKind"
-		//     id="helpKind"
-		//     label="How can we help?"
-		//     value={helpKind}
-		//     onChange={(e) => onChange(e)}
-		//   />
-		// </div>,
-		showSchedule: [
-			<FormLabel component='legend'>
-				Porchlight shows typically start at about{' '}
-				<TextField
-					variant='standard'
-					id='startTime'
-					//label='Alarm clock'
-					type='time'
-					name='showSchedule.startTime'
-					value={showSchedule.startTime || ''}
-					onChange={(e) => onChange(e)}
-					inputProps={{
-						step: 900, // 15 min
-					}}
-				/>
-				, with "doors open" at{' '}
-				<TextField
-					variant='standard'
-					id='doorsOpen'
-					//label='Alarm clock'
-					type='time'
-					name='showSchedule.doorsOpen'
-					value={showSchedule.doorsOpen || ''}
-					onChange={(e) => onChange(e)}
-					inputProps={{
-						step: 900, // 15 min
-					}}
-				/>
-				, and a hard wrap at about{' '}
-				<TextField
-					variant='standard'
-					id='hardWrap'
-					//label='Alarm clock'
-					type='time'
-					name='showSchedule.hardWrap'
-					value={showSchedule.hardWrap || ''}
-					onChange={(e) => onChange(e)}
-					inputProps={{
-						step: 900, // 15 min
-					}}
-				/>
-				. Does this tentative schedule likely work for most of your shows?
-				<br />
-				<small>
-					Schedules often get shifted by hosts or musicians, but it's really
-					helpful to have a "proposed schedule" and tweak from there. If you'd
-					like to propose an alternative schedule for your shows, list it below:
-				</small>
-			</FormLabel>,
-			// <TextField
-			// 	name='schedule'
-			// 	id='schedule'
-			// 	label='Porchlight shows typically start at about 7:00pm, with "doors open" at 6:30pm, and a hard wrap at about 9pm. Does this tentative schedule likely work for most of your shows?'
-			// 	value={schedule}
-			// 	onChange={(e) => onChange(e)}
-			// />,
 		],
 		covidPrefs: [
 			<FormLabel component='legend'>
@@ -1458,21 +1865,6 @@ const EditArtistForm = ({
 					id='artistNotes'
 					label='Artist Notes'
 					value={artistNotes}
-					onChange={(e) => onChange(e)}
-					sx={{ width: '100%' }}
-				/>
-			</Grid>,
-		],
-		bio: [
-			<FormLabel component='legend'>Please enter your bio info</FormLabel>,
-			<Grid item xs={12} sx={{ width: '100%' }}>
-				<TextField
-					variant='standard'
-					name='bio'
-					multiline
-					id='bio'
-					label='Bio'
-					value={bio}
 					onChange={(e) => onChange(e)}
 					sx={{ width: '100%' }}
 				/>
@@ -1624,7 +2016,7 @@ const EditArtistForm = ({
 };
 
 EditArtistForm.propTypes = {
-	createArtist: PropTypes.func.isRequired,
+	createMyArtist: PropTypes.func.isRequired,
 	theArtist: PropTypes.object,
 	auth: PropTypes.object.isRequired,
 	updateUserAvatar: PropTypes.func.isRequired,
@@ -1634,6 +2026,6 @@ const mapStateToProps = (state) => ({
 	auth: state.auth,
 });
 
-export default connect(mapStateToProps, { createArtist, updateUserAvatar })(
+export default connect(mapStateToProps, { createMyArtist, updateUserAvatar })(
 	withRouter(EditArtistForm)
 ); //withRouter allows us to pass history objects

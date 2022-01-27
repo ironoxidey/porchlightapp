@@ -1,13 +1,16 @@
 import {
 	GET_ARTIST,
+	GET_ARTIST_ME,
 	ARTIST_ERROR,
 	CLEAR_ARTIST,
 	UPDATE_ARTIST,
+	UPDATE_ARTIST_ME,
 	GET_ARTISTS,
 	LOGOUT,
 } from '../actions/types';
 
 const initialState = {
+	me: null,
 	artist: null,
 	artists: [],
 	loading: true,
@@ -22,6 +25,13 @@ export default function (state = initialState, action) {
 			return {
 				...state,
 				artist: payload,
+				loading: false,
+			};
+		case GET_ARTIST_ME:
+		case UPDATE_ARTIST_ME:
+			return {
+				...state,
+				me: payload,
 				loading: false,
 			};
 		case UPDATE_ARTIST:
@@ -48,6 +58,7 @@ export default function (state = initialState, action) {
 			return {
 				...state,
 				artist: null,
+				me: null,
 			};
 		default:
 			return state;

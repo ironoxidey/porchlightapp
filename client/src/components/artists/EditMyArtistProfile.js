@@ -9,7 +9,7 @@ import EditArtistForm from './EditArtistForm';
 const EditMyArtistProfile = ({
 	auth,
 	getCurrentArtist,
-	artist: { artist, loading },
+	artist: { me, artist, loading },
 }) => {
 	useEffect(() => {
 		// if (auth.user.email) {
@@ -24,7 +24,7 @@ const EditMyArtistProfile = ({
 			) : (
 				<Fragment>
 					{/* <h1 className='large text-primary'>Edit Your Artist Profile</h1> */}
-					<EditArtistForm theArtist={artist} />
+					<EditArtistForm theArtist={me} />
 					{/* <Link to='/dashboard' className='btn btn-light my-1'>
           Go Back
         </Link> */}

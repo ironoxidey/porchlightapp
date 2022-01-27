@@ -25,9 +25,11 @@ import {
 	withStyles,
 } from '@mui/material';
 import Button from '../layout/SvgButton';
-import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
+import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 
 import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+
+import { toTitleCase } from '../../actions/app';
 
 const ArtistTop = ({
 	artist,
@@ -80,12 +82,14 @@ const ArtistTop = ({
 					container
 					sx={{
 						padding: '20px!important',
-						height: '30vh',
+						height: '50vw',
+						maxHeight: '50vh',
 						width: 'calc(100% - 40px)',
+						maxWidth: '960px',
 						margin: '0 auto',
 						borderRadius: '8px',
 						backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0)), url("${wideImg}")`,
-						backgroundPosition: '50% 25%',
+						backgroundPosition: '50% 50%',
 						backgroundSize: 'cover',
 					}}
 				>
@@ -131,7 +135,13 @@ const ArtistTop = ({
 								direction='column'
 								alignItems='start'
 							>
-								{artist.stageName ? (
+								{artist.stageName && artist.artistWebsite ? (
+									<Grid item>
+										<a href={artist.artistWebsite} target='_blank'>
+											<Typography component='h2'>{artist.stageName}</Typography>
+										</a>
+									</Grid>
+								) : artist.stageName ? (
 									<Grid item>
 										<Typography component='h2'>{artist.stageName}</Typography>
 									</Grid>
@@ -157,11 +167,11 @@ const ArtistTop = ({
 										alignItems='center'
 										sx={{ marginTop: '8px' }}
 									>
-										<HomeTwoToneIcon
+										<PlaceTwoToneIcon
 											sx={{ marginRight: '8px' }}
-										></HomeTwoToneIcon>
+										></PlaceTwoToneIcon>
 										<Typography component='h3'>
-											{artist.city}, {artist.state}
+											{toTitleCase(artist.city)}, {artist.state}
 										</Typography>
 									</Grid>
 								) : (
