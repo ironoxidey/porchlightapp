@@ -64,6 +64,12 @@ const SwipeableTemporaryDrawer = ({
 	}, [navDrawer]);
 
 	const adminLinks = [
+		<Link to='/artists'>
+			<ListItemIcon>
+				<PeopleIcon></PeopleIcon>
+			</ListItemIcon>
+			Artists
+		</Link>,
 		<Link to='/edit-artists'>
 			<ListItemIcon>
 				<PeopleOutlineIcon></PeopleOutlineIcon>
@@ -174,7 +180,7 @@ const SwipeableTemporaryDrawer = ({
 				>
 					<Avatar alt={`${user.name}`} src={`${user.avatar}`} />
 					<Typography sx={{ textAlign: 'center' }}>
-						{artist.me
+						{artist.me && artist.me._id
 							? artist.me.stageName
 							: user && user.name
 							? user.name

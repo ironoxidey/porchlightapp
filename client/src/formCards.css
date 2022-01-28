@@ -39,7 +39,7 @@ legend.MuiFormLabel-root::before {
 	padding-bottom: 80px;
 }
 
-.MuiGrid-root.MuiGrid-item {
+.animatedFormGroup .MuiGrid-root.MuiGrid-item {
 	padding-right: 0;
 }
 

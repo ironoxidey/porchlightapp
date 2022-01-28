@@ -15,7 +15,7 @@ function convertToSlug(Text) {
 }
 
 // @route    GET api/artists/me
-// @desc     Get current users artist
+// @desc     Get current user's artist profile
 // @access   Private
 router.get('/me', auth, async (req, res) => {
 	try {
@@ -27,7 +27,13 @@ router.get('/me', auth, async (req, res) => {
 			email: req.user.email,
 		}).select('-hadMeeting -sentFollowUp -notes');
 		if (!artist) {
-			return res.status(400).json({ msg: 'There is no artist for this user' });
+			return res.json({
+				email: req.user.email,
+				msg:
+					'There is no artist profile yet for ' +
+					req.user.email +
+					'. No worries, we’ll make one!',
+			});
 		}
 
 		res.json(artist);
@@ -287,7 +293,7 @@ router.post('/updateMe', [auth], async (req, res) => {
 router.get('/', async (req, res) => {
 	try {
 		const artists = await Artist.find({ active: true }).select(
-			'-email -phone -companionTravelers -artistNotes -schedule'
+			'-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
 		);
 		res.json(artists);
 	} catch (err) {
@@ -344,7 +350,9 @@ router.get('/:slug', async (req, res) => {
 	try {
 		const artist = await Artist.findOne({
 			slug: req.params.slug,
-		}).select('-email -phone -companionTravelers -artistNotes -schedule'); //ADD .select('-field'); to exclude [field] from the response
+		}).select(
+			'-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
+		); //ADD .select('-field'); to exclude [field] from the response
 
 		if (!artist) return res.status(400).json({ msg: 'Artist not found' });
 

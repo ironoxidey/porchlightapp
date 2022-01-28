@@ -91,6 +91,9 @@ const ArtistSchema = new mongoose.Schema(
 		hometown: {
 			type: String,
 		},
+		streetAddress: {
+			type: String,
+		},
 		city: {
 			type: String,
 		},

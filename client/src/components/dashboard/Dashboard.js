@@ -101,7 +101,7 @@ const Dashboard = ({
 							margin: '8px auto',
 						}}
 					>
-						{me !== null ? (
+						{me && me._id ? (
 							<Fragment>
 								<Link to='/edit-artist-profile'>
 									<Button btnwidth='300' className=''>

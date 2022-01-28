@@ -176,7 +176,7 @@ const Navbar = ({
 									}}
 								>
 									<Typography sx={{ textAlign: 'center' }}>
-										{artist.me
+										{artist.me && artist.me._id
 											? artist.me.stageName
 											: user && user.name
 											? user.name

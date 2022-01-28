@@ -63,7 +63,6 @@ const ArtistAbout = ({ artist }) => {
 				<Grid
 					item
 					container
-					spacing={2}
 					sx={{ marginTop: '0' }}
 					direction='row'
 					alignContent='start'
@@ -74,7 +73,6 @@ const ArtistAbout = ({ artist }) => {
 					{artist.bio ? (
 						<Grid
 							item
-							spacing={2}
 							sx={{ marginTop: '0' }}
 							direction='row'
 							alignItems='start'
@@ -95,9 +93,7 @@ const ArtistAbout = ({ artist }) => {
 					)}
 					<Grid
 						item
-						spacing={2}
 						sx={{ marginTop: '0' }}
-						direction='row'
 						alignItems='start'
 						className='socialIcons'
 						xs={12}

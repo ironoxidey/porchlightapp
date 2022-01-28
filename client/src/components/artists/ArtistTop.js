@@ -1,29 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-import {
-	TextField,
-	//Button,
-	Radio,
-	RadioGroup,
-	FormControlLabel,
-	FormControl,
-	FormLabel,
-	Select,
-	InputLabel,
-	MenuItem,
-	InputAdornment,
-	IconButton,
-	Grid,
-	Box,
-	Paper,
-	BottomNavigationAction,
-	BottomNavigation,
-	Autocomplete,
-	Chip,
-	Typography,
-	withStyles,
-} from '@mui/material';
+import { Grid, Chip, Typography } from '@mui/material';
 import Button from '../layout/SvgButton';
 import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 

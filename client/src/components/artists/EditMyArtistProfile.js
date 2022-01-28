@@ -21,7 +21,7 @@ const EditMyArtistProfile = ({
 		<Fragment>
 			{loading ? (
 				<Spinner></Spinner>
-			) : (
+			) : me ? (
 				<Fragment>
 					{/* <h1 className='large text-primary'>Edit Your Artist Profile</h1> */}
 					<EditArtistForm theArtist={me} />
@@ -29,6 +29,8 @@ const EditMyArtistProfile = ({
           Go Back
         </Link> */}
 				</Fragment>
+			) : (
+				''
 			)}
 		</Fragment>
 	);

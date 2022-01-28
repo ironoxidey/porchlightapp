@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD } from '../../actions/types';
 import { setAlert } from '../../actions/alert';
-import { createMyArtist } from '../../actions/artist';
+import { createMyArtist, getCurrentArtist } from '../../actions/artist';
 import { updateUserAvatar } from '../../actions/auth';
 import {
 	TextField,
@@ -81,6 +81,7 @@ const EditArtistForm = ({
 		// active: '',
 		phone: '',
 		hometown: '',
+		streetAddress: '',
 		city: '',
 		state: '',
 		zip: '',
@@ -146,6 +147,8 @@ const EditArtistForm = ({
 				// active: loading || (theArtist.active == null) ? false : theArtist.active,
 				phone: loading || !theArtist.phone ? '' : theArtist.phone,
 				hometown: loading || !theArtist.hometown ? '' : theArtist.hometown,
+				streetAddress:
+					loading || !theArtist.streetAddress ? '' : theArtist.streetAddress,
 				city: loading || !theArtist.city ? '' : theArtist.city,
 				state: loading || !theArtist.state ? '' : theArtist.state,
 				zip: loading || !theArtist.zip ? '' : theArtist.zip,
@@ -258,6 +261,7 @@ const EditArtistForm = ({
 					// active: '',
 					phone: '',
 					hometown: '',
+					streetAddress: '',
 					city: '',
 					state: '',
 					zip: '',
@@ -303,7 +307,7 @@ const EditArtistForm = ({
 				});
 			}
 		}
-	}, [auth.loading, createMyArtist]);
+	}, [auth.loading, createMyArtist, theArtist]);
 
 	const {
 		slug,
@@ -321,6 +325,7 @@ const EditArtistForm = ({
 		// active,
 		phone,
 		hometown,
+		streetAddress,
 		city,
 		state,
 		zip,
@@ -659,47 +664,67 @@ const EditArtistForm = ({
 		//   />
 		// </div>,
 		city: [
-			<FormLabel component='legend'>
-				Where is {stageName} based out of?
-			</FormLabel>,
-			<Grid
-				container
-				direction='row'
-				justifyContent='center'
-				alignItems='center'
-				spacing={2}
-			>
-				<Grid item>
-					<TextField
-						variant='standard'
-						name='city'
-						id='city'
-						label='In the city of'
-						value={city}
-						onChange={(e) => onChange(e)}
-					/>
-				</Grid>
-				<Grid item>
-					<TextField
-						variant='standard'
-						name='state'
-						id='state'
-						label='in the state of'
-						value={state}
-						onChange={(e) => onChange(e)}
-					/>
-				</Grid>
-				<Grid item>
-					<TextField
-						variant='standard'
-						name='zip'
-						id='zip'
-						label='with the zip code'
-						value={zip}
-						onChange={(e) => onChange(e)}
-					/>
-				</Grid>
-			</Grid>,
+			<FormLabel component='legend'>Where is {stageName} located?</FormLabel>,
+			[
+				<Grid
+					container
+					direction='row'
+					justifyContent='center'
+					alignItems='center'
+					spacing={2}
+				>
+					<Grid item xs={12}>
+						<TextField
+							variant='standard'
+							name='streetAddress'
+							id='streetAddress'
+							label='At the street address of'
+							value={streetAddress}
+							onChange={(e) => onChange(e)}
+							sx={{ width: '100%' }}
+						/>
+					</Grid>
+				</Grid>,
+				<Grid
+					container
+					direction='row'
+					justifyContent='center'
+					alignItems='center'
+					spacing={2}
+					sx={{ marginTop: '8px' }}
+				>
+					<Grid item>
+						<TextField
+							variant='standard'
+							name='city'
+							id='city'
+							label='In the city of'
+							value={city}
+							onChange={(e) => onChange(e)}
+						/>
+					</Grid>
+					<Grid item>
+						<TextField
+							variant='standard'
+							name='state'
+							id='state'
+							label='in the state of'
+							value={state}
+							onChange={(e) => onChange(e)}
+						/>
+					</Grid>
+					<Grid item>
+						<TextField
+							variant='standard'
+							name='zip'
+							id='zip'
+							label='with the zip code'
+							value={zip}
+							onChange={(e) => onChange(e)}
+						/>
+					</Grid>
+				</Grid>,
+			],
 		],
 		phone: [
 			<FormLabel component='legend'>
@@ -1041,7 +1066,8 @@ const EditArtistForm = ({
 		],
 		livePerformanceVideo: [
 			<FormLabel component='legend'>
-				Do you have any video of {stageName} performing live?
+				Do you have any video of {stageName} performing a house show or backyard
+				concert?
 				<br />
 				<small>
 					(Looking for something like:
