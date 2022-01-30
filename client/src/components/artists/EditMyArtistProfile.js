@@ -15,7 +15,8 @@ const EditMyArtistProfile = ({
 		// if (auth.user.email) {
 		getCurrentArtist();
 		// }
-	}, [getCurrentArtist, auth]);
+	}, [getCurrentArtist]);
+	//}, [getCurrentArtist, auth]);
 
 	return (
 		<Fragment>

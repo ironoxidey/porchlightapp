@@ -3,17 +3,24 @@ import {
 	CLOSE_NAV_DRAWER,
 	IMAGE_UPLOAD,
 	PAGE_LOAD,
+	FLIP_ARTIST_CARD,
 } from '../actions/types';
 
 const intialState = {
 	navDrawer: false,
 	pageTitle: '',
+	artistCardFlip: false,
 	msg: '',
 };
 
 export default function (state = intialState, action) {
 	const { type, payload } = action;
 	switch (type) {
+		case FLIP_ARTIST_CARD:
+			return {
+				...state,
+				artistCardFlip: !state.artistCardFlip,
+			};
 		case OPEN_NAV_DRAWER:
 			return {
 				...state,

@@ -1,4 +1,4 @@
-import { OPEN_NAV_DRAWER, CLOSE_NAV_DRAWER } from './types';
+import { OPEN_NAV_DRAWER, CLOSE_NAV_DRAWER, FLIP_ARTIST_CARD } from './types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icon } from '@fortawesome/fontawesome-svg-core'; //for checking the existence of an icon
 
@@ -11,6 +11,13 @@ export const openNavDrawer = () => (dispatch) => {
 export const closeNavDrawer = () => (dispatch) => {
 	dispatch({
 		type: CLOSE_NAV_DRAWER,
+	});
+};
+
+export const flipArtistCard = (artist) => (dispatch) => {
+	dispatch({
+		type: FLIP_ARTIST_CARD,
+		payload: artist,
 	});
 };
 

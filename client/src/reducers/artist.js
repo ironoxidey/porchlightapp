@@ -7,6 +7,7 @@ import {
 	UPDATE_ARTIST_ME,
 	GET_ARTISTS,
 	LOGOUT,
+	FLIP_ARTIST_CARD,
 } from '../actions/types';
 
 const initialState = {
@@ -22,6 +23,7 @@ export default function (state = initialState, action) {
 	const { type, payload } = action;
 	switch (type) {
 		case GET_ARTIST:
+		case FLIP_ARTIST_CARD:
 			return {
 				...state,
 				artist: payload,

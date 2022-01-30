@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD } from '../../actions/types';
 import { setAlert } from '../../actions/alert';
-import { createMyArtist, getCurrentArtist } from '../../actions/artist';
+import { createMyArtist } from '../../actions/artist';
 import { updateUserAvatar } from '../../actions/auth';
 import {
 	TextField,

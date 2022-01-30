@@ -45,3 +45,4 @@ export const UPDATE_AVATAR = 'UPDATE_AVATAR';
 export const UPDATE_ERROR = 'UPDATE_ERROR';
 export const IMAGE_UPLOAD = 'IMAGE_UPLOAD';
 export const PAGE_LOAD = 'PAGE_LOAD';
+export const FLIP_ARTIST_CARD = 'FLIP_ARTIST_CARD';
