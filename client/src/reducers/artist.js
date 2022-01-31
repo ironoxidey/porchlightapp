@@ -8,6 +8,7 @@ import {
 	GET_ARTISTS,
 	LOGOUT,
 	FLIP_ARTIST_CARD,
+	ACCOUNT_DELETED,
 } from '../actions/types';
 
 const initialState = {
@@ -56,7 +57,12 @@ export default function (state = initialState, action) {
 				artist: null,
 			};
 		case CLEAR_ARTIST:
+			return {
+				...state,
+				artist: null,
+			};
 		case LOGOUT:
+		case ACCOUNT_DELETED:
 			return {
 				...state,
 				artist: null,

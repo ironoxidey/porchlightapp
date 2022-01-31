@@ -6,7 +6,8 @@ import React, {
 	useLayoutEffect,
 } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
+import { CLEAR_ARTIST } from '../../actions/types';
 import Spinner from '../layout/Spinner';
 import ArtistGridItem from './ArtistGridItem';
 import { getArtists } from '../../actions/artist';
@@ -20,7 +21,7 @@ import ArtistGridItemTile from './ArtistGridItemTile';
 import { flexbox } from '@mui/system';
 
 import useWindowDimensions from '../../utils/useWindowDimensions';
-import { useWindowSize, useMeasure } from 'react-use';
+import { useWindowScroll } from 'react-use';
 
 let flipped = false;
 let artistTileOffset = {};
@@ -56,13 +57,13 @@ const Artists = ({
 		getArtists();
 	}, []);
 
+	const dispatch = useDispatch();
+
 	const [springReset, toggleReset] = useState(false);
 
 	const { viewHeight, viewWidth } = useWindowDimensions();
-	// const [artistTileDiv, { x, y, width, height, top, right, bottom, left }] =
-	// 	useMeasure();
 
-	//const [tileMeasurement, artistTileDiv] = useClientRect();
+	const { x, y } = useWindowScroll(); //THIS ISN'T WORKING!!! not getting anything but 0 for either value always
 
 	useLayoutEffect(() => {
 		if (artist) {
@@ -70,12 +71,14 @@ const Artists = ({
 				.querySelectorAll('[data-artist-slug=' + artist.slug + ']')[0]
 				.getElementsByClassName('theSquareTile')[0];
 
+			const rootScrollTop = document.getElementById('root').scrollTop + 20;
+
 			const topOffset = document
 				.getElementsByClassName('animatedRoute')[0]
 				.getBoundingClientRect().top;
 
 			// console.log('artistTileDiv');
-			// console.log(artistTileDiv);
+			//console.log(rootScrollTop);
 
 			if (artistTileDiv) {
 				// artistTileOffset.top = tileMeasurement.top;
@@ -96,6 +99,7 @@ const Artists = ({
 
 				// console.log('artistTileOffset');
 				// console.log(artistTileOffset);
+				//console.log('scrollY: ' + rootScrollTop);
 
 				if (artistCardFlip === true) {
 					setSpring.start({
@@ -109,7 +113,7 @@ const Artists = ({
 						to: {
 							opacity: 1,
 							zIndex: 100,
-							transform: `translate3d(0px, 0px, 0px) perspective(600px) rotateY(0deg)`,
+							transform: `translate3d(0px, ${rootScrollTop}px, 0px) perspective(600px) rotateY(0deg)`,
 							width: window.innerWidth,
 							height: window.innerHeight,
 						},
@@ -124,6 +128,10 @@ const Artists = ({
 							transform: `translate3d(${artistTileOffset.left}px, ${artistTileOffset.top}px, 0px) perspective(600px) rotateY(-180deg)`,
 							width: artistTileOffset.width,
 							height: artistTileOffset.width,
+						},
+						onRest: () => {
+							console.log('CLEAR_ARTIST');
+							dispatch({ type: CLEAR_ARTIST });
 						},
 						config: { mass: 5, tension: 500, friction: 80 },
 					});
@@ -233,7 +241,7 @@ const Artists = ({
 									zIndex,
 									opacity,
 									// transition: 'all 500ms ease-in',
-									backgroundColor: 'rgb(0 0 0 / .5)',
+									backgroundColor: 'rgb(0 0 0 / .6)',
 									top: 0,
 									right: 0,
 									bottom: 0,
@@ -242,9 +250,12 @@ const Artists = ({
 									display: 'flex',
 									justifyContent: 'start',
 									alignItems: 'start',
+									// justifyContent: 'center',
+									// alignItems: 'center',
 									width: '100%',
 									height: '100%',
 									cursor: 'pointer',
+									backdropFilter: 'blur(8px)',
 								}}
 							>
 								<a.div
