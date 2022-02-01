@@ -96,6 +96,7 @@ const ArtistTileBack = ({
 							{artist.squareImg ? (
 								<Grid item>
 									<Box
+										className='squareImg'
 										sx={{
 											height: '200px',
 											width: '200px',
