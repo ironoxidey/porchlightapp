@@ -20,30 +20,8 @@ import ArtistTileBack from './ArtistTileBack';
 import ArtistGridItemTile from './ArtistGridItemTile';
 import { flexbox } from '@mui/system';
 
-import useWindowDimensions from '../../utils/useWindowDimensions';
-import { useWindowScroll } from 'react-use';
-
 let flipped = false;
 let artistTileOffset = {};
-
-function useClientRect() {
-	const [tileMeasurement, setTileMeasurements] = useState({
-		top: 1,
-		left: 1,
-		bottom: 500,
-		right: 500,
-		width: 500,
-	});
-	const artistTileDiv = useCallback((node) => {
-		if (node !== null) {
-			setTileMeasurements(node.getBoundingClientRect());
-
-			// console.log('tileMeasurement');
-			// console.log(tileMeasurement);
-		}
-	}, []);
-	return [tileMeasurement, artistTileDiv];
-}
 
 const Artists = ({
 	app,
@@ -59,12 +37,6 @@ const Artists = ({
 
 	const dispatch = useDispatch();
 
-	const [springReset, toggleReset] = useState(false);
-
-	const { viewHeight, viewWidth } = useWindowDimensions();
-
-	const { x, y } = useWindowScroll(); //THIS ISN'T WORKING!!! not getting anything but 0 for either value always
-
 	useLayoutEffect(() => {
 		if (artist) {
 			const artistTileDiv = document
@@ -77,29 +49,15 @@ const Artists = ({
 				.getElementsByClassName('animatedRoute')[0]
 				.getBoundingClientRect().top;
 
-			// console.log('artistTileDiv');
-			//console.log(rootScrollTop);
-
 			if (artistTileDiv) {
-				// artistTileOffset.top = tileMeasurement.top;
-				// artistTileOffset.left = tileMeasurement.left;
-				// artistTileOffset.bottom = tileMeasurement.bottom;
-				// artistTileOffset.right = tileMeasurement.right;
-				// artistTileOffset.width = tileMeasurement.width;
-				// artistTileOffset.windowWidth = viewWidth;
-				// artistTileOffset.windowHeight = viewHeight;
 				artistTileOffset.top =
 					artistTileDiv.getBoundingClientRect().top - topOffset;
 				artistTileOffset.left = artistTileDiv.getBoundingClientRect().left;
 				artistTileOffset.bottom = artistTileDiv.getBoundingClientRect().bottom;
 				artistTileOffset.right = artistTileDiv.getBoundingClientRect().right;
 				artistTileOffset.width = artistTileOffset.right - artistTileOffset.left;
-				artistTileOffset.windowWidth = viewWidth;
-				artistTileOffset.windowHeight = viewHeight;
-
-				// console.log('artistTileOffset');
-				// console.log(artistTileOffset);
-				//console.log('scrollY: ' + rootScrollTop);
+				artistTileOffset.windowWidth = window.innerWidth * 0.9;
+				artistTileOffset.windowHeight = window.innerHeight;
 
 				if (artistCardFlip === true) {
 					setSpring.start({
@@ -113,9 +71,9 @@ const Artists = ({
 						to: {
 							opacity: 1,
 							zIndex: 100,
-							transform: `translate3d(0px, ${rootScrollTop}px, 0px) perspective(600px) rotateY(0deg)`,
-							width: window.innerWidth,
-							height: window.innerHeight,
+							transform: `translate3d(0px, ${rootScrollTop}px, 1000px) perspective(600px) rotateY(0deg)`,
+							width: artistTileOffset.windowWidth,
+							height: artistTileOffset.windowHeight,
 						},
 						config: { mass: 5, tension: 500, friction: 80 },
 						immediate: (key) => key === 'zIndex',
@@ -130,7 +88,6 @@ const Artists = ({
 							height: artistTileOffset.width,
 						},
 						onRest: () => {
-							console.log('CLEAR_ARTIST');
 							dispatch({ type: CLEAR_ARTIST });
 						},
 						config: { mass: 5, tension: 500, friction: 80 },
@@ -217,6 +174,7 @@ const Artists = ({
 									alignItems: 'start',
 									width: '100%',
 									height: '100%',
+									//WebkitTransform: 'translateZ(-1px)',
 								}}
 							>
 								<a.div
@@ -234,9 +192,6 @@ const Artists = ({
 							</a.div>
 							<a.div
 								className='overlayDarkBG'
-								onClick={() => {
-									flipArtistCard(artist);
-								}}
 								style={{
 									zIndex,
 									opacity,
@@ -254,7 +209,6 @@ const Artists = ({
 									// alignItems: 'center',
 									width: '100%',
 									height: '100%',
-									cursor: 'pointer',
 									backdropFilter: 'blur(8px)',
 								}}
 							>
@@ -269,8 +223,8 @@ const Artists = ({
 										opacity,
 										transform,
 										zIndex,
-										width,
 										height,
+										width: '100%',
 									}}
 								>
 									<Box
@@ -285,9 +239,32 @@ const Artists = ({
 											height: '100%',
 										}}
 									>
-										<Box sx={{ maxWidth: '960px', margin: '0 auto' }}>
+										<a.div
+											style={{
+												maxWidth: '90vw',
+												width,
+												margin: '0 auto',
+												zIndex: 5,
+												position: 'relative',
+											}}
+										>
 											<ArtistTileBack artist={artist} />
-										</Box>
+										</a.div>
+										<Box
+											onClick={() => {
+												flipArtistCard(artist);
+											}}
+											className='clickToClose'
+											style={{
+												position: 'absolute',
+												top: 0,
+												left: 0,
+												bottom: 0,
+												right: 0,
+												zIndex: 0,
+												cursor: 'pointer',
+											}}
+										></Box>
 									</Box>
 								</a.div>
 							</a.div>

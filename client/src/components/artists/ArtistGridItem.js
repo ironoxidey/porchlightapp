@@ -45,9 +45,9 @@ const ArtistGridItem = ({
 			data-artist-slug={artist.slug}
 			item
 			container
-			xs={12}
-			sm={6}
-			md={4}
+			xs={6}
+			sm={4}
+			md={3}
 			lg={3}
 			onClick={() => {
 				toggleFlip(true);
