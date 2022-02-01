@@ -14,28 +14,30 @@ import useWindowDimensions from '../../utils/useWindowDimensions';
 
 const ArtistGridItem = ({
 	artist,
-	app: { artistCardFlip },
+	app: { artistCardFlip, doneFlipped },
 	flipArtistCard,
 }) => {
 	const { viewHeight, viewWidth } = useWindowDimensions();
 	const [flipped, toggleFlip] = useState(false);
 
+	// useEffect(() => {
+	// 	if (!artistCardFlip) {
+	// 		toggleFlip(false);
+	// 	}
+	// }, [artistCardFlip]);
+
 	useEffect(() => {
-		if (!artistCardFlip) {
+		if (doneFlipped) {
 			toggleFlip(false);
 		}
-	}, [artistCardFlip]);
+	}, [doneFlipped]);
 
-	const { transform, opacity, zIndex, width } = useSpring({
+	const { opacity } = useSpring({
 		opacity: flipped ? 1 : 0,
-		transform: `perspective(600px) rotateY(${flipped ? -180 : 0}deg)`,
-		//scale: flipped ? 2 : 1,
-		zIndex: flipped ? 100 : 1,
-		//width: flipped ? `calc(1% + ${viewWidth}px)` : 'calc(100% - 8px)',
-		width: '100%',
+
 		config: { mass: 5, tension: 500, friction: 80 },
 
-		immediate: (key) => flipped && key === 'opacity',
+		immediate: (key) => key === 'opacity',
 	});
 
 	return (
@@ -68,14 +70,11 @@ const ArtistGridItem = ({
 				style={{
 					position: 'absolute',
 					display: 'flex',
-					width,
+					width: '100%',
 					height: '100%',
 					justifyContent: 'center',
 					alignItems: 'center',
 					opacity: opacity.to((o) => 1 - o),
-					//transform,
-					//scale: scale.to((s) => s),
-					//zIndex,
 					cursor: 'pointer',
 					willChange: 'transform, opacity, width',
 					padding: 'inherit',

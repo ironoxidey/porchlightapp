@@ -4,12 +4,14 @@ import {
 	IMAGE_UPLOAD,
 	PAGE_LOAD,
 	FLIP_ARTIST_CARD,
+	CLEAR_ARTIST,
 } from '../actions/types';
 
 const intialState = {
 	navDrawer: false,
 	pageTitle: '',
 	artistCardFlip: false,
+	doneFlipped: true,
 	msg: '',
 };
 
@@ -20,6 +22,12 @@ export default function (state = intialState, action) {
 			return {
 				...state,
 				artistCardFlip: !state.artistCardFlip,
+				doneFlipped: false,
+			};
+		case CLEAR_ARTIST:
+			return {
+				...state,
+				doneFlipped: true,
 			};
 		case OPEN_NAV_DRAWER:
 			return {

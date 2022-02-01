@@ -223,7 +223,8 @@ const Artists = ({
 										opacity,
 										transform,
 										zIndex,
-										height,
+										minHeight: height,
+										height: '100%',
 										width: '100%',
 									}}
 								>
@@ -234,7 +235,7 @@ const Artists = ({
 											left: 0,
 											bottom: 0,
 											right: 0,
-											overflow: 'hidden',
+											//overflow: 'hidden',
 											width: '100%',
 											height: '100%',
 										}}
