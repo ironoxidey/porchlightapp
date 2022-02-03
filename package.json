@@ -35,6 +35,8 @@
 	},
 	"devDependencies": {
 		"concurrently": "^5.3.0",
-		"nodemon": "^2.0.4"
+		"eslint": "^8.8.0",
+		"nodemon": "^2.0.4",
+		"prettier": "^2.5.1"
 	}
 }
