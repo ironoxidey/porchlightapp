@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const config = require('config'); //require('../../porchlight-config/default.json'); //require('config');
+const config = !process.env.NODE_ENV ? require('config') : require('../../porchlight-config/default.json'); //if there's no NODE_ENV then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
 const db = config['mongoURI'];
 
 const connectDB = async () => {

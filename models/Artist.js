@@ -116,7 +116,7 @@ const ArtistSchema = new mongoose.Schema(
 			type: [String],
 		},
 		bookingWhenWhere: {
-			type: String,
+			type: Object,
 		},
 		payoutPlatform: {
 			type: String,

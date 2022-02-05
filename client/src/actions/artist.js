@@ -100,7 +100,7 @@ export const createMyArtist =
 				type: UPDATE_ARTIST_ME,
 				payload: res.data,
 			});
-			dispatch(setAlert(edit ? 'Artist Updated' : 'Artist Created', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+			//dispatch(setAlert(edit ? 'Artist Updated' : 'Artist Created', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
 		} catch (err) {
 			const errors = err.response.data.errors;
 			console.log('error: ' + err);

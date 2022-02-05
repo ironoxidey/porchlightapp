@@ -31,6 +31,7 @@
 		"redux-devtools-extension": "^2.13.8",
 		"redux-thunk": "^2.3.0",
 		"spinners-react": "^1.0.6",
+		"us-state-converter": "^1.0.6",
 		"uuid": "^8.3.0"
 	},
 	"scripts": {

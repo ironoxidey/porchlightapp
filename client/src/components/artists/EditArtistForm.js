@@ -3,7 +3,7 @@ import React, { Fragment, useState, useEffect, useRef } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
-import { IMAGE_UPLOAD } from '../../actions/types';
+import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
 import { setAlert } from '../../actions/alert';
 import { createMyArtist } from '../../actions/artist';
 import { updateUserAvatar } from '../../actions/auth';
@@ -48,11 +48,21 @@ import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
 import { textAlign } from '@mui/system';
 
-import { youTubeEmbed, getFontAwesomeIcon } from '../../actions/app';
+import { youTubeEmbed, getFontAwesomeIcon, getHostLocations } from '../../actions/app';
+import moment from 'moment';
+
+//filter() for Objects -- https://stackoverflow.com/a/37616104/3338608
+Object.filter = (obj, predicate) =>
+	Object.keys(obj)
+		.filter(key => predicate(obj[key]))
+		.reduce((res, key) => (res[key] = obj[key], res), []);
+
+const hostLocations = getHostLocations();
 
 const UploadInput = styled('input')({
 	display: 'none',
 });
+
 
 const EditArtistForm = ({
 	theArtist,
@@ -95,7 +105,7 @@ const EditArtistForm = ({
 		payoutHandle: '',
 		tourVibe: '',
 		bookingWhen: [],
-		bookingWhenWhere: '',
+		bookingWhenWhere: [],
 		setLength: '',
 		schedule: '',
 		showSchedule: {
@@ -181,19 +191,19 @@ const EditArtistForm = ({
 					loading || !theArtist.bookingWhen ? [] : theArtist.bookingWhen,
 				bookingWhenWhere:
 					loading || !theArtist.bookingWhenWhere
-						? ''
+						? []
 						: theArtist.bookingWhenWhere,
 				setLength: loading || !theArtist.setLength ? '' : theArtist.setLength,
 				schedule: loading || !theArtist.schedule ? '' : theArtist.schedule,
 				showSchedule:
 					loading || !theArtist.showSchedule
 						? {
-								setupTime: '17:45',
-								startTime: '19:00',
-								doorsOpen: '18:30',
-								hardWrap: '21:00',
-								flexible: true,
-						  }
+							setupTime: '17:45',
+							startTime: '19:00',
+							doorsOpen: '18:30',
+							hardWrap: '21:00',
+							flexible: true,
+						}
 						: theArtist.showSchedule,
 				overnight: loading || !theArtist.overnight ? '' : theArtist.overnight,
 				openers: loading || !theArtist.openers ? '' : theArtist.openers,
@@ -242,8 +252,8 @@ const EditArtistForm = ({
 			if (!auth.loading) {
 				console.log(
 					'An artist profile couldn’t be found for: ' +
-						auth.user.email +
-						'. No worries! We’ll make one!'
+					auth.user.email +
+					'. No worries! We’ll make one!'
 				);
 				setFormData({
 					email: auth.user.email,
@@ -275,7 +285,7 @@ const EditArtistForm = ({
 					payoutHandle: '',
 					tourVibe: '',
 					bookingWhen: [],
-					bookingWhenWhere: '',
+					bookingWhenWhere: [],
 					setLength: '',
 					schedule: '',
 					showSchedule: {
@@ -404,11 +414,96 @@ const EditArtistForm = ({
 		let targetValue = val;
 		setFormData({ ...formData, [theFieldName]: targetValue });
 	};
+	//onAutocompleteTagChange(event, 'allergies', value)
+	//onMultiTextChange('email', travelingCompanions, idx, e)
+	const onMultiAutocompleteTagChange = (theFieldKey, theFieldName, theFieldObj, idx, e, value) => {
+		changesMade.current = true;
+		let targetValue = value;
+		let updatedField = theFieldObj.map((fieldObj, tFidx) => {
+			if (idx !== tFidx) return fieldObj;
+			return { ...fieldObj, [theFieldKey]: targetValue }; //updates travelingCompanion[tFidx].name
+		});
+		dispatch({
+			type: UPDATE_ARTIST_ME,
+			payload: { ...formData, [theFieldName]: updatedField },
+		});
+		setFormData({ ...formData, [theFieldName]: updatedField });
+
+	};
+
+	// const handleAddMultiInput = (targetName, theFieldObj, payload) => {
+	// 	//super helpful: https://goshacmd.com/array-form-inputs/
+	// 	let updatedField = theFieldObj.concat([{}]);
+	// 	console.log(targetName);
+	// 	if (targetName == 'bookingWhenWhere') {
+	// 		updatedField = theFieldObj.concat([
+	// 			{ when: payload, where: [] },
+	// 		]);
+	// 	}
+	// 	// console.log("["+targetName+"]: ");
+	// 	console.log(updatedField);
+	// 	setFormData({ ...formData, [targetName]: updatedField });
+	// };
+
+	useEffect(() => {
+		if (changesMade.current) {
+			createMyArtist(formData, history, true);
+			changesMade.current = false;
+		}
+	}, [bookingWhenWhere]);
+
+	useEffect(() => {
+		if (bookingWhen && bookingWhen.length > 0) {
+			let writeToState = false;
+			let updatedField = [];
+			let whenWhereFiltered = [];
+			let bookingWhenDated = bookingWhen.map((messyDate) => { return new Date(messyDate).toISOString() });
+			bookingWhenDated.forEach((whenBooking, idx) => {
+				//return an object trim out of bookingWhenWhere any whens that aren't in bookingWhen
+				whenWhereFiltered = Object.filter(bookingWhenWhere, whenWhere => { //https://stackoverflow.com/a/37616104/3338608
+					if (whenWhere) { //occasionally I get null values out of the database (not sure how they're getting in there)
+						let datedWhen = new Date(whenWhere.when).toISOString();
+						return bookingWhenDated.includes(datedWhen);
+					}
+				});
+				let existsInWhere = (whenWhereFiltered.map((item) => { return new Date(item.when).toISOString() }).indexOf(whenBooking)) > -1 ? true : false;
+
+				//whenWhereFiltered.filter(e => e); 
+				//filter out null or empty values -- I think they must be coming from deleting booking dates
+				let temp = [];
+				for (let i of whenWhereFiltered)
+					i && temp.push(i); // copy each non-empty value to the 'temp' array
+				whenWhereFiltered = temp;
+
+				if (existsInWhere) {
+					//console.log("bookingWhenWhere already has " + whenBooking);
+				}
+				else { //if new when to the object
+					writeToState = true;
+					updatedField = updatedField.concat(whenWhereFiltered.concat([
+						{ when: whenBooking, where: null },
+					]));
+				}
+			})
+			if (bookingWhenWhere.length > bookingWhen.length) {
+				writeToState = true;
+				updatedField = whenWhereFiltered;
+			}
+			if (writeToState) {
+				setFormData({ ...formData, ['bookingWhenWhere']: updatedField });
+			}
+		}
+		else {
+			setFormData({ ...formData, ['bookingWhenWhere']: [] });
+		}
+	}, [bookingWhen]);
 
 	const onCalendarChange = (target) => {
 		changesMade.current = true;
 		let targetValue = target.value;
-		setFormData({ ...formData, [target.name]: targetValue });
+		let targetValueDated = targetValue.map((date) => { return new Date(date).toISOString() });
+		
+		setFormData({ ...formData, [target.name]: targetValueDated });
 	};
 
 	const handleAddMultiTextField = (targetName, theFieldObj) => {
@@ -428,6 +523,7 @@ const EditArtistForm = ({
 
 	const onMultiTextChange = (theFieldKey, theFieldObj, idx, e) => {
 		changesMade.current = true;
+		console.log(e.target.value);
 		let targetValue = e.target.value;
 		targetValue = e.target.value;
 		let updatedField = theFieldObj.map((fieldObj, tFidx) => {
@@ -783,58 +879,58 @@ const EditArtistForm = ({
 			[
 				socialLinks && Object.keys(socialLinks).length > 0
 					? socialLinks.map((eachSocialLink, idx) => (
-							<Grid
-								className='eachSocialLink'
-								key={`eachSocialLink${idx}`}
-								container
-								direction='row'
-								justifyContent='space-around'
-								alignItems='end'
-								spacing={2}
-								sx={{
-									// borderColor: 'primary.dark',
-									// borderWidth: '2px',
-									// borderStyle: 'solid',
-									backgroundColor: 'rgba(0,0,0,0.15)',
-									'&:hover': {},
-									padding: '0 10px 10px',
-									margin: '0px auto',
-									width: '100%',
-								}}
-							>
-								<Grid item xs={2} md={0.5} className='link-icon'>
-									{getFontAwesomeIcon(eachSocialLink.link)}
-								</Grid>
-								<Grid item xs={10}>
-									<TextField
-										variant='standard'
-										name='socialLinks'
-										id={`socialLinkLink${idx}`}
-										label={
-											idx > 0 ? `and at ` : `Yeah! Check out "${stageName}" at `
-										}
-										value={eachSocialLink.link}
-										onChange={(e) =>
-											onMultiTextChange('link', socialLinks, idx, e)
-										}
-										sx={{ width: '100%' }}
-									/>
-								</Grid>
-								<Grid item xs={2} md={1}>
-									<IconButton
-										onClick={(e) =>
-											handleRemoveMultiTextField(
-												'socialLinks',
-												socialLinks,
-												idx
-											)
-										}
-									>
-										<DeleteIcon />
-									</IconButton>
-								</Grid>
+						<Grid
+							className='eachSocialLink'
+							key={`eachSocialLink${idx}`}
+							container
+							direction='row'
+							justifyContent='space-around'
+							alignItems='end'
+							spacing={2}
+							sx={{
+								// borderColor: 'primary.dark',
+								// borderWidth: '2px',
+								// borderStyle: 'solid',
+								backgroundColor: 'rgba(0,0,0,0.15)',
+								'&:hover': {},
+								padding: '0 10px 10px',
+								margin: '0px auto',
+								width: '100%',
+							}}
+						>
+							<Grid item xs={2} md={0.5} className='link-icon'>
+								{getFontAwesomeIcon(eachSocialLink.link)}
 							</Grid>
-					  ))
+							<Grid item xs={10}>
+								<TextField
+									variant='standard'
+									name='socialLinks'
+									id={`socialLinkLink${idx}`}
+									label={
+										idx > 0 ? `and at ` : `Yeah! Check out "${stageName}" at `
+									}
+									value={eachSocialLink.link}
+									onChange={(e) =>
+										onMultiTextChange('link', socialLinks, idx, e)
+									}
+									sx={{ width: '100%' }}
+								/>
+							</Grid>
+							<Grid item xs={2} md={1}>
+								<IconButton
+									onClick={(e) =>
+										handleRemoveMultiTextField(
+											'socialLinks',
+											socialLinks,
+											idx
+										)
+									}
+								>
+									<DeleteIcon />
+								</IconButton>
+							</Grid>
+						</Grid>
+					))
 					: '',
 				<Grid
 					container
@@ -1001,51 +1097,51 @@ const EditArtistForm = ({
 			[
 				repLinks && Object.keys(repLinks).length > 0
 					? repLinks.map((eachLink, idx) => (
-							<Grid
-								className='eachLink'
-								key={`eachLink${idx}`}
-								container
-								direction='row'
-								justifyContent='space-around'
-								alignItems='start'
-								spacing={2}
-								sx={{
-									// borderColor: 'primary.dark',
-									// borderWidth: '2px',
-									// borderStyle: 'solid',
-									backgroundColor: 'rgba(0,0,0,0.15)',
-									'&:hover': {},
-									padding: '0 10px 10px',
-									margin: '0px auto',
-									width: '100%',
-								}}
-							>
-								<Grid item xs={11}>
-									<TextField
-										variant='standard'
-										name='repLinks'
-										id={`repLinkLink${idx}`}
-										label={
-											idx > 0 ? `and at ` : `Yeah! Check out "${stageName}" at `
-										}
-										value={eachLink.link}
-										onChange={(e) =>
-											onMultiTextChange('link', repLinks, idx, e)
-										}
-										sx={{ width: '100%' }}
-									/>
-								</Grid>
-								<Grid item xs={2} md={0.65}>
-									<IconButton
-										onClick={(e) =>
-											handleRemoveMultiTextField('repLinks', repLinks, idx)
-										}
-									>
-										<DeleteIcon />
-									</IconButton>
-								</Grid>
+						<Grid
+							className='eachLink'
+							key={`eachLink${idx}`}
+							container
+							direction='row'
+							justifyContent='space-around'
+							alignItems='start'
+							spacing={2}
+							sx={{
+								// borderColor: 'primary.dark',
+								// borderWidth: '2px',
+								// borderStyle: 'solid',
+								backgroundColor: 'rgba(0,0,0,0.15)',
+								'&:hover': {},
+								padding: '0 10px 10px',
+								margin: '0px auto',
+								width: '100%',
+							}}
+						>
+							<Grid item xs={11}>
+								<TextField
+									variant='standard'
+									name='repLinks'
+									id={`repLinkLink${idx}`}
+									label={
+										idx > 0 ? `and at ` : `Yeah! Check out "${stageName}" at `
+									}
+									value={eachLink.link}
+									onChange={(e) =>
+										onMultiTextChange('link', repLinks, idx, e)
+									}
+									sx={{ width: '100%' }}
+								/>
 							</Grid>
-					  ))
+							<Grid item xs={2} md={0.65}>
+								<IconButton
+									onClick={(e) =>
+										handleRemoveMultiTextField('repLinks', repLinks, idx)
+									}
+								>
+									<DeleteIcon />
+								</IconButton>
+							</Grid>
+						</Grid>
+					))
 					: '',
 				<Grid
 					container
@@ -1136,32 +1232,127 @@ const EditArtistForm = ({
 					//onSubmit={dates => console.log('selected dates', dates)}
 					onChange={(target) => onCalendarChange(target)}
 				/>,
+				// bookingWhen && bookingWhen.length > 0
+				// 	? bookingWhen.map((whenBooking, idx) => (
+				// 		handleAddMultiInput('bookingWhenWhere',bookingWhenWhere, whenBooking)
+				// 	  ))
+				// 	: '',
+				bookingWhenWhere && bookingWhenWhere.length > 0
+					? bookingWhenWhere.filter(e => e).map((whenBooking, idx, whenWhereOrig) => ( //.filter(e => e) to remove any null values
+						<Grid
+							className='whenBooking'
+							key={`whenBooking${idx}`}
+							container
+							direction='row'
+							justifyContent='space-around'
+							alignItems='start'
+							spacing={2}
+							sx={{
+								// borderColor: 'primary.dark',
+								// borderWidth: '2px',
+								// borderStyle: 'solid',
+								backgroundColor: 'rgba(0,0,0,0.15)',
+								'&:hover': {},
+								padding: '0 10px 10px',
+								margin: '0px auto',
+								width: '100%',
+							}}
+						>
+							{/* <Grid item xs={12} md={3}>
+									<TextField
+										variant='standard'
+										name='bookingWhenWhere'
+										id={`bookingWhenWhere${idx}`}
+										label={
+											"On "+bookingWhen[idx]+" I’d like to play in "
+										}
+										value={bookingWhenWhere[idx].when || ''}
+										onChange={(e) =>
+											onMultiTextChange('when', bookingWhenWhere, idx, e)
+										}
+										sx={{ width: '100%' }}
+									/>
+								</Grid> */}
+							<Grid item xs={12} md={12}>
+								<Autocomplete
+									id='bookingWhenWhere'
+									value={whenBooking && whenBooking.where || whenWhereOrig[idx-1] && whenWhereOrig[idx-1].where || null}
+									options={hostLocations}
+									disableClearable
+									groupBy={(option) => option.fullState}
+									getOptionLabel={(option) => option.city +', ' + option.state || ''}
+									//getOptionSelected={(option, value) => option.city === value.city}
+									isOptionEqualToValue={(option, value) => option.city === value.city && option.state === value.state}
+									onChange={(e, value) => {
+										onMultiAutocompleteTagChange('where', 'bookingWhenWhere', bookingWhenWhere, idx, e, value)
+									}}
+									renderTags={(value, getTagProps) =>
+										value.map((option, index) => (
+											<Chip
+												variant='outlined'
+												name='bookingWhenWhere'
+												label={option.city + ", " + option.state}
+												{...getTagProps({ index })}
+											/>
+										))
+									}
+									renderInput={(params) => (
+										<TextField
+											{...params}
+											sx={{ width: '100%' }}
+											variant='standard'
+											label={`On ${moment(whenBooking.when).format('ll')}, I’d love to play in or around`}
+											name='bookingWhenWhere'
+										/>
+									)}
+								/>
+							</Grid>
+							<Grid item xs={10} md={true}>
+								{/* <TextField
+										variant='standard'
+										name='travelingCompanions'
+										id={`travelingCompanionEmail${idx}`}
+										label={
+											travelingCompanion.name
+												? `${travelingCompanion.name.split(' ')[0]}'s email is`
+												: `Their email is`
+										}
+										value={travelingCompanion.email}
+										onChange={(e) =>
+											onMultiTextChange('email', travelingCompanions, idx, e)
+										}
+										sx={{ width: '100%' }}
+									/> */}
+							</Grid>
+						</Grid>
+					))
+					: '',
 			],
 		],
-		setLength: [
-			<FormLabel component='legend'>
-				How long will your set be (in minutes)?
-			</FormLabel>,
-			[
-				<Grid item>
-					<TextField
-						variant='standard'
-						sx={{ minWidth: 250 }}
-						name='setLength'
-						id='setLength'
-						label='I expect to play for'
-						value={setLength}
-						type='number'
-						onChange={(e) => onChange(e)}
-						InputProps={{
-							endAdornment: (
-								<InputAdornment position='end'>minutes</InputAdornment>
-							),
-						}}
-					/>
-				</Grid>,
-			],
-		],
+		// setLength: [
+		// 	<FormLabel component='legend'>
+		// 		How long will your set be (in minutes)?
+		// 	</FormLabel>,
+		// 	[
+		// 		<Grid item>
+		// 			<TextField
+		// 				variant='standard'
+		// 				sx={{ minWidth: 250 }}
+		// 				name='setLength'
+		// 				id='setLength'
+		// 				label='I expect to play for'
+		// 				value={setLength}
+		// 				type='number'
+		// 				onChange={(e) => onChange(e)}
+		// 				InputProps={{
+		// 					endAdornment: (
+		// 						<InputAdornment position='end'>minutes</InputAdornment>
+		// 					),
+		// 				}}
+		// 			/>
+		// 		</Grid>,
+		// 	],
+		// ],
 		merchTable: [
 			<FormLabel component='legend'>
 				Will you need the host to provide a merch table?
@@ -1486,91 +1677,91 @@ const EditArtistForm = ({
 			[
 				travelingCompanions && travelingCompanions.length > 0
 					? travelingCompanions.map((travelingCompanion, idx) => (
-							<Grid
-								className='travelingCompanion'
-								key={`travelingCompanion${idx}`}
-								container
-								direction='row'
-								justifyContent='space-around'
-								alignItems='start'
-								spacing={2}
-								sx={{
-									// borderColor: 'primary.dark',
-									// borderWidth: '2px',
-									// borderStyle: 'solid',
-									backgroundColor: 'rgba(0,0,0,0.15)',
-									'&:hover': {},
-									padding: '0 10px 10px',
-									margin: '0px auto',
-									width: '100%',
-								}}
-							>
-								<Grid item xs={12} md={3}>
-									<TextField
-										variant='standard'
-										name='travelingCompanions'
-										id={`travelingCompanionName${idx}`}
-										label={
-											travelingCompanions.length > 1
-												? `One of their names is`
-												: `The person's name is`
-										}
-										value={travelingCompanion.name}
-										onChange={(e) =>
-											onMultiTextChange('name', travelingCompanions, idx, e)
-										}
-										sx={{ width: '100%' }}
-									/>
-								</Grid>
-								<Grid item xs={12} md={2}>
-									<TextField
-										variant='standard'
-										name='travelingCompanions'
-										id={`travelingCompanionRole${idx}`}
-										label={
-											travelingCompanion.name
-												? `${travelingCompanion.name.split(' ')[0]}'s role is`
-												: `Their role is`
-										}
-										value={travelingCompanion.role}
-										onChange={(e) =>
-											onMultiTextChange('role', travelingCompanions, idx, e)
-										}
-										sx={{ width: '100%' }}
-									/>
-								</Grid>
-								<Grid item xs={10} md={true}>
-									<TextField
-										variant='standard'
-										name='travelingCompanions'
-										id={`travelingCompanionEmail${idx}`}
-										label={
-											travelingCompanion.name
-												? `${travelingCompanion.name.split(' ')[0]}'s email is`
-												: `Their email is`
-										}
-										value={travelingCompanion.email}
-										onChange={(e) =>
-											onMultiTextChange('email', travelingCompanions, idx, e)
-										}
-										sx={{ width: '100%' }}
-									/>
-								</Grid>
-								<Grid item xs={2} md={0.65}>
-									<IconButton
-										onClick={(e) =>
-											handleRemoveMultiTextField(
-												'travelingCompanions',
-												travelingCompanions,
-												idx
-											)
-										}
-									>
-										<DeleteIcon />
-									</IconButton>
-								</Grid>
+						<Grid
+							className='travelingCompanion'
+							key={`travelingCompanion${idx}`}
+							container
+							direction='row'
+							justifyContent='space-around'
+							alignItems='start'
+							spacing={2}
+							sx={{
+								// borderColor: 'primary.dark',
+								// borderWidth: '2px',
+								// borderStyle: 'solid',
+								backgroundColor: 'rgba(0,0,0,0.15)',
+								'&:hover': {},
+								padding: '0 10px 10px',
+								margin: '0px auto',
+								width: '100%',
+							}}
+						>
+							<Grid item xs={12} md={3}>
+								<TextField
+									variant='standard'
+									name='travelingCompanions'
+									id={`travelingCompanionName${idx}`}
+									label={
+										travelingCompanions.length > 1
+											? `One of their names is`
+											: `The person's name is`
+									}
+									value={travelingCompanion.name}
+									onChange={(e) =>
+										onMultiTextChange('name', travelingCompanions, idx, e)
+									}
+									sx={{ width: '100%' }}
+								/>
 							</Grid>
-					  ))
+							<Grid item xs={12} md={2}>
+								<TextField
+									variant='standard'
+									name='travelingCompanions'
+									id={`travelingCompanionRole${idx}`}
+									label={
+										travelingCompanion.name
+											? `${travelingCompanion.name.split(' ')[0]}'s role is`
+											: `Their role is`
+									}
+									value={travelingCompanion.role}
+									onChange={(e) =>
+										onMultiTextChange('role', travelingCompanions, idx, e)
+									}
+									sx={{ width: '100%' }}
+								/>
+							</Grid>
+							<Grid item xs={10} md={true}>
+								<TextField
+									variant='standard'
+									name='travelingCompanions'
+									id={`travelingCompanionEmail${idx}`}
+									label={
+										travelingCompanion.name
+											? `${travelingCompanion.name.split(' ')[0]}'s email is`
+											: `Their email is`
+									}
+									value={travelingCompanion.email}
+									onChange={(e) =>
+										onMultiTextChange('email', travelingCompanions, idx, e)
+									}
+									sx={{ width: '100%' }}
+								/>
+							</Grid>
+							<Grid item xs={2} md={0.65}>
+								<IconButton
+									onClick={(e) =>
+										handleRemoveMultiTextField(
+											'travelingCompanions',
+											travelingCompanions,
+											idx
+										)
+									}
+								>
+									<DeleteIcon />
+								</IconButton>
+							</Grid>
+						</Grid>
+					))
 					: '',
 				<Grid
 					container
@@ -1621,13 +1812,13 @@ const EditArtistForm = ({
 							/>
 							{travelingCompanions && travelingCompanions.length > 0
 								? travelingCompanions.map((travelingCompanion, idx) => (
-										<FormControlLabel
-											key={idx}
-											value={idx + 2}
-											control={<Radio />}
-											label={'Yes, ' + (idx + 2) + ' beds, please.'}
-										/>
-								  ))
+									<FormControlLabel
+										key={idx}
+										value={idx + 2}
+										control={<Radio />}
+										label={'Yes, ' + (idx + 2) + ' beds, please.'}
+									/>
+								))
 								: ''}
 							<FormControlLabel
 								value='0'
