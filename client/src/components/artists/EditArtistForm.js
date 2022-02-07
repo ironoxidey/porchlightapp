@@ -423,10 +423,10 @@ const EditArtistForm = ({
 			if (idx !== tFidx) return fieldObj;
 			return { ...fieldObj, [theFieldKey]: targetValue }; //updates travelingCompanion[tFidx].name
 		});
-		dispatch({
-			type: UPDATE_ARTIST_ME,
-			payload: { ...formData, [theFieldName]: updatedField },
-		});
+		// dispatch({
+		// 	type: UPDATE_ARTIST_ME,
+		// 	payload: { ...formData, [theFieldName]: updatedField },
+		// });
 		setFormData({ ...formData, [theFieldName]: updatedField });
 
 	};

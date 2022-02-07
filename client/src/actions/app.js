@@ -22,6 +22,15 @@ export const flipArtistCard = (artist) => (dispatch) => {
 	});
 };
 
+export const convert24HourTime = (time) => {
+	var hours = time.substring(0, 2);// gives the value in 24 hours format
+	var AmOrPm = hours >= 12 ? 'pm' : 'am';
+	hours = (hours % 12) || 12;
+	var minutes = time.substring(time.length - 2);
+	var finalTime = hours + ":" + minutes + " " + AmOrPm; 
+	return finalTime
+}
+
 export const pullDomainFrom = (url) => {
 	try {
 		let theURL = new URL(url);
@@ -1274,8 +1283,6 @@ const sortStateCity = (a, b) => {
 			return 1
 		}
 		return 0
-	
-	
 }
 
 	let hostProcessedLocations = hostLocations.map((location, index) => {

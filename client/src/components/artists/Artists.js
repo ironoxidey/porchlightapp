@@ -43,7 +43,7 @@ const Artists = ({
 				.querySelectorAll('[data-artist-slug=' + artist.slug + ']')[0]
 				.getElementsByClassName('theSquareTile')[0];
 
-			const rootScrollTop = document.getElementById('root').scrollTop + 20;
+			const rootScrollTop = document.getElementById('root').scrollTop;
 
 			const topOffset = document
 				.getElementsByClassName('animatedRoute')[0]
@@ -57,7 +57,7 @@ const Artists = ({
 				artistTileOffset.right = artistTileDiv.getBoundingClientRect().right;
 				artistTileOffset.width = artistTileOffset.right - artistTileOffset.left;
 				artistTileOffset.windowWidth = window.innerWidth * 0.9;
-				artistTileOffset.windowHeight = window.innerHeight;
+				artistTileOffset.windowHeight = window.innerHeight + topOffset + topOffset;
 
 				if (artistCardFlip === true) {
 					setSpring.start({
@@ -71,9 +71,12 @@ const Artists = ({
 						to: {
 							opacity: 1,
 							zIndex: 100,
-							transform: `translate3d(0px, ${rootScrollTop}px, 1000px) perspective(600px) rotateY(0deg)`,
+							transform: `translate3d(0px, ${rootScrollTop}px, 1000px) perspective(600px) rotateY(0deg)`, //the z translation is necessary for Safari, because the y rotation would swing the div through the darkened background
 							width: artistTileOffset.windowWidth,
 							height: artistTileOffset.windowHeight,
+						},
+						onRest: () => {
+							//document.getElementsByClassName('overlayDarkBG')[0].style.height = document.getElementsByClassName('artistTileBack')[0].clientheight + 'px';
 						},
 						config: { mass: 5, tension: 500, friction: 80 },
 						immediate: (key) => key === 'zIndex',
@@ -174,7 +177,6 @@ const Artists = ({
 									alignItems: 'start',
 									width: '100%',
 									height: '100%',
-									//WebkitTransform: 'translateZ(-1px)',
 								}}
 							>
 								<a.div
@@ -205,10 +207,8 @@ const Artists = ({
 									display: 'flex',
 									justifyContent: 'start',
 									alignItems: 'start',
-									// justifyContent: 'center',
-									// alignItems: 'center',
-									width: '100%',
-									height: '100%',
+									width: width.to((w) => '100%'),
+									height,
 									backdropFilter: 'blur(8px)',
 								}}
 							>
@@ -224,7 +224,7 @@ const Artists = ({
 										transform,
 										zIndex,
 										minHeight: height,
-										height: '100%',
+										//height: '100%',
 										width: '100%',
 									}}
 								>
@@ -241,10 +241,12 @@ const Artists = ({
 										}}
 									>
 										<a.div
+											className='artistTileBack'
 											style={{
-												maxWidth: '90vw',
+												maxWidth: '1280px',
 												width,
 												margin: '0 auto',
+												padding: '20px',
 												zIndex: 5,
 												position: 'relative',
 											}}

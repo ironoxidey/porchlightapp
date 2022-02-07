@@ -5,6 +5,18 @@ import { Grid, Chip, Typography, Box, Tooltip, SvgIcon } from '@mui/material';
 import Button from '../layout/SvgButton';
 import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 import HearingTwoToneIcon from '@mui/icons-material/HearingTwoTone';
+import TableRestaurantTwoToneIcon from '@mui/icons-material/TableRestaurantTwoTone';
+import AccessTimeTwoToneIcon from '@mui/icons-material/AccessTimeTwoTone';
+import HotelTwoToneIcon from '@mui/icons-material/HotelTwoTone';
+import GroupsTwoToneIcon from '@mui/icons-material/GroupsTwoTone';
+import VolunteerActivismTwoToneIcon from '@mui/icons-material/VolunteerActivismTwoTone';
+import ConfirmationNumberTwoToneIcon from '@mui/icons-material/ConfirmationNumberTwoTone';
+import FamilyRestroomTwoToneIcon from '@mui/icons-material/FamilyRestroomTwoTone';
+import SpeakerTwoToneIcon from '@mui/icons-material/SpeakerTwoTone';
+import CoronavirusTwoToneIcon from '@mui/icons-material/CoronavirusTwoTone';
+import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
+import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import MultipleDatesPicker from '../mui-multi-date-picker-lib';
@@ -14,6 +26,7 @@ import {
 	youTubeEmbed,
 	getFontAwesomeIcon,
 	pullDomainFrom,
+	convert24HourTime
 } from '../../actions/app';
 
 const ArtistTileBack = ({
@@ -125,8 +138,8 @@ const ArtistTileBack = ({
 						) : (
 							''
 						)}
-						<Grid item>
-							{artist.genres ? (
+						{artist.genres && artist.genres.constructor.name === "Array" ? (
+							<Grid item>
 								<Tooltip title='Genre' placement='bottom' arrow>
 									<SvgIcon
 										style={{
@@ -138,20 +151,17 @@ const ArtistTileBack = ({
 										<FontAwesomeIcon icon='guitar'></FontAwesomeIcon>
 									</SvgIcon>
 								</Tooltip>
-							) : (
-								''
-							)}
-							{artist.genres && artist.genres.length > 0
-								? artist.genres.map((genre, key) => (
+								{artist.genres.map((genre, key) => (
 										<Chip
 											key={key}
 											label={genre}
 											size='small'
 											sx={{ margin: '0 4px' }}
 										></Chip>
-								  ))
+								  ))}
+							</Grid>
+						)
 								: ''}
-						</Grid>
 						{artist.city && artist.state ? (
 							<Grid
 								item
@@ -171,7 +181,7 @@ const ArtistTileBack = ({
 						) : (
 							''
 						)}
-						{artist.soundsLike ? (
+						{artist.soundsLike && artist.soundsLike.constructor.name === "Array" ? (
 							<Grid
 								item
 								container
@@ -183,16 +193,14 @@ const ArtistTileBack = ({
 										sx={{ marginRight: '8px' }}
 									></HearingTwoToneIcon>
 								</Tooltip>
-								{artist.soundsLike.length > 0
-									? artist.soundsLike.map((sndsLike, key) => (
+								{artist.soundsLike.map((sndsLike, key) => (
 											<Chip
 												key={key}
 												label={sndsLike}
 												size='small'
 												sx={{ margin: '0 4px' }}
 											></Chip>
-									  ))
-									: ''}
+									  ))}
 							</Grid>
 						) : (
 							''
@@ -239,22 +247,242 @@ const ArtistTileBack = ({
 			<Grid
 				item
 				container
-				justifyContent='center'
+				justifyContent='start'
+				direction='row'
 				sx={{ height: '100%', padding: '0 20px!important' }}
 			>
-				<Grid
-					item
-					container
-					spacing={2}
-					sx={{ marginTop: '0' }}
-					direction='row'
-					alignItems='center'
-				>
-					{artist.artistStatementVideo
-						? youTubeEmbed(artist.artistStatementVideo)
-						: ''}
-				</Grid>
+				{artist.artistStatementVideo ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						
+						className='artistStatementVideo'
+						xs={6}
+					>
+						{ youTubeEmbed(artist.artistStatementVideo)}
+					</Grid>
+				: ''}
+				{artist.bio ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						className='bio'
+						xs={6}
+					>
+						{ artist.bio }
+					</Grid>
+				: ''}
 			</Grid>
+			<Grid
+				item
+				container
+				justifyContent='start'
+				direction='column'
+				sx={{ height: '100%', padding: '0 20px!important' }}
+				className="bookingDetails"
+			>
+				{artist.costStructure && artist.namedPrice ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					{artist.costStructure === 'donation' ? <VolunteerActivismTwoToneIcon></VolunteerActivismTwoToneIcon> : <ConfirmationNumberTwoToneIcon></ConfirmationNumberTwoToneIcon> }
+					{' $'}{ artist.namedPrice }{' '}{ artist.costStructure }
+					</Grid>
+				: ''}
+				{artist.tourVibe ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					<GroupsTwoToneIcon></GroupsTwoToneIcon>
+					{' '}{ artist.tourVibe }
+					</Grid>
+				: ''}
+				{bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry
+					<Grid
+							className='whenBooking'
+							container
+							direction='row'
+							justifyContent='center'
+							alignItems='start'
+							spacing={2}
+							sx={{
+								margin: '0px auto',
+								width: '100%',
+							}}
+						>
+
+					{bookingWhenWhere.filter(e => e).map((whenBooking, idx, whenWhereOrig) => ( //.filter(e => e) to remove any null values
+						<Grid
+							className='whenBooking'
+							key={`whenBooking${idx}`}
+							item
+							xs={3}
+							sx={{
+								backgroundColor: 'rgba(0,0,0,0.35)',
+								'&:hover': {},
+								padding: '0 10px 10px',
+								margin: '0px auto',
+							}}
+						>
+
+							<FontAwesomeIcon icon='calendar-day'></FontAwesomeIcon> {whenBooking && whenBooking.where && (new Date(whenBooking.when).toDateString() + ': '+ whenBooking.where.city + ', '+whenBooking.where.state)}
+								
+						</Grid>
+					))}
+					</Grid>
+					: ''}
+					{artist.showSchedule ?
+						<Fragment>
+							<Grid
+								item
+								sx={{ marginTop: '0' }}
+								xs={2}
+							>
+								<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
+								{' Setup at: '}{ convert24HourTime(artist.showSchedule.setupTime) }
+							</Grid>
+							<Grid
+								item
+								sx={{ marginTop: '0' }}
+								xs={2}
+							>
+								<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
+								{' Doors open at: '}{ convert24HourTime(artist.showSchedule.doorsOpen) }
+							</Grid>
+							<Grid
+								item
+								sx={{ marginTop: '0' }}
+								xs={2}
+							>
+								<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
+								{' Show starts at: '}{ convert24HourTime(artist.showSchedule.startTime) }
+							</Grid>
+							<Grid
+								item
+								sx={{ marginTop: '0' }}
+								xs={2}
+							>
+								<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
+								{' Hard wrap at: '}{ convert24HourTime(artist.showSchedule.hardWrap) }
+							</Grid>
+						</Fragment>
+				: ''}
+				{artist.overnight ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					<HotelTwoToneIcon></HotelTwoToneIcon>
+					{' '}{ artist.overnight + (artist.overnight > 1 ? ' beds' : ' bed') }
+					</Grid>
+				: ''}
+				{artist.merchTable ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					<TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>
+					{' '}{ artist.merchTable }
+					</Grid>
+				: ''}
+				{artist.allergies ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+						<SvgIcon
+							style={{
+								marginRight: '4px',
+								fontSize: '1.3em',
+								verticalAlign: 'middle',
+							}}
+						>
+							<FontAwesomeIcon icon='allergies'></FontAwesomeIcon>
+						</SvgIcon>
+					{' '}{ artist.allergies.constructor.name === "Array" && artist.allergies.map(((allergy, ind) => { 
+						if (ind !== artist.allergies.length - 1) {
+							return allergy + ', '
+						}
+						else {
+							return allergy
+						}
+					})) }
+					</Grid>
+				: ''}
+				{artist.allowKids ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					<FamilyRestroomTwoToneIcon></FamilyRestroomTwoToneIcon>
+					{' '}{ artist.allowKids }
+					</Grid>
+				: ''}
+				{artist.soundSystem ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					<SpeakerTwoToneIcon></SpeakerTwoToneIcon>
+					{' '}{ artist.soundSystem }
+					</Grid>
+				: ''}
+				{artist.covidPrefs ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					<CoronavirusTwoToneIcon></CoronavirusTwoToneIcon>
+					{' '}{ artist.covidPrefs.constructor.name === "Array" && artist.covidPrefs.map(((covidPref, ind) => { 
+						if (ind !== artist.covidPrefs.length - 1) {
+							return covidPref + ', '
+						}
+						else {
+							return covidPref
+						}
+					})) }
+					</Grid>
+				: ''}
+				{artist.financialHopes ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					<SavingsTwoToneIcon></SavingsTwoToneIcon>
+					{' '}{ artist.financialHopes }
+					</Grid>
+				: ''}
+				{artist.fanActions ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					<ThumbUpTwoToneIcon></ThumbUpTwoToneIcon>
+					{' '}{ artist.fanActions.map(((fanAction, ind) => { 
+						if (ind !== artist.fanActions.length - 1) {
+							return fanAction + ', '
+						}
+						else {
+							return fanAction
+						}
+					})) }
+					</Grid>
+				: ''}
+
+			</Grid>
+			
 		</Fragment>
 	);
 };
