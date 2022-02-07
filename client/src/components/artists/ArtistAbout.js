@@ -49,8 +49,7 @@ const ArtistAbout = ({ artist }) => {
 					<Grid
 						item
 						sx={{ marginTop: '0' }}
-						direction='row'
-						alignItems='start'
+						
 						className='artistStatementVideo'
 						md={8}
 						xs={12}
@@ -74,8 +73,6 @@ const ArtistAbout = ({ artist }) => {
 						<Grid
 							item
 							sx={{ marginTop: '0' }}
-							direction='row'
-							alignItems='start'
 							className='socialIcons'
 							xs={12}
 						>

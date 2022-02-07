@@ -250,9 +250,9 @@ router.post('/updateMe', [auth], async (req, res) => {
 							{ email: artistFields.email.toLowerCase() },
 							{ $set: artistFields },
 							{ new: true, upsert: true }
-						);
+						).select('-hadMeeting -sentFollowUp -notes');
 						artistCount++;
-						res.json(artistFields);
+						res.json(artist);
 					} catch (err) {
 						console.error(err.message);
 						res.status(500).send('Server Error: ' + err.message);
@@ -268,9 +268,9 @@ router.post('/updateMe', [auth], async (req, res) => {
 							{ email: artistFields.email.toLowerCase() },
 							{ $set: artistFields },
 							{ new: true, upsert: true }
-						);
+						).select('-hadMeeting -sentFollowUp -notes');
 						artistCount++;
-						res.json(artistFields);
+						res.json(artist);
 					} catch (err) {
 						console.error(err.message);
 						res.status(500).send('Server Error');

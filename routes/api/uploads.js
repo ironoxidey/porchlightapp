@@ -24,13 +24,14 @@ router.post('/upload', auth, async (req, res) => {
 		//console.log("req.user.email: "+req.user.email);
 		const artistSlug = await Artist.findOne({
 			email: req.user.email,
-		}).select('slug'); //ADD .select('-field'); to exclude [field] from the response
+		}).select('_id slug'); //ADD .select('-field'); to exclude [field] from the response
 		if (!artistSlug) {
 			return res.status(400).json({ msg: 'There is no slug for this user' });
 		}
 		//console.log("artistSlug: "+ artistSlug);
 
 		req.artistSlug = artistSlug.slug;
+		req.artistID = artistSlug._id;
 
 		await uploadFile(req, res);
 

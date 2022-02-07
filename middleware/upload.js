@@ -14,8 +14,8 @@ const maxSize = 4 * 1024 * 1024;
 
 let storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		const { artistSlug } = req;
-		const uploadDir = `../porchlight-uploads/${artistSlug}`;
+		const { artistSlug, artistID } = req;
+		const uploadDir = `../porchlight-uploads/${artistID}`;
 
 		if (!fs.existsSync(uploadDir)) {
 			fs.mkdirSync(uploadDir);

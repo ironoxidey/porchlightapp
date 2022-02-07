@@ -545,7 +545,9 @@ const EditArtistForm = ({
 
 	const uploadHandler = (e) => {
 		changesMade.current = true;
-		const uploadPath = `/api/uploads/${slug}/`; //"../porchlight-uploads";
+		console.log("theArtist._id: "+theArtist._id)
+		//const uploadPath = `/api/uploads/${slug}/`; //"../porchlight-uploads";
+		const uploadPath = `/api/uploads/${theArtist._id}/`; //"../porchlight-uploads";
 		let fileName = e.target.files[0].name;
 		let fileExtension = e.target.files[0].type.replace(/(.*)\//g, '');
 		let targetValue = uploadPath + fileName; //e.target.value;
