@@ -20,6 +20,8 @@ import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+import ReactPlayer from 'react-player/lazy';
+
 
 import {
 	toTitleCase,
@@ -75,6 +77,13 @@ const ArtistTileBack = ({
 }) => {
 	return (
 		<Fragment>
+			<Grid
+					container
+					className='artistTileBack'
+					sx={{
+						paddingBottom: '80px!important',
+					}}
+				>
 			{wideImg ? (
 				<Grid
 					container
@@ -249,7 +258,7 @@ const ArtistTileBack = ({
 				container
 				justifyContent='start'
 				direction='row'
-				sx={{ height: '100%', padding: '0 20px!important' }}
+				sx={{ height: '100%', padding: '8px 20px 0!important' }}
 			>
 				{artist.artistStatementVideo ?
 					<Grid
@@ -259,7 +268,8 @@ const ArtistTileBack = ({
 						className='artistStatementVideo'
 						xs={6}
 					>
-						{ youTubeEmbed(artist.artistStatementVideo)}
+					<Typography component='h3'>Artist Statement:</Typography>
+						<ReactPlayer light={true} url={artist.artistStatementVideo} width="100%" style={{width: "100%", padding: '0 8px 0 0'}}/>
 					</Grid>
 				: ''}
 				{artist.bio ?
@@ -269,7 +279,41 @@ const ArtistTileBack = ({
 						className='bio'
 						xs={6}
 					>
+						<Typography component='h3'>Bio:</Typography>
+
 						{ artist.bio }
+					</Grid>
+				: ''}
+			</Grid>
+			<Grid
+				item
+				container
+				justifyContent='start'
+				direction='row'
+				sx={{ height: '100%', padding: '8px 20px!important' }}
+			>
+				{artist.repLink ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						
+						className='repLink'
+						xs={6}
+					>
+						<Typography component='h3'>Listen to {artist.stageName}:</Typography>
+						<ReactPlayer url={artist.repLink} width="100%" style={{width: "100%", padding: '0 8px 0 0'}}/>
+					</Grid>
+				: ''}
+				{artist.livePerformanceVideo ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						
+						className='livePerformanceVideo'
+						xs={6}
+					>
+						<Typography component='h3'>Live performance of {artist.stageName}:</Typography>
+						<ReactPlayer url={artist.livePerformanceVideo} width="100%" style={{width: "100%", padding: '0 8px 0 0'}}/>
 					</Grid>
 				: ''}
 			</Grid>
@@ -281,26 +325,7 @@ const ArtistTileBack = ({
 				sx={{ height: '100%', padding: '0 20px!important' }}
 				className="bookingDetails"
 			>
-				{artist.costStructure && artist.namedPrice ?
-					<Grid
-						item
-						sx={{ marginTop: '0' }}
-						xs={6}
-					>
-					{artist.costStructure === 'donation' ? <VolunteerActivismTwoToneIcon></VolunteerActivismTwoToneIcon> : <ConfirmationNumberTwoToneIcon></ConfirmationNumberTwoToneIcon> }
-					{' $'}{ artist.namedPrice }{' '}{ artist.costStructure }
-					</Grid>
-				: ''}
-				{artist.tourVibe ?
-					<Grid
-						item
-						sx={{ marginTop: '0' }}
-						xs={6}
-					>
-					<GroupsTwoToneIcon></GroupsTwoToneIcon>
-					{' '}{ artist.tourVibe }
-					</Grid>
-				: ''}
+				<Typography component='h2'>Booking Info:</Typography>
 				{bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry
 					<Grid
 							className='whenBooking'
@@ -335,6 +360,26 @@ const ArtistTileBack = ({
 					))}
 					</Grid>
 					: ''}
+				{artist.costStructure && artist.namedPrice ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					{artist.costStructure === 'donation' ? <VolunteerActivismTwoToneIcon></VolunteerActivismTwoToneIcon> : <ConfirmationNumberTwoToneIcon></ConfirmationNumberTwoToneIcon> }
+					{' '}<strong>{'Cost structure and price:'}</strong>{' $'}{ artist.namedPrice }{' '}{ artist.costStructure }
+					</Grid>
+				: ''}
+				{artist.tourVibe ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					<GroupsTwoToneIcon></GroupsTwoToneIcon>
+					{' '}<strong>{'Audience:'}</strong>{' '}{ artist.tourVibe }
+					</Grid>
+				: ''}
 					{artist.showSchedule ?
 						<Fragment>
 							<Grid
@@ -343,7 +388,7 @@ const ArtistTileBack = ({
 								xs={2}
 							>
 								<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
-								{' Setup at: '}{ convert24HourTime(artist.showSchedule.setupTime) }
+								{' '}<strong>{'Setup at:'}</strong>{' '}{ convert24HourTime(artist.showSchedule.setupTime) }
 							</Grid>
 							<Grid
 								item
@@ -351,7 +396,7 @@ const ArtistTileBack = ({
 								xs={2}
 							>
 								<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
-								{' Doors open at: '}{ convert24HourTime(artist.showSchedule.doorsOpen) }
+								{' '}<strong>{'Doors open at:'}</strong>{' '}{ convert24HourTime(artist.showSchedule.doorsOpen) }
 							</Grid>
 							<Grid
 								item
@@ -359,7 +404,7 @@ const ArtistTileBack = ({
 								xs={2}
 							>
 								<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
-								{' Show starts at: '}{ convert24HourTime(artist.showSchedule.startTime) }
+								{' '}<strong>{'Show starts at:'}</strong>{' '}{ convert24HourTime(artist.showSchedule.startTime) }
 							</Grid>
 							<Grid
 								item
@@ -367,7 +412,7 @@ const ArtistTileBack = ({
 								xs={2}
 							>
 								<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
-								{' Hard wrap at: '}{ convert24HourTime(artist.showSchedule.hardWrap) }
+								{' '}<strong>{'Hard wrap at:'}</strong>{' '}{ convert24HourTime(artist.showSchedule.hardWrap) }
 							</Grid>
 						</Fragment>
 				: ''}
@@ -378,7 +423,7 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<HotelTwoToneIcon></HotelTwoToneIcon>
-					{' '}{ artist.overnight + (artist.overnight > 1 ? ' beds' : ' bed') }
+					{' '}<strong>{'Needs overnight accommodations:'}</strong>{' '}{ artist.overnight + (artist.overnight > 1 ? ' beds' : ' bed') }
 					</Grid>
 				: ''}
 				{artist.merchTable ?
@@ -388,7 +433,17 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>
-					{' '}{ artist.merchTable }
+					{' '}<strong>{'Needs a merch table'}</strong>{' '}{ artist.merchTable }
+					</Grid>
+				: ''}
+				{!artist.merchTable ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					<TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>
+					{' '}<strong>{'Does NOT need a merch table'}</strong>{' '}
 					</Grid>
 				: ''}
 				{artist.allergies ?
@@ -406,7 +461,7 @@ const ArtistTileBack = ({
 						>
 							<FontAwesomeIcon icon='allergies'></FontAwesomeIcon>
 						</SvgIcon>
-					{' '}{ artist.allergies.constructor.name === "Array" && artist.allergies.map(((allergy, ind) => { 
+						{' '}<strong>{'Has these allergies:'}</strong>{' '}{ artist.allergies.constructor.name === "Array" && artist.allergies.map(((allergy, ind) => { 
 						if (ind !== artist.allergies.length - 1) {
 							return allergy + ', '
 						}
@@ -423,7 +478,17 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<FamilyRestroomTwoToneIcon></FamilyRestroomTwoToneIcon>
-					{' '}{ artist.allowKids }
+					{' '}<strong>{'Would love to have kids and young familys attend'}</strong>
+					</Grid>
+				: ''}
+				{!artist.allowKids ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					<FamilyRestroomTwoToneIcon></FamilyRestroomTwoToneIcon>
+					{' '}<strong>{'Would prefer to have an adults-only show'}</strong>
 					</Grid>
 				: ''}
 				{artist.soundSystem ?
@@ -433,7 +498,17 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<SpeakerTwoToneIcon></SpeakerTwoToneIcon>
-					{' '}{ artist.soundSystem }
+					{' '}<strong>{'Able to provide sound system'}</strong>{' '}
+					</Grid>
+				: ''}
+				{!artist.soundSystem ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+					>
+					<SpeakerTwoToneIcon></SpeakerTwoToneIcon>
+					{' '}<strong>{'Needs a sound system'}</strong>{' '}
 					</Grid>
 				: ''}
 				{artist.covidPrefs ?
@@ -443,7 +518,7 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<CoronavirusTwoToneIcon></CoronavirusTwoToneIcon>
-					{' '}{ artist.covidPrefs.constructor.name === "Array" && artist.covidPrefs.map(((covidPref, ind) => { 
+					{' '}<strong>{'Considering Covid, would prefer:'}</strong>{' '}{ artist.covidPrefs.constructor.name === "Array" && artist.covidPrefs.map(((covidPref, ind) => { 
 						if (ind !== artist.covidPrefs.length - 1) {
 							return covidPref + ', '
 						}
@@ -460,7 +535,7 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<SavingsTwoToneIcon></SavingsTwoToneIcon>
-					{' '}{ artist.financialHopes }
+					{' '}<strong>{'Financial hopes: '}</strong>{' '}{ artist.financialHopes }
 					</Grid>
 				: ''}
 				{artist.fanActions ?
@@ -470,7 +545,7 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<ThumbUpTwoToneIcon></ThumbUpTwoToneIcon>
-					{' '}{ artist.fanActions.map(((fanAction, ind) => { 
+					{' '}<strong>{'How new fans can show support:'}</strong>{' '}{ artist.fanActions.map(((fanAction, ind) => { 
 						if (ind !== artist.fanActions.length - 1) {
 							return fanAction + ', '
 						}
@@ -482,7 +557,7 @@ const ArtistTileBack = ({
 				: ''}
 
 			</Grid>
-			
+			</Grid>
 		</Fragment>
 	);
 };

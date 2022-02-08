@@ -48,8 +48,9 @@ import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
 import { textAlign } from '@mui/system';
 
-import { youTubeEmbed, getFontAwesomeIcon, getHostLocations } from '../../actions/app';
+import { getFontAwesomeIcon, getHostLocations } from '../../actions/app';
 import moment from 'moment';
+import ReactPlayer from 'react-player/lazy';
 
 //filter() for Objects -- https://stackoverflow.com/a/37616104/3338608
 Object.filter = (obj, predicate) =>
@@ -85,6 +86,7 @@ const EditArtistForm = ({
 		soundsLike: [],
 		medium: '',
 		repLinks: [],
+		repLink: '',
 		socialLinks: [],
 		helpKind: '',
 		// typeformDate: '',
@@ -150,6 +152,7 @@ const EditArtistForm = ({
 				soundsLike:
 					loading || !theArtist.soundsLike ? [] : theArtist.soundsLike,
 				repLinks: loading || !theArtist.repLinks ? [] : theArtist.repLinks,
+				repLink: loading || !theArtist.repLink ? '' : theArtist.repLink,
 				socialLinks:
 					loading || !theArtist.socialLinks ? [] : theArtist.socialLinks,
 				helpKind: loading || !theArtist.helpKind ? '' : theArtist.helpKind,
@@ -265,6 +268,7 @@ const EditArtistForm = ({
 					soundsLike: [],
 					medium: '',
 					repLinks: [],
+					repLink: '',
 					socialLinks: [],
 					helpKind: '',
 					// typeformDate: '',
@@ -329,6 +333,7 @@ const EditArtistForm = ({
 		genres,
 		soundsLike,
 		repLinks,
+		repLink,
 		socialLinks,
 		helpKind,
 		// typeformDate,
@@ -1089,77 +1094,104 @@ const EditArtistForm = ({
 						sx={{ width: '100%' }}
 					/>
 				</Grid>,
-				artistStatementVideo ? youTubeEmbed(artistStatementVideo) : '',
+				artistStatementVideo ?
+				<Grid container item xs={12} justifyContent='center' sx={{ width: '100%', margin: '8px auto' }}>
+				<ReactPlayer url={artistStatementVideo} />
+			</Grid> : '',
 			],
 		],
-		repLinks: [
+		// repLinks: [
+		// 	<FormLabel component='legend'>
+		// 		Would you supply some links where we could experience your {medium}?
+		// 	</FormLabel>,
+		// 	[
+		// 		repLinks && Object.keys(repLinks).length > 0
+		// 			? repLinks.map((eachLink, idx) => (
+		// 				<Grid
+		// 					className='eachLink'
+		// 					key={`eachLink${idx}`}
+		// 					container
+		// 					direction='row'
+		// 					justifyContent='space-around'
+		// 					alignItems='start'
+		// 					spacing={2}
+		// 					sx={{
+		// 						// borderColor: 'primary.dark',
+		// 						// borderWidth: '2px',
+		// 						// borderStyle: 'solid',
+		// 						backgroundColor: 'rgba(0,0,0,0.15)',
+		// 						'&:hover': {},
+		// 						padding: '0 10px 10px',
+		// 						margin: '0px auto',
+		// 						width: '100%',
+		// 					}}
+		// 				>
+		// 					<Grid item xs={11}>
+		// 						<TextField
+		// 							variant='standard'
+		// 							name='repLinks'
+		// 							id={`repLinkLink${idx}`}
+		// 							label={
+		// 								idx > 0 ? `and at ` : `Yeah! Check out "${stageName}" at `
+		// 							}
+		// 							value={eachLink.link}
+		// 							onChange={(e) =>
+		// 								onMultiTextChange('link', repLinks, idx, e)
+		// 							}
+		// 							sx={{ width: '100%' }}
+		// 						/>
+		// 					</Grid>
+		// 					<Grid item xs={2} md={0.65}>
+		// 						<IconButton
+		// 							onClick={(e) =>
+		// 								handleRemoveMultiTextField('repLinks', repLinks, idx)
+		// 							}
+		// 						>
+		// 							<DeleteIcon />
+		// 						</IconButton>
+		// 					</Grid>
+		// 				</Grid>
+		// 			))
+		// 			: '',
+		// 		<Grid
+		// 			container
+		// 			item
+		// 			direction='row'
+		// 			justifyContent='center'
+		// 			alignItems='center'
+		// 			xs={12}
+		// 		>
+		// 			<Button
+		// 				onClick={(e) => handleAddMultiTextField('repLinks', repLinks)}
+		// 			>
+		// 				<PersonAddIcon />
+		// 				Add link
+		// 			</Button>
+		// 		</Grid>,
+		// 	],
+		// ],
+		repLink: [
 			<FormLabel component='legend'>
-				Would you supply some links where we could experience your {medium}?
+				Would you supply a SoundCloud or YouTube link where we could experience your {medium}?
+				<br/><small> (A music player or video should show up underneath, if you've entered the right kind of link)</small>
 			</FormLabel>,
 			[
-				repLinks && Object.keys(repLinks).length > 0
-					? repLinks.map((eachLink, idx) => (
-						<Grid
-							className='eachLink'
-							key={`eachLink${idx}`}
-							container
-							direction='row'
-							justifyContent='space-around'
-							alignItems='start'
-							spacing={2}
-							sx={{
-								// borderColor: 'primary.dark',
-								// borderWidth: '2px',
-								// borderStyle: 'solid',
-								backgroundColor: 'rgba(0,0,0,0.15)',
-								'&:hover': {},
-								padding: '0 10px 10px',
-								margin: '0px auto',
-								width: '100%',
-							}}
-						>
-							<Grid item xs={11}>
-								<TextField
-									variant='standard'
-									name='repLinks'
-									id={`repLinkLink${idx}`}
-									label={
-										idx > 0 ? `and at ` : `Yeah! Check out "${stageName}" at `
-									}
-									value={eachLink.link}
-									onChange={(e) =>
-										onMultiTextChange('link', repLinks, idx, e)
-									}
-									sx={{ width: '100%' }}
-								/>
-							</Grid>
-							<Grid item xs={2} md={0.65}>
-								<IconButton
-									onClick={(e) =>
-										handleRemoveMultiTextField('repLinks', repLinks, idx)
-									}
-								>
-									<DeleteIcon />
-								</IconButton>
-							</Grid>
-						</Grid>
-					))
-					: '',
-				<Grid
-					container
-					item
-					direction='row'
-					justifyContent='center'
-					alignItems='center'
-					xs={12}
-				>
-					<Button
-						onClick={(e) => handleAddMultiTextField('repLinks', repLinks)}
-					>
-						<PersonAddIcon />
-						Add link
-					</Button>
+				<Grid item xs={12} sx={{ width: '100%' }}>
+					<TextField
+						variant='standard'
+						name='repLink'
+						id='repLink'
+						label={`My artist statement video can be viewed at`}
+						value={repLink}
+						onChange={(e) => onChange(e)}
+						sx={{ width: '100%' }}
+					/>
 				</Grid>,
+				repLink ? 
+				<Grid container item xs={12} justifyContent='center' sx={{ width: '100%', margin: '8px auto' }}>
+					<ReactPlayer url={repLink} />
+				</Grid>
+				: '',
 			],
 		],
 		livePerformanceVideo: [
@@ -1184,7 +1216,9 @@ const EditArtistForm = ({
 						sx={{ width: '100%' }}
 					/>
 				</Grid>,
-				livePerformanceVideo ? youTubeEmbed(livePerformanceVideo) : '',
+				livePerformanceVideo ? <Grid container item xs={12} justifyContent='center' sx={{ width: '100%', margin: '8px auto' }}>
+				<ReactPlayer url={livePerformanceVideo} />
+			</Grid> : '',
 			],
 		],
 
@@ -2092,7 +2126,7 @@ const EditArtistForm = ({
 	};
 
 	//// CARD INDEX ///////
-	const [formCardIndex, setIndex] = useState(0);
+	const [formCardIndex, setIndex] = useState(13);
 
 	const cardIndex = formCardIndex;
 

@@ -42,6 +42,9 @@ const ArtistSchema = new mongoose.Schema(
 		repLinks: {
 			type: Object,
 		},
+		repLink: {
+			type: String,
+		},
 		socialLinks: {
 			type: Object,
 		},

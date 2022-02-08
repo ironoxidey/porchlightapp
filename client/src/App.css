@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300;600&family=Merriweather:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300;600&family=Merriweather:wght@300;600&display=swap');
 
 /* Global Styles */
 :root {
@@ -86,6 +86,10 @@ h2.MuiTypography-root {
 
 	grid-column-gap: var(--gutter);
 	grid-row-gap: var(--gutter);
+}
+
+.bookingDetails strong {
+	text-decoration: underline;
 }
 
 * {
