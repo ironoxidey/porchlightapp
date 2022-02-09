@@ -17,6 +17,7 @@ import Artists from '../artists/Artists';
 import Artist from '../artists/Artist';
 import EditArtists from '../artists/EditArtists';
 import EditMyArtistProfile from '../artists/EditMyArtistProfile';
+import EditMyArtistBooking from '../artists/EditMyArtistBooking';
 import Posts from '../posts/Posts';
 import Post from '../post/Post';
 import NotFound from '../layout/NotFound';
@@ -136,6 +137,12 @@ const Routes = ({ app }) => {
 								path='/edit-artist-profile'
 								component={EditMyArtistProfile}
 								title='Edit Your Artist Profile'
+							/>
+							<PrivateRoute
+								exact
+								path='/edit-artist-booking'
+								component={EditMyArtistBooking}
+								title='Edit Your Artist Booking Info'
 							/>
 							<PrivateRoute
 								exact

@@ -97,26 +97,49 @@ const Dashboard = ({
 			)} */}
 					<Grid
 						item
-						sx={{
-							margin: '8px auto',
-						}}
+						container
+						
 					>
 						{me && me._id ? (
-							<Fragment>
+							<Grid item sx={{
+								margin: '8px auto',
+							}}>
 								<Link to='/edit-artist-profile'>
 									<Button btnwidth='300' className=''>
 										<AccountCircleTwoToneIcon /> Edit your Artist Profile
 									</Button>
 								</Link>
-							</Fragment>
+							</Grid>
 						) : (
-							<Fragment>
+							<Grid item sx={{
+								margin: '8px auto',
+							}}>
 								<p> </p>
 								<Link to='/edit-artist-profile'>
 									<Button className=''>Create Profile</Button>
 								</Link>
-							</Fragment>
+							</Grid>
 						)}
+						{me && me._id && me.active && me.bookingWhen.length > 0 ? (
+								<Grid item sx={{
+									margin: '8px auto',
+								}}>
+									<Link to='/edit-artist-booking'>
+										<Button btnwidth='300' className=''>
+											<AccountCircleTwoToneIcon /> Edit your booking info
+										</Button>
+									</Link>
+								</Grid>
+						) : me && me._id && me.active ? (
+							<Grid item sx={{
+								margin: '8px auto',
+							}}>
+								<p> </p>
+								<Link to='/edit-artist-booking'>
+									<Button className=''>Start booking shows</Button>
+								</Link>
+							</Grid>
+						) : ''}
 					</Grid>
 				</Grid>
 			</Grid>

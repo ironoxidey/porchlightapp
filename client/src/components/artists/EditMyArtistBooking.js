@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getCurrentArtist } from '../../actions/artist';
 import Spinner from '../layout/Spinner';
-import EditArtistProfileForm from './EditArtistProfileForm';
+import EditArtistBookingForm from './EditArtistBookingForm';
 
-const EditMyArtistProfile = ({
+const EditMyArtistBooking = ({
 	auth,
 	getCurrentArtist,
 	artist: { me, loading },
@@ -25,7 +25,7 @@ const EditMyArtistProfile = ({
 			) : me ? (
 				<Fragment>
 					{/* <h1 className='large text-primary'>Edit Your Artist Profile</h1> */}
-					<EditArtistProfileForm theArtist={me} />
+					<EditArtistBookingForm theArtist={me} />
 					{/* <Link to='/dashboard' className='btn btn-light my-1'>
           Go Back
         </Link> */}
@@ -37,7 +37,7 @@ const EditMyArtistProfile = ({
 	);
 };
 
-EditMyArtistProfile.propTypes = {
+EditMyArtistBooking.propTypes = {
 	getCurrentArtist: PropTypes.func.isRequired,
 	artist: PropTypes.object.isRequired,
 	auth: PropTypes.object.isRequired,
@@ -49,5 +49,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, { getCurrentArtist })(
-	withRouter(EditMyArtistProfile)
+	withRouter(EditMyArtistBooking)
 ); //withRouter allows us to pass history objects
