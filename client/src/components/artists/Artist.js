@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 import { PAGE_LOAD } from '../../actions/types';
 import Spinner from '../layout/Spinner';
-import ArtistTop from './ArtistTop';
+import ArtistTileBack from './ArtistTileBack';
 import ArtistAbout from './ArtistAbout';
 // import ProfileExperience from './ProfileExperience';
 // import ProfileEducation from './ProfileEducation';
@@ -48,8 +48,7 @@ const Artist = ({
 							</Link>
 						)}
 					<div className=''>
-						<ArtistTop artist={artist} />
-						<ArtistAbout artist={artist} />
+						<ArtistTileBack artist={artist} />
 					</div>
 				</Fragment>
 			)}

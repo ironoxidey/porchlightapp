@@ -3,7 +3,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createArtist } from '../../actions/artist';
+import { createArtist } from '../../../actions/artist';
 import { 
   TextField, 
   Button, 
@@ -23,7 +23,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
-import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+import MultipleDatesPicker from '../../mui-multi-date-picker-lib';
 
 import { useTransition, animated, config } from '@react-spring/web';
 

@@ -367,7 +367,7 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					{artist.costStructure === 'donation' ? <VolunteerActivismTwoToneIcon></VolunteerActivismTwoToneIcon> : <ConfirmationNumberTwoToneIcon></ConfirmationNumberTwoToneIcon> }
-					{' '}<strong>{'Cost structure and price:'}</strong>{' $'}{ artist.namedPrice }{' '}{ artist.costStructure }
+					{' '}{'Concerts will be '}<strong>{artist.costStructure == 'ticket' ? 'ticketed' : 'donation-based'}</strong>{', at '}<strong>{' $'}{ artist.namedPrice }</strong>{' per '}{ artist.costStructure }
 					</Grid>
 				: ''}
 				{artist.tourVibe ?
@@ -380,41 +380,20 @@ const ArtistTileBack = ({
 					{' '}<strong>{'Audience:'}</strong>{' '}{ artist.tourVibe }
 					</Grid>
 				: ''}
-					{artist.showSchedule ?
-						<Fragment>
-							<Grid
-								item
-								sx={{ marginTop: '0' }}
-								xs={2}
-							>
-								<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
-								{' '}<strong>{'Setup at:'}</strong>{' '}{ convert24HourTime(artist.showSchedule.setupTime) }
-							</Grid>
-							<Grid
-								item
-								sx={{ marginTop: '0' }}
-								xs={2}
-							>
-								<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
-								{' '}<strong>{'Doors open at:'}</strong>{' '}{ convert24HourTime(artist.showSchedule.doorsOpen) }
-							</Grid>
-							<Grid
-								item
-								sx={{ marginTop: '0' }}
-								xs={2}
-							>
-								<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
-								{' '}<strong>{'Show starts at:'}</strong>{' '}{ convert24HourTime(artist.showSchedule.startTime) }
-							</Grid>
-							<Grid
-								item
-								sx={{ marginTop: '0' }}
-								xs={2}
-							>
-								<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
-								{' '}<strong>{'Hard wrap at:'}</strong>{' '}{ convert24HourTime(artist.showSchedule.hardWrap) }
-							</Grid>
-						</Fragment>
+				{artist.showSchedule ?
+					<Fragment>
+						<Grid
+							item
+							sx={{ marginTop: '0' }}
+							xs={2}
+						>
+							<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
+							{' Setup at '}<strong>{ convert24HourTime(artist.showSchedule.setupTime) }</strong>
+							{', doors open at '}<strong>{ convert24HourTime(artist.showSchedule.doorsOpen) }</strong>
+							{', show starts at '}<strong>{ convert24HourTime(artist.showSchedule.startTime) }</strong>
+							{', with a hard wrap at '}<strong>{ convert24HourTime(artist.showSchedule.hardWrap) }</strong>
+						</Grid>
+					</Fragment>
 				: ''}
 				{artist.overnight ?
 					<Grid
@@ -423,7 +402,7 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<HotelTwoToneIcon></HotelTwoToneIcon>
-					{' '}<strong>{'Needs overnight accommodations:'}</strong>{' '}{ artist.overnight + (artist.overnight > 1 ? ' beds' : ' bed') }
+					{' If possible, to be hosted overnight! Overnight accommodation desired: '}<strong>{ artist.overnight + (artist.overnight > 1 ? ' beds' : ' bed') }</strong>
 					</Grid>
 				: ''}
 				{artist.merchTable ?
@@ -433,10 +412,10 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>
-					{' '}<strong>{'Needs a merch table'}</strong>{' '}{ artist.merchTable }
+					{' '}<strong>{'Needs a merch table (for CDs, t-shirts, etc.)'}</strong>{' '}{ artist.merchTable }
 					</Grid>
 				: ''}
-				{!artist.merchTable ?
+				{/* {!artist.merchTable ?
 					<Grid
 						item
 						sx={{ marginTop: '0' }}
@@ -445,7 +424,7 @@ const ArtistTileBack = ({
 					<TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>
 					{' '}<strong>{'Does NOT need a merch table'}</strong>{' '}
 					</Grid>
-				: ''}
+				: ''} */}
 				{artist.allergies ?
 					<Grid
 						item
@@ -461,14 +440,14 @@ const ArtistTileBack = ({
 						>
 							<FontAwesomeIcon icon='allergies'></FontAwesomeIcon>
 						</SvgIcon>
-						{' '}<strong>{'Has these allergies:'}</strong>{' '}{ artist.allergies.constructor.name === "Array" && artist.allergies.map(((allergy, ind) => { 
+						{' Has these allergies: '}<strong>{ artist.allergies.constructor.name === "Array" && artist.allergies.map(((allergy, ind) => { 
 						if (ind !== artist.allergies.length - 1) {
 							return allergy + ', '
 						}
 						else {
 							return allergy
 						}
-					})) }
+					})) } </strong>
 					</Grid>
 				: ''}
 				{artist.allowKids ?
@@ -498,7 +477,7 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<SpeakerTwoToneIcon></SpeakerTwoToneIcon>
-					{' '}<strong>{'Able to provide sound system'}</strong>{' '}
+					{' '}<strong>{'Able to provide their own sound system'}</strong>{' '}
 					</Grid>
 				: ''}
 				{!artist.soundSystem ?
@@ -511,21 +490,21 @@ const ArtistTileBack = ({
 					{' '}<strong>{'Needs a sound system'}</strong>{' '}
 					</Grid>
 				: ''}
-				{artist.covidPrefs ?
+				{artist.covidPrefs.length > 0 ?
 					<Grid
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
 					>
 					<CoronavirusTwoToneIcon></CoronavirusTwoToneIcon>
-					{' '}<strong>{'Considering Covid, would prefer:'}</strong>{' '}{ artist.covidPrefs.constructor.name === "Array" && artist.covidPrefs.map(((covidPref, ind) => { 
+						{' Considering Covid, would prefer: '}<strong>{ artist.covidPrefs.constructor.name === "Array" && artist.covidPrefs.map(((covidPref, ind) => { 
 						if (ind !== artist.covidPrefs.length - 1) {
 							return covidPref + ', '
 						}
 						else {
 							return covidPref
 						}
-					})) }
+					})) }</strong>
 					</Grid>
 				: ''}
 				{artist.financialHopes ?
@@ -535,7 +514,7 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<SavingsTwoToneIcon></SavingsTwoToneIcon>
-					{' '}<strong>{'Financial hopes: '}</strong>{' '}{ artist.financialHopes }
+					{' Financial hopes: '}{' '}<strong>{ artist.financialHopes }</strong>
 					</Grid>
 				: ''}
 				{artist.fanActions ?
@@ -545,14 +524,14 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<ThumbUpTwoToneIcon></ThumbUpTwoToneIcon>
-					{' '}<strong>{'How new fans can show support:'}</strong>{' '}{ artist.fanActions.map(((fanAction, ind) => { 
+					{' How new fans can show support: '}<strong>{ artist.fanActions.map(((fanAction, ind) => { 
 						if (ind !== artist.fanActions.length - 1) {
 							return fanAction + ', '
 						}
 						else {
 							return fanAction
 						}
-					})) }
+					})) } </strong>
 					</Grid>
 				: ''}
 

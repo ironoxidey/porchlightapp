@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
 import { setAlert } from '../../actions/alert';
-import { createMyArtist } from '../../actions/artist';
+import { createMyArtist, getArtists } from '../../actions/artist';
 import { updateUserAvatar } from '../../actions/auth';
 import {
 	TextField,
@@ -64,15 +64,47 @@ const UploadInput = styled('input')({
 	display: 'none',
 });
 
+let artistsGenre = [];
+let artistsGenresFiltered = [];
+let artistsGenresCounts = {};
 
-const EditArtistForm = ({
-	theArtist,
+const EditArtistProfileForm = ({
+	theArtist, //passed in from EditMyArtistProfile.js
 	//theArtist: { loading },
+	artist: {artists},
 	createMyArtist,
+	getArtists,
 	history,
 	auth,
 	updateUserAvatar,
 }) => {
+
+
+	useEffect(() => {
+		getArtists();
+	}, []);
+
+	useEffect(() => { //genre autocomplete list
+		if (artists) {
+			artistsGenre = [];
+			artistsGenresCounts = {};
+
+			artists.map(eachArtist => {
+				if (eachArtist.genres) {
+					artistsGenre = artistsGenre.concat(eachArtist.genres)
+				}
+			})
+			//console.log(artistsGenre);
+
+			artistsGenresFiltered = [...new Set([...artistsGenre])];
+			artistsGenresFiltered.sort();
+			//console.log(artistsGenresFiltered);
+
+			artistsGenre.forEach((x) => { artistsGenresCounts[x] = (artistsGenresCounts[x] || 0) + 1; });
+			//console.log(artistsGenresCounts);
+		}
+	}, [artists]);
+
 	const loading = false; //a bunch of things are dependent on it; I should really just take it out.
 	const dispatch = useDispatch();
 
@@ -88,6 +120,7 @@ const EditArtistForm = ({
 		repLinks: [],
 		repLink: '',
 		socialLinks: [],
+		streamingLinks: [],
 		helpKind: '',
 		// typeformDate: '',
 		// active: '',
@@ -155,6 +188,8 @@ const EditArtistForm = ({
 				repLink: loading || !theArtist.repLink ? '' : theArtist.repLink,
 				socialLinks:
 					loading || !theArtist.socialLinks ? [] : theArtist.socialLinks,
+				streamingLinks:
+					loading || !theArtist.streamingLinks ? [] : theArtist.streamingLinks,
 				helpKind: loading || !theArtist.helpKind ? '' : theArtist.helpKind,
 				// typeformDate: loading || !theArtist.typeformDate ? '' : theArtist.typeformDate,
 				// active: loading || (theArtist.active == null) ? false : theArtist.active,
@@ -270,6 +305,7 @@ const EditArtistForm = ({
 					repLinks: [],
 					repLink: '',
 					socialLinks: [],
+					streamingLinks: [],
 					helpKind: '',
 					// typeformDate: '',
 					// active: '',
@@ -335,6 +371,7 @@ const EditArtistForm = ({
 		repLinks,
 		repLink,
 		socialLinks,
+		streamingLinks,
 		helpKind,
 		// typeformDate,
 		// active,
@@ -679,8 +716,11 @@ const EditArtistForm = ({
 					multiple
 					id='genres'
 					value={genres}
-					options={[]}
+					options={artistsGenresFiltered}
+					getOptionLabel={(option) => option +' (' + artistsGenresCounts[option] +')' || ''}
 					freeSolo
+					clearOnBlur={true}
+					filterSelectedOptions
 					onChange={(event, value) =>
 						onAutocompleteTagChange(event, 'genres', value)
 					}
@@ -701,6 +741,7 @@ const EditArtistForm = ({
 							variant='standard'
 							label={`${stageName} is `}
 							name='genres'
+							helperText='Select genres or type a new one and press [enter] to add it.'
 						/>
 					)}
 				/>
@@ -717,6 +758,7 @@ const EditArtistForm = ({
 					value={soundsLike}
 					options={[]}
 					freeSolo
+					clearOnBlur={true}
 					onChange={(event, value) =>
 						onAutocompleteTagChange(event, 'soundsLike', value)
 					}
@@ -737,6 +779,7 @@ const EditArtistForm = ({
 							variant='standard'
 							label={`${stageName} sounds like `}
 							name='soundsLike'
+							helperText='Type and press [enter] to add items to the list'
 						/>
 					)}
 				/>
@@ -862,7 +905,7 @@ const EditArtistForm = ({
 		],
 		socialLinks: [
 			<FormLabel component='legend'>
-				Would you supply the social media and streaming profile links for{' '}
+				Would you supply the social media links for{' '}
 				{stageName}?
 				<br />
 				<small>
@@ -935,6 +978,88 @@ const EditArtistForm = ({
 				>
 					<Button
 						onClick={(e) => handleAddMultiTextField('socialLinks', socialLinks)}
+					>
+						<PersonAddIcon />
+						Add link
+					</Button>
+				</Grid>,
+			],
+		],
+		streamingLinks: [
+			<FormLabel component='legend'>
+				And links to where folks can stream {' '}
+				{stageName}’s {medium}?
+				<br />
+				<small>
+					(These will appear in your profile in the order you enter them here.)
+				</small>
+			</FormLabel>,
+			[
+				streamingLinks && Object.keys(streamingLinks).length > 0
+					? streamingLinks.map((eachStreamingLink, idx) => (
+						<Grid
+							className='eachStreamingLink'
+							key={`eachStreamingLink${idx}`}
+							container
+							direction='row'
+							justifyContent='space-around'
+							alignItems='end'
+							spacing={2}
+							sx={{
+								// borderColor: 'primary.dark',
+								// borderWidth: '2px',
+								// borderStyle: 'solid',
+								backgroundColor: 'rgba(0,0,0,0.15)',
+								'&:hover': {},
+								padding: '0 10px 10px',
+								margin: '0px auto',
+								width: '100%',
+							}}
+						>
+							<Grid item xs={2} md={0.5} className='link-icon'>
+								{getFontAwesomeIcon(eachStreamingLink.link)}
+							</Grid>
+							<Grid item xs={10}>
+								<TextField
+									variant='standard'
+									name='streamingLinks'
+									id={`socialLinkLink${idx}`}
+									label={
+										idx > 0 ? `and at ` : `Yeah! Check out "${stageName}" at `
+									}
+									value={eachStreamingLink.link}
+									onChange={(e) =>
+										onMultiTextChange('link', streamingLinks, idx, e)
+									}
+									sx={{ width: '100%' }}
+								/>
+							</Grid>
+							<Grid item xs={2} md={1}>
+								<IconButton
+									onClick={(e) =>
+										handleRemoveMultiTextField(
+											'streamingLinks',
+											streamingLinks,
+											idx
+										)
+									}
+								>
+									<DeleteIcon />
+								</IconButton>
+							</Grid>
+						</Grid>
+					))
+					: '',
+				<Grid
+					container
+					item
+					direction='row'
+					justifyContent='center'
+					alignItems='center'
+					xs={12}
+				>
+					<Button
+						onClick={(e) => handleAddMultiTextField('streamingLinks', streamingLinks)}
 					>
 						<PersonAddIcon />
 						Add link
@@ -1062,7 +1187,7 @@ const EditArtistForm = ({
 				{medium === 'music' || medium === 'visual art'
 					? medium + ' is '
 					: medium + ' are '}{' '}
-				about. Upload it to YouTube, and paste the link here. <br />
+				about. This is your chance to introduce yourself to potential hosts who don’t know you yet. Be personable, and communicate your heart for your music, and why you want to play house shows. This can be a casual recording, speaking directly to the camera. Upload it to YouTube, and paste the link here. <br />
 				<small>
 					(Looking for something like:
 					‘https://www.youtube.com/watch?v=lEBBFsWtWDo’)
@@ -1167,7 +1292,7 @@ const EditArtistForm = ({
 						variant='standard'
 						name='repLink'
 						id='repLink'
-						label={`My artist statement video can be viewed at`}
+						label={`Here’s where you can experience ${stageName}’s ${medium}:`}
 						value={repLink}
 						onChange={(e) => onChange(e)}
 						sx={{ width: '100%' }}
@@ -2223,17 +2348,20 @@ const EditArtistForm = ({
 	);
 };
 
-EditArtistForm.propTypes = {
+EditArtistProfileForm.propTypes = {
 	createMyArtist: PropTypes.func.isRequired,
+	getArtists: PropTypes.func.isRequired,
 	theArtist: PropTypes.object,
 	auth: PropTypes.object.isRequired,
+	artist: PropTypes.object.isRequired,
 	updateUserAvatar: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
 	auth: state.auth,
+	artist: state.artist,
 });
 
-export default connect(mapStateToProps, { createMyArtist, updateUserAvatar })(
-	withRouter(EditArtistForm)
+export default connect(mapStateToProps, { createMyArtist, getArtists, updateUserAvatar })(
+	withRouter(EditArtistProfileForm)
 ); //withRouter allows us to pass history objects

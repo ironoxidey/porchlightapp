@@ -48,6 +48,9 @@ const ArtistSchema = new mongoose.Schema(
 		socialLinks: {
 			type: Object,
 		},
+		streamingLinks: {
+			type: Object,
+		},
 		helpKind: {
 			type: String,
 		},
@@ -177,6 +180,9 @@ const ArtistSchema = new mongoose.Schema(
 			type: Object,
 		},
 		allowKids: {
+			type: Boolean,
+		},
+		alcohol: {
 			type: Boolean,
 		},
 		soundSystem: {

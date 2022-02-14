@@ -3,10 +3,10 @@ import React, { Fragment, useState, useEffect, useRef } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
-import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
-import { setAlert } from '../../actions/alert';
-import { createMyArtist } from '../../actions/artist';
-import { updateUserAvatar } from '../../actions/auth';
+import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../../actions/types';
+import { setAlert } from '../../../actions/alert';
+import { createMyArtist } from '../../../actions/artist';
+import { updateUserAvatar } from '../../../actions/auth';
 import {
 	TextField,
 	//Button,
@@ -31,7 +31,7 @@ import {
 } from '@mui/material';
 import ReactPhoneInput from 'react-phone-input-mui';
 import { styled } from '@mui/material/styles';
-import Button from '../layout/SvgButton';
+import Button from '../../layout/SvgButton';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -42,13 +42,13 @@ import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateT
 
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
-import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+import MultipleDatesPicker from '../../mui-multi-date-picker-lib';
 
 import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
 import { textAlign } from '@mui/system';
 
-import { getFontAwesomeIcon, getHostLocations } from '../../actions/app';
+import { getFontAwesomeIcon, getHostLocations } from '../../../actions/app';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 

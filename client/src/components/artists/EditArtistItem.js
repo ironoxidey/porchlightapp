@@ -3,7 +3,6 @@ import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createArtist } from '../../actions/artist';
-import EditArtistForm from './EditArtistForm';
 import EditArtistAdmin from './EditArtistAdmin';
 
 const EditArtistItem = ({ theArtist, theArtist: { loading }, history }) => {

@@ -65,7 +65,7 @@ const UploadInput = styled('input')({
 });
 
 
-const EditArtistForm = ({
+const EditArtistBookingForm = ({
 	theArtist,
 	//theArtist: { loading },
 	createMyArtist,
@@ -125,6 +125,7 @@ const EditArtistForm = ({
 		merchTable: false,
 		allergies: [],
 		allowKids: false,
+		alcohol: false,
 		soundSystem: '',
 		agreeToPayAdminFee: true,
 		agreeToPromote: false,
@@ -227,6 +228,8 @@ const EditArtistForm = ({
 				allergies: loading || !theArtist.allergies ? [] : theArtist.allergies,
 				allowKids:
 					loading || theArtist.allowKids == null ? false : theArtist.allowKids,
+				alcohol:
+					loading || theArtist.alcohol == null ? false : theArtist.alcohol,
 				soundSystem:
 					loading || !theArtist.soundSystem ? '' : theArtist.soundSystem,
 				agreeToPayAdminFee:
@@ -307,6 +310,7 @@ const EditArtistForm = ({
 					merchTable: false,
 					allergies: [],
 					allowKids: false,
+					alcohol: false,
 					soundSystem: '',
 					agreeToPayAdminFee: true,
 					agreeToPromote: false,
@@ -366,6 +370,7 @@ const EditArtistForm = ({
 		merchTable,
 		allergies,
 		allowKids,
+		alcohol,
 		soundSystem,
 		agreeToPayAdminFee,
 		agreeToPromote,
@@ -922,6 +927,24 @@ const EditArtistForm = ({
 				</FormControl>,
 			],
 		],
+		alcohol: [
+			<FormLabel component='legend'>
+				Would you be comfortable if there was alcohol at the show?
+			</FormLabel>,
+			[
+				<FormControl component='fieldset'>
+					<RadioGroup
+						id='alcohol'
+						value={alcohol}
+						name='alcohol'
+						onChange={(e) => onChange(e)}
+					>
+						<FormControlLabel value='true' control={<Radio />} label='Yes' />
+						<FormControlLabel value='false' control={<Radio />} label='No' />
+					</RadioGroup>
+				</FormControl>,
+			],
+		],
 		soundSystem: [
 			<FormLabel component='legend'>
 				Are you able to provide your own sound system for these shows?
@@ -1164,8 +1187,8 @@ const EditArtistForm = ({
 		],
 		overnight: [
 			<FormLabel component='legend'>
-				Would you like for your host to accommodate/arrange for you{' '}
-				{travelingCompanions ? ' and your traveling companions ' : ''} to stay
+				Would you like for your host to arrange for you{' '}
+				{travelingCompanions.length > 0 ? ' and your traveling companions ' : ''} to stay
 				overnight?
 				<br />
 				<small>
@@ -1209,45 +1232,45 @@ const EditArtistForm = ({
 		],
 		hangout: [
 			[
-				<Grid
-					container
-					item
-					justifyContent='center'
-					alignItems='center'
-					spacing={2}
-					sx={{
-						borderColor: 'primary.dark',
-						borderWidth: '2px',
-						borderStyle: 'solid',
-						backgroundColor: 'rgba(0,0,0,0.15)',
-						'&:hover': {},
-						padding: '0 10px 10px',
-						margin: '0px auto',
-						width: '100%',
-					}}
-				>
-					<FormLabel
-						component='p'
-						className='small'
-						sx={{
-							textAlign: 'left!important',
-							width: '100%',
-							fontSize: '1rem!important',
-							lineHeight: '1.3em!important',
-							padding: '8px 16px',
-						}}
-					>
-						Our heart at Porchlight is to cultivate relationships between
-						artists and hosts. As such, we’d love to make time for a little
-						hangout either before or after the show, just for you, your hosts,
-						and maybe a couple people interested in meeting with artists like
-						you in a more informal setting.
-					</FormLabel>
-				</Grid>,
+				// <Grid
+				// 	container
+				// 	item
+				// 	justifyContent='center'
+				// 	alignItems='center'
+				// 	spacing={2}
+				// 	sx={{
+				// 		borderColor: 'primary.dark',
+				// 		borderWidth: '2px',
+				// 		borderStyle: 'solid',
+				// 		backgroundColor: 'rgba(0,0,0,0.15)',
+				// 		'&:hover': {},
+				// 		padding: '0 10px 10px',
+				// 		margin: '0px auto',
+				// 		width: '100%',
+				// 	}}
+				// >
+				// 	<FormLabel
+				// 		component='p'
+				// 		className='small'
+				// 		sx={{
+				// 			textAlign: 'left!important',
+				// 			width: '100%',
+				// 			fontSize: '1rem!important',
+				// 			lineHeight: '1.3em!important',
+				// 			padding: '8px 16px',
+				// 		}}
+				// 	>
+				// 		Our heart at Porchlight is to cultivate relationships between
+				// 		artists and hosts. As such, we’d love to make time for a little
+				// 		hangout either before or after the show, just for you, your hosts,
+				// 		and maybe a couple people interested in meeting with artists like
+				// 		you in a more informal setting.
+				// 	</FormLabel>
+				// </Grid>,
 
 				<Grid item xs={12}>
 					<FormLabel component='legend' sx={{}}>
-						What would be your preference regarding this?
+						The heart of Porchlight is to cultivate relationships between artists and hosts. Are you open to spending some informal time with your hosts?
 					</FormLabel>
 				</Grid>,
 			],
@@ -1327,9 +1350,10 @@ const EditArtistForm = ({
 
 		showSchedule: [
 			<FormLabel component='legend'>
-				Schedules often get shifted by hosts or artists, but it’s really helpful
+				{/* Schedules often get shifted by hosts or artists, but it’s really helpful
 				to have a “proposed schedule” and tweak from there. Please edit the
-				times below to best represent the schedule you propose.
+				times below to best represent the schedule you propose. */}
+				If you would like to propose a different show schedule, please edit our standard timeline below.
 			</FormLabel>,
 			[
 				<Grid item>
@@ -1609,7 +1633,7 @@ const EditArtistForm = ({
 	);
 };
 
-EditArtistForm.propTypes = {
+EditArtistBookingForm.propTypes = {
 	createMyArtist: PropTypes.func.isRequired,
 	theArtist: PropTypes.object,
 	auth: PropTypes.object.isRequired,
@@ -1621,5 +1645,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, { createMyArtist, updateUserAvatar })(
-	withRouter(EditArtistForm)
+	withRouter(EditArtistBookingForm)
 ); //withRouter allows us to pass history objects
