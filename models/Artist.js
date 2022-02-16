@@ -180,6 +180,9 @@ const ArtistSchema = new mongoose.Schema(
 		allergies: {
 			type: Object,
 		},
+		familyFriendly: {
+			type: Boolean,
+		},
 		allowKids: {
 			type: Boolean,
 		},

@@ -166,7 +166,7 @@ router.post('/batch', [auth], async (req, res) => {
 				//     hangout,
 				//     merchTable,
 				//     allergies,
-				//     allowKids,
+				//     familyFriendly,
 				//     soundSystem,
 				//     wideImg,
 				//     squareImg,

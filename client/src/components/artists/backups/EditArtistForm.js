@@ -124,7 +124,7 @@ const EditArtistForm = ({
 		hangout: '',
 		merchTable: false,
 		allergies: [],
-		allowKids: false,
+		familyFriendly: false,
 		soundSystem: '',
 		agreeToPayAdminFee: true,
 		agreeToPromote: false,
@@ -225,8 +225,8 @@ const EditArtistForm = ({
 						? false
 						: theArtist.merchTable,
 				allergies: loading || !theArtist.allergies ? [] : theArtist.allergies,
-				allowKids:
-					loading || theArtist.allowKids == null ? false : theArtist.allowKids,
+				familyFriendly:
+					loading || theArtist.familyFriendly == null ? false : theArtist.familyFriendly,
 				soundSystem:
 					loading || !theArtist.soundSystem ? '' : theArtist.soundSystem,
 				agreeToPayAdminFee:
@@ -306,7 +306,7 @@ const EditArtistForm = ({
 					hangout: '',
 					merchTable: false,
 					allergies: [],
-					allowKids: false,
+					familyFriendly: false,
 					soundSystem: '',
 					agreeToPayAdminFee: true,
 					agreeToPromote: false,
@@ -365,7 +365,7 @@ const EditArtistForm = ({
 		hangout,
 		merchTable,
 		allergies,
-		allowKids,
+		familyFriendly,
 		soundSystem,
 		agreeToPayAdminFee,
 		agreeToPromote,
@@ -1563,16 +1563,16 @@ const EditArtistForm = ({
 				</Grid>
 			</Grid>,
 		],
-		allowKids: [
+		familyFriendly: [
 			<FormLabel component='legend'>
 				Would these shows be open to children/young families?
 			</FormLabel>,
 			[
 				<FormControl component='fieldset'>
 					<RadioGroup
-						id='allowKids'
-						value={allowKids}
-						name='allowKids'
+						id='familyFriendly'
+						value={familyFriendly}
+						name='familyFriendly'
 						onChange={(e) => onChange(e)}
 					>
 						<FormControlLabel value='true' control={<Radio />} label='Yes' />

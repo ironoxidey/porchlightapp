@@ -19,6 +19,7 @@ import CoronavirusTwoToneIcon from '@mui/icons-material/CoronavirusTwoTone';
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
 import WcTwoToneIcon from '@mui/icons-material/WcTwoTone';
+import TodayTwoToneIcon from '@mui/icons-material/TodayTwoTone';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -68,7 +69,7 @@ const ArtistTileBack = ({
 		hangout,
 		merchTable,
 		allergies,
-		allowKids,
+		familyFriendly,
 		soundSystem,
 		agreeToPayAdminFee,
 		wideImg,
@@ -348,6 +349,7 @@ const ArtistTileBack = ({
 								margin: '0px auto',
 								width: '100%',
 							}}
+							data-formField='bookingWhen'
 						>
 
 					{bookingWhenWhere.filter(e => e).map((whenBooking, idx, whenWhereOrig) => ( //.filter(e => e) to remove any null values
@@ -364,7 +366,8 @@ const ArtistTileBack = ({
 							}}
 						>
 
-							<FontAwesomeIcon icon='calendar-day'></FontAwesomeIcon> {whenBooking && whenBooking.where && (new Date(whenBooking.when).toDateString() + ': '+ whenBooking.where.city + ', '+whenBooking.where.state)}
+							<TodayTwoToneIcon></TodayTwoToneIcon> 
+							{whenBooking && whenBooking.where && (new Date(whenBooking.when).toDateString() + ': '+ whenBooking.where.city + ', '+whenBooking.where.state)}
 								
 						</Grid>
 					))}
@@ -375,8 +378,16 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
+						data-formField='costStructure'
 					>
+					<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=costStructure">Edit</Link>}
+						>
 					{artist.costStructure === 'donation' ? <VolunteerActivismTwoToneIcon></VolunteerActivismTwoToneIcon> : <ConfirmationNumberTwoToneIcon></ConfirmationNumberTwoToneIcon> }
+					</Tooltip>
 					{' '}{'Concerts will be '}<strong>{artist.costStructure == 'ticket' ? 'ticketed' : 'donation-based'}</strong>{', at '}<strong>{' $'}{ artist.namedPrice }</strong>{' per '}{ artist.costStructure }
 					</Grid>
 				: ''}
@@ -385,8 +396,15 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
+						data-formField='tourVibe'
 					>
-					<GroupsTwoToneIcon></GroupsTwoToneIcon>
+					<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=tourVibe">Edit</Link>}
+						>
+					<GroupsTwoToneIcon></GroupsTwoToneIcon></Tooltip>
 					{' '}<strong>{'Audience:'}</strong>{' '}{ artist.tourVibe }
 					</Grid>
 				: ''}
@@ -396,8 +414,16 @@ const ArtistTileBack = ({
 							item
 							sx={{ marginTop: '0' }}
 							xs={2}
+							data-formField='showSchedule'
+						>
+						<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=showSchedule">Edit</Link>}
 						>
 							<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
+							</Tooltip>
 							{' Setup at '}<strong>{ convert24HourTime(artist.showSchedule.setupTime) }</strong>
 							{', doors open at '}<strong>{ convert24HourTime(artist.showSchedule.doorsOpen) }</strong>
 							{', show starts at '}<strong>{ convert24HourTime(artist.showSchedule.startTime) }</strong>
@@ -410,8 +436,15 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
+						data-formField='overnight'
 					>
-					<HotelTwoToneIcon></HotelTwoToneIcon>
+					<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=overnight">Edit</Link>}
+						>
+					<HotelTwoToneIcon></HotelTwoToneIcon></Tooltip>
 					{' If possible, to be hosted overnight! Overnight accommodation desired: '}<strong>{ artist.overnight + (artist.overnight > 1 ? ' beds' : ' bed') }</strong>
 					</Grid>
 				: ''}
@@ -420,8 +453,15 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
+						data-formField='merchTable'
 					>
-					<TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>
+					<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=merchTable">Edit</Link>}
+						>
+					<TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon></Tooltip>
 					{' '}<strong>{'Would like a merch table (for CDs, t-shirts, etc.)'}</strong>{' '}{ artist.merchTable }
 					</Grid>
 				: ''}
@@ -440,7 +480,14 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
+						data-formField='allergies'
 					>
+					<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=allergies">Edit</Link>}
+						>
 						<SvgIcon
 							style={{
 								marginRight: '4px',
@@ -450,6 +497,7 @@ const ArtistTileBack = ({
 						>
 							<FontAwesomeIcon icon='allergies'></FontAwesomeIcon>
 						</SvgIcon>
+						</Tooltip>
 						{' Has these allergies: '}<strong>{ artist.allergies.constructor.name === "Array" && artist.allergies.map(((allergy, ind) => { 
 						if (ind !== artist.allergies.length - 1) {
 							return allergy + ', '
@@ -460,44 +508,89 @@ const ArtistTileBack = ({
 					})) } </strong>
 					</Grid>
 				: ''}
-				{artist.allowKids ?
+				{artist.familyFriendly ?
 					<Grid
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
+						data-formField='familyFriendly'
 					>
-					<FamilyRestroomTwoToneIcon></FamilyRestroomTwoToneIcon>
+					<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=familyFriendly">Edit</Link>}
+						>
+					<FamilyRestroomTwoToneIcon></FamilyRestroomTwoToneIcon></Tooltip>
 					{' '}<strong>{'“Family-friendly”'}</strong>
 					</Grid>
 				: ''}
-				{!artist.allowKids ?
+				{!artist.familyFriendly ?
 					<Grid
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
+						data-formField='familyFriendly'
 					>
-					<WcTwoToneIcon></WcTwoToneIcon>
+					<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=familyFriendly">Edit</Link>}
+						>
+					<WcTwoToneIcon></WcTwoToneIcon></Tooltip>
 					{' '}<strong>{'Would prefer to have an adults-only show'}</strong>
 					</Grid>
 				: ''}
-				{artist.soundSystem ?
+				{artist.soundSystem == 'yes' ?
 					<Grid
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
+						data-formField='soundSystem'
 					>
-					<SpeakerTwoToneIcon></SpeakerTwoToneIcon>
-					{' '}<strong>{'Able to provide their own sound system'}</strong>{' '}
+					<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=soundSystem">Edit</Link>}
+						>
+					<SpeakerTwoToneIcon></SpeakerTwoToneIcon></Tooltip>
+					{' '}<strong>{'Able to bring their own sound system'}</strong>{' '}
 					</Grid>
 				: ''}
-				{!artist.soundSystem ?
+				{artist.soundSystem == 'noButNeed' ?
 					<Grid
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
+						data-formField='soundSystem'
 					>
-					<SpeakerTwoToneIcon></SpeakerTwoToneIcon>
+					<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=soundSystem">Edit</Link>}
+						>
+					<SpeakerTwoToneIcon></SpeakerTwoToneIcon></Tooltip>
 					{' '}<strong>{'Needs a sound system'}</strong>{' '}
+					</Grid>
+				: ''}
+				{artist.soundSystem == 'no' ?
+					<Grid
+						item
+						sx={{ marginTop: '0' }}
+						xs={6}
+						data-formField='soundSystem'
+					>
+					<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=soundSystem">Edit</Link>}
+						>
+					<SpeakerTwoToneIcon></SpeakerTwoToneIcon></Tooltip>
+					{' '}<strong>{'Able to play an acoustic show if it makes sense for the size of the space.'}</strong>{' '}
 					</Grid>
 				: ''}
 				{artist.covidPrefs.length > 0 ?
@@ -505,8 +598,14 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-					>
-					<CoronavirusTwoToneIcon></CoronavirusTwoToneIcon>
+						data-formField='covidPrefs'
+					><Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=covidPrefs">Edit</Link>}
+						>
+					<CoronavirusTwoToneIcon></CoronavirusTwoToneIcon></Tooltip>
 						{' Considering Covid, would prefer: '}<strong>{ artist.covidPrefs.constructor.name === "Array" && artist.covidPrefs.map(((covidPref, ind) => { 
 						if (ind !== artist.covidPrefs.length - 1) {
 							return covidPref + ', '
@@ -522,27 +621,46 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
+						data-formField='financialHopes'
 					>
-					<SavingsTwoToneIcon></SavingsTwoToneIcon>
-					{' Financial hopes: '}{' '}<strong>{ artist.financialHopes }</strong>
+					<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=financialHopes">Edit</Link>}
+						>
+					<SavingsTwoToneIcon></SavingsTwoToneIcon></Tooltip>
+					{' It would be hard to make less than '}<strong>${ artist.financialHopes }</strong>{' per show'}
 					</Grid>
+					
 				: ''}
 				{artist.fanActions ?
-					<Grid
-						item
-						sx={{ marginTop: '0' }}
-						xs={6}
-					>
-					<ThumbUpTwoToneIcon></ThumbUpTwoToneIcon>
-					{' How new fans can show support: '}<strong>{ artist.fanActions.map(((fanAction, ind) => { 
-						if (ind !== artist.fanActions.length - 1) {
-							return fanAction + ', '
-						}
-						else {
-							return fanAction
-						}
-					})) } </strong>
-					</Grid>
+					
+						<Grid
+							item
+							sx={{ marginTop: '0' }}
+							xs={6}
+							data-formField='fanActions'
+						>
+						<Tooltip
+							arrow={true}
+							disableHoverListener={ !isMe }
+							interactive
+							title={<Link to="/edit-artist-booking?field=fanActions">Edit</Link>}
+						>
+							<ThumbUpTwoToneIcon></ThumbUpTwoToneIcon>
+						</Tooltip>
+							{' How new fans can show support: '}<strong>{ artist.fanActions.map(((fanAction, ind) => { 
+								if (ind !== artist.fanActions.length - 1) {
+									return fanAction + ', '
+								}
+								else {
+									return fanAction
+								}
+							})) } </strong>
+						
+						</Grid>
+					
 				: ''}
 
 			</Grid>

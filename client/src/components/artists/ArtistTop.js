@@ -42,7 +42,7 @@ const ArtistTop = ({
 		hangout,
 		merchTable,
 		allergies,
-		allowKids,
+		familyFriendly,
 		soundSystem,
 		agreeToPayAdminFee,
 		wideImg,

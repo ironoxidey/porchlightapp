@@ -128,7 +128,7 @@ const EditArtistBookingForm = ({
 		hangout: '',
 		merchTable: false,
 		allergies: [],
-		allowKids: false,
+		familyFriendly: false,
 		alcohol: false,
 		soundSystem: '',
 		agreeToPayAdminFee: true,
@@ -230,8 +230,8 @@ const EditArtistBookingForm = ({
 						? false
 						: theArtist.merchTable,
 				allergies: loading || !theArtist.allergies ? [] : theArtist.allergies,
-				allowKids:
-					loading || theArtist.allowKids == null ? false : theArtist.allowKids,
+				familyFriendly:
+					loading || theArtist.familyFriendly == null ? false : theArtist.familyFriendly,
 				alcohol:
 					loading || theArtist.alcohol == null ? false : theArtist.alcohol,
 				soundSystem:
@@ -313,7 +313,7 @@ const EditArtistBookingForm = ({
 					hangout: '',
 					merchTable: false,
 					allergies: [],
-					allowKids: false,
+					familyFriendly: false,
 					alcohol: false,
 					soundSystem: '',
 					agreeToPayAdminFee: true,
@@ -373,7 +373,7 @@ const EditArtistBookingForm = ({
 		hangout,
 		merchTable,
 		allergies,
-		allowKids,
+		familyFriendly,
 		alcohol,
 		soundSystem,
 		agreeToPayAdminFee,
@@ -492,10 +492,11 @@ const EditArtistBookingForm = ({
 				if (existsInWhere) {
 					//console.log("bookingWhenWhere already has " + whenBooking);
 				}
-				else { //if new when to the object
+				else { //if new, add when and last where to the updatedField object
 					writeToState = true;
 					updatedField = updatedField.concat(whenWhereFiltered.concat([
-						{ when: whenBooking, where: null },
+						//{ when: whenBooking, where: null },
+						{ when: whenBooking, where: whenWhereFiltered[whenWhereFiltered.length - 1].where },
 					]));
 				}
 			})
@@ -607,7 +608,7 @@ const EditArtistBookingForm = ({
 	const formGroups = {
 		bookingWhen: [
 			<FormLabel component='legend'>
-				Please select the dates you’d like to try to play a show:
+				Please select the dates (and then locations) you’d like to try to play a show:
 			</FormLabel>,
 			[
 				
@@ -656,7 +657,8 @@ const EditArtistBookingForm = ({
 							<Grid item xs={12} md={12}>
 								<Autocomplete
 									id='bookingWhenWhere'
-									value={whenBooking && whenBooking.where || whenWhereOrig[idx-1] && whenWhereOrig[idx-1].where || null}
+									//value={whenBooking && whenBooking.where || whenWhereOrig[idx-1] && whenWhereOrig[idx-1].where || null}
+									value={whenBooking && whenBooking.where || null}
 									options={hostLocations}
 									disableClearable
 									groupBy={(option) => option.fullState}
@@ -686,23 +688,6 @@ const EditArtistBookingForm = ({
 										/>
 									)}
 								/>
-							</Grid>
-							<Grid item xs={10} md={true}>
-								{/* <TextField
-										variant='standard'
-										name='travelingCompanions'
-										id={`travelingCompanionEmail${idx}`}
-										label={
-											travelingCompanion.name
-												? `${travelingCompanion.name.split(' ')[0]}'s email is`
-												: `Their email is`
-										}
-										value={travelingCompanion.email}
-										onChange={(e) =>
-											onMultiTextChange('email', travelingCompanions, idx, e)
-										}
-										sx={{ width: '100%' }}
-									/> */}
 							</Grid>
 						</Grid>
 					))
@@ -915,16 +900,16 @@ const EditArtistBookingForm = ({
 				</Grid>
 			</Grid>,
 		],
-		allowKids: [
+		familyFriendly: [
 			<FormLabel component='legend'>
 				Would these shows be “family-friendly”?
 			</FormLabel>,
 			[
 				<FormControl component='fieldset'>
 					<RadioGroup
-						id='allowKids'
-						value={allowKids}
-						name='allowKids'
+						id='familyFriendly'
+						value={familyFriendly}
+						name='familyFriendly'
 						onChange={(e) => onChange(e)}
 					>
 						<FormControlLabel value='true' control={<Radio />} label='Yes' />
@@ -953,7 +938,7 @@ const EditArtistBookingForm = ({
 		],
 		soundSystem: [
 			<FormLabel component='legend'>
-				Are you able to provide your own sound system for these shows?
+				Are you bringing your own sound system for these shows?
 			</FormLabel>,
 			[
 				<FormControl component='fieldset'>
@@ -963,8 +948,9 @@ const EditArtistBookingForm = ({
 						name='soundSystem'
 						onChange={(e) => onChange(e)}
 					>
-						<FormControlLabel value='true' control={<Radio />} label='Yes' />
-						<FormControlLabel value='false' control={<Radio />} label='No' />
+						<FormControlLabel value='yes' control={<Radio />} label='Yes' />
+						<FormControlLabel value='noButNeed' control={<Radio />} label='No, but I will need one.' />
+						<FormControlLabel value='no' control={<Radio />} label={`No, ${stageName} can play an acoustic show if it makes sense for the size of the space.`}/>
 					</RadioGroup>
 				</FormControl>,
 			],
