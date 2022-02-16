@@ -23,6 +23,9 @@ import {
 import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
+import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
+import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import DashboardTwoToneIcon from '@mui/icons-material/DashboardTwoTone';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -70,30 +73,47 @@ const Navbar = ({
 		<Link to='/dashboard'>
 			<ListItemIcon>
 				<DashboardTwoToneIcon></DashboardTwoToneIcon>
-			</ListItemIcon>
-			My Dashboard
-		</Link>,
-		<Link to='/edit-artist-profile'>
-			<ListItemIcon>
-				<EditTwoToneIcon></EditTwoToneIcon>
-			</ListItemIcon>
-			Edit My Profile
+			</ListItemIcon>My Dashboard
 		</Link>,
 		artist && artist.me && artist.me.slug ? (
 			<Link to={'/artists/' + artist.me.slug}>
 				<ListItemIcon>
-					<EditTwoToneIcon></EditTwoToneIcon>
-				</ListItemIcon>
-				My Profile
+					<AccountBoxTwoToneIcon></AccountBoxTwoToneIcon>
+				</ListItemIcon>My Profile
 			</Link>
 		) : (
 			''
 		),
+		artist.me && artist.me._id ? (
+				<Link to='/edit-artist-profile'>
+					<ListItemIcon>
+				<EditTwoToneIcon></EditTwoToneIcon>
+			</ListItemIcon>Edit My Profile
+				</Link>
+		) : (
+				<Link to='/edit-artist-profile'>
+					<ListItemIcon>
+				<AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
+			</ListItemIcon>Create My Profile
+				</Link>
+		),
+		artist.me && artist.me._id && artist.me.active && artist.me.bookingWhen.length > 0 ? (
+					<Link to='/edit-artist-booking'>
+						<ListItemIcon>
+				<DateRangeTwoToneIcon></DateRangeTwoToneIcon>
+			</ListItemIcon>Edit My Booking Info
+					</Link>
+		) : artist.me && artist.me._id && artist.me.active ? (
+				<Link to='/edit-artist-booking'>
+					<ListItemIcon>
+				<DateRangeTwoToneIcon></DateRangeTwoToneIcon>
+			</ListItemIcon>Start booking shows
+				</Link>
+		) : '',
 		<a onClick={logout} href='#!'>
 			<ListItemIcon>
 				<LogoutIcon></LogoutIcon>
-			</ListItemIcon>
-			Logout
+			</ListItemIcon>Logout
 		</a>,
 	];
 	const loggedOutLink = [

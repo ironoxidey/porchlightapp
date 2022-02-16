@@ -126,6 +126,7 @@ const ArtistSchema = new mongoose.Schema(
 		},
 		payoutPlatform: {
 			type: String,
+			default: 'PayPal'
 		},
 		payoutHandle: {
 			type: String,

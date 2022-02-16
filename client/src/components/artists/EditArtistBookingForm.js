@@ -1,6 +1,6 @@
 import axios from 'axios'; //only for uploads as of December 31st, 2021
 import React, { Fragment, useState, useEffect, useRef } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
@@ -51,6 +51,10 @@ import { textAlign } from '@mui/system';
 import { getFontAwesomeIcon, getHostLocations } from '../../actions/app';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
+
+function useQuery() {
+	return new URLSearchParams(useLocation().search);
+}
 
 //filter() for Objects -- https://stackoverflow.com/a/37616104/3338608
 Object.filter = (obj, predicate) =>
@@ -606,16 +610,7 @@ const EditArtistBookingForm = ({
 				Please select the dates you’d like to try to play a show:
 			</FormLabel>,
 			[
-				<MultipleDatesPicker
-					id='bookingWhen'
-					name='bookingWhen'
-					open={true}
-					selectedDates={bookingWhen}
-					value={bookingWhen}
-					onCancel={() => setOpen(false)}
-					//onSubmit={dates => console.log('selected dates', dates)}
-					onChange={(target) => onCalendarChange(target)}
-				/>,
+				
 				// bookingWhen && bookingWhen.length > 0
 				// 	? bookingWhen.map((whenBooking, idx) => (
 				// 		handleAddMultiInput('bookingWhenWhere',bookingWhenWhere, whenBooking)
@@ -637,6 +632,7 @@ const EditArtistBookingForm = ({
 								// borderStyle: 'solid',
 								backgroundColor: 'rgba(0,0,0,0.15)',
 								'&:hover': {},
+								border: '1px var(--light-color) solid',
 								padding: '0 10px 10px',
 								margin: '0px auto',
 								width: '100%',
@@ -711,6 +707,16 @@ const EditArtistBookingForm = ({
 						</Grid>
 					))
 					: '',
+					<MultipleDatesPicker
+					id='bookingWhen'
+					name='bookingWhen'
+					open={true}
+					selectedDates={bookingWhen}
+					value={bookingWhen}
+					onCancel={() => setOpen(false)}
+					//onSubmit={dates => console.log('selected dates', dates)}
+					onChange={(target) => onCalendarChange(target)}
+				/>,
 			],
 		],
 		tourVibe: [
@@ -864,7 +870,7 @@ const EditArtistBookingForm = ({
 		],
 		payoutPlatform: [
 			<FormLabel component='legend'>
-				For show payout, what digital payment platform do you prefer?
+				For show payout, what is the email address associated with your Paypal account?
 			</FormLabel>,
 			<Grid
 				container
@@ -873,7 +879,7 @@ const EditArtistBookingForm = ({
 				alignItems='center'
 				spacing={2}
 			>
-				<Grid item>
+				{/* <Grid item>
 					<FormControl
 						variant='outlined'
 						sx={{ minWidth: 160, m: '8px 8px 8px 0' }}
@@ -894,7 +900,7 @@ const EditArtistBookingForm = ({
 							<MenuItem value='Cash App'>Cash App</MenuItem>
 						</Select>
 					</FormControl>
-				</Grid>
+				</Grid> */}
 				<Grid item>
 					<TextField
 						variant='standard'
@@ -911,7 +917,7 @@ const EditArtistBookingForm = ({
 		],
 		allowKids: [
 			<FormLabel component='legend'>
-				Would these shows be open to children/young families?
+				Would these shows be “family-friendly”?
 			</FormLabel>,
 			[
 				<FormControl component='fieldset'>
@@ -968,17 +974,36 @@ const EditArtistBookingForm = ({
 				What are your financial expectations and/or hopes for this show or tour?
 			</FormLabel>,
 			[
+				// <Grid item>
+				// 	<TextField
+				// 		variant='standard'
+				// 		name='financialHopes'
+				// 		multiline
+				// 		id='financialHopes'
+				// 		label='What are your financial expectations and/or hopes for this show or tour?'
+				// 		value={financialHopes}
+				// 		onChange={(e) => onChange(e)}
+				// 	/>
+				// </Grid>,
 				<Grid item>
-					<TextField
-						variant='standard'
-						name='financialHopes'
-						multiline
-						id='financialHopes'
-						label='What are your financial expectations and/or hopes for this show or tour?'
-						value={financialHopes}
-						onChange={(e) => onChange(e)}
-					/>
-				</Grid>,
+				<TextField
+					variant='standard'
+					name='financialHopes'
+					id='financialHopes'
+					label={`It would be hard for me to make less than`}
+					value={financialHopes}
+					onChange={(e) => onChange(e)}
+					type='number'
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position='start'>$</InputAdornment>
+						),
+						endAdornment: (
+							<InputAdornment position='end'> per show</InputAdornment>
+						),
+					}}
+				/>
+			</Grid>,
 			],
 		],
 		fanActions: [
@@ -1490,8 +1515,17 @@ const EditArtistBookingForm = ({
 		],
 	};
 
+	let query = useQuery();
+	const queryEditField = query.get("field");
+	let formStartIndex = 0;
+
+	if (queryEditField) {
+		const formGroupKeys = Object.keys(formGroups);
+		formStartIndex = formGroupKeys.indexOf(queryEditField) > -1 ? formGroupKeys.indexOf(queryEditField) : 0;
+	}
+
 	//// CARD INDEX ///////
-	const [formCardIndex, setIndex] = useState(0);
+	const [formCardIndex, setIndex] = useState(formStartIndex);
 
 	const cardIndex = formCardIndex;
 

@@ -11,7 +11,9 @@ import { getCurrentArtist } from '../../actions/artist';
 import { Grid } from '@mui/material';
 import Button from '../layout/SvgButton';
 
-import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
+import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
+import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
+import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 
 const Dashboard = ({
 	getCurrentProfile,
@@ -106,7 +108,7 @@ const Dashboard = ({
 							}}>
 								<Link to='/edit-artist-profile'>
 									<Button btnwidth='300' className=''>
-										<AccountCircleTwoToneIcon /> Edit your Artist Profile
+										<EditTwoToneIcon /> Edit My Profile
 									</Button>
 								</Link>
 							</Grid>
@@ -116,7 +118,8 @@ const Dashboard = ({
 							}}>
 								<p> </p>
 								<Link to='/edit-artist-profile'>
-									<Button className=''>Create Profile</Button>
+									<Button btnwidth='300' className=''>
+									<AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>Create My Profile</Button>
 								</Link>
 							</Grid>
 						)}
@@ -126,7 +129,7 @@ const Dashboard = ({
 								}}>
 									<Link to='/edit-artist-booking'>
 										<Button btnwidth='300' className=''>
-											<AccountCircleTwoToneIcon /> Edit your booking info
+											<DateRangeTwoToneIcon /> Edit my booking info
 										</Button>
 									</Link>
 								</Grid>

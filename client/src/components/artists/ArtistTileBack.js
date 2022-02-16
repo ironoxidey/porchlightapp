@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { Link, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import { Grid, Chip, Typography, Box, Tooltip, SvgIcon } from '@mui/material';
 import Button from '../layout/SvgButton';
@@ -16,6 +18,7 @@ import SpeakerTwoToneIcon from '@mui/icons-material/SpeakerTwoTone';
 import CoronavirusTwoToneIcon from '@mui/icons-material/CoronavirusTwoTone';
 import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
+import WcTwoToneIcon from '@mui/icons-material/WcTwoTone';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -32,6 +35,7 @@ import {
 } from '../../actions/app';
 
 const ArtistTileBack = ({
+	me,
 	artist,
 	artist: {
 		slug,
@@ -75,6 +79,10 @@ const ArtistTileBack = ({
 		bio,
 	},
 }) => {
+	let isMe = false;
+	if ( me && me._id === artist._id ){
+		isMe = true;
+	}
 	return (
 		<Fragment>
 			<Grid
@@ -84,7 +92,7 @@ const ArtistTileBack = ({
 						paddingBottom: '80px!important',
 					}}
 				>
-			{wideImg ? (
+			{/* {wideImg ? ( */}
 				<Grid
 					container
 					className='wideImgBG'
@@ -97,6 +105,7 @@ const ArtistTileBack = ({
 						margin: '0 auto',
 						borderRadius: '8px',
 						backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0)), url("${wideImg}")`,
+						backgroundColor: 'var(--secondary-dark-color)',
 						backgroundPosition: '50% 50%',
 						backgroundSize: 'cover',
 						alignItems: 'center',
@@ -250,9 +259,9 @@ const ArtistTileBack = ({
 						)}
 					</Grid>
 				</Grid>
-			) : (
+			{/* ) : (
 				''
-			)}
+			)} */}
 			<Grid
 				item
 				container
@@ -317,6 +326,7 @@ const ArtistTileBack = ({
 					</Grid>
 				: ''}
 			</Grid>
+		{bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry
 			<Grid
 				item
 				container
@@ -326,7 +336,7 @@ const ArtistTileBack = ({
 				className="bookingDetails"
 			>
 				<Typography component='h2'>Booking Info:</Typography>
-				{bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry
+				{/* {bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry */}
 					<Grid
 							className='whenBooking'
 							container
@@ -359,7 +369,7 @@ const ArtistTileBack = ({
 						</Grid>
 					))}
 					</Grid>
-					: ''}
+					
 				{artist.costStructure && artist.namedPrice ?
 					<Grid
 						item
@@ -412,7 +422,7 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>
-					{' '}<strong>{'Needs a merch table (for CDs, t-shirts, etc.)'}</strong>{' '}{ artist.merchTable }
+					{' '}<strong>{'Would like a merch table (for CDs, t-shirts, etc.)'}</strong>{' '}{ artist.merchTable }
 					</Grid>
 				: ''}
 				{/* {!artist.merchTable ?
@@ -425,7 +435,7 @@ const ArtistTileBack = ({
 					{' '}<strong>{'Does NOT need a merch table'}</strong>{' '}
 					</Grid>
 				: ''} */}
-				{artist.allergies ?
+				{artist.allergies.length > 0 ?
 					<Grid
 						item
 						sx={{ marginTop: '0' }}
@@ -457,7 +467,7 @@ const ArtistTileBack = ({
 						xs={6}
 					>
 					<FamilyRestroomTwoToneIcon></FamilyRestroomTwoToneIcon>
-					{' '}<strong>{'Would love to have kids and young familys attend'}</strong>
+					{' '}<strong>{'“Family-friendly”'}</strong>
 					</Grid>
 				: ''}
 				{!artist.allowKids ?
@@ -466,7 +476,7 @@ const ArtistTileBack = ({
 						sx={{ marginTop: '0' }}
 						xs={6}
 					>
-					<FamilyRestroomTwoToneIcon></FamilyRestroomTwoToneIcon>
+					<WcTwoToneIcon></WcTwoToneIcon>
 					{' '}<strong>{'Would prefer to have an adults-only show'}</strong>
 					</Grid>
 				: ''}
@@ -536,6 +546,7 @@ const ArtistTileBack = ({
 				: ''}
 
 			</Grid>
+			: ''}
 			</Grid>
 		</Fragment>
 	);
@@ -543,6 +554,13 @@ const ArtistTileBack = ({
 
 ArtistTileBack.propTypes = {
 	artist: PropTypes.object.isRequired,
+	me: PropTypes.object,
 };
 
-export default ArtistTileBack;
+const mapStateToProps = (state) => ({
+	me: state.artist.me
+});
+
+export default connect(mapStateToProps)(
+	withRouter(ArtistTileBack)
+); //withRouter allows us to pass history objects

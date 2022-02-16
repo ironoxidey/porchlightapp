@@ -1,6 +1,6 @@
 import axios from 'axios'; //only for uploads as of December 31st, 2021
 import React, { Fragment, useState, useEffect, useRef } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
@@ -51,6 +51,11 @@ import { textAlign } from '@mui/system';
 import { getFontAwesomeIcon, getHostLocations } from '../../actions/app';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
+
+
+function useQuery() {
+	return new URLSearchParams(useLocation().search);
+}
 
 //filter() for Objects -- https://stackoverflow.com/a/37616104/3338608
 Object.filter = (obj, predicate) =>
@@ -2205,8 +2210,17 @@ const EditArtistProfileForm = ({
 	// 	],
 	};
 
+	let query = useQuery();
+	const queryEditField = query.get("field");
+	let formStartIndex = 0;
+
+	if (queryEditField) {
+		const formGroupKeys = Object.keys(formGroups);
+		formStartIndex = formGroupKeys.indexOf(queryEditField) > -1 ? formGroupKeys.indexOf(queryEditField) : 0;
+	}
+
 	//// CARD INDEX ///////
-	const [formCardIndex, setIndex] = useState(0);
+	const [formCardIndex, setIndex] = useState(formStartIndex);
 
 	const cardIndex = formCardIndex;
 
