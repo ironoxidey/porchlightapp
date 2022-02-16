@@ -341,7 +341,7 @@ const ArtistTileBack = ({
 					<Grid
 							className='whenBooking'
 							container
-							direction='row'
+							direction='column'
 							justifyContent='center'
 							alignItems='start'
 							spacing={2}
