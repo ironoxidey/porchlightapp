@@ -349,7 +349,6 @@ const ArtistTileBack = ({
 								margin: '0px auto',
 								width: '100%',
 							}}
-							data-formField='bookingWhen'
 						>
 
 					{bookingWhenWhere.filter(e => e).map((whenBooking, idx, whenWhereOrig) => ( //.filter(e => e) to remove any null values
@@ -378,12 +377,12 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-						data-formField='costStructure'
+						className='costStructure'
 					>
 					<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=costStructure">Edit</Link>}
 						>
 					{artist.costStructure === 'donation' ? <VolunteerActivismTwoToneIcon></VolunteerActivismTwoToneIcon> : <ConfirmationNumberTwoToneIcon></ConfirmationNumberTwoToneIcon> }
@@ -396,12 +395,12 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-						data-formField='tourVibe'
+						className='tourVibe'
 					>
 					<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=tourVibe">Edit</Link>}
 						>
 					<GroupsTwoToneIcon></GroupsTwoToneIcon></Tooltip>
@@ -414,12 +413,12 @@ const ArtistTileBack = ({
 							item
 							sx={{ marginTop: '0' }}
 							xs={2}
-							data-formField='showSchedule'
+							className='showSchedule'
 						>
 						<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=showSchedule">Edit</Link>}
 						>
 							<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
@@ -436,12 +435,12 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-						data-formField='overnight'
+						className='overnight'
 					>
 					<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=overnight">Edit</Link>}
 						>
 					<HotelTwoToneIcon></HotelTwoToneIcon></Tooltip>
@@ -453,12 +452,12 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-						data-formField='merchTable'
+						className='merchTable'
 					>
 					<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=merchTable">Edit</Link>}
 						>
 					<TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon></Tooltip>
@@ -480,12 +479,12 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-						data-formField='allergies'
+						className='allergies'
 					>
 					<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=allergies">Edit</Link>}
 						>
 						<SvgIcon
@@ -513,12 +512,12 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-						data-formField='familyFriendly'
+						className='familyFriendly'
 					>
 					<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=familyFriendly">Edit</Link>}
 						>
 					<FamilyRestroomTwoToneIcon></FamilyRestroomTwoToneIcon></Tooltip>
@@ -530,12 +529,12 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-						data-formField='familyFriendly'
+						className='familyFriendly'
 					>
 					<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=familyFriendly">Edit</Link>}
 						>
 					<WcTwoToneIcon></WcTwoToneIcon></Tooltip>
@@ -547,12 +546,12 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-						data-formField='soundSystem'
+						className='soundSystem'
 					>
 					<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=soundSystem">Edit</Link>}
 						>
 					<SpeakerTwoToneIcon></SpeakerTwoToneIcon></Tooltip>
@@ -564,12 +563,12 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-						data-formField='soundSystem'
+						className='soundSystem'
 					>
 					<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=soundSystem">Edit</Link>}
 						>
 					<SpeakerTwoToneIcon></SpeakerTwoToneIcon></Tooltip>
@@ -581,12 +580,12 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-						data-formField='soundSystem'
+						className='soundSystem'
 					>
 					<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=soundSystem">Edit</Link>}
 						>
 					<SpeakerTwoToneIcon></SpeakerTwoToneIcon></Tooltip>
@@ -598,11 +597,11 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-						data-formField='covidPrefs'
+						className='covidPrefs'
 					><Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=covidPrefs">Edit</Link>}
 						>
 					<CoronavirusTwoToneIcon></CoronavirusTwoToneIcon></Tooltip>
@@ -621,12 +620,12 @@ const ArtistTileBack = ({
 						item
 						sx={{ marginTop: '0' }}
 						xs={6}
-						data-formField='financialHopes'
+						className='financialHopes'
 					>
 					<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=financialHopes">Edit</Link>}
 						>
 					<SavingsTwoToneIcon></SavingsTwoToneIcon></Tooltip>
@@ -640,12 +639,12 @@ const ArtistTileBack = ({
 							item
 							sx={{ marginTop: '0' }}
 							xs={6}
-							data-formField='fanActions'
+							className='fanActions'
 						>
 						<Tooltip
 							arrow={true}
 							disableHoverListener={ !isMe }
-							interactive
+							
 							title={<Link to="/edit-artist-booking?field=fanActions">Edit</Link>}
 						>
 							<ThumbUpTwoToneIcon></ThumbUpTwoToneIcon>
