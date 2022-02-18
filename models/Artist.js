@@ -116,7 +116,7 @@ const ArtistSchema = new mongoose.Schema(
 			type: String,
 		},
 		tourVibe: {
-			type: String,
+			type: [String],
 		},
 		bookingWhen: {
 			type: [String],

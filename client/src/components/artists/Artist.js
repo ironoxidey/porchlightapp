@@ -18,6 +18,7 @@ const Artist = ({
 	app,
 }) => {
 	const dispatch = useDispatch();
+	
 	useEffect(() => {
 		if (artist && artist.stageName) {
 			dispatch({
@@ -25,7 +26,11 @@ const Artist = ({
 				payload: { pageTitle: artist.stageName },
 			});
 		}
-	}, [artist, dispatch]);
+		else {
+			getArtistBySlug(match.params.slug);
+		}
+	//}, [artist, dispatch]);
+	}, []);
 
 	useEffect(() => {
 		getArtistBySlug(match.params.slug);

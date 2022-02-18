@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -26,6 +26,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MultipleDatesPicker from '../mui-multi-date-picker-lib';
 import ReactPlayer from 'react-player/lazy';
 
+import { useTransition, animated, config } from '@react-spring/web';
 
 import {
 	toTitleCase,
@@ -84,6 +85,37 @@ const ArtistTileBack = ({
 	if ( me && me._id === artist._id ){
 		isMe = true;
 	}
+
+	const [mediaTabs, setMediaTab] = useState([]);
+	useEffect(() => {
+		setMediaTab([]);
+		if (mediaTabs.length < 3) {
+			if (artist.artistStatementVideo) setMediaTab(mediaTabs => [...mediaTabs, {title: "Artist Statement", mediaLink: artist.artistStatementVideo}]);
+			if (artist.repLink) setMediaTab(mediaTabs => [...mediaTabs, {title: `Listen`, mediaLink: artist.repLink}]);
+			if (artist.livePerformanceVideo) setMediaTab(mediaTabs => [...mediaTabs, {title: `Live performance`, mediaLink: artist.livePerformanceVideo}]);
+		}
+	}, [artist]);
+
+	const [mediaTabIndex, setTabIndex] = useState(0);
+
+	const transitions = useTransition(mediaTabIndex, {
+		key: mediaTabIndex,
+		initial: null,
+		from: { opacity: 0, transform: `scale(1.1,1.1)` },
+		enter: { opacity: 1, transform: 'scale(1,1)' },
+		leave: {
+			opacity: 0,
+			transform: `scale(0.9,0.9)`,
+		},
+		config: config.molasses,
+		// onRest: (_a, _b, item) => {
+		//   if (formCardIndex === item) {
+		//     set(cardIndex => (cardIndex + 1) % formGroups.length)
+		//   }
+		// },
+		exitBeforeEnter: false,
+	});
+
 	return (
 		<Fragment>
 			<Grid
@@ -258,6 +290,40 @@ const ArtistTileBack = ({
 						) : (
 							''
 						)}
+						{artist.streamingLinks &&
+						Object.keys(artist.streamingLinks).length > 0 ? (
+							<Grid
+								container
+								item
+								direction='row'
+								sx={{
+									margin: '8px auto',
+									width: '100%',
+								}}
+							>
+								{artist.streamingLinks.map((eachStreamingLink, idx) => (
+									<Grid
+										item
+										xs={1}
+										//md={0.5}
+										className='link-icon'
+										key={`eachStreamingLink${idx}`}
+									>
+										<Tooltip
+											title={toTitleCase(pullDomainFrom(eachStreamingLink.link))}
+											placement='bottom'
+											arrow
+										>
+											<a href={eachStreamingLink.link} target='_blank'>
+												{getFontAwesomeIcon(eachStreamingLink.link)}
+											</a>
+										</Tooltip>
+									</Grid>
+								))}
+							</Grid>
+						) : (
+							''
+						)}
 					</Grid>
 				</Grid>
 			{/* ) : (
@@ -268,65 +334,82 @@ const ArtistTileBack = ({
 				container
 				justifyContent='start'
 				direction='row'
-				sx={{ height: '100%', padding: '8px 20px 0!important' }}
+				sx={{ padding: '8px 20px 0!important' }}
 			>
-				{artist.artistStatementVideo ?
-					<Grid
+				<Grid
+					item
+					container
+					sx={{ 
+						marginTop: '0',
+						height: '100%'
+					
+					}}
+					className='mediaTabEmbed'
+					direction='column'
+					xs={6}
+				>
+					<Grid 
 						item
-						sx={{ marginTop: '0' }}
-						
-						className='artistStatementVideo'
-						xs={6}
+						container
+						sx={{
+							marginTop: '0',
+							width: '100%',
+						}}
+						className='mediaTabNav'
+						direction='row'
 					>
-					<Typography component='h3'>Artist Statement:</Typography>
-						<ReactPlayer light={true} url={artist.artistStatementVideo} width="100%" style={{width: "100%", padding: '0 8px 0 0'}}/>
+						{mediaTabs.map((mediaTab, i) => ( 
+							<Grid 
+								item
+								key={i}
+							>
+								<Button
+									variant='contained'
+									component='span'
+									onClick={(e) => setTabIndex(i)}
+								>
+									{mediaTab.title}
+								</Button>
+							</Grid>
+						))}
 					</Grid>
-				: ''}
-				{artist.bio ?
-					<Grid
+					<Grid 
 						item
-						sx={{ marginTop: '0' }}
-						className='bio'
-						xs={6}
+						sx={{
+							position: 'relative',
+							height: '450px'
+						}}
 					>
-						<Typography component='h3'>Bio:</Typography>
+					{mediaTabs.length > 0 ?
+						transitions((style, i) => (
+							<animated.div
+								className={'animatedMediaTab'}
+								key={'animatedMediaTab' + i}
+								style={{
+									...style,
+									position: 'absolute',
+									width: '100%',
+									paddingBottom: '100%'
+								}}
+							>
+									<ReactPlayer light={pullDomainFrom(mediaTabs[i].mediaLink) !== 'soundcloud'} url={mediaTabs[i].mediaLink} width="100%" style={{width: "100%", padding: '0 8px 0 0'}}/>	
+							</animated.div>
+						)) : ''}
+					</Grid>
+				</Grid>
+					{artist.bio ?
+						<Grid
+							item
+							sx={{ marginTop: '0' }}
+							className='bio'
+							xs={6}
+						>
+							<Typography component='h3'>Bio:</Typography>
 
-						{ artist.bio }
-					</Grid>
-				: ''}
-			</Grid>
-			<Grid
-				item
-				container
-				justifyContent='start'
-				direction='row'
-				sx={{ height: '100%', padding: '8px 20px!important' }}
-			>
-				{artist.repLink ?
-					<Grid
-						item
-						sx={{ marginTop: '0' }}
-						
-						className='repLink'
-						xs={6}
-					>
-						<Typography component='h3'>Listen to {artist.stageName}:</Typography>
-						<ReactPlayer url={artist.repLink} width="100%" style={{width: "100%", padding: '0 8px 0 0'}}/>
-					</Grid>
-				: ''}
-				{artist.livePerformanceVideo ?
-					<Grid
-						item
-						sx={{ marginTop: '0' }}
-						
-						className='livePerformanceVideo'
-						xs={6}
-					>
-						<Typography component='h3'>Live performance of {artist.stageName}:</Typography>
-						<ReactPlayer url={artist.livePerformanceVideo} width="100%" style={{width: "100%", padding: '0 8px 0 0'}}/>
-					</Grid>
-				: ''}
-			</Grid>
+							{ artist.bio }
+						</Grid>
+					: ''}
+				</Grid>
 		{bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry
 			<Grid
 				item
@@ -336,7 +419,7 @@ const ArtistTileBack = ({
 				sx={{ height: '100%', padding: '0 20px!important' }}
 				className="bookingDetails"
 			>
-				<Typography component='h2'>Booking Info:</Typography>
+				<Typography component='h2'>{stageName} is looking to book shows on these dates and in these locations:</Typography>
 				{/* {bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry */}
 					<Grid
 							className='whenBooking'
@@ -403,8 +486,9 @@ const ArtistTileBack = ({
 							
 							title={<Link to="/edit-artist-booking?field=tourVibe">Edit</Link>}
 						>
-					<GroupsTwoToneIcon></GroupsTwoToneIcon></Tooltip>
-					{' '}<strong>{'Audience:'}</strong>{' '}{ artist.tourVibe }
+					<GroupsTwoToneIcon></GroupsTwoToneIcon>
+					</Tooltip>
+					{' Feels most comfortable performing for an audience who is: '}<strong>{ artist.tourVibe.join(', ') }</strong>
 					</Grid>
 				: ''}
 				{artist.showSchedule ?
@@ -422,7 +506,7 @@ const ArtistTileBack = ({
 							title={<Link to="/edit-artist-booking?field=showSchedule">Edit</Link>}
 						>
 							<AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
-							</Tooltip>
+						</Tooltip>
 							{' Setup at '}<strong>{ convert24HourTime(artist.showSchedule.setupTime) }</strong>
 							{', doors open at '}<strong>{ convert24HourTime(artist.showSchedule.doorsOpen) }</strong>
 							{', show starts at '}<strong>{ convert24HourTime(artist.showSchedule.startTime) }</strong>

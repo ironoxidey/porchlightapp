@@ -109,7 +109,7 @@ const EditArtistBookingForm = ({
 		namedPrice: '',
 		payoutPlatform: 'PayPal',
 		payoutHandle: '',
-		tourVibe: '',
+		tourVibe: [],
 		bookingWhen: [],
 		bookingWhenWhere: [],
 		setLength: '',
@@ -194,7 +194,7 @@ const EditArtistBookingForm = ({
 						: theArtist.payoutPlatform,
 				payoutHandle:
 					loading || !theArtist.payoutHandle ? '' : theArtist.payoutHandle,
-				tourVibe: loading || !theArtist.tourVibe ? '' : theArtist.tourVibe,
+				tourVibe: loading || !theArtist.tourVibe ? [] : theArtist.tourVibe,
 				bookingWhen:
 					loading || !theArtist.bookingWhen ? [] : theArtist.bookingWhen,
 				bookingWhenWhere:
@@ -294,7 +294,7 @@ const EditArtistBookingForm = ({
 					namedPrice: '',
 					payoutPlatform: 'PayPal',
 					payoutHandle: '',
-					tourVibe: '',
+					tourVibe: [],
 					bookingWhen: [],
 					bookingWhenWhere: [],
 					setLength: '',
@@ -706,23 +706,53 @@ const EditArtistBookingForm = ({
 		],
 		tourVibe: [
 			<FormLabel component='legend'>
-				Describe the content or vibe of this tour. Is this a faith-based show?
-				Will your {medium} appeal specifically to a particular audience?{' '}
+				We want to make sure you and the host are on the same page about what to expect concerning who the audience is. How would you describe your target audience?
 			</FormLabel>,
 			[
-				<Grid item>
-					<TextField
+				<Grid item xs={12} sx={{ width: '100%' }}>
+					<Autocomplete
+					multiple
+					id='tourVibe'
+					value={tourVibe}
+					options={[]}
+					freeSolo
+					clearOnBlur={true}
+					onChange={(event, value) =>
+						onAutocompleteTagChange(event, 'tourVibe', value)
+					}
+					renderTags={(value, getTagProps) =>
+						value.map((option, index) => (
+							<Chip
+								variant='outlined'
+								name='tourVibe'
+								label={option}
+								{...getTagProps({ index })}
+							/>
+						))
+					}
+					renderInput={(params) => (
+						<TextField
+							{...params}
+							sx={{ width: '100%' }}
+							variant='standard'
+							label={'I’m most comfortable performing for an audience who is '}
+							name='tourVibe'
+							helperText='Type and press [enter] to add adjectives to the list'
+						/>
+					)}
+				/>
+					{/* <TextField
 						variant='standard'
 						name='tourVibe'
 						multiline
 						id='tourVibe'
-						label='I’m thinking that '
+						label='I’m most comfortable performing for an audience who is '
 						placeholder='[plural noun]'
 						value={tourVibe}
 						onChange={(e) => onChange(e)}
 						helperText='are my audience.'
 						InputLabelProps={{ shrink: true }}
-					/>
+					/> */}
 				</Grid>,
 			],
 		],

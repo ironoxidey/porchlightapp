@@ -32,13 +32,16 @@ const Artists = ({
 	flipArtistCard,
 }) => {
 	useEffect(() => {
+		if (artistCardFlip) { //make sure a card isn't still flipped up for some reason
+			flipArtistCard(artist);
+		}
 		getArtists();
 	}, []);
 
 	const dispatch = useDispatch();
 
 	useLayoutEffect(() => {
-		if (artist) {
+		if (artists.length > 0 && artist) { //trips up if there's an artist in the state from a different route
 			const artistTileDiv = document
 				.querySelectorAll('[data-artist-slug=' + artist.slug + ']')[0]
 				.getElementsByClassName('theSquareTile')[0];
@@ -161,7 +164,7 @@ const Artists = ({
 						)}
 					</Grid>
 
-					{artist && artist._id ? (
+					{artists && artist && artist._id ? (
 						<Box>
 							<a.div
 								className='flipFront'
