@@ -88,7 +88,7 @@ const ArtistTileBack = ({
 
 	const [mediaTabs, setMediaTab] = useState([]);
 	useEffect(() => {
-		setMediaTab([]);
+		setMediaTab([]); //reset to [] so we don't get duplicates
 		if (mediaTabs.length < 3) {
 			if (artist.artistStatementVideo) setMediaTab(mediaTabs => [...mediaTabs, {title: "Artist Statement", mediaLink: artist.artistStatementVideo}]);
 			if (artist.repLink) setMediaTab(mediaTabs => [...mediaTabs, {title: `Listen`, mediaLink: artist.repLink}]);
