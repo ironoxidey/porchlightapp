@@ -1,4 +1,4 @@
-const cors = require("cors");
+const cors = require('cors');
 
 const express = require('express');
 const connectDB = require('./config/db');
@@ -12,12 +12,11 @@ connectDB();
 //Init Middleware
 app.use(express.json({ extended: false }));
 
-var allowedOrigins = ['http://localhost:3000/',
-                      'https://app.porchlight.art/'];
+var allowedOrigins = ['http://localhost:3000/', 'https://app.porchlight.art/'];
 
 // app.use(cors({
 // origin: function(origin, callback){
-//     // allow requests with no origin 
+//     // allow requests with no origin
 //     // (like mobile apps or curl requests)
 //     if(!origin) return callback(null, true);
 //     if(allowedOrigins.indexOf(origin) === -1){
@@ -39,12 +38,13 @@ app.use('/api/profile', require('./routes/api/profile'));
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/artists', require('./routes/api/artists'));
 app.use('/api/uploads', require('./routes/api/uploads'));
+app.use('/api/cloudinary', require('./routes/api/cloudinary'));
 
 app.use(express.static('client/build'));
 
-app.get('*', (req,res) => {
+app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-})
+});
 
 const PORT = process.env.PORT || 5000;
 

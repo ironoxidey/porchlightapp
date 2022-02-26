@@ -533,7 +533,7 @@ const EditArtistProfileForm = ({
             createMyArtist(formData, history, true);
             changesMade.current = false;
         }
-    }, [bookingWhenWhere]);
+    }, [bookingWhenWhere, squareImg, wideImg]);
 
     useEffect(() => {
         if (bookingWhen && bookingWhen.length > 0) {
@@ -681,14 +681,42 @@ const EditArtistProfileForm = ({
             });
     };
 
-    const cloudinaryUpload = (fieldName, tags, artistID, preset) => {
+    const cloudinaryUpload = async (fieldName, tags, artistID, preset) => {
+        let imageRatio =
+            fieldName === 'squareImg'
+                ? 'a square image'
+                : 'a wide image with a 2:1 ratio';
+
+        const stringToSign = {
+            public_id: 'uploads/' + artistID + '/' + fieldName,
+            uploadPreset: preset,
+            tags: tags,
+        };
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            ...stringToSign,
+        };
+        const response = await axios.post(
+            `/api/cloudinary/upload-signature`,
+            config
+        );
+        const data = response.data;
+
         window.cloudinary.openUploadWidget(
             //added cloudinary script to /public/index.html
             {
+                ...stringToSign,
+                // uploadPreset: stringtoSign.uploadPreset,
+                // public_id: stringtoSign.public_id,
+                //public_id: 'uploads/' + artistID + '/' + fieldName,
+                // tags: stringtoSign.tags,
+                apiKey: '622466913451276', //data.apikey,
+                uploadSignatureTimestamp: data.timestamp,
+                uploadSignature: data.signature,
+
                 cloudName: 'porchlight',
-                uploadPreset: preset,
-                folder: 'uploads/' + artistID,
-                tags: tags,
                 clientAllowedFormats: 'image',
                 sources: [
                     'local',
@@ -704,6 +732,22 @@ const EditArtistProfileForm = ({
                 //cropping: true,
                 multiple: false,
                 defaultSource: 'local',
+                text: {
+                    en: {
+                        menu: {
+                            files: 'My Device',
+                        },
+                        local: {
+                            browse: 'Browse',
+                            dd_title_single:
+                                'Drag and Drop ' + imageRatio + ' here',
+                            dd_title_multi: 'Drag and Drop assets here',
+                            drop_title_single:
+                                'Drop ' + imageRatio + ' to upload',
+                            drop_title_multiple: 'Drop files to upload',
+                        },
+                    },
+                },
                 styles: {
                     palette: {
                         // window: '#100F0E',
@@ -735,7 +779,8 @@ const EditArtistProfileForm = ({
             (err, info) => {
                 if (!err) {
                     if (info.event === 'success') {
-                        console.log('info: ', info.info);
+                        //console.log('info: ', info.info);
+                        changesMade.current = true;
                         setFormData({
                             ...formData,
                             [fieldName]: info.info.secure_url,
@@ -757,7 +802,7 @@ const EditArtistProfileForm = ({
 
                         //addUploadToDB(preset, info);
                     }
-                    console.log('Upload Widget event - ', info);
+                    //console.log('Upload Widget event - ', info);
                     return info;
                 }
             }
