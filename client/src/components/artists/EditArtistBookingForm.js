@@ -29,7 +29,7 @@ import {
     Chip,
     withStyles,
 } from '@mui/material';
-import ReactPhoneInput from 'react-phone-input-mui';
+//import ReactPhoneInput from 'react-phone-input-mui';
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
 
@@ -563,9 +563,12 @@ const EditArtistBookingForm = ({
                             //{ when: whenBooking, where: null },
                             {
                                 when: whenBooking,
-                                where: whenWhereFiltered[
-                                    whenWhereFiltered.length - 1
-                                ].where,
+                                where:
+                                    whenWhereFiltered.length > 0
+                                        ? whenWhereFiltered[
+                                              whenWhereFiltered.length - 1
+                                          ].where
+                                        : '',
                             },
                         ])
                     );
