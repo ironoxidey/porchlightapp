@@ -1,44 +1,39 @@
 {
-	"name": "porchlight",
-	"version": "1.0.0",
-	"description": "Porchlight: Art + Hospitality",
-	"main": "server.js",
-	"scripts": {
-		"start": "node server",
-		"server": "nodemon server --ignore client",
-		"client": "npm start --prefix client",
-		"dev": "concurrently \"npm run server\" \"npm run client\"",
-		"build": "npm run build --prefix client"
-	},
-	"author": "Rusty Hein",
-	"license": "MIT",
-	"dependencies": {
-		"@emotion/react": "^11.4.1",
-		"@emotion/styled": "^11.3.0",
-		"@trycourier/courier": "^3.2.0",
-		"bcryptjs": "^2.4.3",
-		"body-parser": "^1.19.1",
-		"cloudinary": "^1.28.1",
-		"config": "^3.3.1",
-		"cors": "^2.8.5",
-		"express": "^4.17.1",
-		"express-validator": "^6.6.1",
-		"gravatar": "^1.8.1",
-		"handlebars": "^4.7.7",
-		"http-proxy-middleware": "^2.0.1",
-		"jsonwebtoken": "^8.5.1",
-		"mongoose": "^6.0.9",
-		"multer": "^1.4.4",
-		"nodemailer": "^6.6.5",
-		"react-scripts": "^5.0.0",
-		"request": "^2.88.2",
-		"sharp": "^0.29.3",
-		"uuid": "^8.3.2"
-	},
-	"devDependencies": {
-		"concurrently": "^5.3.0",
-		"eslint": "^8.8.0",
-		"nodemon": "^2.0.4",
-		"prettier": "^2.5.1"
-	}
+    "name": "porchlight",
+    "version": "1.0.0",
+    "description": "Porchlight: Art + Hospitality",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server",
+        "server": "nodemon server --ignore client",
+        "client": "npm start --prefix client",
+        "dev": "concurrently \"npm run server\" \"npm run client\"",
+        "build": "npm run build --prefix client"
+    },
+    "author": "Rusty Hein",
+    "license": "MIT",
+    "dependencies": {
+        "@emotion/react": "^11.4.1",
+        "@emotion/styled": "^11.3.0",
+        "@trycourier/courier": "^3.2.0",
+        "bcryptjs": "^2.4.3",
+        "cloudinary": "^1.28.1",
+        "config": "^3.3.1",
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "express-validator": "^6.6.1",
+        "gravatar": "^1.8.1",
+        "http-proxy-middleware": "^2.0.1",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^6.0.9",
+        "react-scripts": "^5.0.0",
+        "request": "^2.88.2",
+        "uuid": "^8.3.2"
+    },
+    "devDependencies": {
+        "concurrently": "^5.3.0",
+        "eslint": "^8.8.0",
+        "nodemon": "^2.0.4",
+        "prettier": "^2.5.1"
+    }
 }
