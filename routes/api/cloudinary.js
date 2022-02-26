@@ -10,13 +10,13 @@ const Artist = require('../../models/Artist');
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
-    cloud_name: config.cloudinary.cloud_name,
-    api_key: config.cloudinary.api_key,
-    api_secret: config.cloudinary.api_secret,
+    cloud_name: config.cloud_name,
+    api_key: config.cloudinary_api_key,
+    api_secret: config.cloudinary_api_secret,
     secure: true,
 });
-const apiSecret = config.cloudinary.api_secret;
-const apiKey = config.cloudinary.api_key;
+const apiSecret = config.cloudinary_api_secret;
+const apiKey = config.cloudinary_api_key;
 
 // Server-side function used to sign an Upload Widget upload.
 router.post('/upload-signature', auth, async (req, res) => {
