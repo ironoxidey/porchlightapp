@@ -637,49 +637,49 @@ const EditArtistProfileForm = ({
         setFormData({ ...formData, [e.target.name]: updatedField });
     };
 
-    const uploadSquareButtonRef = useRef();
-    const clickSquareUpload = () => {
-        uploadSquareButtonRef.current.click();
-    };
+    // const uploadSquareButtonRef = useRef();
+    // const clickSquareUpload = () => {
+    //     uploadSquareButtonRef.current.click();
+    // };
 
-    const uploadWideButtonRef = useRef();
-    const clickWideUpload = () => {
-        uploadWideButtonRef.current.click();
-    };
+    // const uploadWideButtonRef = useRef();
+    // const clickWideUpload = () => {
+    //     uploadWideButtonRef.current.click();
+    // };
 
-    const uploadHandler = (e) => {
-        changesMade.current = true;
-        console.log('theArtist._id: ' + theArtist._id);
-        //const uploadPath = `/api/uploads/${slug}/`; //"../porchlight-uploads";
-        const uploadPath = `/api/uploads/${theArtist._id}/`; //"../porchlight-uploads";
-        let fileName = e.target.files[0].name;
-        let fileExtension = e.target.files[0].type.replace(/(.*)\//g, '');
-        let targetValue = uploadPath + fileName; //e.target.value;
-        const data = new FormData();
-        data.append('file', e.target.files[0]);
-        axios
-            .post(`/api/uploads/upload`, data)
-            .then((res) => {
-                setFormData({ ...formData, [e.target.name]: targetValue });
-                console.log('Should dispatch IMAGE_UPLOAD with: ' + res.data);
-                dispatch({
-                    type: IMAGE_UPLOAD,
-                    payload: res.data,
-                });
-                dispatch(setAlert(res.data.msg, 'success'));
-                if (e.target.name == 'squareImg') {
-                    updateUserAvatar({ avatar: targetValue }, history);
-                }
-            })
-            .catch((err) => {
-                console.log(err.response.data.msg);
-                dispatch({
-                    type: IMAGE_UPLOAD,
-                    payload: err.response.data,
-                });
-                dispatch(setAlert(err.response.data.msg, 'danger'));
-            });
-    };
+    // const uploadHandler = (e) => {
+    //     changesMade.current = true;
+    //     console.log('theArtist._id: ' + theArtist._id);
+    //     //const uploadPath = `/api/uploads/${slug}/`; //"../porchlight-uploads";
+    //     const uploadPath = `/api/uploads/${theArtist._id}/`; //"../porchlight-uploads";
+    //     let fileName = e.target.files[0].name;
+    //     let fileExtension = e.target.files[0].type.replace(/(.*)\//g, '');
+    //     let targetValue = uploadPath + fileName; //e.target.value;
+    //     const data = new FormData();
+    //     data.append('file', e.target.files[0]);
+    //     axios
+    //         .post(`/api/uploads/upload`, data)
+    //         .then((res) => {
+    //             setFormData({ ...formData, [e.target.name]: targetValue });
+    //             console.log('Should dispatch IMAGE_UPLOAD with: ' + res.data);
+    //             dispatch({
+    //                 type: IMAGE_UPLOAD,
+    //                 payload: res.data,
+    //             });
+    //             dispatch(setAlert(res.data.msg, 'success'));
+    //             if (e.target.name == 'squareImg') {
+    //                 updateUserAvatar({ avatar: targetValue }, history);
+    //             }
+    //         })
+    //         .catch((err) => {
+    //             console.log(err.response.data.msg);
+    //             dispatch({
+    //                 type: IMAGE_UPLOAD,
+    //                 payload: err.response.data,
+    //             });
+    //             dispatch(setAlert(err.response.data.msg, 'danger'));
+    //         });
+    // };
 
     const cloudinaryUpload = async (fieldName, tags, artistID, preset) => {
         let imageRatio =
@@ -1305,14 +1305,14 @@ const EditArtistProfileForm = ({
             </FormLabel>,
             [
                 <FormControl component="fieldset">
-                    <UploadInput
+                    {/* <UploadInput
                         ref={uploadSquareButtonRef}
                         accept="image/*"
                         name="squareImg"
                         id="squareImg"
                         type="file"
                         onChange={(e) => uploadHandler(e)}
-                    />
+                    /> */}
                     <label htmlFor="squareImg">
                         <Button
                             variant="contained"
@@ -1361,14 +1361,14 @@ const EditArtistProfileForm = ({
             </FormLabel>,
             [
                 <FormControl component="fieldset">
-                    <UploadInput
+                    {/* <UploadInput
                         ref={uploadWideButtonRef}
                         accept="image/*"
                         name="wideImg"
                         id="wideImg"
                         type="file"
                         onChange={(e) => uploadHandler(e)}
-                    />
+                    /> */}
                     <label htmlFor="wideImg">
                         <Button
                             variant="contained"
