@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const auth = require('../../middleware/auth');
 const jwt = require('jsonwebtoken');
-const config = !process.env ? require('config') : process.env.env; //if there's no NODE_ENV then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
+const config = !process.env ? require('config') : process.env; //if there's no NODE_ENV then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
 const { check, validationResult } = require('express-validator');
 
 const User = require('../../models/User');

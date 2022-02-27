@@ -1,6 +1,6 @@
 const express = require('express');
 const request = require('request');
-const config = !process.env ? require('config') : process.env.env; //if there's no NODE_ENV then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
+const config = !process.env ? require('config') : process.env; //if there's no NODE_ENV then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
 const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult, body } = require('express-validator');
