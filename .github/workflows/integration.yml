@@ -1,50 +1,51 @@
 name: Continuous Deployment
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  installation:
-    runs-on: self-hosted
-    steps:
-      - name: Checkout main branch
-        uses: actions/checkout@v2
+    installation:
+        runs-on: self-hosted
+        steps:
+            - name: Checkout main branch
+              uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
+            - name: Setup Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: '14.x'
 
-      - name: Install Server Dependencies
-        run: npm ci
+            - name: Install Server Dependencies
+              run: npm ci
 
-      # - name: Test application
-      #   run: npm test
+            # - name: Test application
+            #   run: npm test
 
-      - name: Install Client Dependencies
-        run: npm ci
-        working-directory: ./client
+            - name: Install Client Dependencies
+              run: npm ci
+              working-directory: ./client
 
-  restart_server:
-    needs: installation
-    runs-on: self-hosted
-    steps:
-      - name: Restart server
-        run: |
-          pm2 restart server
-          pm2 save
-          sudo service nginx restart
+    restart_server:
+        needs: installation
+        runs-on: self-hosted
+        steps:
+            - name: Restart server
+              run: |
+                  pm2 restart server
+                  pm2 save
+                  sudo service nginx restart
+                  source ~/.bashrc
 
-  build_client:
-    needs: installation
-    runs-on: self-hosted
-    defaults:
-      run:
-        working-directory: ./client
-    steps:
-      - name: Build Client
-        run: npm run build
-        env:
-          CI: false
+    build_client:
+        needs: installation
+        runs-on: self-hosted
+        defaults:
+            run:
+                working-directory: ./client
+        steps:
+            - name: Build Client
+              run: npm run build
+              env:
+                  CI: false
