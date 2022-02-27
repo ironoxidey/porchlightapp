@@ -4,7 +4,7 @@ const request = require('request');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = !process.env.NODE_ENV ? require('config') : process.env; //if there's no NODE_ENV then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
+const config = !process.env ? require('config') : process.env; //if there's no NODE_ENV then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
 const { check, validationResult } = require('express-validator');
 const auth = require('../../middleware/auth');
 
@@ -162,13 +162,9 @@ router.put(
                     { $set: { resetLink: resetToken } },
                     (err) => {
                         if (err) {
-                            return res
-                                .status(400)
-                                .json({
-                                    errors: [
-                                        { msg: 'reset password link error' },
-                                    ],
-                                });
+                            return res.status(400).json({
+                                errors: [{ msg: 'reset password link error' }],
+                            });
                         } else {
                             //console.log('The email will try to send now- userName: '+userName.trim().split(' ')[0]);
                             sendEmail(email, {
@@ -234,13 +230,9 @@ router.put(
                             let user = await User.findOne({ resetLink });
 
                             if (!user) {
-                                return res
-                                    .status(400)
-                                    .json({
-                                        errors: [
-                                            { error: 'User does not exist.' },
-                                        ],
-                                    });
+                                return res.status(400).json({
+                                    errors: [{ error: 'User does not exist.' }],
+                                });
                             } else {
                                 const salt = await bcrypt.genSalt(10);
                                 const hashedNewPass = await bcrypt.hash(
