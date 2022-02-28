@@ -32,6 +32,7 @@ jobs:
         runs-on: self-hosted
         steps:
             - name: Restart server
+              #environment variables set in GitHub Secrets (don't use quotes in values!)
               run: |
                   NODE_ENV='production'
                   mongoURI=${{secrets.MONGOURI}}
