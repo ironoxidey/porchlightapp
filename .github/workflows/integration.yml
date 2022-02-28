@@ -34,6 +34,7 @@ jobs:
             - name: Restart server
               #environment variables set in GitHub Secrets (don't use quotes in values!)
               run: |
+                  unset mongoURI jwtSecret resetPasswordKey calendlyID calendlySecret cloud_name cloudinary_api_key cloudinary_api_secret
                   NODE_ENV='production'
                   mongoURI=${{secrets.MONGOURI}}
                   jwtSecret=${{secrets.JWTSECRET}}
