@@ -45,10 +45,9 @@ jobs:
         steps:
             - name: Restart server
               run: |
-                  pm2 restart server
+                  mongoURI=${{secrets.MONGOURI}} pm2 restart server --update-env
                   pm2 save
                   sudo service nginx restart
-                  export mongoURI=${{secrets.MONGOURI}}
 
     build_client:
         needs: installation
