@@ -22,7 +22,6 @@ const apiKey = config.cloudinary_api_key;
 // Server-side function used to sign an Upload Widget upload.
 router.post('/upload-signature', auth, async (req, res) => {
     try {
-        console.log('cloudinary apiSecret: ', apiSecret);
         const timestamp = Math.round(new Date().getTime() / 1000);
 
         const signature = await cloudinary.utils.api_sign_request(
