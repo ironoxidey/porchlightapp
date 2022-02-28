@@ -35,15 +35,15 @@ jobs:
               #environment variables set in GitHub Secrets (don't use quotes in values!)
               run: |
                   unset mongoURI jwtSecret resetPasswordKey calendlyID calendlySecret cloud_name cloudinary_api_key cloudinary_api_secret
-                  NODE_ENV='production'
-                  mongoURI=${{secrets.MONGOURI}}
-                  jwtSecret=${{secrets.JWTSECRET}}
-                  resetPasswordKey=${{secrets.RESETPASSWORDKEY}}
-                  calendlyID=${{secrets.CALENDLYID}}
-                  calendlySecret=${{secrets.CALENDLYSECRET}}
-                  cloud_name=${{secrets.CLOUD_NAME}}
-                  cloudinary_api_key=${{secrets.CLOUDINARY_API_KEY}}
-                  cloudinary_api_secret=${{secrets.CLOUDINARY_API_SECRET}}
+                  export NODE_ENV='production'
+                  export mongoURI=${{secrets.MONGOURI}}
+                  export jwtSecret=${{secrets.JWTSECRET}}
+                  export resetPasswordKey=${{secrets.RESETPASSWORDKEY}}
+                  export calendlyID=${{secrets.CALENDLYID}}
+                  export calendlySecret=${{secrets.CALENDLYSECRET}}
+                  export cloud_name=${{secrets.CLOUD_NAME}}
+                  export cloudinary_api_key=${{secrets.CLOUDINARY_API_KEY}}
+                  export cloudinary_api_secret=${{secrets.CLOUDINARY_API_SECRET}}
                   pm2 restart server --update-env
                   pm2 save
                   sudo service nginx restart
