@@ -1,17 +1,5 @@
 name: Continuous Deployment
 
-env:
-    ## Sets environment variable
-    NODE_ENV: 'production'
-    mongoURI: ${{secrets.MONGOURI}}
-    jwtSecret: ${{secrets.JWTSECRET}}
-    resetPasswordKey: ${{secrets.RESETPASSWORDKEY}}
-    calendlyID: ${{secrets.CALENDLYID}}
-    calendlySecret: ${{secrets.CALENDLYSECRET}}
-    cloud_name: ${{secrets.CLOUD_NAME}}
-    cloudinary_api_key: ${{secrets.CLOUDINARY_API_KEY}}
-    cloudinary_api_secret: ${{secrets.CLOUDINARY_API_SECRET}}
-
 on:
     push:
         branches:
@@ -45,7 +33,16 @@ jobs:
         steps:
             - name: Restart server
               run: |
-                  mongoURI=${{secrets.MONGOURI}} pm2 restart server --update-env
+                  NODE_ENV='production'
+                  mongoURI=${{secrets.MONGOURI}}
+                  jwtSecret=${{secrets.JWTSECRET}}
+                  resetPasswordKey=${{secrets.RESETPASSWORDKEY}}
+                  calendlyID=${{secrets.CALENDLYID}}
+                  calendlySecret=${{secrets.CALENDLYSECRET}}
+                  cloud_name=${{secrets.CLOUD_NAME}}
+                  cloudinary_api_key=${{secrets.CLOUDINARY_API_KEY}}
+                  cloudinary_api_secret=${{secrets.CLOUDINARY_API_SECRET}}
+                  pm2 restart server --update-env
                   pm2 save
                   sudo service nginx restart
 
