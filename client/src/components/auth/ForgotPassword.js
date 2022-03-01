@@ -87,7 +87,7 @@ const ForgotPassword = ({ forgotPassword, isAuthenticated, forgotSuccess }) => {
                     <Grid container justifyContent="flex-end">
                         <small>
                             Oh! I remembered the password!{' '}
-                            <Link to="/login">Back to login</Link>
+                            <Link to="/login">Back to Login</Link>
                         </small>
                     </Grid>
                 </Box>
