@@ -31,8 +31,6 @@ const Artists = ({
     artist: { artist, artists, loading },
     flipArtistCard,
 }) => {
-    const dispatch = useDispatch();
-
     useEffect(() => {
         if (artistCardFlip) {
             //make sure a card isn't still flipped up for some reason
@@ -41,101 +39,93 @@ const Artists = ({
         getArtists();
     }, []);
 
-    useEffect(() => {
-        dispatch({ type: CLEAR_ARTIST });
-    }, [getArtists]);
+    const dispatch = useDispatch();
 
-    // useLayoutEffect(() => {
-    //     if (artists.length > 0 && artist) {
-    //         //trips up if there's an artist in the state from a different route
-    //         const artistTileDiv = document
-    //             .querySelectorAll('[data-artist-slug=' + artist.slug + ']')[0]
-    //             .getElementsByClassName('theSquareTile')[0];
+    useLayoutEffect(() => {
+        if (artists.length > 0 && artist) {
+            //trips up if there's an artist in the state from a different route
+            const artistTileDiv = document
+                .querySelectorAll('[data-artist-slug=' + artist.slug + ']')[0]
+                .getElementsByClassName('theSquareTile')[0];
 
-    //         const squareImgInACircle =
-    //             document.getElementsByClassName('squareImgInACircle')[0];
+            const rootScrollTop = document.getElementById('root').scrollTop;
 
-    //         const rootScrollTop = document.getElementById('root').scrollTop;
+            const topOffset = document
+                .getElementsByClassName('animatedRoute')[0]
+                .getBoundingClientRect().top;
 
-    //         const topOffset = document
-    //             .getElementsByClassName('animatedRoute')[0]
-    //             .getBoundingClientRect().top;
+            if (artistTileDiv) {
+                artistTileOffset.top =
+                    artistTileDiv.getBoundingClientRect().top - topOffset;
+                artistTileOffset.left =
+                    artistTileDiv.getBoundingClientRect().left;
+                artistTileOffset.bottom =
+                    artistTileDiv.getBoundingClientRect().bottom;
+                artistTileOffset.right =
+                    artistTileDiv.getBoundingClientRect().right;
+                artistTileOffset.width =
+                    artistTileOffset.right - artistTileOffset.left;
+                artistTileOffset.windowWidth = window.innerWidth * 0.9;
+                artistTileOffset.windowHeight =
+                    window.innerHeight + topOffset + topOffset;
 
-    //         if (artistTileDiv) {
-    //             artistTileOffset.top =
-    //                 artistTileDiv.getBoundingClientRect().top - topOffset;
-    //             artistTileOffset.left =
-    //                 artistTileDiv.getBoundingClientRect().left;
-    //             artistTileOffset.bottom =
-    //                 artistTileDiv.getBoundingClientRect().bottom;
-    //             artistTileOffset.right =
-    //                 artistTileDiv.getBoundingClientRect().right;
-    //             artistTileOffset.width =
-    //                 artistTileOffset.right - artistTileOffset.left;
-    //             artistTileOffset.windowWidth = window.innerWidth * 0.9;
-    //             artistTileOffset.windowHeight =
-    //                 window.innerHeight + topOffset + topOffset;
-    //             artistTileOffset.rootScrollTop = rootScrollTop;
+                if (artistCardFlip === true) {
+                    setSpring.start({
+                        from: {
+                            opacity: 0,
+                            zIndex: -1,
+                            paddingTop: `${0}px`,
+                            transform: `translate3d(${artistTileOffset.left}px, ${artistTileOffset.top}px, 0px) perspective(600px) rotateY(-180deg)`,
+                            width: artistTileOffset.width,
+                            height: artistTileOffset.width,
+                        },
+                        to: {
+                            opacity: 1,
+                            zIndex: 100,
+                            paddingTop: `${rootScrollTop + 20}px`,
+                            transform: `translate3d(0px, 0px, 1000px) perspective(600px) rotateY(0deg)`, //the z translation is necessary for Safari, because the y rotation would swing the div through the darkened background
+                            width: artistTileOffset.windowWidth,
+                            height: artistTileOffset.windowHeight,
+                        },
+                        onRest: () => {
+                            //document.getElementsByClassName('overlayDarkBG')[0].style.height = document.getElementsByClassName('artistTileBack')[0].clientheight + 'px';
+                        },
+                        config: { mass: 5, tension: 500, friction: 80 },
+                        immediate: (key) => key === 'zIndex',
+                    });
+                } else {
+                    setSpring.start({
+                        to: {
+                            opacity: 0,
+                            zIndex: -1,
+                            paddingTop: `${0}px`,
+                            transform: `translate3d(${artistTileOffset.left}px, ${artistTileOffset.top}px, 0px) perspective(600px) rotateY(-180deg)`,
+                            width: artistTileOffset.width,
+                            height: artistTileOffset.width,
+                        },
+                        onRest: () => {
+                            dispatch({ type: CLEAR_ARTIST });
+                        },
+                        config: { mass: 5, tension: 500, friction: 80 },
+                    });
+                }
 
-    //             if (artistCardFlip === true) {
-    //                 setSpring.start({
-    //                     from: {
-    //                         opacity: 0,
-    //                         zIndex: -1,
-    //                         paddingTop: `${0}px`,
-    //                         transform: `translate3d(${artistTileOffset.left}px, ${artistTileOffset.top}px, 0px) perspective(600px)`,
-    //                         width: artistTileOffset.width,
-    //                         height: artistTileOffset.width,
-    //                     },
-    //                     to: {
-    //                         opacity: 1,
-    //                         zIndex: 100,
-    //                         paddingTop: `${rootScrollTop + 20}px`,
-    //                         transform: `translate3d(0px, 0px, 1000px) perspective(600px)`, //the z translation is necessary for Safari, because the y rotation would swing the div through the darkened background
-    //                         width: artistTileOffset.windowWidth,
-    //                         height: artistTileOffset.windowHeight,
-    //                     },
-    //                     onRest: () => {
-    //                         //document.getElementsByClassName('overlayDarkBG')[0].style.height = document.getElementsByClassName('artistTileBack')[0].clientheight + 'px';
-    //                     },
-    //                     config: { mass: 5, tension: 500, friction: 80 },
-    //                     immediate: (key) =>
-    //                         key === 'zIndex' || key === 'paddingTop',
-    //                 });
-    //             } else {
-    //                 setSpring.start({
-    //                     to: {
-    //                         opacity: 0,
-    //                         zIndex: -1,
-    //                         paddingTop: `${0}px`,
-    //                         transform: `translate3d(${artistTileOffset.left}px, ${artistTileOffset.top}px, 0px) perspective(600px)`,
-    //                         width: artistTileOffset.width,
-    //                         height: artistTileOffset.width,
-    //                     },
-    //                     onRest: () => {
-    //                         dispatch({ type: CLEAR_ARTIST });
-    //                     },
-    //                     config: { mass: 5, tension: 500, friction: 80 },
-    //                 });
-    //             }
-
-    //             flipped = artistCardFlip;
-    //         }
-    //     }
-    // }, [artistCardFlip]);
+                flipped = artistCardFlip;
+            }
+        }
+    }, [artistCardFlip]);
 
     const [
         { transform, opacity, zIndex, width, height, paddingTop },
         setSpring,
     ] = useSpring(() => ({
         to: {
-            paddingTop: `${20}px`,
             opacity: !flipped ? 1 : 0,
             transform: `translateX(${
                 !flipped ? '0px' : artistTileOffset.left + 'px'
             }) translateY(${
                 !flipped ? '0px' : artistTileOffset.top + 'px'
-            }) perspective(600px)`,
+            }) perspective(600px) rotateY(${!flipped ? 0 : -180}deg)`,
             zIndex: !flipped ? 100 : -1,
             // width: !flipped ? `calc(1% + ${viewWidth}px)` : 'calc(100% - 8px)',
             width: !flipped
@@ -146,13 +136,12 @@ const Artists = ({
                 : artistTileOffset.right - artistTileOffset.left,
         },
         from: {
-            paddingTop: `0px`,
             opacity: 0,
             transform: `translateX(${
                 flipped ? '0px' : artistTileOffset.left + 'px'
             }) translateY(${
                 flipped ? '0px' : artistTileOffset.top + 'px'
-            })perspective(600px)`,
+            })perspective(600px) rotateY(-180deg)`,
             zIndex: -1,
             width: flipped
                 ? window.innerWidth
@@ -189,7 +178,7 @@ const Artists = ({
                         )}
                     </Grid>
 
-                    {/* {artists && artist && artist._id ? (
+                    {artists && artist && artist._id ? (
                         <Box>
                             <a.div
                                 className="flipFront"
@@ -205,7 +194,6 @@ const Artists = ({
                                     alignItems: 'start',
                                     width: '100%',
                                     height: '100%',
-                                    paddingTop,
                                 }}
                             >
                                 <a.div
@@ -215,6 +203,7 @@ const Artists = ({
                                         zIndex,
                                         width,
                                         height,
+                                        rotateY: '180deg',
                                     }}
                                 >
                                     <ArtistGridItemTile
@@ -252,12 +241,25 @@ const Artists = ({
                                     // style={props}
                                     style={{
                                         opacity,
+                                        transform,
                                         zIndex,
                                         minHeight: height,
                                         //height: '100%',
                                         width: '100%',
                                     }}
                                 >
+                                    {/* <Box
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            bottom: 0,
+                                            right: 0,
+                                            //overflow: 'hidden',
+                                            width: '100%',
+                                            height: '100%',
+                                        }}
+                                    > */}
                                     <a.div
                                         className="artistTileBack"
                                         style={{
@@ -286,12 +288,13 @@ const Artists = ({
                                             cursor: 'pointer',
                                         }}
                                     ></Box>
+                                    {/* </Box> */}
                                 </a.div>
                             </a.div>
                         </Box>
                     ) : (
                         ''
-                    )} */}
+                    )}
                 </Fragment>
             )}
         </Fragment>
