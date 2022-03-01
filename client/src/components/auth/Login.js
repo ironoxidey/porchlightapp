@@ -49,6 +49,7 @@ const Login = ({ login, isAuthenticated }) => {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
+                    padding: '20px',
                 }}
             >
                 <Box

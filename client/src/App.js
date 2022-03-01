@@ -18,48 +18,53 @@ import './App.css';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import { faGlobeAmericas, faGuitar, faCalendarDay, faAllergies} from '@fortawesome/free-solid-svg-icons';
-library.add(fab, faGlobeAmericas, faGuitar, faCalendarDay,faAllergies );
+import {
+    faGlobeAmericas,
+    faGuitar,
+    faCalendarDay,
+    faAllergies,
+} from '@fortawesome/free-solid-svg-icons';
+library.add(fab, faGlobeAmericas, faGuitar, faCalendarDay, faAllergies);
 
 const darkTheme = createTheme({
-	palette: {
-		mode: 'dark',
-		primary: {
-			main: '#6f8785',
-		},
-		secondary: {
-			main: '#fb9c4d',
-		},
-	},
-	typography: {
-		fontFamily: 'Merriweather',
-	},
+    palette: {
+        mode: 'dark',
+        primary: {
+            main: '#6f8785',
+        },
+        secondary: {
+            main: '#fb9c4d',
+        },
+    },
+    typography: {
+        fontFamily: 'Merriweather',
+    },
 });
 
 if (localStorage.token) {
-	setAuthToken(localStorage.token);
+    setAuthToken(localStorage.token);
 }
 
 const App = () => {
-	useEffect(() => {
-		store.dispatch(loadUser());
-	}, []);
-	return (
-		<Provider store={store}>
-			<ThemeProvider theme={darkTheme}>
-				<Router>
-					<Fragment>
-						<Navbar />
-						<SwipeableDrawer />
-						<Switch>
-							{/* <Route exact path='/' component={Landing} /> */}
-							<Route component={Routes} />
-						</Switch>
-					</Fragment>
-				</Router>
-			</ThemeProvider>
-		</Provider>
-	);
+    useEffect(() => {
+        store.dispatch(loadUser());
+    }, []);
+    return (
+        <Provider store={store}>
+            <ThemeProvider theme={darkTheme}>
+                <Router>
+                    <Fragment>
+                        <Navbar />
+                        <SwipeableDrawer />
+                        <Switch>
+                            {/* <Route exact path='/' component={Landing} /> */}
+                            <Route component={Routes} />
+                        </Switch>
+                    </Fragment>
+                </Router>
+            </ThemeProvider>
+        </Provider>
+    );
 };
 
 export default App;
