@@ -128,7 +128,7 @@ router.put(
             let userDoc = await User.findOne({ email });
 
             if (!userDoc) {
-                //console.log("Could not find a user associated with "+email);
+                console.log('Could not find a user associated with ' + email);
                 return res.status(400).json({
                     errors: [
                         { msg: 'User with this email address does not exist.' },
@@ -138,7 +138,7 @@ router.put(
                 const userID = userDoc.id;
                 const userName = userDoc.name;
 
-                //console.log("userID: "+userID+" | userName: " + userName);
+                //console.log('userID: ' + userID + ' | userName: ' + userName);
 
                 const payload = {
                     user: {
@@ -167,7 +167,10 @@ router.put(
                                 errors: [{ msg: 'reset password link error' }],
                             });
                         } else {
-                            //console.log('The email will try to send now- userName: '+userName.trim().split(' ')[0]);
+                            // console.log(
+                            //     'The email will try to send now- userName: ' +
+                            //         userName.trim().split(' ')[0]
+                            // );
                             sendEmail(email, {
                                 name: userName.trim().split(' ')[0],
                                 link: link,

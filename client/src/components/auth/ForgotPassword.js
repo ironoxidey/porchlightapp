@@ -4,65 +4,105 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { forgotPassword } from '../../actions/auth';
 //import axios from 'axios';
-import { 
-  TextField, 
-  Button,
-} from '@mui/material';
+import { TextField, Grid, Box, FormLabel, Typography } from '@mui/material';
+
+import Button from '../layout/SvgButton';
 
 const ForgotPassword = ({ forgotPassword, isAuthenticated, forgotSuccess }) => {
-  const [formData, setFormData] = useState({
-    email: '',
-  });
+    const [formData, setFormData] = useState({
+        email: '',
+    });
 
-  const { email } = formData;
+    const { email } = formData;
 
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value }); //separate onChange function // calls setFormData() // copies and spreads formData then changes the state of [e.target.name] referring to the name attr of each input, and setting the value to e.target.value
+    const onChange = (e) =>
+        setFormData({ ...formData, [e.target.name]: e.target.value }); //separate onChange function // calls setFormData() // copies and spreads formData then changes the state of [e.target.name] referring to the name attr of each input, and setting the value to e.target.value
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    forgotPassword({email});
-  };
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        forgotPassword({ email });
+    };
 
-  //Redirect if logged in
-  if (isAuthenticated) {
-    return <Redirect to='/dashboard' />;
-  }
+    //Redirect if logged in
+    if (isAuthenticated) {
+        return <Redirect to="/dashboard" />;
+    }
 
-  return (
-    <Fragment>
-      <h1 className='large text-primary'>Forgot your password?</h1>
-      <p className='lead'>
-        <i className='fas fa-user'></i> Enter the email address associated with your Porchlight account
-      </p>
-      <form className='form' onSubmit={(e) => onSubmit(e)}>
-        <div className='form-group'>
-          <TextField 
-              name="email"
-              id="email" 
-              label="Email Address"  
-              value={email}
-              onChange={(e) => onChange(e)}
-          />
-          {/* <small>This is currently not working in production. Contact Rusty for a password reset link.</small> */}
-        </div>
+    return (
+        <Fragment>
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Box
+                    component="form"
+                    noValidate
+                    onSubmit={(e) => onSubmit(e)}
+                    sx={{ mt: 3, maxWidth: '400px' }}
+                >
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sx={{ textAlign: 'center' }}>
+                            <FormLabel component="legend">
+                                Oh no! Did you forget your password?
+                            </FormLabel>
+                            <Typography component="p">
+                                No worries! We can send you a reset link! What's
+                                your email address?
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                variant="standard"
+                                required
+                                fullWidth
+                                id="email"
+                                label="My email address is"
+                                name="email"
+                                autoComplete="email"
+                                onChange={(e) => onChange(e)} //call seperate onChange function above
+                                value={email}
+                                type="email"
+                            />
+                        </Grid>
+                        <Grid
+                            item
+                            xs={12}
+                            sx={{ textAlign: 'center', margin: '8px auto' }}
+                        >
+                            <Button
+                                type="submit"
+                                onClick={(e) => {
+                                    onSubmit(e);
+                                }}
+                            >
+                                Submit
+                            </Button>
+                        </Grid>
+                    </Grid>
 
-        <input type='submit' className='btn btn-primary' value='Submit' />
-      </form>
-      <p className='my-1'>
-        Back to <Link to='/login'>Login</Link>
-      </p>
-    </Fragment>
-  );
+                    <Grid container justifyContent="flex-end">
+                        <small>
+                            Oh! I remembered the password!{' '}
+                            <Link to="/login">Back to login</Link>
+                        </small>
+                    </Grid>
+                </Box>
+            </Box>
+        </Fragment>
+    );
 };
 ForgotPassword.propTypes = {
-  forgotPassword: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool,
-  forgotSuccess: PropTypes.bool,
+    forgotPassword: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool,
+    forgotSuccess: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-  forgotSuccess: state.auth.forgotSuccess
+    isAuthenticated: state.auth.isAuthenticated,
+    forgotSuccess: state.auth.forgotSuccess,
 });
 export default connect(mapStateToProps, { forgotPassword })(ForgotPassword);

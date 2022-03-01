@@ -46,16 +46,10 @@ const Routes = ({ app }) => {
         document.title = app.pageTitle;
 
         document.getElementById('root').scrollTop = scrollY;
-
         setY({
             onFrame: (props) =>
                 document.getElementById('root').scroll(0, props.scrollTop),
         }); //scroll to the top if the page title changes
-        console.log(
-            'should scroll from',
-            document.getElementById('root').scrollTop,
-            'to the top'
-        );
     }, [app.pageTitle]);
 
     return (
