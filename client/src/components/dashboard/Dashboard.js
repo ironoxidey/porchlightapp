@@ -104,13 +104,7 @@ const Dashboard = ({
 			)} */}
                     <Grid item container>
                         {me && me._id ? (
-                            <Grid
-                                item
-                                container
-                                sx={{
-                                    margin: '8px auto',
-                                }}
-                            >
+                            [
                                 <Grid
                                     item
                                     sx={{
@@ -126,7 +120,7 @@ const Dashboard = ({
                                             Guide
                                         </Button>
                                     </a>
-                                </Grid>
+                                </Grid>,
                                 <Grid
                                     item
                                     sx={{
@@ -138,8 +132,8 @@ const Dashboard = ({
                                             <EditTwoToneIcon /> Edit My Profile
                                         </Button>
                                     </Link>
-                                </Grid>
-                            </Grid>
+                                </Grid>,
+                            ]
                         ) : (
                             <Grid
                                 item
