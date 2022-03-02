@@ -1,5 +1,11 @@
 import states from 'us-state-converter';
-import { OPEN_NAV_DRAWER, CLOSE_NAV_DRAWER, FLIP_ARTIST_CARD } from './types';
+import {
+    OPEN_NAV_DRAWER,
+    CLOSE_NAV_DRAWER,
+    // OPEN_USER_DRAWER,
+    // CLOSE_USER_DRAWER,
+    FLIP_ARTIST_CARD,
+} from './types';
 import { setAlert } from './alert';
 import { updateUserAvatar } from './auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,6 +22,17 @@ export const closeNavDrawer = () => (dispatch) => {
         type: CLOSE_NAV_DRAWER,
     });
 };
+// export const openUserDrawer = () => (dispatch) => {
+//     dispatch({
+//         type: OPEN_USER_DRAWER,
+//     });
+// };
+
+// export const closeUserDrawer = () => (dispatch) => {
+//     dispatch({
+//         type: CLOSE_USER_DRAWER,
+//     });
+// };
 
 export const flipArtistCard = (artist) => (dispatch) => {
     dispatch({

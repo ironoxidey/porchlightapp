@@ -129,11 +129,9 @@ router.put(
 
             if (!userDoc) {
                 console.log('Could not find a user associated with ' + email);
-                return res.status(400).json({
-                    errors: [
-                        { msg: 'User with this email address does not exist.' },
-                    ],
-                });
+                return res
+                    .status(400)
+                    .json('User with this email address does not exist.');
             } else {
                 const userID = userDoc.id;
                 const userName = userDoc.name;
@@ -179,6 +177,7 @@ router.put(
                         }
                     }
                 ).clone();
+                return res.json('A verification email has been sent.');
             }
 
             // return user.updateOne({resetLink: resetToken}, (err, success) => {
@@ -195,7 +194,7 @@ router.put(
             // });
         } catch (err) {
             console.log(err.message);
-            res.status(500).send('Server error');
+            return res.status(500).send('Server error');
         }
     }
 );

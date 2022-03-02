@@ -89,16 +89,16 @@ export const forgotPassword =
                 body,
                 config
             );
-
             dispatch({
                 type: FORGOTPASSWORD_SUCCESS,
                 payload: res.data,
             });
-            console.log('res.data: ' + res.data);
+            dispatch(setAlert(res.data, 'success'));
+            //console.log('res.data: ' + res.data);
             // dispatch(setAlert(error.msg, 'success'));
         } catch (err) {
             //const errors = err.response.data.errors;
-            //console.log("errors: "+errors);
+            //console.log('err: ' + err);
             // if (errors) {
             //   errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
             // }

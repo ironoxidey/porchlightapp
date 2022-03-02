@@ -1,87 +1,90 @@
 import {
-  REGISTER_SUCCESS,
-  REGISTER_FAIL,
-  FORGOTPASSWORD_SUCCESS,
-  FORGOTPASSWORD_FAIL,
-  RESETPASSWORD_SUCCESS,
-  RESETPASSWORD_FAIL,
-  USER_LOADED,
-  AUTH_ERROR,
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
-  LOGOUT,
-  ACCOUNT_DELETED,
-  UPDATE_AVATAR,
-  UPDATE_ERROR
+    REGISTER_SUCCESS,
+    REGISTER_FAIL,
+    FORGOTPASSWORD_SUCCESS,
+    FORGOTPASSWORD_FAIL,
+    RESETPASSWORD_SUCCESS,
+    RESETPASSWORD_FAIL,
+    USER_LOADED,
+    AUTH_ERROR,
+    LOGIN_SUCCESS,
+    LOGIN_FAIL,
+    LOGOUT,
+    ACCOUNT_DELETED,
+    UPDATE_AVATAR,
+    UPDATE_ERROR,
 } from '../actions/types';
 
 const intialState = {
-  token: localStorage.getItem('token'),
-  isAuthenticated: null,
-  loading: true,
-  user: null,
-  resetSuccess: false,
-  forgotSuccess: false
+    token: localStorage.getItem('token'),
+    isAuthenticated: null,
+    loading: true,
+    user: null,
+    resetSuccess: false,
+    forgotSuccess: false,
+    forgotMsg: '',
 };
 
 export default function (state = intialState, action) {
-  const { type, payload } = action;
-  switch (type) {
-    case USER_LOADED:
-      return {
-        ...state,
-        isAuthenticated: true,
-        loading: false,
-        user: payload,
-      };
-    case UPDATE_AVATAR:
-    case UPDATE_ERROR:
-      return {
-        ...state,
-        user: { 
-          ...state.user,
-          avatar: payload,
-        },
-      };
-    case REGISTER_SUCCESS:
-    case LOGIN_SUCCESS:
-      localStorage.setItem('token', payload.token);
-      return {
-        ...state,
-        ...payload,
-        isAuthenticated: true,
-        loading: false,
-        user: payload,
-      };
-    case REGISTER_FAIL:
-    case RESETPASSWORD_FAIL:
-    case FORGOTPASSWORD_FAIL:
-    case AUTH_ERROR:
-    case LOGIN_FAIL:
-    case LOGOUT:
-    case ACCOUNT_DELETED:
-      localStorage.removeItem('token');
-      return {
-        ...state,
-        token: null,
-        isAuthenticated: false,
-        loading: false,
-        user: null,
-      };
+    const { type, payload } = action;
+    switch (type) {
+        case USER_LOADED:
+            return {
+                ...state,
+                isAuthenticated: true,
+                loading: false,
+                user: payload,
+            };
+        case UPDATE_AVATAR:
+        case UPDATE_ERROR:
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    avatar: payload,
+                },
+            };
+        case REGISTER_SUCCESS:
+        case LOGIN_SUCCESS:
+            localStorage.setItem('token', payload.token);
+            return {
+                ...state,
+                ...payload,
+                isAuthenticated: true,
+                loading: false,
+                user: payload,
+            };
+        case REGISTER_FAIL:
+        case RESETPASSWORD_FAIL:
+        case FORGOTPASSWORD_FAIL:
+        case AUTH_ERROR:
+        case LOGIN_FAIL:
+        case LOGOUT:
+        case ACCOUNT_DELETED:
+            localStorage.removeItem('token');
+            return {
+                ...state,
+                token: null,
+                isAuthenticated: false,
+                loading: false,
+                user: null,
+                forgotMsg: payload,
+            };
 
-    case RESETPASSWORD_SUCCESS:
-      return {
-        ...state,
-        resetSuccess: true
-      }
+        case RESETPASSWORD_SUCCESS:
+            return {
+                ...state,
+                resetSuccess: true,
+            };
 
-    case FORGOTPASSWORD_SUCCESS:
-      return {
-        ...state,
-        forgotSuccess: true
-      }
+        case FORGOTPASSWORD_SUCCESS:
+            return {
+                ...state,
+                forgotSuccess: true,
+                forgotMsg: payload,
+            };
 
-    default:
-      return state;
-  }
+        default:
+            return state;
+    }
 }
