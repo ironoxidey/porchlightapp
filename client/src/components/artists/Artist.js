@@ -10,6 +10,8 @@ import ArtistAbout from './ArtistAbout';
 // import ProfileEducation from './ProfileEducation';
 import { getArtistBySlug } from '../../actions/artist';
 
+import { Grid, Box } from '@mui/material';
+
 const Artist = ({
     getArtistBySlug,
     artist: { artist, loading },
@@ -60,9 +62,9 @@ const Artist = ({
 								Edit
 							</Link>
 						)} */}
-                    <div className="">
+                    <Box className="" sx={{ padding: '20px' }}>
                         <ArtistTileBack artist={artist} />
-                    </div>
+                    </Box>
                 </Fragment>
             )}
         </Fragment>

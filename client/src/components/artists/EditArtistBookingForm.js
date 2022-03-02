@@ -1246,10 +1246,9 @@ const EditArtistBookingForm = ({
         ],
         agreeToPayAdminFee: [
             <FormLabel component="legend">
-                Porchlight charges an administrative fee of 20% gross ticket
-                sales, tips, merch sales (unless other terms have been agreed to
-                in writing). Do you agree to pay this fee upon completion of the
-                show/tour?
+                Porchlight requests 20% of gross ticket sales, tips, and merch
+                sales (unless other terms have been agreed to in writing). Do
+                you agree to pay this fee upon completion of the show/tour?
             </FormLabel>,
             [
                 <FormControl component="fieldset">
@@ -1271,6 +1270,16 @@ const EditArtistBookingForm = ({
                         />
                     </RadioGroup>
                 </FormControl>,
+                <FormLabel component="small">
+                    *We collect this fee so that we can cover our costs of
+                    managing and growing the Porchlight network. If we
+                    experience a surplus at the end of the year, we are
+                    committed (and personally gratified) to invest it back into
+                    the Porchlight network in the form of an artist fund which
+                    we will use for sponsored recording projects, micro
+                    songwriter retreats, artist grants, and other artist
+                    support.
+                </FormLabel>,
             ],
         ],
         agreeToPromote: [

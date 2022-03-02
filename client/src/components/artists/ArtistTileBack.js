@@ -102,6 +102,7 @@ const ArtistTileBack = ({
             setMediaTab((mediaTabs) => [
                 ...mediaTabs,
                 {
+                    fieldName: 'artistStatementVideo',
                     title: 'Artist Statement',
                     mediaLink: artist.artistStatementVideo,
                 },
@@ -109,12 +110,17 @@ const ArtistTileBack = ({
         if (artist.repLink)
             setMediaTab((mediaTabs) => [
                 ...mediaTabs,
-                { title: `Listen`, mediaLink: artist.repLink },
+                {
+                    fieldName: 'repLink',
+                    title: `Listen`,
+                    mediaLink: artist.repLink,
+                },
             ]);
         if (artist.livePerformanceVideo)
             setMediaTab((mediaTabs) => [
                 ...mediaTabs,
                 {
+                    fieldName: 'livePerformanceVideo',
                     title: `Live performance`,
                     mediaLink: artist.livePerformanceVideo,
                 },
@@ -152,248 +158,352 @@ const ArtistTileBack = ({
                 }}
             >
                 {/* {wideImg ? ( */}
-                <Grid
-                    container
-                    className="wideImgBG"
-                    sx={{
-                        padding: '20px!important',
-                        height: '50vw',
-                        maxHeight: '50vh',
-                        //width: 'calc(100% - 40px)',
-                        //maxWidth: '960px',
-                        margin: '0 auto',
-                        borderRadius: '8px',
-                        backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0)), url("${wideImg}")`,
-                        backgroundColor: 'var(--secondary-dark-color)',
-                        backgroundPosition: '50% 50%',
-                        backgroundSize: 'cover',
-                        alignItems: 'center',
-                    }}
+                <Tooltip
+                    arrow={true}
+                    disableHoverListener={!isMe}
+                    disableFocusListener={!isMe}
+                    disableTouchListener={!isMe}
+                    title={
+                        <Link to="/edit-artist-profile?field=wideImg">
+                            Edit
+                        </Link>
+                    }
                 >
-                    {artist.squareImg ? (
-                        <Grid item>
-                            <Box
-                                className="squareImgInACircle"
-                                sx={{
-                                    height: '200px',
-                                    width: '200px',
-                                    maxHeight: '200px',
-                                    maxWidth: '200px',
-                                    borderRadius: '50%',
-                                    overflow: 'hidden',
-                                    backgroundImage: `url("${artist.squareImg}")`,
-                                    backgroundPosition: '50% 25%',
-                                    backgroundSize: 'cover',
-                                    padding: '4px',
-                                    backgroundClip: 'content-box',
-                                    border: '1px solid var(--primary-color)',
-                                    margin: '0 8px 0 0',
-                                }}
-                            ></Box>
-                        </Grid>
-                    ) : (
-                        ''
-                    )}
                     <Grid
-                        item
                         container
-                        xs={8}
+                        className="wideImgBG"
                         sx={{
-                            marginTop: '0',
-                            textShadow: '0 0 10px rgba(0,0,0,.8)',
+                            padding: '20px!important',
+                            height: '50vw',
+                            maxHeight: '50vh',
+                            //width: 'calc(100% - 40px)',
+                            //maxWidth: '960px',
+                            margin: '0 auto',
+                            borderRadius: '8px',
+                            backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0)), url("${wideImg}")`,
+                            backgroundColor: 'var(--secondary-dark-color)',
+                            backgroundPosition: '50% 50%',
+                            backgroundSize: 'cover',
+                            alignItems: 'center',
                         }}
-                        direction="column"
-                        alignItems="start"
                     >
-                        {artist.stageName && artist.artistWebsite ? (
+                        {artist.squareImg ? (
                             <Grid item>
-                                <a href={artist.artistWebsite} target="_blank">
+                                <Tooltip
+                                    arrow={true}
+                                    disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
+                                    title={
+                                        <Link to="/edit-artist-profile?field=squareImg">
+                                            Edit
+                                        </Link>
+                                    }
+                                >
+                                    <Box
+                                        className="squareImgInACircle"
+                                        sx={{
+                                            height: '200px',
+                                            width: '200px',
+                                            maxHeight: '200px',
+                                            maxWidth: '200px',
+                                            borderRadius: '50%',
+                                            overflow: 'hidden',
+                                            backgroundImage: `url("${artist.squareImg}")`,
+                                            backgroundPosition: '50% 25%',
+                                            backgroundSize: 'cover',
+                                            padding: '4px',
+                                            backgroundClip: 'content-box',
+                                            border: '1px solid var(--primary-color)',
+                                            margin: '0 8px 0 0',
+                                        }}
+                                    ></Box>
+                                </Tooltip>
+                            </Grid>
+                        ) : (
+                            ''
+                        )}
+                        <Grid
+                            item
+                            container
+                            xs={8}
+                            sx={{
+                                marginTop: '0',
+                                textShadow: '0 0 10px rgba(0,0,0,.8)',
+                            }}
+                            direction="column"
+                            alignItems="start"
+                        >
+                            {artist.stageName ? (
+                                <Grid item>
+                                    <Typography component="h2">
+                                        {artist.stageName}
+                                        {artist.artistWebsite ? (
+                                            <Tooltip
+                                                title={
+                                                    !isMe ? (
+                                                        'Check out ' +
+                                                        artist.stageName +
+                                                        '’s website'
+                                                    ) : (
+                                                        <Link to="/edit-artist-profile?field=artistWebsite">
+                                                            Edit
+                                                        </Link>
+                                                    )
+                                                }
+                                                placement="bottom"
+                                                arrow
+                                            >
+                                                <a
+                                                    href={artist.artistWebsite}
+                                                    target="_blank"
+                                                >
+                                                    <SvgIcon
+                                                        style={{
+                                                            marginLeft: '8px',
+                                                            fontSize: '1rem',
+                                                            verticalAlign:
+                                                                'middle',
+                                                        }}
+                                                    >
+                                                        <FontAwesomeIcon icon="external-link-alt"></FontAwesomeIcon>
+                                                    </SvgIcon>
+                                                </a>
+                                            </Tooltip>
+                                        ) : (
+                                            ''
+                                        )}
+                                    </Typography>
+                                </Grid>
+                            ) : artist.stageName ? (
+                                <Grid item>
                                     <Typography component="h2">
                                         {artist.stageName}
                                     </Typography>
-                                </a>
-                            </Grid>
-                        ) : artist.stageName ? (
-                            <Grid item>
-                                <Typography component="h2">
-                                    {artist.stageName}
-                                </Typography>
-                            </Grid>
-                        ) : (
-                            ''
-                        )}
-                        {artist.genres &&
-                        artist.genres.constructor.name === 'Array' ? (
-                            <Grid item>
-                                <Tooltip title="Genre" placement="bottom" arrow>
-                                    <SvgIcon
-                                        style={{
-                                            marginRight: '8px',
-                                            fontSize: '1.3em',
-                                            verticalAlign: 'middle',
-                                        }}
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                            {artist.genres &&
+                            artist.genres.constructor.name === 'Array' ? (
+                                <Grid item>
+                                    <Tooltip
+                                        title={
+                                            !isMe ? (
+                                                'Genre'
+                                            ) : (
+                                                <Link to="/edit-artist-profile?field=genres">
+                                                    Edit
+                                                </Link>
+                                            )
+                                        }
+                                        placement="bottom"
+                                        arrow
                                     >
-                                        <FontAwesomeIcon icon="guitar"></FontAwesomeIcon>
-                                    </SvgIcon>
-                                </Tooltip>
-                                {artist.genres.map((genre, key) => (
-                                    <Chip
-                                        key={key}
-                                        label={genre}
-                                        size="small"
-                                        sx={{ margin: '0 4px' }}
-                                    ></Chip>
-                                ))}
-                            </Grid>
-                        ) : (
-                            ''
-                        )}
-                        {artist.city && artist.state ? (
-                            <Grid
-                                item
-                                container
-                                alignItems="center"
-                                sx={{ marginTop: '8px' }}
-                            >
-                                <Tooltip
-                                    title="Location"
-                                    placement="bottom"
-                                    arrow
-                                >
-                                    <PlaceTwoToneIcon
-                                        sx={{ marginRight: '8px' }}
-                                    ></PlaceTwoToneIcon>
-                                </Tooltip>
-                                <Typography component="h3">
-                                    {toTitleCase(artist.city)}, {artist.state}
-                                </Typography>
-                            </Grid>
-                        ) : (
-                            ''
-                        )}
-                        {artist.soundsLike &&
-                        artist.soundsLike.constructor.name === 'Array' ? (
-                            <Grid
-                                item
-                                container
-                                alignItems="center"
-                                sx={{ marginTop: '8px' }}
-                            >
-                                <Tooltip
-                                    title="Sounds Like"
-                                    placement="bottom"
-                                    arrow
-                                >
-                                    <HearingTwoToneIcon
-                                        sx={{ marginRight: '8px' }}
-                                    ></HearingTwoToneIcon>
-                                </Tooltip>
-                                {artist.soundsLike.map((sndsLike, key) => (
-                                    <Chip
-                                        key={key}
-                                        label={sndsLike}
-                                        size="small"
-                                        sx={{ margin: '0 4px' }}
-                                    ></Chip>
-                                ))}
-                            </Grid>
-                        ) : (
-                            ''
-                        )}
-                        {artist.socialLinks &&
-                        Object.keys(artist.socialLinks).length > 0 ? (
-                            <Grid
-                                container
-                                item
-                                direction="row"
-                                sx={{
-                                    margin: '8px auto',
-                                    width: '100%',
-                                }}
-                            >
-                                {artist.socialLinks.map(
-                                    (eachSocialLink, idx) => (
-                                        <Grid
-                                            item
-                                            xs={1}
-                                            //md={0.5}
-                                            className="link-icon"
-                                            key={`eachSocialLink${idx}`}
+                                        <SvgIcon
+                                            style={{
+                                                marginRight: '8px',
+                                                fontSize: '1.3rem',
+                                                verticalAlign: 'baseline',
+                                            }}
                                         >
-                                            <Tooltip
-                                                title={toTitleCase(
-                                                    pullDomainFrom(
-                                                        eachSocialLink.link
-                                                    )
-                                                )}
-                                                placement="bottom"
-                                                arrow
+                                            <FontAwesomeIcon icon="guitar"></FontAwesomeIcon>
+                                        </SvgIcon>
+                                    </Tooltip>
+                                    {artist.genres.map((genre, key) => (
+                                        <Chip
+                                            key={key}
+                                            label={genre}
+                                            size="small"
+                                            sx={{ margin: '0 4px' }}
+                                        ></Chip>
+                                    ))}
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                            {artist.city && artist.state ? (
+                                <Grid
+                                    item
+                                    container
+                                    alignItems="center"
+                                    sx={{ marginTop: '8px' }}
+                                >
+                                    <Tooltip
+                                        title={
+                                            !isMe ? (
+                                                'Location'
+                                            ) : (
+                                                <Link to="/edit-artist-profile?field=location">
+                                                    Edit
+                                                </Link>
+                                            )
+                                        }
+                                        placement="bottom"
+                                        arrow
+                                    >
+                                        <PlaceTwoToneIcon
+                                            sx={{ marginRight: '8px' }}
+                                        ></PlaceTwoToneIcon>
+                                    </Tooltip>
+                                    <Typography component="h3">
+                                        {toTitleCase(artist.city)},{' '}
+                                        {artist.state}
+                                    </Typography>
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                            {artist.soundsLike &&
+                            artist.soundsLike.constructor.name === 'Array' ? (
+                                <Grid
+                                    item
+                                    container
+                                    alignItems="center"
+                                    sx={{ marginTop: '8px' }}
+                                >
+                                    <Tooltip
+                                        title={
+                                            !isMe ? (
+                                                'Sounds Like'
+                                            ) : (
+                                                <Link to="/edit-artist-profile?field=soundsLike">
+                                                    Edit
+                                                </Link>
+                                            )
+                                        }
+                                        placement="bottom"
+                                        arrow
+                                    >
+                                        <HearingTwoToneIcon
+                                            sx={{ marginRight: '8px' }}
+                                        ></HearingTwoToneIcon>
+                                    </Tooltip>
+                                    {artist.soundsLike.map((sndsLike, key) => (
+                                        <Chip
+                                            key={key}
+                                            label={sndsLike}
+                                            size="small"
+                                            sx={{ margin: '0 4px' }}
+                                        ></Chip>
+                                    ))}
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                            {artist.socialLinks &&
+                            Object.keys(artist.socialLinks).length > 0 ? (
+                                <Grid
+                                    container
+                                    item
+                                    direction="row"
+                                    sx={{
+                                        margin: '8px auto',
+                                        width: '100%',
+                                    }}
+                                >
+                                    {artist.socialLinks.map(
+                                        (eachSocialLink, idx) => (
+                                            <Grid
+                                                item
+                                                xs={1}
+                                                //md={0.5}
+                                                className="link-icon"
+                                                key={`eachSocialLink${idx}`}
                                             >
-                                                <a
-                                                    href={eachSocialLink.link}
-                                                    target="_blank"
-                                                >
-                                                    {getFontAwesomeIcon(
-                                                        eachSocialLink.link
-                                                    )}
-                                                </a>
-                                            </Tooltip>
-                                        </Grid>
-                                    )
-                                )}
-                            </Grid>
-                        ) : (
-                            ''
-                        )}
-                        {artist.streamingLinks &&
-                        Object.keys(artist.streamingLinks).length > 0 ? (
-                            <Grid
-                                container
-                                item
-                                direction="row"
-                                sx={{
-                                    margin: '8px auto',
-                                    width: '100%',
-                                }}
-                            >
-                                {artist.streamingLinks.map(
-                                    (eachStreamingLink, idx) => (
-                                        <Grid
-                                            item
-                                            xs={1}
-                                            //md={0.5}
-                                            className="link-icon"
-                                            key={`eachStreamingLink${idx}`}
-                                        >
-                                            <Tooltip
-                                                title={toTitleCase(
-                                                    pullDomainFrom(
-                                                        eachStreamingLink.link
-                                                    )
-                                                )}
-                                                placement="bottom"
-                                                arrow
-                                            >
-                                                <a
-                                                    href={
-                                                        eachStreamingLink.link
+                                                <Tooltip
+                                                    title={
+                                                        !isMe ? (
+                                                            toTitleCase(
+                                                                pullDomainFrom(
+                                                                    eachSocialLink.link
+                                                                )
+                                                            )
+                                                        ) : (
+                                                            <Link to="/edit-artist-profile?field=socialLinks">
+                                                                Edit
+                                                            </Link>
+                                                        )
                                                     }
-                                                    target="_blank"
+                                                    placement="bottom"
+                                                    arrow
                                                 >
-                                                    {getFontAwesomeIcon(
-                                                        eachStreamingLink.link
-                                                    )}
-                                                </a>
-                                            </Tooltip>
-                                        </Grid>
-                                    )
-                                )}
-                            </Grid>
-                        ) : (
-                            ''
-                        )}
+                                                    <a
+                                                        href={
+                                                            eachSocialLink.link
+                                                        }
+                                                        target="_blank"
+                                                    >
+                                                        {getFontAwesomeIcon(
+                                                            eachSocialLink.link
+                                                        )}
+                                                    </a>
+                                                </Tooltip>
+                                            </Grid>
+                                        )
+                                    )}
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                            {artist.streamingLinks &&
+                            Object.keys(artist.streamingLinks).length > 0 ? (
+                                <Grid
+                                    container
+                                    item
+                                    direction="row"
+                                    sx={{
+                                        margin: '8px auto',
+                                        width: '100%',
+                                    }}
+                                >
+                                    {artist.streamingLinks.map(
+                                        (eachStreamingLink, idx) => (
+                                            <Grid
+                                                item
+                                                xs={1}
+                                                //md={0.5}
+                                                className="link-icon"
+                                                key={`eachStreamingLink${idx}`}
+                                            >
+                                                <Tooltip
+                                                    title={
+                                                        !isMe ? (
+                                                            toTitleCase(
+                                                                pullDomainFrom(
+                                                                    eachStreamingLink.link
+                                                                )
+                                                            )
+                                                        ) : (
+                                                            <Link to="/edit-artist-profile?field=streamingLinks">
+                                                                Edit
+                                                            </Link>
+                                                        )
+                                                    }
+                                                    placement="bottom"
+                                                    arrow
+                                                >
+                                                    <a
+                                                        href={
+                                                            eachStreamingLink.link
+                                                        }
+                                                        target="_blank"
+                                                    >
+                                                        {getFontAwesomeIcon(
+                                                            eachStreamingLink.link
+                                                        )}
+                                                    </a>
+                                                </Tooltip>
+                                            </Grid>
+                                        )
+                                    )}
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                        </Grid>
                     </Grid>
-                </Grid>
+                </Tooltip>
                 {/* ) : (
 				''
 			)} */}
@@ -427,13 +537,27 @@ const ArtistTileBack = ({
                         >
                             {mediaTabs.map((mediaTab, i) => (
                                 <Grid item key={i}>
-                                    <Button
-                                        variant="contained"
-                                        component="span"
-                                        onClick={(e) => setTabIndex(i)}
+                                    <Tooltip
+                                        arrow={true}
+                                        disableHoverListener={!isMe}
+                                        disableFocusListener={!isMe}
+                                        disableTouchListener={!isMe}
+                                        title={
+                                            <Link
+                                                to={`/edit-artist-profile?field=${mediaTab.fieldName}`}
+                                            >
+                                                Edit
+                                            </Link>
+                                        }
                                     >
-                                        {mediaTab.title}
-                                    </Button>
+                                        <Button
+                                            variant="contained"
+                                            component="span"
+                                            onClick={(e) => setTabIndex(i)}
+                                        >
+                                            {mediaTab.title}
+                                        </Button>
+                                    </Tooltip>
                                 </Grid>
                             ))}
                         </Grid>
@@ -482,7 +606,32 @@ const ArtistTileBack = ({
                             className="bio"
                             xs={6}
                         >
-                            <Typography component="h3">Bio:</Typography>
+                            <Typography component="h3">
+                                <Tooltip
+                                    arrow={true}
+                                    disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
+                                    title={
+                                        <Link
+                                            to={`/edit-artist-profile?field=bio`}
+                                        >
+                                            Edit
+                                        </Link>
+                                    }
+                                >
+                                    <SvgIcon
+                                        style={{
+                                            marginRight: '4px',
+                                            fontSize: '1rem',
+                                            verticalAlign: 'baseline',
+                                        }}
+                                    >
+                                        <FontAwesomeIcon icon="book"></FontAwesomeIcon>
+                                    </SvgIcon>
+                                </Tooltip>
+                                Bio:
+                            </Typography>
 
                             {artist.bio}
                         </Grid>
@@ -539,7 +688,19 @@ const ArtistTileBack = ({
                                                 margin: '0px auto',
                                             }}
                                         >
-                                            <TodayTwoToneIcon></TodayTwoToneIcon>
+                                            <Tooltip
+                                                arrow={true}
+                                                disableHoverListener={!isMe}
+                                                disableFocusListener={!isMe}
+                                                disableTouchListener={!isMe}
+                                                title={
+                                                    <Link to="/edit-artist-booking?field=bookingWhen">
+                                                        Edit
+                                                    </Link>
+                                                }
+                                            >
+                                                <TodayTwoToneIcon></TodayTwoToneIcon>
+                                            </Tooltip>
                                             {whenBooking &&
                                                 whenBooking.where &&
                                                 new Date(
@@ -564,6 +725,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=costStructure">
                                             Edit
@@ -603,6 +766,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=tourVibe">
                                             Edit
@@ -630,6 +795,8 @@ const ArtistTileBack = ({
                                     <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
+                                        disableFocusListener={!isMe}
+                                        disableTouchListener={!isMe}
                                         title={
                                             <Link to="/edit-artist-booking?field=showSchedule">
                                                 Edit
@@ -677,6 +844,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=overnight">
                                             Edit
@@ -708,6 +877,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=merchTable">
                                             Edit
@@ -746,6 +917,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=allergies">
                                             Edit
@@ -755,8 +928,8 @@ const ArtistTileBack = ({
                                     <SvgIcon
                                         style={{
                                             marginRight: '4px',
-                                            fontSize: '1.3em',
-                                            verticalAlign: 'middle',
+                                            fontSize: '1.3rem',
+                                            verticalAlign: 'baseline',
                                         }}
                                     >
                                         <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
@@ -791,6 +964,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=familyFriendly">
                                             Edit
@@ -814,6 +989,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=familyFriendly">
                                             Edit
@@ -839,6 +1016,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=soundSystem">
                                             Edit
@@ -864,6 +1043,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=soundSystem">
                                             Edit
@@ -887,6 +1068,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=soundSystem">
                                             Edit
@@ -914,6 +1097,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=covidPrefs">
                                             Edit
@@ -953,6 +1138,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=financialHopes">
                                             Edit
@@ -978,6 +1165,8 @@ const ArtistTileBack = ({
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
                                     title={
                                         <Link to="/edit-artist-booking?field=fanActions">
                                             Edit

@@ -23,8 +23,18 @@ import {
     faGuitar,
     faCalendarDay,
     faAllergies,
+    faExternalLinkAlt,
+    faBook,
 } from '@fortawesome/free-solid-svg-icons';
-library.add(fab, faGlobeAmericas, faGuitar, faCalendarDay, faAllergies);
+library.add(
+    fab,
+    faGlobeAmericas,
+    faGuitar,
+    faCalendarDay,
+    faAllergies,
+    faExternalLinkAlt,
+    faBook
+);
 
 const darkTheme = createTheme({
     palette: {
