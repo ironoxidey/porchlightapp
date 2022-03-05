@@ -2601,7 +2601,11 @@ const EditArtistProfileForm = ({
                             ...style,
                         }}
                     >
-                        <div className="form-group" key={'form-group' + i}>
+                        <div
+                            className="form-group"
+                            key={'form-group' + i}
+                            style={{ maxWidth: '100%' }}
+                        >
                             <Grid
                                 container
                                 direction="column"

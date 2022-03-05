@@ -87,6 +87,7 @@ function StackDateforDisplay(props) {
                 item
                 sx={{
                     fontSize: '1.8em',
+                    marginBottom: '-2px',
                 }}
             >
                 {theDate[2]}
@@ -97,6 +98,7 @@ function StackDateforDisplay(props) {
                 sx={{
                     color: 'var(--primary-color)',
                     fontSize: '.9em',
+                    marginBottom: '4px',
                 }}
             >
                 {theDate[3]}
@@ -670,7 +672,7 @@ const ArtistTileBack = ({
                             item
                             sx={{
                                 position: 'relative',
-                                height: '450px',
+                                height: '400px',
                             }}
                         >
                             {mediaTabs.length > 0
