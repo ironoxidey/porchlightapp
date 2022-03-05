@@ -44,6 +44,67 @@ import {
     convert24HourTime,
 } from '../../actions/app';
 
+function StackDateforDisplay(props) {
+    let theDate = new Date(props.date).toDateString().split(' ');
+    return (
+        <Grid
+            item
+            container
+            className="dateStack"
+            sx={{
+                fontFamily: 'var(--secondary-font)',
+                textTransform: 'uppercase',
+                lineHeight: '1',
+                textAlign: 'center',
+                border: '1px solid var(--link-color)',
+                width: '55px',
+            }}
+            direction="column"
+        >
+            <Grid
+                className="weekday"
+                item
+                sx={{
+                    color: 'var(--dark-color)',
+                    backgroundColor: 'var(--link-color)',
+                    margin: '0',
+                    padding: '2px',
+                }}
+            >
+                {theDate[0]}
+            </Grid>
+            <Grid
+                className="month"
+                item
+                sx={{
+                    marginTop: '4px',
+                }}
+            >
+                {theDate[1]}
+            </Grid>
+            <Grid
+                className="date"
+                item
+                sx={{
+                    fontSize: '1.8em',
+                }}
+            >
+                {theDate[2]}
+            </Grid>
+            <Grid
+                item
+                className="year"
+                sx={{
+                    color: 'var(--primary-color)',
+                    fontSize: '.9em',
+                }}
+            >
+                {theDate[3]}
+            </Grid>
+        </Grid>
+    );
+}
+
 const ArtistTileBack = ({
     me,
     artist,
@@ -105,6 +166,7 @@ const ArtistTileBack = ({
                     fieldName: 'artistStatementVideo',
                     title: 'Artist Statement',
                     mediaLink: artist.artistStatementVideo,
+                    width: 200,
                 },
             ]);
         if (artist.repLink)
@@ -114,6 +176,7 @@ const ArtistTileBack = ({
                     fieldName: 'repLink',
                     title: `Listen`,
                     mediaLink: artist.repLink,
+                    width: 140,
                 },
             ]);
         if (artist.livePerformanceVideo)
@@ -123,6 +186,7 @@ const ArtistTileBack = ({
                     fieldName: 'livePerformanceVideo',
                     title: `Live performance`,
                     mediaLink: artist.livePerformanceVideo,
+                    width: 200,
                 },
             ]);
         // }
@@ -174,17 +238,27 @@ const ArtistTileBack = ({
                         className="wideImgBG"
                         sx={{
                             padding: '20px!important',
-                            height: '50vw',
-                            maxHeight: '50vh',
+                            height: {
+                                xs: '100%',
+                                md: '55vh',
+                            },
+                            maxHeight: {
+                                xs: '100%',
+                                md: '55vh',
+                            },
                             //width: 'calc(100% - 40px)',
                             //maxWidth: '960px',
                             margin: '0 auto',
-                            borderRadius: '8px',
+                            borderRadius: '8px 8px 0 0',
                             backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0)), url("${wideImg}")`,
                             backgroundColor: 'var(--secondary-dark-color)',
                             backgroundPosition: '50% 50%',
                             backgroundSize: 'cover',
                             alignItems: 'center',
+                            justifyContent: {
+                                md: 'start',
+                                xs: 'center',
+                            },
                         }}
                     >
                         {artist.squareImg ? (
@@ -226,18 +300,31 @@ const ArtistTileBack = ({
                         <Grid
                             item
                             container
-                            xs={8}
+                            md={8}
                             sx={{
                                 marginTop: '0',
                                 textShadow: '0 0 10px rgba(0,0,0,.8)',
+                                width: 'fit-content',
+                                maxWidth: 'fit-content',
                             }}
                             direction="column"
                             alignItems="start"
+                            className="topInfo"
                         >
                             {artist.stageName ? (
                                 <Grid item>
-                                    <Typography component="h2">
-                                        {artist.stageName}
+                                    <Grid
+                                        container
+                                        item
+                                        direction="row"
+                                        sx={{
+                                            margin: '8px auto',
+                                            width: '100%',
+                                        }}
+                                    >
+                                        <Typography component="h2">
+                                            {artist.stageName}
+                                        </Typography>{' '}
                                         {artist.artistWebsite ? (
                                             <Tooltip
                                                 title={
@@ -261,7 +348,8 @@ const ArtistTileBack = ({
                                                     <SvgIcon
                                                         style={{
                                                             marginLeft: '8px',
-                                                            fontSize: '1rem',
+                                                            marginRight: '4px',
+                                                            fontSize: '1.15rem',
                                                             verticalAlign:
                                                                 'middle',
                                                         }}
@@ -273,7 +361,56 @@ const ArtistTileBack = ({
                                         ) : (
                                             ''
                                         )}
-                                    </Typography>
+                                        {artist.socialLinks &&
+                                        Object.keys(artist.socialLinks).length >
+                                            0
+                                            ? artist.socialLinks.map(
+                                                  (eachSocialLink, idx) => (
+                                                      <Grid
+                                                          item
+                                                          xs={1}
+                                                          //md={0.5}
+                                                          className="link-icon"
+                                                          key={`eachSocialLink${idx}`}
+                                                          sx={{
+                                                              marginRight:
+                                                                  '4px',
+                                                          }}
+                                                      >
+                                                          <Tooltip
+                                                              title={
+                                                                  !isMe ? (
+                                                                      toTitleCase(
+                                                                          pullDomainFrom(
+                                                                              eachSocialLink.link
+                                                                          )
+                                                                      )
+                                                                  ) : (
+                                                                      <Link to="/edit-artist-profile?field=socialLinks">
+                                                                          Edit
+                                                                      </Link>
+                                                                  )
+                                                              }
+                                                              placement="bottom"
+                                                              arrow
+                                                          >
+                                                              <a
+                                                                  href={
+                                                                      eachSocialLink.link
+                                                                  }
+                                                                  target="_blank"
+                                                              >
+                                                                  {getFontAwesomeIcon(
+                                                                      eachSocialLink.link,
+                                                                      'lg'
+                                                                  )}
+                                                              </a>
+                                                          </Tooltip>
+                                                      </Grid>
+                                                  )
+                                              )
+                                            : ''}
+                                    </Grid>
                                 </Grid>
                             ) : artist.stageName ? (
                                 <Grid item>
@@ -391,61 +528,7 @@ const ArtistTileBack = ({
                             ) : (
                                 ''
                             )}
-                            {artist.socialLinks &&
-                            Object.keys(artist.socialLinks).length > 0 ? (
-                                <Grid
-                                    container
-                                    item
-                                    direction="row"
-                                    sx={{
-                                        margin: '8px auto',
-                                        width: '100%',
-                                    }}
-                                >
-                                    {artist.socialLinks.map(
-                                        (eachSocialLink, idx) => (
-                                            <Grid
-                                                item
-                                                xs={1}
-                                                //md={0.5}
-                                                className="link-icon"
-                                                key={`eachSocialLink${idx}`}
-                                            >
-                                                <Tooltip
-                                                    title={
-                                                        !isMe ? (
-                                                            toTitleCase(
-                                                                pullDomainFrom(
-                                                                    eachSocialLink.link
-                                                                )
-                                                            )
-                                                        ) : (
-                                                            <Link to="/edit-artist-profile?field=socialLinks">
-                                                                Edit
-                                                            </Link>
-                                                        )
-                                                    }
-                                                    placement="bottom"
-                                                    arrow
-                                                >
-                                                    <a
-                                                        href={
-                                                            eachSocialLink.link
-                                                        }
-                                                        target="_blank"
-                                                    >
-                                                        {getFontAwesomeIcon(
-                                                            eachSocialLink.link
-                                                        )}
-                                                    </a>
-                                                </Tooltip>
-                                            </Grid>
-                                        )
-                                    )}
-                                </Grid>
-                            ) : (
-                                ''
-                            )}
+
                             {artist.streamingLinks &&
                             Object.keys(artist.streamingLinks).length > 0 ? (
                                 <Grid
@@ -465,6 +548,9 @@ const ArtistTileBack = ({
                                                 //md={0.5}
                                                 className="link-icon"
                                                 key={`eachStreamingLink${idx}`}
+                                                sx={{
+                                                    marginRight: '8px',
+                                                }}
                                             >
                                                 <Tooltip
                                                     title={
@@ -512,7 +598,10 @@ const ArtistTileBack = ({
                     container
                     justifyContent="start"
                     direction="row"
-                    sx={{ padding: '8px 20px 0!important' }}
+                    sx={{
+                        padding: '8px 0px 0!important',
+                        height: 'fit-content',
+                    }}
                 >
                     <Grid
                         item
@@ -523,7 +612,8 @@ const ArtistTileBack = ({
                         }}
                         className="mediaTabEmbed"
                         direction="column"
-                        xs={6}
+                        md={8}
+                        xs={12}
                     >
                         <Grid
                             item
@@ -531,12 +621,26 @@ const ArtistTileBack = ({
                             sx={{
                                 marginTop: '0',
                                 width: '100%',
+
+                                flexDirection: 'row',
+                                justifyContent: {
+                                    md: 'space-between',
+                                    xs: 'center',
+                                },
                             }}
                             className="mediaTabNav"
-                            direction="row"
                         >
                             {mediaTabs.map((mediaTab, i) => (
-                                <Grid item key={i}>
+                                <Grid
+                                    item
+                                    key={i}
+                                    sx={{
+                                        marginRight: {
+                                            md: '8px',
+                                        },
+                                        marginBottom: '8px',
+                                    }}
+                                >
                                     <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
@@ -554,6 +658,7 @@ const ArtistTileBack = ({
                                             variant="contained"
                                             component="span"
                                             onClick={(e) => setTabIndex(i)}
+                                            btnwidth={mediaTab.width}
                                         >
                                             {mediaTab.title}
                                         </Button>
@@ -602,11 +707,28 @@ const ArtistTileBack = ({
                     {artist.bio ? (
                         <Grid
                             item
-                            sx={{ marginTop: '0' }}
+                            container
+                            sx={{
+                                marginTop: '0',
+                                marginBottom: '20px',
+                                padding: '20px',
+                                border: '3px solid var(--primary-color)',
+                            }}
+                            justifyContent="center"
+                            alignItems="center"
+                            alignContent="center"
                             className="bio"
-                            xs={6}
+                            md={4}
+                            xs={12}
                         >
-                            <Typography component="h3">
+                            <Typography
+                                component="h3"
+                                sx={{
+                                    fontFamily: 'var(--secondary-font)',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '1px',
+                                }}
+                            >
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
@@ -630,7 +752,7 @@ const ArtistTileBack = ({
                                         <FontAwesomeIcon icon="book"></FontAwesomeIcon>
                                     </SvgIcon>
                                 </Tooltip>
-                                Bio:
+                                About {stageName}:
                             </Typography>
 
                             {artist.bio}
@@ -658,7 +780,7 @@ const ArtistTileBack = ({
                         <Grid
                             className="whenBooking"
                             container
-                            direction="column"
+                            direction="row"
                             justifyContent="center"
                             alignItems="start"
                             spacing={2}
@@ -678,14 +800,17 @@ const ArtistTileBack = ({
                                         <Grid
                                             className="whenBooking"
                                             key={`whenBooking${idx}`}
+                                            container
                                             item
-                                            xs={3}
+                                            md={4}
+                                            sm={5.5}
+                                            xs={12}
                                             sx={{
                                                 backgroundColor:
                                                     'rgba(0,0,0,0.35)',
                                                 '&:hover': {},
                                                 padding: '0 10px 10px',
-                                                margin: '0px auto',
+                                                margin: '4px',
                                             }}
                                         >
                                             <Tooltip
@@ -699,17 +824,40 @@ const ArtistTileBack = ({
                                                     </Link>
                                                 }
                                             >
-                                                <TodayTwoToneIcon></TodayTwoToneIcon>
+                                                {whenBooking &&
+                                                whenBooking.where ? (
+                                                    <Grid
+                                                        container
+                                                        item
+                                                        direction="row"
+                                                        alignItems="center"
+                                                    >
+                                                        <StackDateforDisplay
+                                                            date={
+                                                                whenBooking.when
+                                                            }
+                                                        ></StackDateforDisplay>
+                                                        <Grid
+                                                            item
+                                                            sx={{
+                                                                fontSize:
+                                                                    '1.5em',
+                                                                marginLeft:
+                                                                    '8px',
+                                                            }}
+                                                        >
+                                                            {whenBooking.where
+                                                                .city +
+                                                                ', ' +
+                                                                whenBooking
+                                                                    .where
+                                                                    .state}
+                                                        </Grid>
+                                                    </Grid>
+                                                ) : (
+                                                    ''
+                                                )}
                                             </Tooltip>
-                                            {whenBooking &&
-                                                whenBooking.where &&
-                                                new Date(
-                                                    whenBooking.when
-                                                ).toDateString() +
-                                                    ': ' +
-                                                    whenBooking.where.city +
-                                                    ', ' +
-                                                    whenBooking.where.state}
                                         </Grid>
                                     )
                                 )}

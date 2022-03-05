@@ -98,7 +98,7 @@ export const youTubeEmbed = (formInput) => {
     }
 };
 
-export const getFontAwesomeIcon = (url) => {
+export const getFontAwesomeIcon = (url, size = 'lg') => {
     let theDomain = pullDomainFrom(url);
     let isIcon = icon({
         prefix: 'fab',
@@ -106,13 +106,13 @@ export const getFontAwesomeIcon = (url) => {
     }); //will return 'undefined' if no icon found
     if (isIcon) {
         return (
-            <FontAwesomeIcon icon={['fab', theDomain]} size="lg" fixedWidth />
+            <FontAwesomeIcon icon={['fab', theDomain]} size={size} fixedWidth />
         );
     } else {
         return (
             <FontAwesomeIcon
                 icon={['fas', 'globe-americas']}
-                size="lg"
+                size={size}
                 fixedWidth
             />
         );

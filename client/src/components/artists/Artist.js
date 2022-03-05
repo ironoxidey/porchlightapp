@@ -62,7 +62,14 @@ const Artist = ({
 								Edit
 							</Link>
 						)} */}
-                    <Box className="" sx={{ padding: '20px' }}>
+                    <Box
+                        className=""
+                        sx={{
+                            padding: '20px',
+                            maxWidth: 'calc(2 * 70vh)',
+                            m: '0 auto',
+                        }}
+                    >
                         <ArtistTileBack artist={artist} />
                     </Box>
                 </Fragment>
