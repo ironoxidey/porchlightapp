@@ -232,6 +232,52 @@ router.post('/batch', [auth], async (req, res) => {
         //res.json(artistCount + " artist(s) submitted to the database."); //eventually remove this
     }
 });
+// @route    POST api/artists/admin-update
+// @desc     Batch create or update artists
+// @access   Private
+router.post('/admin-update', [auth], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    //console.log(req.user);
+    if (req.body instanceof Array) {
+        await Promise.all(
+            req.body.map(async (artistFields) => {
+                artistFields.stageName && artistFields.stageName.length > 0
+                    ? (artistFields.slug = convertToSlug(
+                          artistFields.stageName
+                      ))
+                    : '';
+
+                if (req.user.role === 'ADMIN' && artistFields.email !== '') {
+                    //console.log("User is ADMIN and has authority to update all other users.");
+                    try {
+                        //console.log(artistFields);
+                        // Using upsert option (creates new doc if no match is found):
+                        let artist = await Artist.findOneAndUpdate(
+                            { email: artistFields.email.toLowerCase() },
+                            { $set: artistFields },
+                            { new: true, upsert: true }
+                        );
+                        const artists = await Artist.find();
+                        res.json(artists);
+                    } catch (err) {
+                        console.error(err.message);
+                        res.status(500).send('Server Error: ' + err.message);
+                    }
+                } else {
+                    console.error(
+                        "You don't have authority to make these changes."
+                    );
+                    res.status(500).send(
+                        'User does not have authority to make these changes.'
+                    );
+                }
+            })
+        );
+    }
+});
 
 // @route    POST api/artists/updateMe
 // @desc     Create or update my artist profile (copy of /batch)

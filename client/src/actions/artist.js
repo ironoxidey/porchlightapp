@@ -7,6 +7,7 @@ import {
     GET_ARTISTS,
     UPDATE_ARTIST,
     UPDATE_ARTIST_ME,
+    UPDATE_ARTISTS,
     UPDATE_ARTIST_ERROR,
     ARTIST_ERROR,
     CLEAR_ARTIST,
@@ -150,6 +151,48 @@ export const createArtist =
             );
             dispatch({
                 type: UPDATE_ARTIST,
+                payload: res.data,
+            });
+            dispatch(
+                setAlert(edit ? 'Artist Updated' : 'Artist Created', 'success')
+            ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        } catch (err) {
+            const errors = err.response.data.errors;
+            console.log('error: ' + err);
+            if (errors) {
+                errors.forEach((error) =>
+                    dispatch(setAlert(error.msg, 'danger'))
+                );
+            }
+            dispatch({
+                type: UPDATE_ARTIST_ERROR,
+                payload: {
+                    msg: err.response.statusText,
+                    status: err.response.status,
+                },
+            });
+            dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        }
+    };
+
+// Update artists
+export const updateArtists =
+    (formData, history, edit = false) =>
+    async (dispatch) => {
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            const formDataArray = [formData];
+            const res = await axios.post(
+                '/api/artists/admin-update',
+                formDataArray,
+                config
+            );
+            dispatch({
+                type: UPDATE_ARTISTS,
                 payload: res.data,
             });
             dispatch(

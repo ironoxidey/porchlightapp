@@ -20,6 +20,7 @@ export const GET_ARTISTS = 'GET_ARTISTS';
 export const GET_ARTIST = 'GET_ARTIST';
 export const GET_ARTIST_ME = 'GET_ARTIST_ME';
 export const UPDATE_ARTIST = 'UPDATE_ARTIST';
+export const UPDATE_ARTISTS = 'UPDATE_ARTISTS';
 export const UPDATE_ARTIST_ME = 'UPDATE_ARTIST_ME';
 export const CLEAR_ARTIST = 'CLEAR_ARTIST';
 export const ARTIST_ERROR = 'ARTIST_ERROR';

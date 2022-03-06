@@ -1,59 +1,59 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    enum : ['ARTIST','HOST', 'BOTH','ADMIN','ATTENDER'],
-    default: 'ATTENDER'
-  },
-  calendly: 
-    {
-    authCode: { //user pastes from 'code' url variable
-      type: String,
+    name: {
+        type: String,
+        required: true,
     },
-    accessToken: {
-      type: String,
+    email: {
+        type: String,
+        required: true,
+        unique: true,
     },
-    refreshToken: {
-      type: String,
+    password: {
+        type: String,
+        required: true,
     },
-    expiresIn: {
-      type: Number,
+    role: {
+        type: String,
+        enum: ['ARTIST', 'HOST', 'ADMIN', 'ATTENDER', 'BOOKING'],
+        default: 'ATTENDER',
     },
-    createdAt: {
-      type: Number,
+    calendly: {
+        authCode: {
+            //user pastes from 'code' url variable
+            type: String,
+        },
+        accessToken: {
+            type: String,
+        },
+        refreshToken: {
+            type: String,
+        },
+        expiresIn: {
+            type: Number,
+        },
+        createdAt: {
+            type: Number,
+        },
+        owner: {
+            type: String,
+        },
+        organization: {
+            type: String,
+        },
     },
-    owner: {
-      type: String,
+    avatar: {
+        type: String,
     },
-    organization: {
-      type: String,
+    date: {
+        type: Date,
+        default: Date.now,
     },
+    resetLink: {
+        data: String,
+        default: '',
     },
-  avatar: {
-    type: String,
-  },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
-  resetLink: {
-    data: String,
-    default: ''
-  }
 });
 
 module.exports = User = mongoose.model('user', UserSchema);
