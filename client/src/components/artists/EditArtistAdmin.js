@@ -98,7 +98,15 @@ const EditArtistAdmin = ({
             default:
                 targetValue = e.target.value;
         }
-        setFormData({ ...formData, [e.target.name]: targetValue });
+        if (e.target.name === 'active' && !active) {
+            setFormData({
+                ...formData,
+                onboardDate: new Date(),
+                [e.target.name]: targetValue,
+            });
+        } else {
+            setFormData({ ...formData, [e.target.name]: targetValue });
+        }
     };
 
     const onSubmit = (e) => {

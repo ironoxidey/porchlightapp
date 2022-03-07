@@ -157,6 +157,13 @@ const ArtistTileBack = ({
         isMe = true;
     }
 
+    const wideImgBW =
+        wideImg &&
+        wideImg.replace(
+            'https://res.cloudinary.com/porchlight/image/upload/',
+            'https://res.cloudinary.com/porchlight/image/upload/e_saturation:-100/'
+        );
+
     const [mediaTabs, setMediaTab] = useState([]);
     useEffect(() => {
         setMediaTab([]); //reset to [] so we don't get duplicates
