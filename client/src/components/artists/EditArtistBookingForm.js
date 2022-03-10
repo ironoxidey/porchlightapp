@@ -830,7 +830,7 @@ const EditArtistBookingForm = ({
             <FormLabel component="legend">
                 We want to make sure you and the host are on the same page about
                 what to expect concerning who the audience is. How would you
-                describe your target audience?
+                describe your ideal audience?
             </FormLabel>,
             [
                 <Grid item xs={12} sx={{ width: '100%' }}>
@@ -1472,7 +1472,7 @@ const EditArtistBookingForm = ({
                             <FormControlLabel
                                 value="1"
                                 control={<Radio />}
-                                label="Yes, 1 bed, please."
+                                label="Yes, for 1 person, please."
                             />
                             {travelingCompanions &&
                             travelingCompanions.length > 0
@@ -1483,9 +1483,9 @@ const EditArtistBookingForm = ({
                                               value={idx + 2}
                                               control={<Radio />}
                                               label={
-                                                  'Yes, ' +
+                                                  'Yes, for ' +
                                                   (idx + 2) +
-                                                  ' beds, please.'
+                                                  ' people, please.'
                                               }
                                           />
                                       )
@@ -1693,8 +1693,8 @@ const EditArtistBookingForm = ({
         ],
         covidPrefs: [
             <FormLabel component="legend">
-                Do you have Covid guidelines you’d like these events to adhere
-                to, beyond local guidelines and host preferences?
+                Beyond host preferences and local guidelines, do you have
+                particular Covid concerns you’d like these events to adhere to?
             </FormLabel>,
             <Grid item xs={12} sx={{ width: '100%' }}>
                 <Autocomplete
@@ -1703,12 +1703,13 @@ const EditArtistBookingForm = ({
                     disableCloseOnSelect
                     value={covidPrefs}
                     options={[
-                        'everyone passes a fever check',
-                        'everyone presents a negative Covid test',
-                        'everyone presents a vaccination passport',
-                        'everyone social distances',
-                        'everyone wears masks',
-                        'everything is outdoors',
+                        'the host determining what is best',
+                        'everyone passing a fever check',
+                        'everyone presenting a negative Covid test',
+                        'everyone presenting a vaccination passport',
+                        'everyone social distancing',
+                        'everyone wearing masks',
+                        'everything being outdoors',
                     ]}
                     onChange={(event, value) =>
                         onAutocompleteTagChange(event, 'covidPrefs', value)
@@ -1728,7 +1729,7 @@ const EditArtistBookingForm = ({
                             {...params}
                             sx={{ width: '100%' }}
                             variant="standard"
-                            label={`I would feel most comfortable if`}
+                            label={`I would feel most comfortable with`}
                             name="covidPrefs"
                         />
                     )}

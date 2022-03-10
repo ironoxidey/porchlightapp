@@ -12,6 +12,7 @@
 		"@mui/icons-material": "^5.2.1",
 		"@mui/material": "^5.2.3",
 		"@mui/styles": "^5.2.3",
+		"@mui/x-data-grid": "^5.6.0",
 		"@randex/material-ui-multiple-dates-picker": "^0.4.0",
 		"@testing-library/jest-dom": "^4.2.4",
 		"@testing-library/react": "^9.5.0",

@@ -24,6 +24,7 @@ import {
 } from '@mui/material';
 
 import Button from '../layout/SvgButton';
+import UserDataGrid from '../users/UserDataGrid';
 
 const EditArtists = ({
     auth: { user },

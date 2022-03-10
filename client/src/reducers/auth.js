@@ -6,6 +6,7 @@ import {
     RESETPASSWORD_SUCCESS,
     RESETPASSWORD_FAIL,
     USER_LOADED,
+    USERS_LOADED,
     AUTH_ERROR,
     LOGIN_SUCCESS,
     LOGIN_FAIL,
@@ -19,6 +20,7 @@ const intialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: null,
     loading: true,
+    users: [],
     user: null,
     resetSuccess: false,
     forgotSuccess: false,
@@ -34,6 +36,12 @@ export default function (state = intialState, action) {
                 isAuthenticated: true,
                 loading: false,
                 user: payload,
+            };
+        case USERS_LOADED:
+            return {
+                ...state,
+                loading: false,
+                users: payload,
             };
         case UPDATE_AVATAR:
         case UPDATE_ERROR:
@@ -68,6 +76,7 @@ export default function (state = intialState, action) {
                 isAuthenticated: false,
                 loading: false,
                 user: null,
+                users: [],
                 forgotMsg: payload,
             };
 

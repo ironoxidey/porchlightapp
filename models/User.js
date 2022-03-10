@@ -15,8 +15,8 @@ const UserSchema = new mongoose.Schema({
         required: true,
     },
     role: {
-        type: String,
-        enum: ['ARTIST', 'HOST', 'ADMIN', 'ATTENDER', 'BOOKING'],
+        type: [String],
+        enum: ['ADMIN', 'ARTIST', 'ATTENDER', 'BOOKING', 'HOST'],
         default: 'ATTENDER',
     },
     calendly: {

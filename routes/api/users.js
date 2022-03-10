@@ -66,6 +66,8 @@ router.post(
             const payload = {
                 user: {
                     id: user.id,
+                    email: user.email,
+                    role: user.role,
                 },
             };
             jwt.sign(
@@ -83,6 +85,25 @@ router.post(
         }
     }
 );
+
+// @route   GET api/users/edit
+// @desc    [ADMIN] Get all users
+// @access  Private
+router.get('/edit', [auth], async (req, res) => {
+    if (req.user.role.indexOf('ADMIN') != -1) {
+        try {
+            const users = await User.find().select(
+                '-password -calendly -resetLink'
+            );
+            res.json(users);
+        } catch (err) {
+            console.log(err.message);
+            res.status(500).send('Server error.');
+        }
+    } else {
+        res.status(500).send('Only ADMINs can view registered users.');
+    }
+});
 
 // @route   PUT api/users/forgot-password
 // @desc    Forgot Password
@@ -141,6 +162,9 @@ router.put(
                 const payload = {
                     user: {
                         id: userID,
+                        //didn't always include email and role... not sure if this might break something ~March 10, 2022
+                        email: userDoc.email,
+                        role: userDoc.role,
                     },
                 };
 

@@ -184,7 +184,12 @@ router.post('/batch', [auth], async (req, res) => {
                       ))
                     : '';
 
-                if (req.user.role === 'ADMIN' && artistFields.email !== '') {
+                //if (req.user.role === 'ADMIN' && artistFields.email !== '') {
+                if (
+                    req.user.role &&
+                    req.user.role.indexOf('ADMIN') != -1 &&
+                    artistFields.email !== ''
+                ) {
                     //console.log("User is ADMIN and has authority to update all other users.");
                     try {
                         //console.log(artistFields);
@@ -250,7 +255,12 @@ router.post('/admin-update', [auth], async (req, res) => {
                       ))
                     : '';
 
-                if (req.user.role === 'ADMIN' && artistFields.email !== '') {
+                //if (req.user.role === 'ADMIN' && artistFields.email !== '') {
+                if (
+                    req.user.role &&
+                    req.user.role.indexOf('ADMIN') != -1 &&
+                    artistFields.email !== ''
+                ) {
                     //console.log("User is ADMIN and has authority to update all other users.");
                     try {
                         //console.log(artistFields);
@@ -295,9 +305,14 @@ router.post('/updateMe', [auth], async (req, res) => {
                     ? (artistFields.slug = convertToSlug(
                           artistFields.stageName
                       ))
-                    : '';
+                    : (artistFields.slug = convertToSlug(req.user.id));
 
-                if (req.user.role === 'ADMIN' && artistFields.email !== '') {
+                //if (req.user.role === 'ADMIN' && artistFields.email !== '') {
+                if (
+                    req.user.role &&
+                    req.user.role.indexOf('ADMIN') != -1 &&
+                    artistFields.email !== ''
+                ) {
                     //console.log("User is ADMIN and has authority to update all other users.");
                     try {
                         //console.log(artistFields);
@@ -314,11 +329,12 @@ router.post('/updateMe', [auth], async (req, res) => {
                         res.status(500).send('Server Error: ' + err.message);
                     }
                 } else if (
-                    req.user.email === artistFields.email.toLowerCase()
+                    req.user.email.toLowerCase() ===
+                    artistFields.email.toLowerCase()
                 ) {
                     //if the request user email matches the artist email they have authority to edit their own profile, removing admin things
                     try {
-                        delete artistFields.active;
+                        delete artistFields.active; //to prevent someone from being able to change their active status
                         artistFields.user = req.user.id;
                         console.log(artistFields);
                         // Using upsert option (creates new doc if no match is found):
@@ -335,7 +351,8 @@ router.post('/updateMe', [auth], async (req, res) => {
                     }
                 } else {
                     console.error(
-                        "You don't have authority to make these changes."
+                        req.user.email +
+                            " doesn't have authority to make these changes."
                     );
                     res.status(500).send(
                         'User does not have authority to make these changes.'
@@ -366,7 +383,8 @@ router.get('/', async (req, res) => {
 // @desc     [ADMIN] Get all artists for editing (everything)
 // @access   Private
 router.get('/edit', [auth], async (req, res) => {
-    if (req.user.role === 'ADMIN') {
+    //if (req.user.role === 'ADMIN') {
+    if (req.user.role && req.user.role.indexOf('ADMIN') != -1) {
         try {
             const artists = await Artist.find();
 

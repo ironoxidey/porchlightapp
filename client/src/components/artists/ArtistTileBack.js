@@ -1012,13 +1012,13 @@ const ArtistTileBack = ({
                                     <HotelTwoToneIcon></HotelTwoToneIcon>
                                 </Tooltip>
                                 {
-                                    ' If possible, to be hosted overnight! Overnight accommodation desired: '
+                                    ' If possible, overnight accommodation appreciated for '
                                 }
                                 <strong>
                                     {artist.overnight +
                                         (artist.overnight > 1
-                                            ? ' beds'
-                                            : ' bed')}
+                                            ? ' people'
+                                            : ' person')}
                                 </strong>
                             </Grid>
                         ) : (

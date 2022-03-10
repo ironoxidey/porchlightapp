@@ -193,7 +193,7 @@ const Navbar = ({
                     </Typography>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
+                        <Tooltip title="Account settings">
                             <IconButton
                                 onClick={handleOpenUserMenu}
                                 sx={{ p: 0 }}

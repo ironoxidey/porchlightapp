@@ -16,6 +16,7 @@ import Profile from '../profile/Profile';
 import Artists from '../artists/Artists';
 import Artist from '../artists/Artist';
 import EditArtists from '../artists/EditArtists';
+import EditUsers from '../users/EditUsers';
 import EditMyArtistProfile from '../artists/EditMyArtistProfile';
 import EditMyArtistBooking from '../artists/EditMyArtistBooking';
 import Posts from '../posts/Posts';
@@ -195,6 +196,12 @@ const Routes = ({ app }) => {
                                 path="/edit-artists"
                                 component={EditArtists}
                                 title="Edit Artists"
+                            />
+                            <AdminPrivateRoute
+                                exact
+                                path="/edit-users"
+                                component={EditUsers}
+                                title="Edit Users"
                             />
                             <Route
                                 render={(props) => (

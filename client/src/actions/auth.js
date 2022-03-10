@@ -8,6 +8,7 @@ import {
     RESETPASSWORD_SUCCESS,
     RESETPASSWORD_FAIL,
     USER_LOADED,
+    USERS_LOADED,
     AUTH_ERROR,
     LOGIN_SUCCESS,
     LOGIN_FAIL,
@@ -17,6 +18,23 @@ import {
     UPDATE_ERROR,
 } from './types';
 import setAuthToken from '../utils/setAuthToken';
+
+//Get all users
+export const getAllUsers = () => async (dispatch) => {
+    try {
+        const res = await axios.get('/api/users/edit');
+        //res.data.avatar = await axios.get('/api/artists/my-avatar');
+
+        dispatch({
+            type: USERS_LOADED,
+            payload: res.data,
+        });
+    } catch (err) {
+        dispatch({
+            type: AUTH_ERROR,
+        });
+    }
+};
 
 //Load User
 export const loadUser = () => async (dispatch) => {
