@@ -346,7 +346,7 @@ router.put(
                     { _id: userID },
                     { $set: userFields },
                     { new: true, upsert: true }
-                );
+                ).select('-password -calendly -resetLink');
                 res.json(user);
             } catch (err) {
                 console.error(err.message);

@@ -44,6 +44,14 @@ export default function (state = intialState, action) {
                 loading: false,
                 users: payload,
             };
+        case USER_ROLE_UPDATED:
+            const updatedUsers = state.users.map((user) => {
+                return user._id === payload._id ? payload : user;
+            });
+            return {
+                ...state,
+                users: updatedUsers,
+            };
         case UPDATE_AVATAR:
         case UPDATE_ERROR:
             return {
