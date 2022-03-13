@@ -323,6 +323,41 @@ router.put(
     }
 );
 
+// @route   PUT api/users/update-role
+// @desc    Update Role
+// @access  Private
+router.put(
+    '/update-role',
+    [auth, [check('role', 'Please include a user role').not().isEmpty()]],
+    async (req, res) => {
+        if (req.user.role.indexOf('ADMIN') !== -1) {
+            //if the requesting user is an ADMIN--only ADMINs can change a user's roles
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+
+            const { role, userID } = req.body;
+            const userFields = {};
+            if (role) userFields.role = role;
+            console.log('userID: ', userID, ' is now set to ', role);
+            try {
+                let user = await User.findOneAndUpdate(
+                    { _id: userID },
+                    { $set: userFields },
+                    { new: true, upsert: true }
+                );
+                res.json(user);
+            } catch (err) {
+                console.error(err.message);
+                res.status(500).send('Server Error');
+            }
+        } else {
+            res.status(401).send('Requesting user is not an admin.');
+        }
+    }
+);
+
 // @route   POST api/users/calendlyAuth
 // @desc    Authenticate Calendly
 // @access  Private

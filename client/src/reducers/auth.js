@@ -14,6 +14,7 @@ import {
     ACCOUNT_DELETED,
     UPDATE_AVATAR,
     UPDATE_ERROR,
+    USER_ROLE_UPDATED,
 } from '../actions/types';
 
 const intialState = {

@@ -7,47 +7,47 @@ import Spinner from '../layout/Spinner';
 import EditArtistBookingForm from './EditArtistBookingForm';
 
 const EditMyArtistBooking = ({
-	auth,
-	getCurrentArtist,
-	artist: { me, loading },
+    auth,
+    getCurrentArtist,
+    artist: { me, loading },
 }) => {
-	useEffect(() => {
-		// if (auth.user.email) {
-		getCurrentArtist();
-		// }
-	}, [getCurrentArtist]);
-	//}, [getCurrentArtist, auth]);
+    useEffect(() => {
+        // if (auth.user.email) {
+        getCurrentArtist();
+        // }
+    }, [getCurrentArtist]);
+    //}, [getCurrentArtist, auth]);
 
-	return (
-		<Fragment>
-			{loading ? (
-				<Spinner></Spinner>
-			) : me ? (
-				<Fragment>
-					{/* <h1 className='large text-primary'>Edit Your Artist Profile</h1> */}
-					<EditArtistBookingForm theArtist={me} />
-					{/* <Link to='/dashboard' className='btn btn-light my-1'>
+    return (
+        <Fragment>
+            {loading ? (
+                <Spinner></Spinner>
+            ) : me ? (
+                <Fragment>
+                    {/* <h1 className='large text-primary'>Edit Your Artist Profile</h1> */}
+                    <EditArtistBookingForm theArtist={me} />
+                    {/* <Link to='/dashboard' className='btn btn-light my-1'>
           Go Back
         </Link> */}
-				</Fragment>
-			) : (
-				''
-			)}
-		</Fragment>
-	);
+                </Fragment>
+            ) : (
+                ''
+            )}
+        </Fragment>
+    );
 };
 
 EditMyArtistBooking.propTypes = {
-	getCurrentArtist: PropTypes.func.isRequired,
-	artist: PropTypes.object.isRequired,
-	auth: PropTypes.object.isRequired,
+    getCurrentArtist: PropTypes.func.isRequired,
+    artist: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-	artist: state.artist,
-	auth: state.auth,
+    artist: state.artist,
+    auth: state.auth,
 });
 
 export default connect(mapStateToProps, { getCurrentArtist })(
-	withRouter(EditMyArtistBooking)
+    withRouter(EditMyArtistBooking)
 ); //withRouter allows us to pass history objects

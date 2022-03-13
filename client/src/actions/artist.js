@@ -34,6 +34,30 @@ export const getCurrentArtist = () => async (dispatch) => {
     }
 };
 
+// Get artist's profile by email
+export const getArtistByEmail = (email) => async (dispatch) => {
+    try {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            email: email,
+        };
+        const res = await axios.post(`/api/artists/by-email/`, config);
+        //console.log('res.data', res.data);
+        return res.data;
+    } catch (err) {
+        //dispatch({ type: CLEAR_ARTIST });
+        // dispatch({
+        //     type: ARTIST_ERROR,
+        //     payload: {
+        //         msg: err.response.statusText,
+        //         status: err.response.status,
+        //     },
+        // });
+    }
+};
+
 // Get all artists
 export const getArtists = () => async (dispatch) => {
     dispatch({ type: CLEAR_ARTIST });

@@ -1,15 +1,27 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 
 import { DataGrid } from '@mui/x-data-grid';
 
-import { getAllUsers } from '../../actions/auth';
+import { getAllUsers, updateUserRole } from '../../actions/auth';
+import { getArtistByEmail } from '../../actions/artist';
 
-import { Avatar, Autocomplete, Chip, TextField } from '@mui/material';
+import { Avatar, Autocomplete, Chip, TextField, Button } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
-const UserDataGrid = ({ getAllUsers, users }) => {
+const UserDataGrid = ({
+    getArtistByEmail,
+    getAllUsers,
+    updateUserRole,
+    users,
+}) => {
     const changesMade = useRef(false);
     const [editRowsModel, setEditRowsModel] = React.useState({});
 
@@ -40,85 +52,204 @@ const UserDataGrid = ({ getAllUsers, users }) => {
             .isRequired,
     };
 
+    const [adminAlertOpen, setAdminAlertOpen] = useState(false);
+    const adminAlertHandleClose = () => {
+        setAdminAlertOpen(false);
+    };
+
     function AutocompleteEditInputCell(props) {
-        console.log('AutocompleteEditInputCell props', props);
+        //console.log('AutocompleteEditInputCell props', props);
         const { id, value, api, field } = props;
 
-        const handleChange = async (event) => {
-            api.setEditCellValue(
-                { id, field, value: event.target.value },
-                event
-            );
-            // Check if the event is not from the keyboard
-            // https://github.com/facebook/react/issues/7407
-            if (
-                event.nativeEvent.clientX !== 0 &&
-                event.nativeEvent.clientY !== 0
-            ) {
-                // Wait for the validation to run
-                const isValid = await api.commitCellChange({ id, field });
-                if (isValid) {
-                    api.setCellMode(id, field, 'view');
-                }
+        const [adminAlertUser, setAdminAlertUserState] = useState({});
+        const autoCompleteInput = useRef(null);
+
+        const [roleState, setRoleState] = useState([]);
+        const changesMade = useRef(false);
+
+        useEffect(() => {
+            if (value) {
+                setRoleState(value);
+            }
+        }, []);
+        useEffect(() => {
+            //console.log('roleState changed to', roleState);
+            if (changesMade.current) {
+                updateUserRole({ userID: id, role: roleState });
+                changesMade.current = false;
+            }
+        }, [roleState]);
+
+        useEffect(() => {
+            console.log('adminAlertUser', adminAlertUser);
+            setAdminAlertOpen(true);
+        }, [adminAlertUser]);
+
+        const onAutocompleteConfirmTagChange = (e, theFieldName, val) => {
+            if (value.indexOf('ADMIN') === -1 && val.indexOf('ADMIN') !== -1) {
+                //if adding ADMIN to a user's roles, prompt for confirmation--checking 'value' to be sure they weren't already an admin
+                setAdminAlertUserState({ ...props, value: val });
+            } else {
+                onAutocompleteTagChange(val);
             }
         };
-        const handleRef = (element) => {
-            console.log('handleRef element:', element);
-            if (element) {
-                element.querySelector(`input[value="${value}"]`).focus();
-            }
+
+        const onAutocompleteTagChange = (val) => {
+            console.log('onAutocompleteTagChange val', val);
+            changesMade.current = true;
+            autoCompleteInput.current.value = val;
+            //console.log('autoCompleteInput', autoCompleteInput.current.value);
+            setRoleState(autoCompleteInput.current.value);
+            //setFormData({ ...formData, [theFieldName]: targetValue });
         };
 
         return (
-            <Autocomplete
-                ref={handleRef}
-                //id="role"
-                name="role"
-                multiple
-                disableCloseOnSelect
-                disableClearable
-                value={value}
-                options={['ADMIN', 'ARTIST', 'ATTENDER', 'BOOKING', 'HOST']}
-                // onChange={(event, value) => {
-                //     console.log(params);
-                //     onAutocompleteTagChange(event, 'role', value);
-                // }}
-                renderTags={(value, getTagProps) =>
-                    value.map((option, index) => (
-                        <Chip
-                            variant="outlined"
-                            name="role"
-                            label={option}
-                            {...getTagProps({ index })}
-                        />
-                    ))
-                }
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        error={params.length > 0}
-                        sx={{ width: '100%' }}
-                        variant="standard"
-                        //label={`Role`}
-                        name="role"
-                    />
+            <Fragment>
+                {adminAlertUser && adminAlertUser.value && (
+                    <Dialog
+                        open={adminAlertOpen}
+                        onClose={adminAlertHandleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">
+                            <Avatar
+                                alt={`${adminAlertUser.row.avatar}`}
+                                src={`${adminAlertUser.row.avatar}`}
+                                sx={{
+                                    width: '150px',
+                                    height: '150px',
+                                    margin: '0 auto',
+                                }}
+                            />
+
+                            {'Are you sure you want ' +
+                                adminAlertUser.row.name +
+                                ' (' +
+                                adminAlertUser.row.email +
+                                ') to have the ADMIN role?'}
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                Giving this user the ADMIN role will give them
+                                access to everything. You should only do this if
+                                you really trust {adminAlertUser.row.name}.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={adminAlertHandleClose}>No</Button>
+                            <Button
+                                onClick={(e) => {
+                                    adminAlertHandleClose();
+                                    onAutocompleteTagChange(
+                                        adminAlertUser.value
+                                    );
+                                }}
+                            >
+                                Yes
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 )}
-            />
+                <Autocomplete
+                    ref={autoCompleteInput}
+                    //id="role"
+                    name="role"
+                    multiple
+                    disableCloseOnSelect
+                    disableClearable
+                    value={roleState || value}
+                    options={['ADMIN', 'ARTIST', 'ATTENDER', 'BOOKING', 'HOST']}
+                    onChange={(event, value) => {
+                        // console.log();
+                        onAutocompleteConfirmTagChange(event, 'role', value);
+                    }}
+                    renderTags={(value, getTagProps) =>
+                        value.map((option, index) => (
+                            <Chip
+                                variant="outlined"
+                                name="role"
+                                label={option}
+                                {...getTagProps({ index })}
+                            />
+                        ))
+                    }
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            error={params.length > 0}
+                            sx={{ width: '100%' }}
+                            variant="standard"
+                            //label={`Role`}
+                            name="role"
+                        />
+                    )}
+                    sx={{
+                        width: '100%',
+                    }}
+                />
+            </Fragment>
         );
     }
 
     function renderAutoCompleteEditInputCell(params) {
-        console.log('renderAutoCompleteEditInputCell params', params);
+        //console.log('renderAutoCompleteEditInputCell params', params);
         return <AutocompleteEditInputCell {...params} />;
     }
 
-    const onAutocompleteTagChange = (e, theFieldName, val) => {
-        //console.log(theFieldName);
-        //console.log(Object.keys(formGroups).length);
-        changesMade.current = true;
-        let targetValue = val;
-        //setFormData({ ...formData, [theFieldName]: targetValue });
+    ProfileCell.propTypes = {
+        /**
+         * GridApi that let you manipulate the grid.
+         * @deprecated Use the `apiRef` returned by `useGridApiContext` or `useGridApiRef` (only available in `@mui/x-data-grid-pro`)
+         */
+        api: PropTypes.any.isRequired,
+        /**
+         * The column field of the cell that triggered the event.
+         */
+        field: PropTypes.string.isRequired,
+        /**
+         * The grid row id.
+         */
+        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+            .isRequired,
+        /**
+         * The cell value, but if the column has valueGetter, use getValue.
+         */
+        value: PropTypes.oneOfType([PropTypes.array, PropTypes.string])
+            .isRequired,
     };
+
+    function ProfileCell(props) {
+        const { id, value, api, field } = props;
+        //console.log('ProfileCell props', props);
+        const artistEmail = props.row.email;
+
+        const [artistSlug, setArtistSlug] = useState('');
+        const [artistStageName, setArtistStageName] = useState('');
+
+        const getArtistSlug = async () => {
+            const gottenArtistSlug = await getArtistByEmail(artistEmail);
+            setArtistSlug(gottenArtistSlug.slug);
+            setArtistStageName(gottenArtistSlug.stageName);
+        };
+
+        useEffect(() => {
+            getArtistSlug();
+        }, []);
+
+        //console.log('artistSlug', artistSlug);
+        return (
+            <Fragment>
+                {artistSlug && (
+                    <Link to={'/artists/' + artistSlug}>{artistStageName}</Link>
+                )}
+            </Fragment>
+        );
+    }
+
+    function renderProfileCell(params) {
+        return <ProfileCell {...params}></ProfileCell>;
+    }
 
     useEffect(() => {
         getAllUsers();
@@ -146,16 +277,17 @@ const UserDataGrid = ({ getAllUsers, users }) => {
         {
             field: 'role',
             headerName: 'Role(s)',
-            width: 300,
-            editable: true,
+            width: 350,
+            // editable: true,
             renderCell: renderAutoCompleteEditInputCell,
-            //renderEditCell: renderAutoCompleteEditInputCell(),
+            // renderEditCell: renderAutoCompleteEditInputCell,
         },
         {
             field: 'profile',
             headerName: 'Profile',
-            width: 150,
+            width: 250,
             sortable: false,
+            renderCell: renderProfileCell,
         },
     ];
 
@@ -196,10 +328,16 @@ const UserDataGrid = ({ getAllUsers, users }) => {
 UserDataGrid.propTypes = {
     users: PropTypes.array.isRequired,
     getAllUsers: PropTypes.func.isRequired,
+    getArtistByEmail: PropTypes.func.isRequired,
+    updateUserRole: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
     users: state.auth.users,
 });
 
-export default connect(mapStateToProps, { getAllUsers })(UserDataGrid);
+export default connect(mapStateToProps, {
+    getAllUsers,
+    getArtistByEmail,
+    updateUserRole,
+})(UserDataGrid);

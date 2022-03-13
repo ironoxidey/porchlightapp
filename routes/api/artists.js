@@ -443,6 +443,30 @@ router.get('/:slug', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+// @route    POST api/artists/by-email
+// @desc     POST artist slug by email
+// @access   Private
+router.post('/by-email', [auth], async (req, res) => {
+    try {
+        const artistSlug = await Artist.findOne({
+            email: req.body.email,
+        }).select('slug stageName'); //ADD .select('-field'); to exclude [field] from the response
+
+        // this just loads up the console with 404 not founds
+        // if (!artistSlug)
+        //     return res.status(404).json({
+        //         msg: 'No artist found with email:' + req.body.email,
+        //     });
+
+        res.json(artistSlug);
+    } catch (err) {
+        console.error(err.message);
+        if (err.kind == 'ObjectId') {
+            return res.status(404).json({ msg: 'Artist not found' });
+        }
+        res.status(500).send('Server Error');
+    }
+});
 
 // @route    DELETE api/artists
 // @desc     Delete artist, user & posts

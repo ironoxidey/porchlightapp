@@ -16,6 +16,7 @@ import {
     CLEAR_PROFILE,
     UPDATE_AVATAR,
     UPDATE_ERROR,
+    USER_ROLE_UPDATED,
 } from './types';
 import setAuthToken from '../utils/setAuthToken';
 
@@ -185,6 +186,39 @@ export const updateUserAvatar = (formData, history) => async (dispatch) => {
         });
 
         dispatch(setAlert('User Avatar Updated', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+    } catch (err) {
+        const errors = err.response.data.errors;
+
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+        }
+        dispatch({
+            type: UPDATE_ERROR,
+            payload: {
+                msg: err.response.statusText,
+                status: err.response.status,
+            },
+        });
+    }
+};
+
+//Update User Role
+export const updateUserRole = (formData, history) => async (dispatch) => {
+    try {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        //console.log('updateUserRole');
+        const res = await axios.put('/api/users/update-role', formData, config);
+
+        dispatch({
+            type: USER_ROLE_UPDATED,
+            payload: res.data,
+        });
+
+        dispatch(setAlert('User Role Updated', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
     } catch (err) {
         const errors = err.response.data.errors;
 
