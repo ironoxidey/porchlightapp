@@ -162,8 +162,8 @@ const Dashboard = ({
                             >
                                 <Link to="/edit-artist-booking">
                                     <Button btnwidth="300" className="">
-                                        <DateRangeTwoToneIcon /> Edit my booking
-                                        info
+                                        <DateRangeTwoToneIcon /> Edit My Booking
+                                        Info
                                     </Button>
                                 </Link>
                             </Grid>
@@ -177,7 +177,7 @@ const Dashboard = ({
                                 <p> </p>
                                 <Link to="/edit-artist-booking">
                                     <Button className="">
-                                        Start booking shows
+                                        Start Booking Shows
                                     </Button>
                                 </Link>
                             </Grid>

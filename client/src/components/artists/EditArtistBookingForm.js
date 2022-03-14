@@ -28,6 +28,7 @@ import {
     Autocomplete,
     Chip,
     withStyles,
+    Typography,
 } from '@mui/material';
 //import ReactPhoneInput from 'react-phone-input-mui';
 import { styled } from '@mui/material/styles';
@@ -39,6 +40,8 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveTwoToneIcon from '@mui/icons-material/SaveTwoTone';
 import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
+import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
+import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
@@ -1762,6 +1765,37 @@ const EditArtistBookingForm = ({
                     sx={{ width: '100%' }}
                 />
             </Grid>,
+        ],
+        endSlide: [
+            [
+                <Typography component="h2" sx={{ textAlign: 'center' }}>
+                    That's everything we need to get you started booking shows!
+                </Typography>,
+                <Typography
+                    component="p"
+                    sx={{ textAlign: 'center', marginTop: '20px' }}
+                >
+                    Thank you for taking the time to fill out all of this
+                    information! Please check your profile to be sure everything
+                    is correct.
+                </Typography>,
+            ],
+            [
+                slug && (
+                    <Grid
+                        item
+                        sx={{
+                            margin: '8px auto',
+                        }}
+                    >
+                        <Link to={'/artists/' + slug}>
+                            <Button btnwidth="300" className="">
+                                <AccountBoxTwoToneIcon /> View My Profile
+                            </Button>
+                        </Link>
+                    </Grid>
+                ),
+            ],
         ],
     };
 

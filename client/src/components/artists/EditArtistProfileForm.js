@@ -28,6 +28,7 @@ import {
     Autocomplete,
     Chip,
     withStyles,
+    Typography,
 } from '@mui/material';
 import ReactPhoneInput from 'react-phone-input-mui';
 import { styled } from '@mui/material/styles';
@@ -39,6 +40,8 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveTwoToneIcon from '@mui/icons-material/SaveTwoTone';
 import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
+import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
+import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
@@ -1607,6 +1610,64 @@ const EditArtistProfileForm = ({
                         sx={{ width: '100%', margin: '8px auto' }}
                     >
                         <ReactPlayer url={livePerformanceVideo} />
+                    </Grid>
+                ) : (
+                    ''
+                ),
+            ],
+        ],
+        endSlide: [
+            [
+                <Typography component="h2" sx={{ textAlign: 'center' }}>
+                    Those were all the questions we have for this section.
+                </Typography>,
+                <Typography
+                    component="p"
+                    sx={{ textAlign: 'center', marginTop: '20px' }}
+                >
+                    Thank you for taking the time to respond to them! Please
+                    check your profile to be sure it looks right.
+                </Typography>,
+            ],
+            [
+                slug && (
+                    <Grid
+                        item
+                        sx={{
+                            margin: '8px auto',
+                        }}
+                    >
+                        <Link to={'/artists/' + slug}>
+                            <Button btnwidth="300" className="">
+                                <AccountBoxTwoToneIcon /> View My Profile
+                            </Button>
+                        </Link>
+                    </Grid>
+                ),
+                theArtist.bookingWhen && theArtist.bookingWhen.length > 0 ? (
+                    <Grid
+                        item
+                        sx={{
+                            margin: '8px auto',
+                        }}
+                    >
+                        <Link to="/edit-artist-booking">
+                            <Button btnwidth="300" className="">
+                                <DateRangeTwoToneIcon /> Edit My Booking Info
+                            </Button>
+                        </Link>
+                    </Grid>
+                ) : theArtist.active ? (
+                    <Grid
+                        item
+                        sx={{
+                            margin: '8px auto',
+                        }}
+                    >
+                        <p> </p>
+                        <Link to="/edit-artist-booking">
+                            <Button className="">Start Booking Shows</Button>
+                        </Link>
                     </Grid>
                 ) : (
                     ''

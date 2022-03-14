@@ -26,7 +26,7 @@ const UserDataGrid = ({
     const [editRowsModel, setEditRowsModel] = React.useState({});
 
     const handleEditRowsModelChange = React.useCallback((model) => {
-        console.log('model', model);
+        //console.log('model', model);
         setEditRowsModel(model);
     }, []);
 
@@ -81,7 +81,7 @@ const UserDataGrid = ({
         }, [roleState]);
 
         useEffect(() => {
-            console.log('adminAlertUser', adminAlertUser);
+            //console.log('adminAlertUser', adminAlertUser);
             setAdminAlertOpen(true);
         }, [adminAlertUser]);
 
@@ -95,7 +95,7 @@ const UserDataGrid = ({
         };
 
         const onAutocompleteTagChange = (val) => {
-            console.log('onAutocompleteTagChange val', val);
+            //console.log('onAutocompleteTagChange val', val);
             changesMade.current = true;
             autoCompleteInput.current.value = val;
             //console.log('autoCompleteInput', autoCompleteInput.current.value);
@@ -307,7 +307,7 @@ const UserDataGrid = ({
                     return userRow;
                 })
             );
-            console.log(userRows);
+            //console.log(userRows);
         }
     }, [users]);
 

@@ -46,6 +46,7 @@ export default function (state = intialState, action) {
             };
         case USER_ROLE_UPDATED:
             const updatedUsers = state.users.map((user) => {
+                //adds the updated user (payload) to the users state depending on its _id
                 return user._id === payload._id ? payload : user;
             });
             return {
