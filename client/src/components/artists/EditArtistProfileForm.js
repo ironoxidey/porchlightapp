@@ -1118,7 +1118,8 @@ const EditArtistProfileForm = ({
         ],
         socialLinks: [
             <FormLabel component="legend">
-                Would you supply the social media links for {stageName}?
+                Would you supply any social media or streaming platform links
+                for {stageName}?
                 <br />
                 <small>
                     (These will appear in your profile in the order you enter
@@ -1207,100 +1208,100 @@ const EditArtistProfileForm = ({
                 </Grid>,
             ],
         ],
-        streamingLinks: [
-            <FormLabel component="legend">
-                And links to where folks can stream {stageName}’s {medium}?
-                <br />
-                <small>
-                    (These will appear in your profile in the order you enter
-                    them here.)
-                </small>
-            </FormLabel>,
-            [
-                streamingLinks && Object.keys(streamingLinks).length > 0
-                    ? streamingLinks.map((eachStreamingLink, idx) => (
-                          <Grid
-                              className="eachStreamingLink"
-                              key={`eachStreamingLink${idx}`}
-                              container
-                              direction="row"
-                              justifyContent="space-around"
-                              alignItems="end"
-                              spacing={2}
-                              sx={{
-                                  // borderColor: 'primary.dark',
-                                  // borderWidth: '2px',
-                                  // borderStyle: 'solid',
-                                  backgroundColor: 'rgba(0,0,0,0.15)',
-                                  '&:hover': {},
-                                  padding: '0 10px 10px',
-                                  margin: '0px auto',
-                                  width: '100%',
-                              }}
-                          >
-                              <Grid item xs={2} md={0.5} className="link-icon">
-                                  {getFontAwesomeIcon(eachStreamingLink.link)}
-                              </Grid>
-                              <Grid item xs={10}>
-                                  <TextField
-                                      variant="standard"
-                                      name="streamingLinks"
-                                      id={`socialLinkLink${idx}`}
-                                      label={
-                                          idx > 0
-                                              ? `and at `
-                                              : `Yeah! Check out "${stageName}" at `
-                                      }
-                                      value={eachStreamingLink.link}
-                                      onChange={(e) =>
-                                          onMultiTextChange(
-                                              'link',
-                                              streamingLinks,
-                                              idx,
-                                              e
-                                          )
-                                      }
-                                      sx={{ width: '100%' }}
-                                  />
-                              </Grid>
-                              <Grid item xs={2} md={1}>
-                                  <IconButton
-                                      onClick={(e) =>
-                                          handleRemoveMultiTextField(
-                                              'streamingLinks',
-                                              streamingLinks,
-                                              idx
-                                          )
-                                      }
-                                  >
-                                      <DeleteIcon />
-                                  </IconButton>
-                              </Grid>
-                          </Grid>
-                      ))
-                    : '',
-                <Grid
-                    container
-                    item
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    xs={12}
-                >
-                    <Button
-                        onClick={(e) =>
-                            handleAddMultiTextField(
-                                'streamingLinks',
-                                streamingLinks
-                            )
-                        }
-                    >
-                        <PersonAddIcon />
-                        Add link
-                    </Button>
-                </Grid>,
-            ],
-        ],
+        // streamingLinks: [
+        //     <FormLabel component="legend">
+        //         And links to where folks can stream {stageName}’s {medium}?
+        //         <br />
+        //         <small>
+        //             (These will appear in your profile in the order you enter
+        //             them here.)
+        //         </small>
+        //     </FormLabel>,
+        //     [
+        //         streamingLinks && Object.keys(streamingLinks).length > 0
+        //             ? streamingLinks.map((eachStreamingLink, idx) => (
+        //                   <Grid
+        //                       className="eachStreamingLink"
+        //                       key={`eachStreamingLink${idx}`}
+        //                       container
+        //                       direction="row"
+        //                       justifyContent="space-around"
+        //                       alignItems="end"
+        //                       spacing={2}
+        //                       sx={{
+        //                           // borderColor: 'primary.dark',
+        //                           // borderWidth: '2px',
+        //                           // borderStyle: 'solid',
+        //                           backgroundColor: 'rgba(0,0,0,0.15)',
+        //                           '&:hover': {},
+        //                           padding: '0 10px 10px',
+        //                           margin: '0px auto',
+        //                           width: '100%',
+        //                       }}
+        //                   >
+        //                       <Grid item xs={2} md={0.5} className="link-icon">
+        //                           {getFontAwesomeIcon(eachStreamingLink.link)}
+        //                       </Grid>
+        //                       <Grid item xs={10}>
+        //                           <TextField
+        //                               variant="standard"
+        //                               name="streamingLinks"
+        //                               id={`socialLinkLink${idx}`}
+        //                               label={
+        //                                   idx > 0
+        //                                       ? `and at `
+        //                                       : `Yeah! Check out "${stageName}" at `
+        //                               }
+        //                               value={eachStreamingLink.link}
+        //                               onChange={(e) =>
+        //                                   onMultiTextChange(
+        //                                       'link',
+        //                                       streamingLinks,
+        //                                       idx,
+        //                                       e
+        //                                   )
+        //                               }
+        //                               sx={{ width: '100%' }}
+        //                           />
+        //                       </Grid>
+        //                       <Grid item xs={2} md={1}>
+        //                           <IconButton
+        //                               onClick={(e) =>
+        //                                   handleRemoveMultiTextField(
+        //                                       'streamingLinks',
+        //                                       streamingLinks,
+        //                                       idx
+        //                                   )
+        //                               }
+        //                           >
+        //                               <DeleteIcon />
+        //                           </IconButton>
+        //                       </Grid>
+        //                   </Grid>
+        //               ))
+        //             : '',
+        //         <Grid
+        //             container
+        //             item
+        //             direction="row"
+        //             justifyContent="center"
+        //             alignItems="center"
+        //             xs={12}
+        //         >
+        //             <Button
+        //                 onClick={(e) =>
+        //                     handleAddMultiTextField(
+        //                         'streamingLinks',
+        //                         streamingLinks
+        //                     )
+        //                 }
+        //             >
+        //                 <PersonAddIcon />
+        //                 Add link
+        //             </Button>
+        //         </Grid>,
+        //     ],
+        // ],
         squareImg: [
             <FormLabel component="legend">
                 Please attach a square image, for promotional use on social
@@ -1626,7 +1627,7 @@ const EditArtistProfileForm = ({
                     sx={{ textAlign: 'center', marginTop: '20px' }}
                 >
                     Thank you for taking the time to respond to them! Please
-                    check your profile to be sure it looks right.
+                    check your profile to be sure everything is correct.
                 </Typography>,
             ],
             [

@@ -16,7 +16,7 @@ import { Grid, Box, Autocomplete, Chip, Typography } from '@mui/material';
 import { animated, useTransition, useSpring, a } from 'react-spring';
 
 import { flipArtistCard } from '../../actions/app';
-import ArtistTileBack from './ArtistTileBack';
+import ArtistProfile from './ArtistProfile';
 import ArtistGridItemTile from './ArtistGridItemTile';
 import { flexbox } from '@mui/system';
 
@@ -88,7 +88,7 @@ const Artists = ({
                             height: artistTileOffset.windowHeight,
                         },
                         onRest: () => {
-                            //document.getElementsByClassName('overlayDarkBG')[0].style.height = document.getElementsByClassName('artistTileBack')[0].clientheight + 'px';
+                            //document.getElementsByClassName('overlayDarkBG')[0].style.height = document.getElementsByClassName('ArtistProfile')[0].clientheight + 'px';
                         },
                         config: { mass: 5, tension: 500, friction: 80 },
                         immediate: (key) => key === 'zIndex',
@@ -261,7 +261,7 @@ const Artists = ({
                                         }}
                                     > */}
                                     <a.div
-                                        className="artistTileBack"
+                                        className="ArtistProfile"
                                         style={{
                                             maxWidth: '1280px',
                                             width,
@@ -271,7 +271,7 @@ const Artists = ({
                                             position: 'relative',
                                         }}
                                     >
-                                        <ArtistTileBack artist={artist} />
+                                        <ArtistProfile artist={artist} />
                                     </a.div>
                                     <Box
                                         onClick={() => {

@@ -89,7 +89,18 @@ h2.MuiTypography-root {
 }
 
 .bookingDetails strong {
-    text-decoration: underline;
+    color: var(--light-color);
+    /* text-decoration: underline; */
+}
+.bookingDetails .MuiSvgIcon-root {
+    color: var(--light-color);
+    display: block;
+    margin: 0 auto;
+    width: 30px;
+    height: 30px;
+}
+.bookingDetails .MuiDivider-fullWidth {
+    margin: 8px 16px;
 }
 
 * {

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 import { PAGE_LOAD } from '../../actions/types';
 import Spinner from '../layout/Spinner';
-import ArtistTileBack from './ArtistTileBack';
+import ArtistProfile from './ArtistProfile';
 import ArtistAbout from './ArtistAbout';
 // import ProfileExperience from './ProfileExperience';
 // import ProfileEducation from './ProfileEducation';
@@ -52,9 +52,9 @@ const Artist = ({
                 <Spinner />
             ) : (
                 <Fragment>
-                    <Link to="/artists" className="btn btn-Light">
+                    {/* <Link to="/artists" className="btn btn-Light">
                         Back to Artists
-                    </Link>
+                    </Link> */}
                     {/* {auth.isAuthenticated &&
 						auth.loading === false &&
 						auth.user.id === artist.user && (
@@ -70,7 +70,7 @@ const Artist = ({
                             m: '0 auto',
                         }}
                     >
-                        <ArtistTileBack artist={artist} />
+                        <ArtistProfile artist={artist} />
                     </Box>
                 </Fragment>
             )}
