@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import prependHttp from 'prepend-http';
+
 import {
     Grid,
     Chip,
@@ -505,48 +507,53 @@ const ArtistProfile = ({
                                 {artist.socialLinks &&
                                 Object.keys(artist.socialLinks).length > 0
                                     ? artist.socialLinks.map(
-                                          (eachSocialLink, idx) => (
-                                              <Grid
-                                                  item
-                                                  xs={1}
-                                                  //md={0.5}
-                                                  className="link-icon"
-                                                  key={`eachSocialLink${idx}`}
-                                                  sx={{
-                                                      marginRight: '4px',
-                                                  }}
-                                              >
-                                                  <Tooltip
-                                                      title={
-                                                          !isMe ? (
-                                                              toTitleCase(
-                                                                  pullDomainFrom(
-                                                                      eachSocialLink.link
-                                                                  )
-                                                              )
-                                                          ) : (
-                                                              <Link to="/edit-artist-profile?field=socialLinks">
-                                                                  Edit
-                                                              </Link>
-                                                          )
-                                                      }
-                                                      placement="bottom"
-                                                      arrow
+                                          (eachSocialLink, idx) =>
+                                              eachSocialLink.link && (
+                                                  <Grid
+                                                      item
+                                                      xs={1}
+                                                      //md={0.5}
+                                                      className="link-icon"
+                                                      key={`eachSocialLink${idx}`}
+                                                      sx={{
+                                                          marginRight: '4px',
+                                                      }}
                                                   >
-                                                      <a
-                                                          href={
-                                                              eachSocialLink.link
+                                                      <Tooltip
+                                                          title={
+                                                              !isMe ? (
+                                                                  toTitleCase(
+                                                                      pullDomainFrom(
+                                                                          prependHttp(
+                                                                              eachSocialLink.link
+                                                                          )
+                                                                      )
+                                                                  )
+                                                              ) : (
+                                                                  <Link to="/edit-artist-profile?field=socialLinks">
+                                                                      Edit
+                                                                  </Link>
+                                                              )
                                                           }
-                                                          target="_blank"
+                                                          placement="bottom"
+                                                          arrow
                                                       >
-                                                          {getFontAwesomeIcon(
-                                                              eachSocialLink.link,
-                                                              'lg'
-                                                          )}
-                                                      </a>
-                                                  </Tooltip>
-                                              </Grid>
-                                          )
+                                                          <a
+                                                              href={prependHttp(
+                                                                  eachSocialLink.link
+                                                              )}
+                                                              target="_blank"
+                                                          >
+                                                              {getFontAwesomeIcon(
+                                                                  prependHttp(
+                                                                      eachSocialLink.link
+                                                                  ),
+                                                                  'lg'
+                                                              )}
+                                                          </a>
+                                                      </Tooltip>
+                                                  </Grid>
+                                              )
                                       )
                                     : ''}
                             </Grid>
@@ -790,21 +797,24 @@ const ArtistProfile = ({
                         }}
                         className="bookingDetails"
                     >
-                        <Grid item container direction="column" xs={12} md={4}>
-                            <Typography component="h2">
-                                {stageName} is looking to book shows on these
-                                dates and in these locations:
-                            </Typography>
+                        <Grid direction="column" xs={12} md={12}>
+                            <Grid item xs={12}>
+                                <Typography component="h2">
+                                    {stageName} is looking to book shows on
+                                    these dates and in these locations:
+                                </Typography>
+                            </Grid>
                             {/* {bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry */}
                             <Grid
+                                container
                                 className="whenBooking"
-                                item
-                                direction="column"
+                                direction="row"
                                 justifyContent="center"
-                                alignItems="start"
+                                alignItems="center"
+                                xs={12}
                                 spacing={2}
                                 sx={{
-                                    margin: '0px auto',
+                                    margin: '0px auto 16px',
                                     width: '100%',
                                 }}
                             >
@@ -817,12 +827,13 @@ const ArtistProfile = ({
                                             whenWhereOrig //.filter(e => e) to remove any null values
                                         ) => (
                                             <Grid
-                                                className="whenBooking"
-                                                key={`whenBooking${idx}`}
                                                 container
                                                 item
-                                                // md={4}
-                                                // sm={5.5}
+                                                className="whenBooking"
+                                                key={`whenBooking${idx}`}
+                                                direction="row"
+                                                md={3.7}
+                                                sm={5.5}
                                                 xs={12}
                                                 sx={{
                                                     backgroundColor:
@@ -851,12 +862,15 @@ const ArtistProfile = ({
                                                             item
                                                             direction="row"
                                                             alignItems="center"
+                                                            className="dateLocationForBooking"
                                                         >
-                                                            <StackDateforDisplay
-                                                                date={
-                                                                    whenBooking.when
-                                                                }
-                                                            ></StackDateforDisplay>
+                                                            <Grid item>
+                                                                <StackDateforDisplay
+                                                                    date={
+                                                                        whenBooking.when
+                                                                    }
+                                                                ></StackDateforDisplay>
+                                                            </Grid>
                                                             <Grid
                                                                 item
                                                                 sx={{
