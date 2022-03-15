@@ -102,6 +102,9 @@ h2.MuiTypography-root {
 .bookingDetails .MuiDivider-fullWidth {
     margin: 8px 16px;
 }
+.MuiGrid-item .MuiChip-root {
+    margin-bottom: 4px;
+}
 
 * {
     box-sizing: border-box;

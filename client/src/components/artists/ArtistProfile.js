@@ -783,6 +783,10 @@ const ArtistProfile = ({
                             height: '100%',
                             padding: '0 20px!important',
                             color: 'var(--primary-color)',
+
+                            justifyContent: {
+                                xs: 'center',
+                            },
                         }}
                         className="bookingDetails"
                     >
@@ -885,10 +889,15 @@ const ArtistProfile = ({
                             direction="row"
                             xs={12}
                             md={8}
+                            spacing={2}
                             sx={{
                                 paddingLeft: {
                                     md: '16px',
                                     xs: '0px',
+                                },
+                                paddingTop: {
+                                    md: '0px',
+                                    xs: '16px',
                                 },
                             }}
                             className="bookingSpecifics"
@@ -897,8 +906,8 @@ const ArtistProfile = ({
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="costStructure"
                                 >
                                     <Tooltip
@@ -940,8 +949,8 @@ const ArtistProfile = ({
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="tourVibe"
                                 >
                                     <Tooltip
@@ -974,8 +983,8 @@ const ArtistProfile = ({
                                     <Grid
                                         item
                                         sx={{ marginTop: '0' }}
-                                        xs={6}
-                                        md={4}
+                                        xs={12}
+                                        md={6}
                                         className="showSchedule"
                                     >
                                         <Tooltip
@@ -1022,12 +1031,12 @@ const ArtistProfile = ({
                             ) : (
                                 ''
                             )}
-                            {artist.overnight ? (
+                            {artist.overnight && artist.overnight > 0 ? (
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="overnight"
                                 >
                                     <Tooltip
@@ -1062,8 +1071,8 @@ const ArtistProfile = ({
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="merchTable"
                                 >
                                     <Tooltip
@@ -1080,7 +1089,7 @@ const ArtistProfile = ({
                                         <TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>
                                     </Tooltip>{' '}
                                     Would like a <strong>merch table</strong>{' '}
-                                    (for CDs, t-shirts, etc.)'{' '}
+                                    (for CDs, t-shirts, etc.){' '}
                                     {artist.merchTable}
                                     <Divider />
                                 </Grid>
@@ -1101,8 +1110,8 @@ const ArtistProfile = ({
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="allergies"
                                 >
                                     <Tooltip
@@ -1154,8 +1163,8 @@ const ArtistProfile = ({
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="familyFriendly"
                                 >
                                     <Tooltip
@@ -1181,8 +1190,8 @@ const ArtistProfile = ({
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="familyFriendly"
                                 >
                                     <Tooltip
@@ -1209,8 +1218,8 @@ const ArtistProfile = ({
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="soundSystem"
                                 >
                                     <Tooltip
@@ -1238,8 +1247,8 @@ const ArtistProfile = ({
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="soundSystem"
                                 >
                                     <Tooltip
@@ -1265,8 +1274,8 @@ const ArtistProfile = ({
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="soundSystem"
                                 >
                                     <Tooltip
@@ -1295,8 +1304,8 @@ const ArtistProfile = ({
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="covidPrefs"
                                 >
                                     <Tooltip
@@ -1341,8 +1350,8 @@ const ArtistProfile = ({
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="financialHopes"
                                 >
                                     <Tooltip
@@ -1367,12 +1376,13 @@ const ArtistProfile = ({
                             ) : (
                                 ''
                             )}
-                            {artist.fanActions ? (
+                            {artist.fanActions &&
+                            artist.fanActions.length > 0 ? (
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
-                                    xs={6}
-                                    md={4}
+                                    xs={12}
+                                    md={6}
                                     className="fanActions"
                                 >
                                     <Tooltip

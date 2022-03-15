@@ -7,6 +7,7 @@ import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
 import { setAlert } from '../../actions/alert';
 import { createMyArtist, getArtists } from '../../actions/artist';
 import { updateUserAvatar } from '../../actions/auth';
+import { toTitleCase } from '../../actions/app';
 import {
     TextField,
     //Button,
@@ -97,10 +98,15 @@ const EditArtistProfileForm = ({
 
             artists.map((eachArtist) => {
                 if (eachArtist.genres) {
-                    artistsGenre = artistsGenre.concat(eachArtist.genres);
+                    console.log('eachArtist.genres', eachArtist.genres);
+                    eachArtist.genres.map((genre) => {
+                        let genreCapitalized = toTitleCase(genre.trim());
+                        artistsGenre.push(genreCapitalized);
+                    });
+                    // artistsGenre = artistsGenre.concat(eachArtist.genres);
                 }
             });
-            //console.log(artistsGenre);
+            console.log('artistsGenre', artistsGenre);
 
             artistsGenresFiltered = [...new Set([...artistsGenre])];
             artistsGenresFiltered.sort();
@@ -506,6 +512,14 @@ const EditArtistProfileForm = ({
         //console.log(Object.keys(formGroups).length);
         changesMade.current = true;
         let targetValue = val;
+        if (theFieldName === 'genres') {
+            let theArtistGenres = [];
+            val.map((genre) => {
+                let genreCapitalized = toTitleCase(genre.trim());
+                theArtistGenres.push(genreCapitalized);
+            });
+            targetValue = theArtistGenres;
+        }
         setFormData({ ...formData, [theFieldName]: targetValue });
     };
     //onAutocompleteTagChange(event, 'allergies', value)
