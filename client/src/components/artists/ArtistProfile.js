@@ -627,6 +627,7 @@ const ArtistProfile = ({
                         container
                         sx={{
                             margin: '4px 0 0',
+                            color: 'var(--light-color)',
                             // padding: '20px',
                             // border: '3px solid var(--primary-color)',
                         }}
@@ -649,11 +650,12 @@ const ArtistProfile = ({
                             }
                         >
                             <Typography
-                                component="h3"
+                                component="h2"
                                 sx={{
-                                    fontFamily: 'var(--secondary-font)',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '1px',
+                                    // fontFamily: 'var(--secondary-font)',
+                                    // textTransform: 'uppercase',
+                                    //letterSpacing: '1px',
+                                    color: 'var(--primary-color)',
                                 }}
                             >
                                 About {stageName}:
