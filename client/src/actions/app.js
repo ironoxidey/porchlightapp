@@ -53,7 +53,7 @@ export const convert24HourTime = (time) => {
 export const pullDomainFrom = (url) => {
     try {
         let theURL = new URL(url);
-        console.log('theURL.hostname: ' + theURL.hostname);
+        //console.log('theURL.hostname: ' + theURL.hostname);
         let domain = theURL.hostname.split('.');
         let linkName = domain.slice(-(domain.length === 4 ? 3 : 2))[0];
         //console.log(linkName);

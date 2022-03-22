@@ -1459,7 +1459,7 @@ const EditArtistProfileForm = ({
                 This can be a casual recording, speaking directly to the camera.
                 Upload it to YouTube, and paste the link here. <br />
                 <small>
-                    (Looking for something like:
+                    (Looking for a link that resembles something like:
                     ‘https://www.youtube.com/watch?v=lEBBFsWtWDo’)
                 </small>
             </FormLabel>,
