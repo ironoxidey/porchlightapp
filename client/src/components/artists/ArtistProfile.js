@@ -42,7 +42,7 @@ import { useTransition, animated, config } from '@react-spring/web';
 
 import {
     toTitleCase,
-    youTubeEmbed,
+    //youTubeEmbed,
     getFontAwesomeIcon,
     pullDomainFrom,
     convert24HourTime,
@@ -763,9 +763,16 @@ const ArtistProfile = ({
                                       >
                                           <ReactPlayer
                                               light={
+                                                  (new URL(
+                                                      mediaTabs[i].mediaLink
+                                                  ).hostname !==
+                                                      'music.youtube.com' &&
+                                                      pullDomainFrom(
+                                                          mediaTabs[i].mediaLink
+                                                      ) === 'youtube') ||
                                                   pullDomainFrom(
                                                       mediaTabs[i].mediaLink
-                                                  ) !== 'soundcloud'
+                                                  ) === 'youtu'
                                               }
                                               url={mediaTabs[i].mediaLink}
                                               width="100%"
@@ -961,7 +968,7 @@ const ArtistProfile = ({
                             ) : (
                                 ''
                             )}
-                            {artist.tourVibe ? (
+                            {artist.tourVibe.length > 0 ? (
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}

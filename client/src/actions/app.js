@@ -53,7 +53,7 @@ export const convert24HourTime = (time) => {
 export const pullDomainFrom = (url) => {
     try {
         let theURL = new URL(url);
-        //console.log('theURL: ' + theURL);
+        console.log('theURL.hostname: ' + theURL.hostname);
         let domain = theURL.hostname.split('.');
         let linkName = domain.slice(-(domain.length === 4 ? 3 : 2))[0];
         //console.log(linkName);
@@ -66,37 +66,37 @@ export const pullDomainFrom = (url) => {
     }
 };
 
-export const pullYouTubeEmbedCode = (url) => {
-    let theDomain = pullDomainFrom(url);
-    if (theDomain === 'youtube') {
-        let theSearchParams = new URL(url).search;
-        let theEmbedCode = new URLSearchParams(theSearchParams).get('v');
-        return theEmbedCode;
-    } else {
-        return url;
-    }
-};
+// export const pullYouTubeEmbedCode = (url) => {
+//     let theDomain = pullDomainFrom(url);
+//     if (theDomain === 'youtube') {
+//         let theSearchParams = new URL(url).search;
+//         let theEmbedCode = new URLSearchParams(theSearchParams).get('v');
+//         return theEmbedCode;
+//     } else {
+//         return url;
+//     }
+// };
 
-export const youTubeEmbed = (formInput) => {
-    try {
-        return (
-            <iframe
-                style={{ margin: '8px auto' }}
-                width="560"
-                height="315"
-                src={`https://www.youtube.com/embed/${pullYouTubeEmbedCode(
-                    formInput
-                )}?rel=0`}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-            ></iframe>
-        );
-    } catch (err) {
-        console.log(err);
-    }
-};
+// export const youTubeEmbed = (formInput) => {
+//     try {
+//         return (
+//             <iframe
+//                 style={{ margin: '8px auto' }}
+//                 width="560"
+//                 height="315"
+//                 src={`https://www.youtube.com/embed/${pullYouTubeEmbedCode(
+//                     formInput
+//                 )}?rel=0`}
+//                 title="YouTube video player"
+//                 frameBorder="0"
+//                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+//                 allowFullScreen
+//             ></iframe>
+//         );
+//     } catch (err) {
+//         console.log(err);
+//     }
+// };
 
 export const getFontAwesomeIcon = (url, size = 'lg') => {
     let theDomain = pullDomainFrom(url);

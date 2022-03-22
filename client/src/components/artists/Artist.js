@@ -5,7 +5,7 @@ import { connect, useDispatch } from 'react-redux';
 import { PAGE_LOAD } from '../../actions/types';
 import Spinner from '../layout/Spinner';
 import ArtistProfile from './ArtistProfile';
-import ArtistAbout from './ArtistAbout';
+// import ArtistAbout from './ArtistAbout';
 // import ProfileExperience from './ProfileExperience';
 // import ProfileEducation from './ProfileEducation';
 import { getArtistBySlug } from '../../actions/artist';

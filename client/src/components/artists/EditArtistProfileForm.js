@@ -52,7 +52,11 @@ import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
 import { textAlign } from '@mui/system';
 
-import { getFontAwesomeIcon, getHostLocations } from '../../actions/app';
+import {
+    getFontAwesomeIcon,
+    getHostLocations,
+    pullDomainFrom,
+} from '../../actions/app';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
@@ -1479,7 +1483,16 @@ const EditArtistProfileForm = ({
                         justifyContent="center"
                         sx={{ width: '100%', margin: '8px auto' }}
                     >
-                        <ReactPlayer url={artistStatementVideo} />
+                        <ReactPlayer
+                            light={
+                                (new URL(artistStatementVideo).hostname !==
+                                    'music.youtube.com' &&
+                                    pullDomainFrom(artistStatementVideo) ===
+                                        'youtube') ||
+                                pullDomainFrom(artistStatementVideo) === 'youtu'
+                            }
+                            url={artistStatementVideo}
+                        />
                     </Grid>
                 ) : (
                     ''
@@ -1587,7 +1600,15 @@ const EditArtistProfileForm = ({
                         justifyContent="center"
                         sx={{ width: '100%', margin: '8px auto' }}
                     >
-                        <ReactPlayer url={repLink} />
+                        <ReactPlayer
+                            light={
+                                (new URL(repLink).hostname !==
+                                    'music.youtube.com' &&
+                                    pullDomainFrom(repLink) === 'youtube') ||
+                                pullDomainFrom(repLink) === 'youtu'
+                            }
+                            url={repLink}
+                        />
                     </Grid>
                 ) : (
                     ''
@@ -1624,7 +1645,16 @@ const EditArtistProfileForm = ({
                         justifyContent="center"
                         sx={{ width: '100%', margin: '8px auto' }}
                     >
-                        <ReactPlayer url={livePerformanceVideo} />
+                        <ReactPlayer
+                            light={
+                                (new URL(livePerformanceVideo).hostname !==
+                                    'music.youtube.com' &&
+                                    pullDomainFrom(livePerformanceVideo) ===
+                                        'youtube') ||
+                                pullDomainFrom(livePerformanceVideo) === 'youtu'
+                            }
+                            url={livePerformanceVideo}
+                        />
                     </Grid>
                 ) : (
                     ''
