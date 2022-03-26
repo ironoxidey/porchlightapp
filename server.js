@@ -37,6 +37,7 @@ app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/profile', require('./routes/api/profile'));
 app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/artists', require('./routes/api/artists'));
+app.use('/api/hosts', require('./routes/api/hosts'));
 //app.use('/api/uploads', require('./routes/api/uploads'));
 app.use('/api/cloudinary', require('./routes/api/cloudinary'));
 
