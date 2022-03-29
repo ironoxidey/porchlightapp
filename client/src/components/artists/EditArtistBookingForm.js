@@ -1084,7 +1084,7 @@ const EditArtistBookingForm = ({
         ],
         familyFriendly: [
             <FormLabel component="legend">
-                Would these shows be “family-friendly”?
+                Would these shows be family-friendly?
             </FormLabel>,
             [
                 <FormControl component="fieldset">

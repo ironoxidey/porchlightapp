@@ -888,10 +888,11 @@ const EditArtistProfileForm = ({
                     value={medium}
                     disableClearable
                     options={[
+                        'dances',
+                        'films',
+                        'jokes',
                         'music',
                         'spoken word poems',
-                        'jokes',
-                        'films',
                         'visual art',
                     ]}
                     onChange={(event, value) =>

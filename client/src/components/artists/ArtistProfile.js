@@ -19,6 +19,7 @@ import {
 import Button from '../layout/SvgButton';
 import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 import HearingTwoToneIcon from '@mui/icons-material/HearingTwoTone';
+import EmojiObjectsTwoToneIcon from '@mui/icons-material/EmojiObjectsTwoTone';
 import TableRestaurantTwoToneIcon from '@mui/icons-material/TableRestaurantTwoTone';
 import AccessTimeTwoToneIcon from '@mui/icons-material/AccessTimeTwoTone';
 import HotelTwoToneIcon from '@mui/icons-material/HotelTwoTone';
@@ -424,7 +425,7 @@ const ArtistProfile = ({
                                     <Tooltip
                                         title={
                                             !isMe ? (
-                                                'Sounds Like'
+                                                'Inspired by'
                                             ) : (
                                                 <Link to="/edit-artist-profile?field=soundsLike">
                                                     Edit
@@ -434,9 +435,9 @@ const ArtistProfile = ({
                                         placement="bottom"
                                         arrow
                                     >
-                                        <HearingTwoToneIcon
+                                        <EmojiObjectsTwoToneIcon
                                             sx={{ marginRight: '8px' }}
-                                        ></HearingTwoToneIcon>
+                                        ></EmojiObjectsTwoToneIcon>
                                     </Tooltip>
                                     {artist.soundsLike.map((sndsLike, key) => (
                                         <Chip
@@ -1203,7 +1204,7 @@ const ArtistProfile = ({
                                     >
                                         <FamilyRestroomTwoToneIcon></FamilyRestroomTwoToneIcon>
                                     </Tooltip>{' '}
-                                    <strong>{'“Family-friendly”'}</strong>
+                                    <strong>{'Family-friendly'}</strong>
                                     <Divider />
                                 </Grid>
                             ) : (
