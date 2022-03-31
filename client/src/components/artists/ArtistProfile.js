@@ -33,6 +33,8 @@ import ThumbUpTwoToneIcon from '@mui/icons-material/ThumbUpTwoTone';
 import SavingsTwoToneIcon from '@mui/icons-material/SavingsTwoTone';
 import WcTwoToneIcon from '@mui/icons-material/WcTwoTone';
 import TodayTwoToneIcon from '@mui/icons-material/TodayTwoTone';
+import LiquorTwoToneIcon from '@mui/icons-material/LiquorTwoTone';
+import NoDrinksTwoToneIcon from '@mui/icons-material/NoDrinksTwoTone';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -790,7 +792,8 @@ const ArtistProfile = ({
                 </Grid>
                 {bookingWhenWhere &&
                 bookingWhenWhere.length > 0 &&
-                bookingWhenWhere[0].when ? ( //check to be sure there's a valid first entry
+                bookingWhenWhere[0].when &&
+                bookingWhenWhere[0].where != '' ? ( //check to be sure there's a valid first entry
                     <Grid
                         item
                         container
@@ -1233,6 +1236,62 @@ const ArtistProfile = ({
                                     </Tooltip>{' '}
                                     Would prefer to have an{' '}
                                     <strong>adults-only</strong> show
+                                    <Divider />
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                            {artist.alcohol ? (
+                                <Grid
+                                    item
+                                    sx={{ marginTop: '0' }}
+                                    xs={12}
+                                    md={6}
+                                    className="alcohol"
+                                >
+                                    <Tooltip
+                                        arrow={true}
+                                        disableHoverListener={!isMe}
+                                        disableFocusListener={!isMe}
+                                        disableTouchListener={!isMe}
+                                        title={
+                                            <Link to="/edit-artist-booking?field=alcohol">
+                                                Edit
+                                            </Link>
+                                        }
+                                    >
+                                        <LiquorTwoToneIcon></LiquorTwoToneIcon>
+                                    </Tooltip>
+                                    Comfortable with having
+                                    <strong>{' alcohol '}</strong>at the show
+                                    <Divider />
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                            {!artist.alcohol ? (
+                                <Grid
+                                    item
+                                    sx={{ marginTop: '0' }}
+                                    xs={12}
+                                    md={6}
+                                    className="alcohol"
+                                >
+                                    <Tooltip
+                                        arrow={true}
+                                        disableHoverListener={!isMe}
+                                        disableFocusListener={!isMe}
+                                        disableTouchListener={!isMe}
+                                        title={
+                                            <Link to="/edit-artist-booking?field=alcohol">
+                                                Edit
+                                            </Link>
+                                        }
+                                    >
+                                        <NoDrinksTwoToneIcon></NoDrinksTwoToneIcon>
+                                    </Tooltip>{' '}
+                                    Would prefer having{' '}
+                                    <strong> no alcohol </strong> at the show
                                     <Divider />
                                 </Grid>
                             ) : (
