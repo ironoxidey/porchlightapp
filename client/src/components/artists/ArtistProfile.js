@@ -838,38 +838,44 @@ const ArtistProfile = ({
                                             whenBooking,
                                             idx,
                                             whenWhereOrig //.filter(e => e) to remove any null values
-                                        ) => (
-                                            <Grid
-                                                container
-                                                item
-                                                className="whenBooking"
-                                                key={`whenBooking${idx}`}
-                                                direction="row"
-                                                md={3.7}
-                                                sm={5.5}
-                                                xs={12}
-                                                sx={{
-                                                    backgroundColor:
-                                                        'rgba(0,0,0,0.35)',
-                                                    '&:hover': {},
-                                                    padding: '8px',
-                                                    margin: '4px',
-                                                    color: 'var(--light-color)',
-                                                }}
-                                            >
-                                                <Tooltip
-                                                    arrow={true}
-                                                    disableHoverListener={!isMe}
-                                                    disableFocusListener={!isMe}
-                                                    disableTouchListener={!isMe}
-                                                    title={
-                                                        <Link to="/edit-artist-booking?field=bookingWhen">
-                                                            Edit
-                                                        </Link>
-                                                    }
+                                        ) =>
+                                            whenBooking &&
+                                            whenBooking.where != '' ? (
+                                                <Grid
+                                                    container
+                                                    item
+                                                    className="whenBooking"
+                                                    key={`whenBooking${idx}`}
+                                                    direction="row"
+                                                    md={3.7}
+                                                    sm={5.5}
+                                                    xs={12}
+                                                    sx={{
+                                                        backgroundColor:
+                                                            'rgba(0,0,0,0.35)',
+                                                        '&:hover': {},
+                                                        padding: '8px',
+                                                        margin: '4px',
+                                                        color: 'var(--light-color)',
+                                                    }}
                                                 >
-                                                    {whenBooking &&
-                                                    whenBooking.where ? (
+                                                    <Tooltip
+                                                        arrow={true}
+                                                        disableHoverListener={
+                                                            !isMe
+                                                        }
+                                                        disableFocusListener={
+                                                            !isMe
+                                                        }
+                                                        disableTouchListener={
+                                                            !isMe
+                                                        }
+                                                        title={
+                                                            <Link to="/edit-artist-booking?field=bookingWhen">
+                                                                Edit
+                                                            </Link>
+                                                        }
+                                                    >
                                                         <Grid
                                                             container
                                                             item
@@ -902,12 +908,11 @@ const ArtistProfile = ({
                                                                         .state}
                                                             </Grid>
                                                         </Grid>
-                                                    ) : (
-                                                        ''
-                                                    )}
-                                                </Tooltip>
-                                            </Grid>
-                                        )
+                                                    </Tooltip>
+                                                </Grid>
+                                            ) : (
+                                                ''
+                                            )
                                     )}
                             </Grid>
                         </Grid>
