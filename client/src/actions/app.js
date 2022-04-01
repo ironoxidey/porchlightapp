@@ -171,6 +171,15 @@ export const toTitleCase = (str) => {
     return str;
 };
 
+export const sortDates = (a, b) => {
+    if (b.when > a.when) {
+        return -1;
+    } else if (b.when < a.when) {
+        return 1;
+    }
+    return 0;
+};
+
 export const getHostLocations = () => {
     //Host's locations as of Frebruary 3rd, 2022
     const hostLocations = [

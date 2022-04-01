@@ -51,7 +51,11 @@ import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
 import { textAlign } from '@mui/system';
 
-import { getFontAwesomeIcon, getHostLocations } from '../../actions/app';
+import {
+    getFontAwesomeIcon,
+    getHostLocations,
+    sortDates,
+} from '../../actions/app';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
@@ -541,6 +545,9 @@ const EditArtistBookingForm = ({
                         }
                     }
                 );
+                // whenWhereFiltered = whenWhereFiltered.sort((a, b) =>
+                //     sortDates(a, b)
+                // );
                 let existsInWhere =
                     whenWhereFiltered
                         .map((item) => {
@@ -562,18 +569,21 @@ const EditArtistBookingForm = ({
                     //if new, add when and last where to the updatedField object
                     writeToState = true;
                     updatedField = updatedField.concat(
-                        whenWhereFiltered.concat([
-                            //{ when: whenBooking, where: null },
-                            {
-                                when: whenBooking,
-                                where:
-                                    whenWhereFiltered.length > 0
-                                        ? whenWhereFiltered[
-                                              whenWhereFiltered.length - 1
-                                          ].where
-                                        : '',
-                            },
-                        ])
+                        whenWhereFiltered
+                            .concat([
+                                //{ when: whenBooking, where: null },
+                                {
+                                    when: whenBooking,
+                                    where:
+                                        whenWhereFiltered.length > 0
+                                            ? whenWhereFiltered[
+                                                  whenWhereFiltered.length - 1
+                                              ].where
+                                            : '',
+                                    updated: new Date(),
+                                },
+                            ])
+                            .sort((a, b) => sortDates(a, b))
                     );
                 }
             });
@@ -721,7 +731,13 @@ const EditArtistBookingForm = ({
                                           // borderStyle: 'solid',
                                           backgroundColor: 'rgba(0,0,0,0.15)',
                                           '&:hover': {},
-                                          border: '1px var(--light-color) solid',
+                                          border:
+                                              whenBooking.when ===
+                                              bookingWhen[
+                                                  bookingWhen.length - 1
+                                              ]
+                                                  ? `1px var(--link-color) solid`
+                                                  : `1px var(--light-color) solid`,
                                           padding: '0 10px 10px',
                                           margin: '0px auto',
                                           width: '100%',
