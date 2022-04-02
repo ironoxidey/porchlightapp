@@ -61,8 +61,17 @@ router.post(
                     id: user.id,
                     email: user.email,
                     role: user.role,
+                    lastLogin: user.lastLogin || new Date(),
                 },
             };
+
+            let lastLogin = await User.updateOne(
+                { _id: user.id },
+                {
+                    $set: { lastLogin: new Date() },
+                }
+            );
+
             jwt.sign(
                 payload,
                 config['jwtSecret'], //config.get('jwtSecret'),
