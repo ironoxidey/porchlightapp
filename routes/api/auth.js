@@ -8,6 +8,7 @@ const config = !process.env.NODE_ENV ? require('config') : process.env;
 const { check, validationResult } = require('express-validator');
 
 const User = require('../../models/User');
+const Artist = require('../../models/Artist');
 
 // @route   GET api/auth
 // @desc    Test Route

@@ -221,7 +221,7 @@ const UserDataGrid = ({
 
     function ProfileCell(props) {
         const { id, value, api, field } = props;
-        //console.log('ProfileCell props', props);
+        console.log('ProfileCell props', props);
         const artistEmail = props.row.email;
 
         const [artistSlug, setArtistSlug] = useState('');
@@ -279,6 +279,7 @@ const UserDataGrid = ({
             headerName: 'Role(s)',
             width: 350,
             // editable: true,
+            sortable: false,
             renderCell: renderAutoCompleteEditInputCell,
             // renderEditCell: renderAutoCompleteEditInputCell,
         },
@@ -286,8 +287,36 @@ const UserDataGrid = ({
             field: 'profile',
             headerName: 'Profile',
             width: 250,
-            sortable: false,
+            sortable: true,
             renderCell: renderProfileCell,
+        },
+        {
+            field: 'lastLogin',
+            headerName: 'Last Logged in',
+            width: 220,
+            editable: false,
+            type: 'dateTime',
+            valueFormatter: (params) => {
+                if (params.value) {
+                    return new Date(params.value).toLocaleString('en-US');
+                } else {
+                    return;
+                }
+            },
+        },
+        {
+            field: 'dateRegistered',
+            headerName: 'Registered on',
+            width: 220,
+            editable: false,
+            type: 'dateTime',
+            valueFormatter: (params) => {
+                if (params.value) {
+                    return new Date(params.value).toLocaleString('en-US');
+                } else {
+                    return;
+                }
+            },
         },
     ];
 
@@ -302,6 +331,8 @@ const UserDataGrid = ({
                         email: user.email,
                         role: user.role,
                         profile: '',
+                        lastLogin: user.lastLogin || user.date,
+                        dateRegistered: user.date,
                     };
 
                     return userRow;
@@ -321,6 +352,11 @@ const UserDataGrid = ({
             rowsPerPageOptions={[]}
             editRowsModel={editRowsModel}
             onEditRowsModelChange={handleEditRowsModelChange}
+            initialState={{
+                sorting: {
+                    sortModel: [{ field: 'lastLogin', sort: 'desc' }],
+                },
+            }}
         />
     );
 };

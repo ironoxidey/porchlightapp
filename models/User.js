@@ -19,9 +19,18 @@ const UserSchema = new mongoose.Schema({
         enum: ['ADMIN', 'ARTIST', 'ATTENDER', 'BOOKING', 'HOST'],
         default: 'ATTENDER',
     },
+    profiles: {
+        artist: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Artist',
+        },
+        host: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Host',
+        },
+    },
     lastLogin: {
         type: Date,
-        default: Date.now,
     },
     calendly: {
         authCode: {
