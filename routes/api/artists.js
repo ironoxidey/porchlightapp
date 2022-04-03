@@ -135,49 +135,12 @@ router.post('/batch', [auth], async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
+    console.log('api/artists/batch');
     //console.log(req.user);
     if (req.body instanceof Array) {
         let artistCount = 0;
         await Promise.all(
             req.body.map(async (artistFields) => {
-                // const {
-                //     email,
-                //     firstName,
-                //     lastName,
-                //     stageName,
-                //     medium,
-                //     genre,
-                //     repLink,
-                //     helpKind,
-                //     typeformDate,
-                //     hadMeeting,
-                //     sentFollowUp,
-                //     active,
-                //     notes,
-
-                //     phone,
-                //     hometown,
-                //     costStructure,
-                //     namedPrice,
-                //     bookingWhenWhere,
-                //     setLength,
-                //     schedule,
-                //     overnight,
-                //     openers,
-                //     companionTravelers,
-                //     hangout,
-                //     merchTable,
-                //     allergies,
-                //     familyFriendly,
-                //     soundSystem,
-                //     wideImg,
-                //     squareImg,
-                //     covidPrefs,
-                //     artistNotes,
-                //     financialHopes,
-                //     onboardDate,
-                // } = artistFields;
-
                 artistFields.stageName && artistFields.stageName.length > 0
                     ? (artistFields.slug = convertToSlug(
                           artistFields.stageName
@@ -199,6 +162,10 @@ router.post('/batch', [auth], async (req, res) => {
                             { $set: artistFields },
                             { new: true, upsert: true }
                         );
+                        let user = await User.findOneAndUpdate(
+                            { email: artistFields.email.toLowerCase() },
+                            { $set: { artistProfile: artist._id } }
+                        );
                         artistCount++;
                         res.json(artistFields);
                     } catch (err) {
@@ -217,6 +184,10 @@ router.post('/batch', [auth], async (req, res) => {
                             { email: artistFields.email.toLowerCase() },
                             { $set: artistFields },
                             { new: true, upsert: true }
+                        );
+                        let user = await User.findOneAndUpdate(
+                            { email: artistFields.email.toLowerCase() },
+                            { $set: { artistProfile: artist._id } }
                         );
                         artistCount++;
                         res.json(artistFields);
@@ -270,6 +241,10 @@ router.post('/admin-update', [auth], async (req, res) => {
                             { $set: artistFields },
                             { new: true, upsert: true }
                         );
+                        let user = await User.findOneAndUpdate(
+                            { email: artistFields.email.toLowerCase() },
+                            { $set: { artistProfile: artist._id } }
+                        );
                         const artists = await Artist.find();
                         res.json(artists);
                     } catch (err) {
@@ -322,6 +297,12 @@ router.post('/updateMe', [auth], async (req, res) => {
                             { $set: artistFields },
                             { new: true, upsert: true }
                         ).select('-hadMeeting -sentFollowUp -notes');
+
+                        let user = await User.findOneAndUpdate(
+                            { email: artistFields.email.toLowerCase() },
+                            { $set: { artistProfile: artist._id } }
+                        );
+
                         artistCount++;
                         res.json(artist);
                     } catch (err) {
@@ -343,6 +324,12 @@ router.post('/updateMe', [auth], async (req, res) => {
                             { $set: artistFields },
                             { new: true, upsert: true }
                         ).select('-hadMeeting -sentFollowUp -notes');
+
+                        let user = await User.findOneAndUpdate(
+                            { email: artistFields.email.toLowerCase() },
+                            { $set: { artistProfile: artist._id } }
+                        );
+
                         artistCount++;
                         res.json(artist);
                     } catch (err) {

@@ -221,14 +221,14 @@ const UserDataGrid = ({
 
     function ProfileCell(props) {
         const { id, value, api, field } = props;
-        //console.log('ProfileCell props', props);
+        console.log('ProfileCell props', props);
         const artistEmail = props.row.email;
 
         const [artistSlug, setArtistSlug] = useState('');
         const [artistStageName, setArtistStageName] = useState('');
 
         const getArtistSlug = async () => {
-            const gottenArtistSlug = value; //await getArtistByEmail(artistEmail);
+            const gottenArtistSlug = await getArtistByEmail(artistEmail);
             setArtistSlug(gottenArtistSlug.slug);
             setArtistStageName(gottenArtistSlug.stageName);
         };
@@ -254,21 +254,6 @@ const UserDataGrid = ({
     useEffect(() => {
         getAllUsers();
     }, [getAllUsers]);
-
-    const profileSort = (v1, v2) => {
-        if (v1.slug && v2.slug) {
-            console.log(
-                'v1(' + v1.slug + ') and v2(' + v2.slug + ') returns: ',
-                v1.slug.localeCompare(v2.slug)
-            );
-            return v1.slug.localeCompare(v2.slug);
-        } else if (v1.slug) {
-            return -1;
-        } else if (v2.slug) {
-            return 1;
-        }
-        return 0;
-    };
 
     const userColumns = [
         //https://codesandbox.io/s/e9o2j?file=/demo.js
@@ -303,9 +288,7 @@ const UserDataGrid = ({
             headerName: 'Profile',
             width: 250,
             sortable: true,
-            //valueParser: (params) => params.row.profile.slug,
             renderCell: renderProfileCell,
-            sortComparator: profileSort,
         },
         {
             field: 'lastLogin',
@@ -347,7 +330,7 @@ const UserDataGrid = ({
                         name: user.name,
                         email: user.email,
                         role: user.role,
-                        profile: user.artistProfile || '',
+                        profile: '',
                         lastLogin: user.lastLogin || user.date,
                         dateRegistered: user.date,
                     };

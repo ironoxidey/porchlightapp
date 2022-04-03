@@ -57,19 +57,31 @@ router.post(
                     .json({ errors: [{ msg: 'Invalid Credentials' }] });
             }
 
+            let artist = user.artistProfile;
+            let userUpdates = { lastLogin: new Date() };
+            if (!artist) {
+                //if we don't see an artist profile in the returned user, let's check for one in the artist profiles and add it
+                artist = await Artist.findOne({ email }).select('_id');
+                if (artist) {
+                    userUpdates.artistProfile = artist;
+                }
+            }
+            console.log('artist', artist);
+
             const payload = {
                 user: {
                     id: user.id,
                     email: user.email,
                     role: user.role,
                     lastLogin: user.lastLogin || new Date(),
+                    artistProfile: artist,
                 },
             };
 
             let lastLogin = await User.updateOne(
                 { _id: user.id },
                 {
-                    $set: { lastLogin: new Date() },
+                    $set: userUpdates,
                 }
             );
 

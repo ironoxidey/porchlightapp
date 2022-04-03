@@ -12,6 +12,7 @@ const auth = require('../../middleware/auth');
 const sendEmail = require('../../utils/email/sendEmail');
 
 const User = require('../../models/User');
+const Artist = require('../../models/Artist');
 
 // @route   POST api/users
 // @desc    Register User
@@ -92,9 +93,9 @@ router.post(
 router.get('/edit', [auth], async (req, res) => {
     if (req.user.role.indexOf('ADMIN') != -1) {
         try {
-            const users = await User.find().select(
-                '-password -calendly -resetLink'
-            );
+            const users = await User.find()
+                .select('-password -calendly -resetLink')
+                .populate('artistProfile');
             res.json(users);
         } catch (err) {
             console.log(err.message);

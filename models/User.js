@@ -19,15 +19,13 @@ const UserSchema = new mongoose.Schema({
         enum: ['ADMIN', 'ARTIST', 'ATTENDER', 'BOOKING', 'HOST'],
         default: 'ATTENDER',
     },
-    profiles: {
-        artist: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Artist',
-        },
-        host: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Host',
-        },
+    artistProfile: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'artist',
+    },
+    hostProfile: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'host',
     },
     lastLogin: {
         type: Date,
