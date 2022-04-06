@@ -66,7 +66,7 @@ router.post(
                     userUpdates.artistProfile = artist;
                 }
             }
-            console.log('artist', artist);
+            //console.log('artist', artist);
 
             const payload = {
                 user: {

@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, useLocation } from 'react-router-dom';
 import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 import PropTypes from 'prop-types';
@@ -24,6 +24,11 @@ import Button from '../layout/SvgButton';
 
 //import axios from 'axios';
 
+// A custom hook that builds on useLocation to parse the query string for you.
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
 const Register = ({ setAlert, register, isAuthenticated }) => {
     const [formData, setFormData] = useState({
         name: '',
@@ -34,6 +39,10 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
 
     const { name, email, password, password2 } = formData;
 
+    let query = useQuery();
+    const referralKey = query.get('referralKey');
+    //console.log('referralKey', referralKey);
+
     const onChange = (e) =>
         setFormData({ ...formData, [e.target.name]: e.target.value }); //separate onChange function // calls setFormData() // copies and spreads formData then changes the state of [e.target.name] referring to the name attr of each input, and setting the value to e.target.value
 
@@ -42,7 +51,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
         if (password !== password2) {
             setAlert('Passwords do not match', 'danger');
         } else {
-            register({ name, email, password });
+            register({ name, email, password, referralKey });
             //   const newUser = {
             //     name,
             //     email,

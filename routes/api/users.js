@@ -12,6 +12,7 @@ const auth = require('../../middleware/auth');
 const sendEmail = require('../../utils/email/sendEmail');
 
 const User = require('../../models/User');
+const Referral = require('../../models/Referral');
 const Artist = require('../../models/Artist');
 
 // @route   POST api/users
@@ -33,9 +34,35 @@ router.post(
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { name, email, role, password } = req.body;
+        const { name, email, password, referralKey } = req.body;
+        //console.log('register req.body', req.body);
 
         try {
+            var referredBy, role;
+
+            if (referralKey) {
+                const decoded = jwt.verify(
+                    referralKey,
+                    config['resetPasswordKey']
+                );
+                try {
+                    let referral = await Referral.findOneAndUpdate(
+                        {
+                            key: referralKey,
+                        },
+                        { $push: { usedBy: email } }
+                    );
+
+                    if (referral && referral.setToRole === decoded.setToRole) {
+                        referredBy = referral.user;
+                        role = referral.setToRole;
+                    }
+                } catch (err) {
+                    console.log(err.message);
+                }
+            }
+            //console.log('referredBy', referredBy, 'role', role);
+
             let user = await User.findOne({ email });
 
             if (user) {
@@ -56,6 +83,7 @@ router.post(
                 role,
                 avatar,
                 password,
+                referredBy,
             });
 
             const salt = await bcrypt.genSalt(10);
@@ -74,7 +102,7 @@ router.post(
             jwt.sign(
                 payload,
                 config['jwtSecret'], //config.get('jwtSecret'),
-                { expiresIn: 360000 }, //eventually change this to 3600
+                { expiresIn: 3600 }, //eventually change this to 3600
                 (err, token) => {
                     if (err) throw err;
                     res.json({ token });
@@ -294,6 +322,57 @@ router.put(
         }
     }
 );
+
+// @route   POST api/users/create-referral
+// @desc    Create Referral
+// @access  Private
+router.post('/create-referral', [auth], async (req, res) => {
+    //const { setToRole } = req.body;
+    const setToRole = 'ARTIST'; //eventually I might let this be passed in, but I want to be very careful that someone couldn't hack this, and make an ADMIN referral
+
+    if (req.user.role && req.user.role.indexOf('ADMIN') === -1) {
+        //if requesting user is not an ADMIN
+        return res.status(400).json({
+            errors: [
+                {
+                    msg: 'Only ADMINs have the authority to create referrals.',
+                },
+            ],
+        });
+    } else {
+        try {
+            //console.log('req.user: ', req.user);
+            const payload = {
+                id: req.user.id,
+                //didn't always include email and role... not sure if this might break something ~March 10, 2022
+                email: req.user.email,
+                setToRole: setToRole,
+            };
+
+            const referralKey = jwt.sign(
+                payload,
+                config['resetPasswordKey'] //config.get('resetPasswordKey'),
+            );
+
+            //const link = `localhost:3000/reset-password?token=${resetToken}`;
+            const link = `https://app.porchlight.art/register?referralKey=${referralKey}`;
+
+            //console.log(link);
+
+            let referral = new Referral({
+                user: req.user.id,
+                setToRole: setToRole,
+                key: referralKey,
+            });
+
+            await referral.save();
+            return res.json({ link });
+        } catch (err) {
+            console.log(err.message);
+            return res.status(500).send('Server error');
+        }
+    }
+});
 
 // @route   PUT api/users/update-avatar
 // @desc    Update Avatar

@@ -27,6 +27,10 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'host',
     },
+    referredBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+    },
     lastLogin: {
         type: Date,
     },
