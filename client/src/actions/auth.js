@@ -17,6 +17,8 @@ import {
     UPDATE_AVATAR,
     UPDATE_ERROR,
     USER_ROLE_UPDATED,
+    REFERRAL_LINK_GENERATED,
+    REFERRAL_LINK_FAIL,
 } from './types';
 import setAuthToken from '../utils/setAuthToken';
 
@@ -89,6 +91,38 @@ export const register =
             dispatch({ type: REGISTER_FAIL });
         }
     };
+
+//Generate Referral
+export const generateReferral = () => async (dispatch) => {
+    console.log('generateReferral');
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
+
+    const body = JSON.stringify({ setToRole: 'ARTIST' });
+
+    try {
+        const res = await axios.post(
+            '/api/users/create-referral',
+            body,
+            config
+        );
+
+        dispatch({
+            type: REFERRAL_LINK_GENERATED,
+            payload: res.data,
+        });
+    } catch (err) {
+        const errors = err.response.data.errors;
+
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+        }
+        dispatch({ type: REFERRAL_LINK_FAIL });
+    }
+};
 
 //Forgot Password
 export const forgotPassword =

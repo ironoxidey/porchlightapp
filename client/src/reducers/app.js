@@ -65,6 +65,7 @@ export default function (state = intialState, action) {
                         ? payload.pageTitle + ' | Porchlight: Art + Hospitality'
                         : 'Porchlight: Art + Hospitality',
             };
+
         default:
             return state;
     }

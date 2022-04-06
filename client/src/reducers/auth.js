@@ -15,6 +15,8 @@ import {
     UPDATE_AVATAR,
     UPDATE_ERROR,
     USER_ROLE_UPDATED,
+    REFERRAL_LINK_GENERATED,
+    REFERRAL_LINK_FAIL,
 } from '../actions/types';
 
 const intialState = {
@@ -26,6 +28,7 @@ const intialState = {
     resetSuccess: false,
     forgotSuccess: false,
     forgotMsg: '',
+    referralLink: null,
 };
 
 export default function (state = intialState, action) {
@@ -72,6 +75,11 @@ export default function (state = intialState, action) {
                 loading: false,
                 user: payload,
             };
+        case REFERRAL_LINK_GENERATED:
+            return {
+                ...state,
+                referralLink: payload,
+            };
         case REGISTER_FAIL:
         case RESETPASSWORD_FAIL:
         case FORGOTPASSWORD_FAIL:
@@ -88,6 +96,7 @@ export default function (state = intialState, action) {
                 user: null,
                 users: [],
                 forgotMsg: payload,
+                referralLink: null,
             };
 
         case RESETPASSWORD_SUCCESS:

@@ -361,6 +361,7 @@ router.post('/create-referral', [auth], async (req, res) => {
 
             let referral = new Referral({
                 user: req.user.id,
+                userEmail: req.user.email,
                 setToRole: setToRole,
                 key: referralKey,
             });

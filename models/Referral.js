@@ -5,6 +5,9 @@ const ReferralSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users',
     },
+    userEmail: {
+        type: String,
+    },
     setToRole: {
         type: String,
     },
