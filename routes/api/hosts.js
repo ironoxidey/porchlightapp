@@ -14,6 +14,16 @@ function convertToSlug(Text) {
         .replace(/[^\w-]+/g, '');
 }
 
+function firstInt(inputString) {
+    const ints = inputString.match(/\d+/g); //returns an array of numbers
+    //console.log('hosts route - ints:', ints);
+    if (ints && ints.length > 0) {
+        return ints[0];
+    } else {
+        return 0;
+    }
+}
+
 // @route    GET api/hosts/me
 // @desc     Get current user's host profile
 // @access   Private
@@ -43,196 +53,6 @@ router.get('/me', auth, async (req, res) => {
     }
 });
 
-// @route    GET api/hosts/me
-// @desc     Get current users host
-// @access   Private
-router.get('/my-avatar', auth, async (req, res) => {
-    try {
-        // const thisUser = await User.findOne({
-        //   id: req.user.id,
-        // });
-        console.log(req.user);
-        const host = await Host.findOne({
-            email: req.user.email,
-        }).select('squareImg');
-        if (!host) {
-            return res
-                .status(400)
-                .json({ msg: 'There is no host for this user' });
-        }
-
-        res.json(host);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-// @route    POST api/hosts
-// @desc     Create or update host
-// @access   Private
-router.post(
-    '/',
-    [auth, [check('email', 'Please include a valid email').isEmail()]],
-    async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
-        const {
-            email,
-            firstName,
-            lastName,
-            stageName,
-            medium,
-            genre,
-            repLink,
-            helpKind,
-            typeformDate,
-            hadMeeting,
-            sentFollowUp,
-            active,
-            notes,
-        } = req.body;
-
-        // Build host object
-        const hostFields = {};
-        hostFields.email = email;
-        if (firstName) hostFields.firstName = firstName;
-        if (lastName) hostFields.lastName = lastName;
-        if (stageName) hostFields.stageName = stageName;
-        if (medium) hostFields.medium = medium;
-        if (genre) hostFields.genre = genre;
-        if (repLink) hostFields.repLink = repLink;
-        if (helpKind) hostFields.helpKind = helpKind;
-        if (typeformDate) hostFields.typeformDate = typeformDate;
-        if (hadMeeting) hostFields.hadMeeting = hadMeeting;
-        if (sentFollowUp) hostFields.sentFollowUp = sentFollowUp;
-        if (active) hostFields.active = active;
-        if (notes) hostFields.notes = notes;
-
-        try {
-            // Using upsert option (creates new doc if no match is found):
-            let host = await Host.findOneAndUpdate(
-                { email: email.toLowerCase() },
-                { $set: hostFields },
-                { new: true, upsert: true }
-            );
-            res.json(host); //eventually remove this
-        } catch (err) {
-            console.error(err.message);
-            res.status(500).send('Server Error');
-        }
-    }
-);
-
-// @route    POST api/hosts/batch
-// @desc     Batch create or update hosts
-// @access   Private
-router.post('/batch', [auth], async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-    //console.log(req.user);
-    if (req.body instanceof Array) {
-        let hostCount = 0;
-        await Promise.all(
-            req.body.map(async (hostFields) => {
-                // const {
-                //     email,
-                //     firstName,
-                //     lastName,
-                //     stageName,
-                //     medium,
-                //     genre,
-                //     repLink,
-                //     helpKind,
-                //     typeformDate,
-                //     hadMeeting,
-                //     sentFollowUp,
-                //     active,
-                //     notes,
-
-                //     phone,
-                //     hometown,
-                //     costStructure,
-                //     namedPrice,
-                //     bookingWhenWhere,
-                //     setLength,
-                //     schedule,
-                //     overnight,
-                //     openers,
-                //     companionTravelers,
-                //     hangout,
-                //     merchTable,
-                //     allergies,
-                //     familyFriendly,
-                //     soundSystem,
-                //     wideImg,
-                //     squareImg,
-                //     covidPrefs,
-                //     hostNotes,
-                //     financialHopes,
-                //     onboardDate,
-                // } = hostFields;
-
-                hostFields.stageName && hostFields.stageName.length > 0
-                    ? (hostFields.slug = convertToSlug(hostFields.stageName))
-                    : '';
-
-                //if (req.user.role === 'ADMIN' && hostFields.email !== '') {
-                if (
-                    req.user.role &&
-                    req.user.role.indexOf('ADMIN') != -1 &&
-                    hostFields.email !== ''
-                ) {
-                    //console.log("User is ADMIN and has authority to update all other users.");
-                    try {
-                        //console.log(hostFields);
-                        // Using upsert option (creates new doc if no match is found):
-                        let host = await Host.findOneAndUpdate(
-                            { email: hostFields.email.toLowerCase() },
-                            { $set: hostFields },
-                            { new: true, upsert: true }
-                        );
-                        hostCount++;
-                        res.json(hostFields);
-                    } catch (err) {
-                        console.error(err.message);
-                        res.status(500).send('Server Error: ' + err.message);
-                    }
-                } else if (req.user.email === hostFields.email.toLowerCase()) {
-                    //if the request user email matches the host email they have authority to edit their own profile, removing admin things
-                    try {
-                        delete hostFields.active;
-                        console.log(hostFields);
-                        // Using upsert option (creates new doc if no match is found):
-                        let host = await Host.findOneAndUpdate(
-                            { email: hostFields.email.toLowerCase() },
-                            { $set: hostFields },
-                            { new: true, upsert: true }
-                        );
-                        hostCount++;
-                        res.json(hostFields);
-                    } catch (err) {
-                        console.error(err.message);
-                        res.status(500).send('Server Error');
-                    }
-                } else {
-                    console.error(
-                        "You don't have authority to make these changes."
-                    );
-                    res.status(500).send(
-                        'User does not have authority to make these changes.'
-                    );
-                }
-            })
-        );
-        //res.json(hostCount + " host(s) submitted to the database."); //eventually remove this
-    }
-});
 // @route    POST api/hosts/admin-update
 // @desc     Batch create or update hosts
 // @access   Private
@@ -249,6 +69,35 @@ router.post('/admin-update', [auth], async (req, res) => {
                     ? (hostFields.slug = convertToSlug(hostFields.stageName))
                     : '';
 
+                if (hostFields.numDraw) {
+                    const numDraw = firstInt(hostFields.numDraw);
+                    if (numDraw && numDraw > 0) {
+                        hostFields.numDraw = numDraw;
+                    } else {
+                        delete hostFields.numDraw;
+                    }
+                }
+                if (hostFields.numHostedBefore) {
+                    const numHostedBefore = firstInt(
+                        hostFields.numHostedBefore
+                    );
+                    if (numHostedBefore && numHostedBefore > 0) {
+                        hostFields.numHostedBefore = numHostedBefore;
+                    } else {
+                        delete hostFields.numHostedBefore;
+                    }
+                }
+                if (hostFields.maxNumAttendees) {
+                    const maxNumAttendees = firstInt(
+                        hostFields.maxNumAttendees
+                    );
+                    if (maxNumAttendees && maxNumAttendees > 0) {
+                        hostFields.maxNumAttendees = maxNumAttendees;
+                    } else {
+                        delete hostFields.maxNumAttendees;
+                    }
+                }
+
                 //if (req.user.role === 'ADMIN' && hostFields.email !== '') {
                 if (
                     req.user.role &&
@@ -264,11 +113,11 @@ router.post('/admin-update', [auth], async (req, res) => {
                             { $set: hostFields },
                             { new: true, upsert: true }
                         );
-                        const hosts = await Host.find();
-                        res.json(hosts);
+                        //const hosts = await Host.find();
+                        res.json(host);
                     } catch (err) {
                         console.error(err.message);
-                        res.status(500).send('Server Error: ' + err.message);
+                        //res.status(500).send('Server Error: ' + err.message);
                     }
                 } else {
                     console.error(
@@ -295,10 +144,6 @@ router.post('/updateMe', [auth], async (req, res) => {
         let hostCount = 0;
         await Promise.all(
             req.body.map(async (hostFields) => {
-                hostFields.stageName && hostFields.stageName.length > 0
-                    ? (hostFields.slug = convertToSlug(hostFields.stageName))
-                    : (hostFields.slug = convertToSlug(req.user.id));
-
                 //if (req.user.role === 'ADMIN' && hostFields.email !== '') {
                 if (
                     req.user.role &&
@@ -309,11 +154,25 @@ router.post('/updateMe', [auth], async (req, res) => {
                     try {
                         //console.log(hostFields);
                         // Using upsert option (creates new doc if no match is found):
+                        if (
+                            req.user.email.toLowerCase() ===
+                            hostFields.email.toLowerCase()
+                        ) {
+                            hostFields.user = req.user.id;
+                        }
+
                         let host = await Host.findOneAndUpdate(
                             { email: hostFields.email.toLowerCase() },
                             { $set: hostFields },
                             { new: true, upsert: true }
-                        ).select('-hadMeeting -sentFollowUp -notes');
+                        ); //.select('-hadMeeting -sentFollowUp -notes');
+                        let user = await User.findOneAndUpdate(
+                            { email: hostFields.email.toLowerCase() },
+                            {
+                                $addToSet: { role: 'HOST' },
+                                $set: { hostProfile: host.id },
+                            }
+                        );
                         hostCount++;
                         res.json(host);
                     } catch (err) {
@@ -324,17 +183,23 @@ router.post('/updateMe', [auth], async (req, res) => {
                     req.user.email.toLowerCase() ===
                     hostFields.email.toLowerCase()
                 ) {
-                    //if the request user email matches the host email they have authority to edit their own profile, removing admin things
+                    //if the request user email matches the host email they have authority to edit their own profile
                     try {
-                        delete hostFields.active; //to prevent someone from being able to change their active status
                         hostFields.user = req.user.id;
-                        console.log(hostFields);
+                        console.log('hostFields', hostFields);
                         // Using upsert option (creates new doc if no match is found):
                         let host = await Host.findOneAndUpdate(
                             { email: hostFields.email.toLowerCase() },
                             { $set: hostFields },
                             { new: true, upsert: true }
-                        ).select('-hadMeeting -sentFollowUp -notes');
+                        ); //.select('-hadMeeting -sentFollowUp -notes');
+                        let user = await User.findOneAndUpdate(
+                            { email: hostFields.email.toLowerCase() },
+                            {
+                                $addToSet: { role: 'HOST' },
+                                $set: { hostProfile: host.id },
+                            }
+                        );
                         hostCount++;
                         res.json(host);
                     } catch (err) {
@@ -357,13 +222,11 @@ router.post('/updateMe', [auth], async (req, res) => {
 });
 
 // @route    GET api/hosts
-// @desc     Get all active hosts
+// @desc     Get all active hosts' city State Zip
 // @access   Public
 router.get('/', async (req, res) => {
     try {
-        const hosts = await Host.find({ active: true }).select(
-            '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -hostNotes'
-        );
+        const hosts = await Host.find().select(['city', 'state', 'zipCode']);
         res.json(hosts);
     } catch (err) {
         console.error(err.message);
@@ -377,6 +240,7 @@ router.get('/', async (req, res) => {
 router.get('/edit', [auth], async (req, res) => {
     //if (req.user.role === 'ADMIN') {
     if (req.user.role && req.user.role.indexOf('ADMIN') != -1) {
+        //must be an ADMIN to get into all of this!
         try {
             const hosts = await Host.find();
 
@@ -397,66 +261,6 @@ router.get('/edit', [auth], async (req, res) => {
         }
     } else {
         res.status(500).send('Only ADMINs can edit all hosts.');
-    }
-});
-
-// @route    GET api/hosts/slugs
-// @desc     Get just hosts slugs
-// @access   Public
-router.get('/slugs', [auth], async (req, res) => {
-    try {
-        const hosts = await Host.find({}).select('slug');
-        res.json(hosts);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-// @route    GET api/hosts/:slug
-// @desc     Get host by user ID
-// @access   Public
-router.get('/:slug', async (req, res) => {
-    try {
-        const host = await Host.findOne({
-            slug: req.params.slug,
-        }).select(
-            '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -hostNotes'
-        ); //ADD .select('-field'); to exclude [field] from the response
-
-        if (!host) return res.status(400).json({ msg: 'Host not found' });
-
-        res.json(host);
-    } catch (err) {
-        console.error(err.message);
-        if (err.kind == 'ObjectId') {
-            return res.status(400).json({ msg: 'Host not found' });
-        }
-        res.status(500).send('Server Error');
-    }
-});
-// @route    POST api/hosts/by-email
-// @desc     POST host slug by email
-// @access   Private
-router.post('/by-email', [auth], async (req, res) => {
-    try {
-        const hostSlug = await Host.findOne({
-            email: req.body.email,
-        }).select('slug stageName'); //ADD .select('-field'); to exclude [field] from the response
-
-        // this just loads up the console with 404 not founds
-        // if (!hostSlug)
-        //     return res.status(404).json({
-        //         msg: 'No host found with email:' + req.body.email,
-        //     });
-
-        res.json(hostSlug);
-    } catch (err) {
-        console.error(err.message);
-        if (err.kind == 'ObjectId') {
-            return res.status(404).json({ msg: 'Host not found' });
-        }
-        res.status(500).send('Server Error');
     }
 });
 

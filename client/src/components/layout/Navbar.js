@@ -139,6 +139,18 @@ const Navbar = ({
         ) : (
             ''
         ),
+        isAuthenticated &&
+        Array.isArray(user.role) &&
+        user.role.indexOf('ADMIN') != -1 ? ( //if ADMIN
+            <Link to="/edit-host-profile">
+                <ListItemIcon>
+                    <EditTwoToneIcon></EditTwoToneIcon>
+                </ListItemIcon>
+                Edit My Host Profile
+            </Link>
+        ) : (
+            ''
+        ),
         <a onClick={logout} href="#!">
             <ListItemIcon>
                 <LogoutIcon></LogoutIcon>

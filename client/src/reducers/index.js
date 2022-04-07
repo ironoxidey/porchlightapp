@@ -7,5 +7,16 @@ import artist from './artist';
 import calendly from './calendly';
 import datepicker from './datepicker';
 import app from './app';
+import host from './host';
 
-export default combineReducers({ alert, auth, profile, post, artist, calendly, datepicker, app });
+export default combineReducers({
+    alert,
+    auth,
+    profile,
+    post,
+    artist,
+    calendly,
+    datepicker,
+    app,
+    host,
+});

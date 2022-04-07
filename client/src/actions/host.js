@@ -32,33 +32,8 @@ export const getCurrentHost = () => async (dispatch) => {
     }
 };
 
-// Get host's profile by email
-export const getHostByEmail = (email) => async (dispatch) => {
-    try {
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            email: email,
-        };
-        const res = await axios.post(`/api/hosts/by-email/`, config);
-        //console.log('res.data', res.data);
-        return res.data;
-    } catch (err) {
-        //dispatch({ type: CLEAR_ARTIST });
-        // dispatch({
-        //     type: ARTIST_ERROR,
-        //     payload: {
-        //         msg: err.response.statusText,
-        //         status: err.response.status,
-        //     },
-        // });
-    }
-};
-
 // Get all hosts
-export const getHosts = () => async (dispatch) => {
-    dispatch({ type: CLEAR_ARTIST });
+export const getHostsLocations = () => async (dispatch) => {
     try {
         const res = await axios.get('/api/hosts');
         dispatch({

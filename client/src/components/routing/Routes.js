@@ -19,6 +19,7 @@ import EditArtists from '../artists/EditArtists';
 import EditUsers from '../users/EditUsers';
 import EditMyArtistProfile from '../artists/EditMyArtistProfile';
 import EditMyArtistBooking from '../artists/EditMyArtistBooking';
+import EditMyHostProfile from '../hosts/EditMyHostProfile';
 import Posts from '../posts/Posts';
 import Post from '../post/Post';
 import NotFound from '../layout/NotFound';
@@ -162,6 +163,12 @@ const Routes = ({ app }) => {
                             />
                             <PrivateRoute
                                 exact
+                                path="/edit-host-profile"
+                                component={EditMyHostProfile}
+                                title="Edit Your Host Profile"
+                            />
+                            {/* <PrivateRoute
+                                exact
                                 path="/edit-profile"
                                 component={EditProfile}
                                 title="Edit Your Page"
@@ -190,7 +197,7 @@ const Routes = ({ app }) => {
                                 path="/posts/:id"
                                 component={Post}
                                 title="A Post"
-                            />
+                            /> */}
                             <AdminPrivateRoute
                                 exact
                                 path="/edit-artists"

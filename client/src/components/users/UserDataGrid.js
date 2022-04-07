@@ -282,7 +282,7 @@ const UserDataGrid = ({
                 <Avatar alt={`${params.value}`} src={`${params.value}`} />
             ),
         },
-        { field: 'name', headerName: 'Name', width: 200 },
+        { field: 'name', headerName: 'Name', width: 180 },
         {
             field: 'email',
             headerName: 'Email',
@@ -300,8 +300,8 @@ const UserDataGrid = ({
         },
         {
             field: 'profile',
-            headerName: 'Profile',
-            width: 250,
+            headerName: 'Artist Profile',
+            width: 200,
             sortable: true,
             //valueParser: (params) => params.row.profile.slug,
             renderCell: renderProfileCell,
@@ -310,7 +310,7 @@ const UserDataGrid = ({
         {
             field: 'lastLogin',
             headerName: 'Last Logged in',
-            width: 220,
+            width: 200,
             editable: false,
             type: 'dateTime',
             valueFormatter: (params) => {

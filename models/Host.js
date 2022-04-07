@@ -17,10 +17,6 @@ const HostSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    phone: {
-        type: String,
-        required: true,
-    },
     streetAddress: {
         type: String,
         required: true,
@@ -54,14 +50,68 @@ const HostSchema = new mongoose.Schema({
     numHostedBefore: {
         type: Number,
     },
+    phone: {
+        type: String,
+        required: true,
+    },
     connectionToUs: {
         type: String,
+    },
+    primarySpace: {
+        type: String,
+    },
+    specificBand: {
+        type: String,
+    },
+    venueStreetAddress: {
+        type: String,
+        required: true,
+    },
+    venueCity: {
+        type: String,
+        required: true,
+    },
+    venueState: {
+        type: String,
+        required: true,
+    },
+    venueZipCode: {
+        type: Number,
+        required: true,
     },
     venueNickname: {
         type: String,
     },
-    planB: {
+    backupPlan: {
         type: String,
+    },
+    maxNumAttendees: {
+        type: Number,
+    },
+    seatingProvided: {
+        type: String,
+    },
+    venueImg: {
+        type: String,
+    },
+    specialNavDirections: {
+        type: String,
+    },
+    //maybe these next ones are EVENT specific
+    overnight: {
+        type: String,
+    },
+    overnightArrangements: {
+        type: String,
+    },
+    guaranteeHonorarium: {
+        type: String,
+    },
+    extraClarification: {
+        type: String,
+    },
+    lastLogin: {
+        type: Date,
     },
 });
 

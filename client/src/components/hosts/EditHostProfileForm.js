@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
 import { setAlert } from '../../actions/alert';
-import { createMyArtist, getArtists } from '../../actions/artist';
+import { createMyHost } from '../../actions/host';
 import { updateUserAvatar } from '../../actions/auth';
 import { toTitleCase } from '../../actions/app';
 import {
@@ -76,406 +76,181 @@ const UploadInput = styled('input')({
     display: 'none',
 });
 
-let artistsGenre = [];
-let artistsGenresFiltered = [];
-let artistsGenresCounts = {};
-
 const EditArtistProfileForm = ({
-    theArtist, //passed in from EditMyArtistProfile.js
-    //theArtist: { loading },
-    artist: { artists },
-    createMyArtist,
-    getArtists,
+    theHost, //passed in from EditMyHostProfile.js
+    createMyHost,
     history,
     auth,
     updateUserAvatar,
 }) => {
-    useEffect(() => {
-        getArtists();
-    }, []);
-
-    useEffect(() => {
-        //genre autocomplete list
-        if (artists) {
-            artistsGenre = [];
-            artistsGenresCounts = {};
-
-            artists.map((eachArtist) => {
-                if (eachArtist.genres) {
-                    console.log('eachArtist.genres', eachArtist.genres);
-                    eachArtist.genres.map((genre) => {
-                        let genreCapitalized = toTitleCase(genre.trim());
-                        artistsGenre.push(genreCapitalized);
-                    });
-                    // artistsGenre = artistsGenre.concat(eachArtist.genres);
-                }
-            });
-            console.log('artistsGenre', artistsGenre);
-
-            artistsGenresFiltered = [...new Set([...artistsGenre])];
-            artistsGenresFiltered.sort();
-            //console.log(artistsGenresFiltered);
-
-            artistsGenre.forEach((x) => {
-                artistsGenresCounts[x] = (artistsGenresCounts[x] || 0) + 1;
-            });
-            //console.log(artistsGenresCounts);
-        }
-    }, [artists]);
-
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     const dispatch = useDispatch();
 
     const [formData, setFormData] = useState({
-        slug: '',
-        email: '',
         firstName: '',
         lastName: '',
-        stageName: '',
-        genres: [],
-        soundsLike: [],
-        medium: '',
-        repLinks: [],
-        repLink: '',
-        socialLinks: [],
-        streamingLinks: [],
-        helpKind: '',
-        // typeformDate: '',
-        // active: '',
-        phone: '',
-        hometown: '',
+        email: '',
         streetAddress: '',
         city: '',
         state: '',
-        zip: '',
-        promotionApproval: '',
-        artistWebsite: '',
-        artistStatementVideo: '',
-        livePerformanceVideo: '',
-        costStructure: '',
-        namedPrice: '',
-        payoutPlatform: 'PayPal',
-        payoutHandle: '',
-        tourVibe: '',
-        bookingWhen: [],
-        bookingWhenWhere: [],
-        setLength: '',
-        schedule: '',
-        showSchedule: {
-            setupTime: '17:45',
-            startTime: '19:00',
-            doorsOpen: '18:30',
-            hardWrap: '21:00',
-            flexible: true,
-        },
+        zipCode: '',
+        numDraw: '',
+        numHostedBefore: '',
+        phone: '',
+        connectionToUs: '',
+        primarySpace: '',
+        venueStreetAddress: '',
+        venueCity: '',
+        venueState: '',
+        venueZipCode: '',
+        venueNickname: '',
+        backupPlan: '',
+        maxNumAttendees: '',
+        seatingProvided: '',
+        venueImg: '',
+        specialNavDirections: '',
         overnight: '',
-        openers: '',
-        travelingCompanions: [],
-        companionTravelers: '',
-        hangout: '',
-        merchTable: false,
-        allergies: [],
-        familyFriendly: false,
-        soundSystem: '',
-        agreeToPayAdminFee: true,
-        agreeToPromote: false,
-        wideImg: '',
-        squareImg: '',
-        covidPrefs: [],
-        artistNotes: '',
-        financialHopes: '',
-        fanActions: [],
-        // onboardDate: '',
-        bio: '',
-        artistUpdated: new Date(),
+        overnightArrangements: '',
+        guaranteeHonorarium: '',
+        lastLogin: new Date(),
     });
 
     useEffect(() => {
-        if (theArtist) {
+        if (theHost.firstName) {
             setFormData({
-                slug: loading || !theArtist.slug ? '' : theArtist.slug,
-                email: loading || !theArtist.email ? '' : theArtist.email,
                 firstName:
-                    loading || !theArtist.firstName ? '' : theArtist.firstName,
-                lastName:
-                    loading || !theArtist.lastName ? '' : theArtist.lastName,
-                stageName:
-                    loading || !theArtist.stageName ? '' : theArtist.stageName,
-                medium: loading || !theArtist.medium ? '' : theArtist.medium,
-                genres: loading || !theArtist.genres ? [] : theArtist.genres,
-                soundsLike:
-                    loading || !theArtist.soundsLike
-                        ? []
-                        : theArtist.soundsLike,
-                repLinks:
-                    loading || !theArtist.repLinks ? [] : theArtist.repLinks,
-                repLink: loading || !theArtist.repLink ? '' : theArtist.repLink,
-                socialLinks:
-                    loading || !theArtist.socialLinks
-                        ? []
-                        : theArtist.socialLinks,
-                streamingLinks:
-                    loading || !theArtist.streamingLinks
-                        ? []
-                        : theArtist.streamingLinks,
-                helpKind:
-                    loading || !theArtist.helpKind ? '' : theArtist.helpKind,
-                // typeformDate: loading || !theArtist.typeformDate ? '' : theArtist.typeformDate,
-                // active: loading || (theArtist.active == null) ? false : theArtist.active,
-                phone: loading || !theArtist.phone ? '' : theArtist.phone,
-                hometown:
-                    loading || !theArtist.hometown ? '' : theArtist.hometown,
+                    loading || !theHost.firstName ? '' : theHost.firstName,
+                lastName: loading || !theHost.lastName ? '' : theHost.lastName,
+                email: loading || !theHost.email ? '' : theHost.email,
                 streetAddress:
-                    loading || !theArtist.streetAddress
+                    loading || !theHost.streetAddress
                         ? ''
-                        : theArtist.streetAddress,
-                city: loading || !theArtist.city ? '' : theArtist.city,
-                state: loading || !theArtist.state ? '' : theArtist.state,
-                zip: loading || !theArtist.zip ? '' : theArtist.zip,
-                promotionApproval:
-                    loading || !theArtist.promotionApproval
+                        : theHost.streetAddress,
+                city: loading || !theHost.city ? '' : theHost.city,
+                state: loading || !theHost.state ? '' : theHost.state,
+                zipCode: loading || !theHost.zipCode ? '' : theHost.zipCode,
+                numDraw: loading || !theHost.numDraw ? '' : theHost.numDraw,
+                numHostedBefore:
+                    loading || !theHost.numHostedBefore
                         ? ''
-                        : theArtist.promotionApproval,
-                artistWebsite:
-                    loading || !theArtist.artistWebsite
+                        : theHost.numHostedBefore,
+                phone: loading || !theHost.phone ? '' : theHost.phone,
+                connectionToUs:
+                    loading || !theHost.connectionToUs
                         ? ''
-                        : theArtist.artistWebsite,
-                artistStatementVideo:
-                    loading || !theArtist.artistStatementVideo
+                        : theHost.connectionToUs,
+                primarySpace:
+                    loading || !theHost.primarySpace
                         ? ''
-                        : theArtist.artistStatementVideo,
-                livePerformanceVideo:
-                    loading || !theArtist.livePerformanceVideo
+                        : theHost.primarySpace,
+                venueStreetAddress:
+                    loading || !theHost.venueStreetAddress
                         ? ''
-                        : theArtist.livePerformanceVideo,
-                costStructure:
-                    loading || !theArtist.costStructure
+                        : theHost.venueStreetAddress,
+                venueCity:
+                    loading || !theHost.venueCity ? '' : theHost.venueCity,
+                venueState:
+                    loading || !theHost.venueState ? '' : theHost.venueState,
+                venueZipCode:
+                    loading || !theHost.venueZipCode
                         ? ''
-                        : theArtist.costStructure,
-                namedPrice:
-                    loading || !theArtist.namedPrice
+                        : theHost.venueZipCode,
+                venueNickname:
+                    loading || !theHost.venueNickname
                         ? ''
-                        : theArtist.namedPrice,
-                payoutPlatform:
-                    loading || !theArtist.payoutPlatform
-                        ? 'PayPal'
-                        : theArtist.payoutPlatform,
-                payoutHandle:
-                    loading || !theArtist.payoutHandle
+                        : theHost.venueNickname,
+                backupPlan:
+                    loading || !theHost.backupPlan ? '' : theHost.backupPlan,
+                maxNumAttendees:
+                    loading || !theHost.maxNumAttendees
                         ? ''
-                        : theArtist.payoutHandle,
-                tourVibe:
-                    loading || !theArtist.tourVibe ? '' : theArtist.tourVibe,
-                bookingWhen:
-                    loading || !theArtist.bookingWhen
-                        ? []
-                        : theArtist.bookingWhen,
-                bookingWhenWhere:
-                    loading || !theArtist.bookingWhenWhere
-                        ? []
-                        : theArtist.bookingWhenWhere,
-                setLength:
-                    loading || !theArtist.setLength ? '' : theArtist.setLength,
-                schedule:
-                    loading || !theArtist.schedule ? '' : theArtist.schedule,
-                showSchedule:
-                    loading || !theArtist.showSchedule
-                        ? {
-                              setupTime: '17:45',
-                              startTime: '19:00',
-                              doorsOpen: '18:30',
-                              hardWrap: '21:00',
-                              flexible: true,
-                          }
-                        : theArtist.showSchedule,
+                        : theHost.maxNumAttendees,
+                seatingProvided:
+                    loading || !theHost.seatingProvided
+                        ? ''
+                        : theHost.seatingProvided,
+                venueImg: loading || !theHost.venueImg ? '' : theHost.venueImg,
+                specialNavDirections:
+                    loading || !theHost.specialNavDirections
+                        ? ''
+                        : theHost.specialNavDirections,
                 overnight:
-                    loading || !theArtist.overnight ? '' : theArtist.overnight,
-                openers: loading || !theArtist.openers ? '' : theArtist.openers,
-                travelingCompanions:
-                    loading || theArtist.travelingCompanions == null
-                        ? []
-                        : theArtist.travelingCompanions,
-                companionTravelers:
-                    loading || theArtist.companionTravelers == null
-                        ? false
-                        : theArtist.companionTravelers,
-                hangout:
-                    loading || theArtist.hangout == null
-                        ? false
-                        : theArtist.hangout,
-                merchTable:
-                    loading || theArtist.merchTable == null
-                        ? false
-                        : theArtist.merchTable,
-                allergies:
-                    loading || !theArtist.allergies ? [] : theArtist.allergies,
-                familyFriendly:
-                    loading || theArtist.familyFriendly == null
-                        ? false
-                        : theArtist.familyFriendly,
-                soundSystem:
-                    loading || !theArtist.soundSystem
+                    loading || !theHost.overnight ? '' : theHost.overnight,
+                overnightArrangements:
+                    loading || !theHost.overnightArrangements
                         ? ''
-                        : theArtist.soundSystem,
-                agreeToPayAdminFee:
-                    loading || theArtist.agreeToPayAdminFee == null
-                        ? true
-                        : theArtist.agreeToPayAdminFee,
-                agreeToPromote:
-                    loading || theArtist.agreeToPromote == null
-                        ? false
-                        : theArtist.agreeToPromote,
-                wideImg: loading || !theArtist.wideImg ? '' : theArtist.wideImg,
-                squareImg:
-                    loading || !theArtist.squareImg ? '' : theArtist.squareImg,
-                covidPrefs:
-                    loading || !theArtist.covidPrefs
-                        ? []
-                        : theArtist.covidPrefs,
-                artistNotes:
-                    loading || !theArtist.artistNotes
+                        : theHost.overnightArrangements,
+                guaranteeHonorarium:
+                    loading || !theHost.guaranteeHonorarium
                         ? ''
-                        : theArtist.artistNotes,
-                financialHopes:
-                    loading || !theArtist.financialHopes
-                        ? ''
-                        : theArtist.financialHopes,
-                fanActions:
-                    loading || !theArtist.fanActions
-                        ? []
-                        : theArtist.fanActions,
-                // onboardDate: loading || !theArtist.onboardDate ? '' : theArtist.onboardDate,
-                bio: loading || !theArtist.bio ? '' : theArtist.bio,
-                artistUpdated: new Date(),
+                        : theHost.guaranteeHonorarium,
+                lastLogin: new Date(),
             });
         } else {
             if (!auth.loading) {
                 console.log(
-                    'An artist profile couldn’t be found for: ' +
+                    'A host profile couldn’t be found for: ' +
                         auth.user.email +
                         '. No worries! We’ll make one!'
                 );
                 setFormData({
-                    email: auth.user.email,
-                    slug: '',
                     firstName: auth.user.name.split(' ')[0],
                     lastName: auth.user.name.split(' ')[1],
-                    stageName: '',
-                    genres: [],
-                    soundsLike: [],
-                    medium: '',
-                    repLinks: [],
-                    repLink: '',
-                    socialLinks: [],
-                    streamingLinks: [],
-                    helpKind: '',
-                    // typeformDate: '',
-                    // active: '',
-                    phone: '',
-                    hometown: '',
+                    email: auth.user.email,
                     streetAddress: '',
                     city: '',
                     state: '',
-                    zip: '',
-                    promotionApproval: '',
-                    artistWebsite: '',
-                    artistStatementVideo: '',
-                    livePerformanceVideo: '',
-                    costStructure: '',
-                    namedPrice: '',
-                    payoutPlatform: 'PayPal',
-                    payoutHandle: '',
-                    tourVibe: '',
-                    bookingWhen: [],
-                    bookingWhenWhere: [],
-                    setLength: '',
-                    schedule: '',
-                    showSchedule: {
-                        setupTime: '17:45',
-                        startTime: '19:00',
-                        doorsOpen: '18:30',
-                        hardWrap: '21:00',
-                        flexible: true,
-                    },
+                    zipCode: '',
+                    numDraw: '',
+                    numHostedBefore: '',
+                    phone: '',
+                    connectionToUs: '',
+                    primarySpace: '',
+                    venueStreetAddress: '',
+                    venueCity: '',
+                    venueState: '',
+                    venueZipCode: '',
+                    venueNickname: '',
+                    backupPlan: '',
+                    maxNumAttendees: '',
+                    seatingProvided: '',
+                    venueImg: '',
+                    specialNavDirections: '',
                     overnight: '',
-                    openers: '',
-                    travelingCompanions: [],
-                    companionTravelers: '',
-                    hangout: '',
-                    merchTable: false,
-                    allergies: [],
-                    familyFriendly: false,
-                    soundSystem: '',
-                    agreeToPayAdminFee: true,
-                    agreeToPromote: false,
-                    wideImg: '',
-                    squareImg: '',
-                    covidPrefs: [],
-                    artistNotes: '',
-                    financialHopes: '',
-                    fanActions: [],
-                    // onboardDate: '',
-                    bio: '',
+                    overnightArrangements: '',
+                    guaranteeHonorarium: '',
+                    lastLogin: new Date(),
                 });
             }
         }
-    }, [auth.loading, createMyArtist, theArtist]);
+    }, [auth.loading, createMyHost, theHost]);
 
     const {
-        slug,
-        email,
         firstName,
         lastName,
-        stageName,
-        medium,
-        genres,
-        soundsLike,
-        repLinks,
-        repLink,
-        socialLinks,
-        streamingLinks,
-        helpKind,
-        // typeformDate,
-        // active,
-        phone,
-        hometown,
+        email,
         streetAddress,
         city,
         state,
-        zip,
-        promotionApproval,
-        artistWebsite,
-        artistStatementVideo,
-        livePerformanceVideo,
-        costStructure,
-        payoutPlatform,
-        payoutHandle,
-        tourVibe,
-        namedPrice,
-        bookingWhen,
-        bookingWhenWhere,
-        setLength,
-        schedule,
-        showSchedule,
+        zipCode,
+        numDraw,
+        numHostedBefore,
+        phone,
+        connectionToUs,
+        primarySpace,
+        venueStreetAddress,
+        venueCity,
+        venueState,
+        venueZipCode,
+        venueNickname,
+        backupPlan,
+        maxNumAttendees,
+        seatingProvided,
+        venueImg,
+        specialNavDirections,
         overnight,
-        openers,
-        travelingCompanions,
-        companionTravelers,
-        hangout,
-        merchTable,
-        allergies,
-        familyFriendly,
-        soundSystem,
-        agreeToPayAdminFee,
-        agreeToPromote,
-        wideImg,
-        squareImg,
-        covidPrefs,
-        artistNotes,
-        financialHopes,
-        fanActions,
-        // onboardDate,
-        bio,
+        overnightArrangements,
+        guaranteeHonorarium,
     } = formData;
 
     const onChange = (e) => {
@@ -517,12 +292,12 @@ const EditArtistProfileForm = ({
         changesMade.current = true;
         let targetValue = val;
         if (theFieldName === 'genres') {
-            let theArtistGenres = [];
+            let theHostGenres = [];
             val.map((genre) => {
                 let genreCapitalized = toTitleCase(genre.trim());
-                theArtistGenres.push(genreCapitalized);
+                theHostGenres.push(genreCapitalized);
             });
-            targetValue = theArtistGenres;
+            targetValue = theHostGenres;
         }
         setFormData({ ...formData, [theFieldName]: targetValue });
     };
@@ -551,75 +326,10 @@ const EditArtistProfileForm = ({
 
     useEffect(() => {
         if (changesMade.current) {
-            createMyArtist(formData, history, true);
+            createMyHost(formData, history, true);
             changesMade.current = false;
         }
-    }, [bookingWhenWhere, squareImg, wideImg]);
-
-    useEffect(() => {
-        if (bookingWhen && bookingWhen.length > 0) {
-            let writeToState = false;
-            let updatedField = [];
-            let whenWhereFiltered = [];
-            let bookingWhenDated = bookingWhen.map((messyDate) => {
-                return new Date(messyDate).toISOString();
-            });
-            bookingWhenDated.forEach((whenBooking, idx) => {
-                //return an object trim out of bookingWhenWhere any whens that aren't in bookingWhen
-                whenWhereFiltered = Object.filter(
-                    bookingWhenWhere,
-                    (whenWhere) => {
-                        //https://stackoverflow.com/a/37616104/3338608
-                        if (whenWhere) {
-                            //occasionally I get null values out of the database (not sure how they're getting in there)
-                            let datedWhen = new Date(
-                                whenWhere.when
-                            ).toISOString();
-                            return bookingWhenDated.includes(datedWhen);
-                        }
-                    }
-                );
-                let existsInWhere =
-                    whenWhereFiltered
-                        .map((item) => {
-                            return new Date(item.when).toISOString();
-                        })
-                        .indexOf(whenBooking) > -1
-                        ? true
-                        : false;
-
-                //whenWhereFiltered.filter(e => e);
-                //filter out null or empty values -- I think they must be coming from deleting booking dates
-                let temp = [];
-                for (let i of whenWhereFiltered) i && temp.push(i); // copy each non-empty value to the 'temp' array
-                whenWhereFiltered = temp;
-
-                if (existsInWhere) {
-                    //console.log("bookingWhenWhere already has " + whenBooking);
-                } else {
-                    //if new when to the object
-                    writeToState = true;
-                    updatedField = updatedField.concat(
-                        whenWhereFiltered.concat([
-                            { when: whenBooking, where: null },
-                        ])
-                    );
-                }
-            });
-            if (bookingWhenWhere.length > bookingWhen.length) {
-                writeToState = true;
-                updatedField = whenWhereFiltered;
-            }
-            if (writeToState) {
-                setFormData({
-                    ...formData,
-                    ['bookingWhenWhere']: updatedField,
-                });
-            }
-        } else {
-            setFormData({ ...formData, ['bookingWhenWhere']: [] });
-        }
-    }, [bookingWhen]);
+    }, [venueImg]);
 
     const onCalendarChange = (target) => {
         changesMade.current = true;
@@ -657,50 +367,6 @@ const EditArtistProfileForm = ({
         });
         setFormData({ ...formData, [e.target.name]: updatedField });
     };
-
-    // const uploadSquareButtonRef = useRef();
-    // const clickSquareUpload = () => {
-    //     uploadSquareButtonRef.current.click();
-    // };
-
-    // const uploadWideButtonRef = useRef();
-    // const clickWideUpload = () => {
-    //     uploadWideButtonRef.current.click();
-    // };
-
-    // const uploadHandler = (e) => {
-    //     changesMade.current = true;
-    //     console.log('theArtist._id: ' + theArtist._id);
-    //     //const uploadPath = `/api/uploads/${slug}/`; //"../porchlight-uploads";
-    //     const uploadPath = `/api/uploads/${theArtist._id}/`; //"../porchlight-uploads";
-    //     let fileName = e.target.files[0].name;
-    //     let fileExtension = e.target.files[0].type.replace(/(.*)\//g, '');
-    //     let targetValue = uploadPath + fileName; //e.target.value;
-    //     const data = new FormData();
-    //     data.append('file', e.target.files[0]);
-    //     axios
-    //         .post(`/api/uploads/upload`, data)
-    //         .then((res) => {
-    //             setFormData({ ...formData, [e.target.name]: targetValue });
-    //             console.log('Should dispatch IMAGE_UPLOAD with: ' + res.data);
-    //             dispatch({
-    //                 type: IMAGE_UPLOAD,
-    //                 payload: res.data,
-    //             });
-    //             dispatch(setAlert(res.data.msg, 'success'));
-    //             if (e.target.name == 'squareImg') {
-    //                 updateUserAvatar({ avatar: targetValue }, history);
-    //             }
-    //         })
-    //         .catch((err) => {
-    //             console.log(err.response.data.msg);
-    //             dispatch({
-    //                 type: IMAGE_UPLOAD,
-    //                 payload: err.response.data,
-    //             });
-    //             dispatch(setAlert(err.response.data.msg, 'danger'));
-    //         });
-    // };
 
     const cloudinaryUpload = async (fieldName, tags, artistID, preset) => {
         let imageRatio =
@@ -837,7 +503,7 @@ const EditArtistProfileForm = ({
     const onSubmit = (e) => {
         e.preventDefault();
         //console.log('Submitting...');
-        createMyArtist(formData, history, true);
+        createMyHost(formData, history, true);
         changesMade.current = false;
     };
 
@@ -846,7 +512,8 @@ const EditArtistProfileForm = ({
     const formGroups = {
         firstName: [
             <FormLabel component="legend">
-                First things first: what’s your first and last name?
+                Thanks for your interest in becoming a host! <br />
+                What's your name?
             </FormLabel>,
             <Grid
                 container
@@ -878,155 +545,13 @@ const EditArtistProfileForm = ({
                 </Grid>
             </Grid>,
         ],
-        medium: [
-            <FormLabel component="legend">
-                What kind of art do you make, {firstName}?
-            </FormLabel>,
-            <Grid item xs={12} sx={{ width: '100%' }}>
-                <Autocomplete
-                    id="medium"
-                    value={medium}
-                    disableClearable
-                    options={[
-                        'music',
-                        'spoken word poems',
-                        'jokes',
-                        'films',
-                        'visual art',
-                    ]}
-                    onChange={(event, value) =>
-                        onAutocompleteTagChange(event, 'medium', value)
-                    }
-                    // renderTags={(value, getTagProps) =>
-                    //   value.map((option, index) => (
-                    //     <Chip variant="outlined" name="medium" label={option} {...getTagProps({ index })} />
-                    //   ))
-                    // }
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            sx={{ width: '100%' }}
-                            variant="standard"
-                            label={`I make `}
-                            name="medium"
-                        />
-                    )}
-                />
-            </Grid>,
-        ],
-        stageName: [
-            <FormLabel component="legend">
-                What is your {medium == 'music' ? 'band' : 'stage'} name?
-            </FormLabel>,
-            [
-                <Grid item xs={12} sx={{ width: '100%' }}>
-                    <TextField
-                        variant="standard"
-                        name="stageName"
-                        id="stageName"
-                        label={`My ${
-                            medium == 'music' ? 'band' : 'stage'
-                        } name is`}
-                        value={stageName}
-                        onChange={(e) => onChange(e)}
-                        sx={{ width: '100%' }}
-                    />
-                </Grid>,
-            ],
-        ],
-        genres: [
-            <FormLabel component="legend">
-                What genres fit {stageName} best?
-            </FormLabel>,
-            <Grid item xs={12} sx={{ width: '100%' }}>
-                <Autocomplete
-                    multiple
-                    id="genres"
-                    value={genres}
-                    options={artistsGenresFiltered}
-                    getOptionLabel={(option) =>
-                        option + ' (' + artistsGenresCounts[option] + ')' || ''
-                    }
-                    freeSolo
-                    clearOnBlur={true}
-                    filterSelectedOptions
-                    onChange={(event, value) =>
-                        onAutocompleteTagChange(event, 'genres', value)
-                    }
-                    renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                            <Chip
-                                variant="outlined"
-                                name="genres"
-                                label={option}
-                                {...getTagProps({ index })}
-                            />
-                        ))
-                    }
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            sx={{ width: '100%' }}
-                            variant="standard"
-                            label={`${stageName} is `}
-                            name="genres"
-                            helperText="Select genres or type a new one and press [enter] to add it."
-                        />
-                    )}
-                />
-            </Grid>,
-        ],
-        soundsLike: [
-            <FormLabel component="legend">
-                Who/what does {stageName} sound like?
-            </FormLabel>,
-            <Grid item xs={12} sx={{ width: '100%' }}>
-                <Autocomplete
-                    multiple
-                    id="soundsLike"
-                    value={soundsLike}
-                    options={[]}
-                    freeSolo
-                    clearOnBlur={true}
-                    onChange={(event, value) =>
-                        onAutocompleteTagChange(event, 'soundsLike', value)
-                    }
-                    renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                            <Chip
-                                variant="outlined"
-                                name="soundsLike"
-                                label={option}
-                                {...getTagProps({ index })}
-                            />
-                        ))
-                    }
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            sx={{ width: '100%' }}
-                            variant="standard"
-                            label={`${stageName} sounds like `}
-                            name="soundsLike"
-                            helperText="Type and press [enter] to add items to the list"
-                        />
-                    )}
-                />
-            </Grid>,
-        ],
-        // <div className='form-group' num='4'>
-        //   <TextField
-        //     name="email"
-        //     id="email"
-        //     label="What's your email address?"
-        //     value={email}
-        //     onChange={(e) => onChange(e)}
-        //     disabled
-        //   />
-        // </div>,
         city: [
             <FormLabel component="legend">
-                Where is {stageName} located?
+                What is the address of your residence?
+                <small>
+                    Even if you don't plan on hosting at your residence, we
+                    sometimes snail-mail resources to our hosts.
+                </small>
             </FormLabel>,
             [
                 <Grid
@@ -1079,19 +604,65 @@ const EditArtistProfileForm = ({
                     <Grid item>
                         <TextField
                             variant="standard"
-                            name="zip"
-                            id="zip"
+                            name="zipCode"
+                            id="zipCode"
                             label="with the zip code"
-                            value={zip}
+                            value={zipCode}
                             onChange={(e) => onChange(e)}
                         />
                     </Grid>
                 </Grid>,
             ],
         ],
+        numDraw: [
+            <FormLabel component="legend">
+                How many people do you think you could draw to an event?
+                <small>
+                    Do not include what a musician or band might bring: we’re
+                    curious about your own “draw.”{' '}
+                </small>
+            </FormLabel>,
+            [
+                <Grid item>
+                    <TextField
+                        variant="standard"
+                        name="numDraw"
+                        id="numDraw"
+                        label="I think I could draw about "
+                        value={numDraw}
+                        helperText="people to an event."
+                        onChange={(e) => onChange(e)}
+                        type="number"
+                    />
+                </Grid>,
+            ],
+        ],
+        numHostedBefore: [
+            <FormLabel component="legend">
+                How many concerts like this have you hosted before?
+            </FormLabel>,
+            [
+                <Grid item>
+                    <TextField
+                        variant="standard"
+                        name="numHostedBefore"
+                        id="numHostedBefore"
+                        label="I’ve hosted "
+                        value={numHostedBefore}
+                        helperText="events like this before."
+                        onChange={(e) => onChange(e)}
+                        type="number"
+                    />
+                </Grid>,
+            ],
+        ],
         phone: [
             <FormLabel component="legend">
                 Would you provide your phone number?
+                <small>
+                    Sometimes last-minute event changes need a quick way to get
+                    in touch.
+                </small>
             </FormLabel>,
             [
                 <Grid item>
@@ -1116,291 +687,228 @@ const EditArtistProfileForm = ({
                 </Grid>,
             ],
         ],
-        artistWebsite: [
+        connectionToUs: [
             <FormLabel component="legend">
-                Does {stageName} have a website?
+                How did you hear about Porchlight?
+                <small>It’s a small world!</small>
+            </FormLabel>,
+            <Grid item xs={12} sx={{ width: '100%' }}>
+                <TextField
+                    variant="standard"
+                    name="connectionToUs"
+                    id="connectionToUs"
+                    //label="Bio"
+                    value={connectionToUs}
+                    onChange={(e) => onChange(e)}
+                    sx={{ width: '100%' }}
+                />
+            </Grid>,
+        ],
+        primarySpace: [
+            <FormLabel component="legend">
+                What space do you expect to primarily host at?
+            </FormLabel>,
+            <Grid item xs={12} sx={{ width: '100%' }}>
+                <Autocomplete
+                    id="primarySpace"
+                    value={primarySpace}
+                    disableClearable
+                    options={['residence', 'church', 'business', 'park']}
+                    freeSolo
+                    onChange={(event, value) =>
+                        onAutocompleteTagChange(event, 'primarySpace', value)
+                    }
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            sx={{ width: '100%' }}
+                            variant="standard"
+                            label={`At my `}
+                            name="primarySpace"
+                        />
+                    )}
+                />
+            </Grid>,
+        ],
+        venueNickname: [
+            <FormLabel component="legend">
+                Does your {primarySpace || 'place'} have a name?
+                <small>
+                    Sometimes people even come up with a venue nickname for
+                    their house venue!
+                </small>
             </FormLabel>,
             [
                 <Grid item xs={12} sx={{ width: '100%' }}>
                     <TextField
                         variant="standard"
-                        name="artistWebsite"
-                        id="artistWebsite"
-                        label={`Yeah! The website is`}
-                        value={artistWebsite}
+                        name="venueNickname"
+                        id="venueNickname"
+                        //label="Bio"
+                        value={venueNickname}
                         onChange={(e) => onChange(e)}
                         sx={{ width: '100%' }}
                     />
                 </Grid>,
-            ],
-        ],
-        socialLinks: [
-            <FormLabel component="legend">
-                Would you supply any social media or streaming platform links
-                for {stageName}?
-                <br />
-                <small>
-                    (These will appear in your profile in the order you enter
-                    them here.)
-                </small>
-            </FormLabel>,
-            [
-                socialLinks && Object.keys(socialLinks).length > 0
-                    ? socialLinks.map((eachSocialLink, idx) => (
+                primarySpace === 'residence'
+                    ? ''
+                    : [
                           <Grid
-                              className="eachSocialLink"
-                              key={`eachSocialLink${idx}`}
                               container
                               direction="row"
-                              justifyContent="space-around"
-                              alignItems="end"
+                              justifyContent="center"
+                              alignItems="center"
                               spacing={2}
-                              sx={{
-                                  // borderColor: 'primary.dark',
-                                  // borderWidth: '2px',
-                                  // borderStyle: 'solid',
-                                  backgroundColor: 'rgba(0,0,0,0.15)',
-                                  '&:hover': {},
-                                  padding: '0 10px 10px',
-                                  margin: '0px auto',
-                                  width: '100%',
-                              }}
                           >
-                              <Grid item xs={2} md={0.5} className="link-icon">
-                                  {getFontAwesomeIcon(eachSocialLink.link)}
-                              </Grid>
-                              <Grid item xs={10}>
+                              <Grid item xs={12}>
                                   <TextField
                                       variant="standard"
-                                      name="socialLinks"
-                                      id={`socialLinkLink${idx}`}
-                                      label={
-                                          idx > 0
-                                              ? `and at `
-                                              : `Yeah! Check out "${stageName}" at `
-                                      }
-                                      value={eachSocialLink.link}
-                                      onChange={(e) =>
-                                          onMultiTextChange(
-                                              'link',
-                                              socialLinks,
-                                              idx,
-                                              e
-                                          )
-                                      }
+                                      name="venueStreetAddress"
+                                      id="venueStreetAddress"
+                                      label="At the street address of"
+                                      value={venueStreetAddress}
+                                      onChange={(e) => onChange(e)}
                                       sx={{ width: '100%' }}
                                   />
                               </Grid>
-                              <Grid item xs={2} md={1}>
-                                  <IconButton
-                                      onClick={(e) =>
-                                          handleRemoveMultiTextField(
-                                              'socialLinks',
-                                              socialLinks,
-                                              idx
-                                          )
-                                      }
-                                  >
-                                      <DeleteIcon />
-                                  </IconButton>
+                          </Grid>,
+                          <Grid
+                              container
+                              direction="row"
+                              justifyContent="center"
+                              alignItems="center"
+                              spacing={2}
+                              sx={{ marginTop: '8px' }}
+                          >
+                              <Grid item>
+                                  <TextField
+                                      variant="standard"
+                                      name="venueCity"
+                                      id="venueCity"
+                                      label="In the city of"
+                                      value={venueCity}
+                                      onChange={(e) => onChange(e)}
+                                  />
                               </Grid>
-                          </Grid>
-                      ))
-                    : '',
-                <Grid
-                    container
-                    item
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    xs={12}
-                >
-                    <Button
-                        onClick={(e) =>
-                            handleAddMultiTextField('socialLinks', socialLinks)
-                        }
+                              <Grid item>
+                                  <TextField
+                                      variant="standard"
+                                      name="venueState"
+                                      id="venueState"
+                                      label="in the state of"
+                                      value={venueState}
+                                      onChange={(e) => onChange(e)}
+                                  />
+                              </Grid>
+                              <Grid item>
+                                  <TextField
+                                      variant="standard"
+                                      name="venueZipCode"
+                                      id="venueZipCode"
+                                      label="with the zip code"
+                                      value={venueZipCode}
+                                      onChange={(e) => onChange(e)}
+                                  />
+                              </Grid>
+                          </Grid>,
+                      ],
+            ],
+        ],
+        backupPlan: [
+            <FormLabel component="legend">
+                If the space is outdoors, is there a convenient "plan B" space
+                in the case of bad weather?
+                <small>
+                    A contingency is not necessary, but it’s good to know if
+                    there is one or not.
+                </small>
+            </FormLabel>,
+            [
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        id="backupPlan"
+                        value={backupPlan}
+                        name="backupPlan"
+                        onChange={(e) => onChange(e)}
                     >
-                        <PersonAddIcon />
-                        Add link
-                    </Button>
+                        <FormControlLabel
+                            value="yes"
+                            control={<Radio />}
+                            label="Yes"
+                        />
+                        <FormControlLabel
+                            value="no"
+                            control={<Radio />}
+                            label="No"
+                        />
+                    </RadioGroup>
+                </FormControl>,
+            ],
+        ],
+        maxNumAttendees: [
+            <FormLabel component="legend">
+                What do you think is the maximum number of attendees you can
+                host at your {primarySpace}?
+            </FormLabel>,
+            [
+                <Grid item>
+                    <TextField
+                        variant="standard"
+                        name="maxNumAttendees"
+                        id="maxNumAttendees"
+                        label={`I think I can host about `}
+                        value={maxNumAttendees}
+                        helperText={`people at my ${primarySpace}`}
+                        onChange={(e) => onChange(e)}
+                        type="number"
+                    />
                 </Grid>,
             ],
         ],
-        // streamingLinks: [
-        //     <FormLabel component="legend">
-        //         And links to where folks can stream {stageName}’s {medium}?
-        //         <br />
-        //         <small>
-        //             (These will appear in your profile in the order you enter
-        //             them here.)
-        //         </small>
-        //     </FormLabel>,
-        //     [
-        //         streamingLinks && Object.keys(streamingLinks).length > 0
-        //             ? streamingLinks.map((eachStreamingLink, idx) => (
-        //                   <Grid
-        //                       className="eachStreamingLink"
-        //                       key={`eachStreamingLink${idx}`}
-        //                       container
-        //                       direction="row"
-        //                       justifyContent="space-around"
-        //                       alignItems="end"
-        //                       spacing={2}
-        //                       sx={{
-        //                           // borderColor: 'primary.dark',
-        //                           // borderWidth: '2px',
-        //                           // borderStyle: 'solid',
-        //                           backgroundColor: 'rgba(0,0,0,0.15)',
-        //                           '&:hover': {},
-        //                           padding: '0 10px 10px',
-        //                           margin: '0px auto',
-        //                           width: '100%',
-        //                       }}
-        //                   >
-        //                       <Grid item xs={2} md={0.5} className="link-icon">
-        //                           {getFontAwesomeIcon(eachStreamingLink.link)}
-        //                       </Grid>
-        //                       <Grid item xs={10}>
-        //                           <TextField
-        //                               variant="standard"
-        //                               name="streamingLinks"
-        //                               id={`socialLinkLink${idx}`}
-        //                               label={
-        //                                   idx > 0
-        //                                       ? `and at `
-        //                                       : `Yeah! Check out "${stageName}" at `
-        //                               }
-        //                               value={eachStreamingLink.link}
-        //                               onChange={(e) =>
-        //                                   onMultiTextChange(
-        //                                       'link',
-        //                                       streamingLinks,
-        //                                       idx,
-        //                                       e
-        //                                   )
-        //                               }
-        //                               sx={{ width: '100%' }}
-        //                           />
-        //                       </Grid>
-        //                       <Grid item xs={2} md={1}>
-        //                           <IconButton
-        //                               onClick={(e) =>
-        //                                   handleRemoveMultiTextField(
-        //                                       'streamingLinks',
-        //                                       streamingLinks,
-        //                                       idx
-        //                                   )
-        //                               }
-        //                           >
-        //                               <DeleteIcon />
-        //                           </IconButton>
-        //                       </Grid>
-        //                   </Grid>
-        //               ))
-        //             : '',
-        //         <Grid
-        //             container
-        //             item
-        //             direction="row"
-        //             justifyContent="center"
-        //             alignItems="center"
-        //             xs={12}
-        //         >
-        //             <Button
-        //                 onClick={(e) =>
-        //                     handleAddMultiTextField(
-        //                         'streamingLinks',
-        //                         streamingLinks
-        //                     )
-        //                 }
-        //             >
-        //                 <PersonAddIcon />
-        //                 Add link
-        //             </Button>
-        //         </Grid>,
-        //     ],
-        // ],
-        squareImg: [
+        seatingProvided: [
             <FormLabel component="legend">
-                Please attach a square image, for promotional use on social
-                media.
+                Do you have all the seating you'll need, or should we encourage
+                people to bring their own chairs?
             </FormLabel>,
             [
                 <FormControl component="fieldset">
-                    {/* <UploadInput
-                        ref={uploadSquareButtonRef}
-                        accept="image/*"
-                        name="squareImg"
-                        id="squareImg"
-                        type="file"
-                        onChange={(e) => uploadHandler(e)}
-                    /> */}
-                    <label htmlFor="squareImg">
-                        <Button
-                            variant="contained"
-                            component="span"
-                            onClick={(e) => {
-                                cloudinaryUpload(
-                                    'squareImg',
-                                    [theArtist.stageName, 'squareImg'],
-                                    theArtist._id,
-                                    'porchlight_squareImg_upload'
-                                );
-                                //clickSquareUpload();
-                            }}
-                        >
-                            <AddPhotoAlternateTwoToneIcon></AddPhotoAlternateTwoToneIcon>
-                            Upload
-                        </Button>
-                    </label>
+                    <RadioGroup
+                        id="seatingProvided"
+                        value={seatingProvided}
+                        name="seatingProvided"
+                        onChange={(e) => onChange(e)}
+                    >
+                        <FormControlLabel
+                            value="yes"
+                            control={<Radio />}
+                            label={`Yes, I've got all the seating needed for at least ${maxNumAttendees} people.`}
+                        />
+                        <FormControlLabel
+                            value="no"
+                            control={<Radio />}
+                            label="No, please encourage attenders to bring something to sit on."
+                        />
+                    </RadioGroup>
                 </FormControl>,
-                squareImg ? (
-                    <img
-                        className="squareImg-image uploaded-image"
-                        src={squareImg}
-                        alt=""
-                        style={{
-                            marginTop: '16px',
-                            maxHeight: '60vh',
-                            maxWidth: '90vw',
-                            height: 'auto',
-                            width: 'auto',
-                        }}
-                    />
-                ) : (
-                    ''
-                ),
             ],
         ],
-
-        wideImg: [
+        venueImg: [
             <FormLabel component="legend">
-                Please attach one high quality image, for promotional use, of
-                this size: 2160x1080px
-                <br />
-                If the pixel size is bugging you, just make sure the image is
-                2:1 ratio, horizontal.
+                If it's not too much trouble, could you please provide an image
+                of this space?
             </FormLabel>,
             [
                 <FormControl component="fieldset">
-                    {/* <UploadInput
-                        ref={uploadWideButtonRef}
-                        accept="image/*"
-                        name="wideImg"
-                        id="wideImg"
-                        type="file"
-                        onChange={(e) => uploadHandler(e)}
-                    /> */}
-                    <label htmlFor="wideImg">
+                    <label htmlFor="venueImg">
                         <Button
                             variant="contained"
                             component="span"
                             onClick={(e) => {
                                 cloudinaryUpload(
-                                    'wideImg',
-                                    [theArtist.stageName, 'wideImg'],
-                                    theArtist._id,
-                                    'porchlight_wideImg_upload'
+                                    'venueImg',
+                                    [theHost.stageName, 'venueImg'],
+                                    theHost._id,
+                                    'porchlight_venueImg_upload'
                                 );
                                 // clickWideUpload();
                             }}
@@ -1410,10 +918,10 @@ const EditArtistProfileForm = ({
                         </Button>
                     </label>
                 </FormControl>,
-                wideImg ? (
+                venueImg ? (
                     <img
-                        className="wideImg-image uploaded-image"
-                        src={wideImg}
+                        className="venueImg-image uploaded-image"
+                        src={venueImg}
                         alt=""
                         style={{
                             marginTop: '16px',
@@ -1428,239 +936,26 @@ const EditArtistProfileForm = ({
                 ),
             ],
         ],
-
-        bio: [
+        specialNavDirections: [
             <FormLabel component="legend">
-                Tell us about {stageName}. Who are you? What are you about?
+                Sometimes GPS doesn’t do a perfect job getting people to certain
+                spots. Please list any special directions or instructions for
+                people navigating to the venue on the day of the show.
             </FormLabel>,
             <Grid item xs={12} sx={{ width: '100%' }}>
                 <TextField
                     variant="standard"
-                    name="bio"
+                    name="specialNavDirections"
                     multiline
-                    id="bio"
-                    label="Bio"
-                    value={bio}
+                    id="specialNavDirections"
+                    label="specialNavDirections"
+                    value={specialNavDirections}
                     onChange={(e) => onChange(e)}
                     sx={{ width: '100%' }}
                 />
             </Grid>,
         ],
-        artistStatementVideo: [
-            <FormLabel component="legend">
-                Please record a short video introducing {stageName} and
-                explaining what your{' '}
-                {medium === 'music' || medium === 'visual art'
-                    ? medium + ' is '
-                    : medium + ' are '}{' '}
-                about. This is your chance to introduce yourself to potential
-                hosts who don’t know you yet. Be personable, and communicate
-                your heart for your music, and why you want to play house shows.
-                This can be a casual recording, speaking directly to the camera.
-                Upload it to YouTube, and paste the link here. <br />
-                <small>
-                    (Looking for a link that resembles something like:
-                    ‘https://www.youtube.com/watch?v=lEBBFsWtWDo’)
-                </small>
-            </FormLabel>,
-            [
-                <Grid item xs={12} sx={{ width: '100%' }}>
-                    <TextField
-                        variant="standard"
-                        name="artistStatementVideo"
-                        id="artistStatementVideo"
-                        label={`My artist statement video can be viewed at`}
-                        value={artistStatementVideo}
-                        onChange={(e) => onChange(e)}
-                        sx={{ width: '100%' }}
-                    />
-                </Grid>,
-                artistStatementVideo ? (
-                    <Grid
-                        container
-                        item
-                        xs={12}
-                        justifyContent="center"
-                        sx={{ width: '100%', margin: '8px auto' }}
-                    >
-                        <ReactPlayer
-                            light={
-                                (new URL(artistStatementVideo).hostname !==
-                                    'music.youtube.com' &&
-                                    pullDomainFrom(artistStatementVideo) ===
-                                        'youtube') ||
-                                pullDomainFrom(artistStatementVideo) === 'youtu'
-                            }
-                            url={artistStatementVideo}
-                        />
-                    </Grid>
-                ) : (
-                    ''
-                ),
-            ],
-        ],
-        // repLinks: [
-        // 	<FormLabel component='legend'>
-        // 		Would you supply some links where we could experience your {medium}?
-        // 	</FormLabel>,
-        // 	[
-        // 		repLinks && Object.keys(repLinks).length > 0
-        // 			? repLinks.map((eachLink, idx) => (
-        // 				<Grid
-        // 					className='eachLink'
-        // 					key={`eachLink${idx}`}
-        // 					container
-        // 					direction='row'
-        // 					justifyContent='space-around'
-        // 					alignItems='start'
-        // 					spacing={2}
-        // 					sx={{
-        // 						// borderColor: 'primary.dark',
-        // 						// borderWidth: '2px',
-        // 						// borderStyle: 'solid',
-        // 						backgroundColor: 'rgba(0,0,0,0.15)',
-        // 						'&:hover': {},
-        // 						padding: '0 10px 10px',
-        // 						margin: '0px auto',
-        // 						width: '100%',
-        // 					}}
-        // 				>
-        // 					<Grid item xs={11}>
-        // 						<TextField
-        // 							variant='standard'
-        // 							name='repLinks'
-        // 							id={`repLinkLink${idx}`}
-        // 							label={
-        // 								idx > 0 ? `and at ` : `Yeah! Check out "${stageName}" at `
-        // 							}
-        // 							value={eachLink.link}
-        // 							onChange={(e) =>
-        // 								onMultiTextChange('link', repLinks, idx, e)
-        // 							}
-        // 							sx={{ width: '100%' }}
-        // 						/>
-        // 					</Grid>
-        // 					<Grid item xs={2} md={0.65}>
-        // 						<IconButton
-        // 							onClick={(e) =>
-        // 								handleRemoveMultiTextField('repLinks', repLinks, idx)
-        // 							}
-        // 						>
-        // 							<DeleteIcon />
-        // 						</IconButton>
-        // 					</Grid>
-        // 				</Grid>
-        // 			))
-        // 			: '',
-        // 		<Grid
-        // 			container
-        // 			item
-        // 			direction='row'
-        // 			justifyContent='center'
-        // 			alignItems='center'
-        // 			xs={12}
-        // 		>
-        // 			<Button
-        // 				onClick={(e) => handleAddMultiTextField('repLinks', repLinks)}
-        // 			>
-        // 				<PersonAddIcon />
-        // 				Add link
-        // 			</Button>
-        // 		</Grid>,
-        // 	],
-        // ],
-        repLink: [
-            <FormLabel component="legend">
-                Would you supply a SoundCloud or YouTube link where we could
-                experience your {medium}?
-                <br />
-                <small>
-                    {' '}
-                    (A music player or video should show up underneath, if
-                    you've entered the right kind of link)
-                </small>
-            </FormLabel>,
-            [
-                <Grid item xs={12} sx={{ width: '100%' }}>
-                    <TextField
-                        variant="standard"
-                        name="repLink"
-                        id="repLink"
-                        label={`Here’s where you can experience ${stageName}’s ${medium}:`}
-                        value={repLink}
-                        onChange={(e) => onChange(e)}
-                        sx={{ width: '100%' }}
-                    />
-                </Grid>,
-                repLink ? (
-                    <Grid
-                        container
-                        item
-                        xs={12}
-                        justifyContent="center"
-                        sx={{ width: '100%', margin: '8px auto' }}
-                    >
-                        <ReactPlayer
-                            light={
-                                (new URL(repLink).hostname !==
-                                    'music.youtube.com' &&
-                                    pullDomainFrom(repLink) === 'youtube') ||
-                                pullDomainFrom(repLink) === 'youtu'
-                            }
-                            url={repLink}
-                        />
-                    </Grid>
-                ) : (
-                    ''
-                ),
-            ],
-        ],
-        livePerformanceVideo: [
-            <FormLabel component="legend">
-                Do you have any video of {stageName} performing a house show or
-                backyard concert?
-                <br />
-                <small>
-                    (Looking for something like:
-                    ‘https://www.youtube.com/watch?v=lEBBFsWtWDo’)
-                </small>
-            </FormLabel>,
-            [
-                <Grid item xs={12} sx={{ width: '100%' }}>
-                    <TextField
-                        variant="standard"
-                        name="livePerformanceVideo"
-                        id="livePerformanceVideo"
-                        label={`Here’s a video of ${stageName} performing live`}
-                        value={livePerformanceVideo}
-                        onChange={(e) => onChange(e)}
-                        sx={{ width: '100%' }}
-                    />
-                </Grid>,
-                livePerformanceVideo ? (
-                    <Grid
-                        container
-                        item
-                        xs={12}
-                        justifyContent="center"
-                        sx={{ width: '100%', margin: '8px auto' }}
-                    >
-                        <ReactPlayer
-                            light={
-                                (new URL(livePerformanceVideo).hostname !==
-                                    'music.youtube.com' &&
-                                    pullDomainFrom(livePerformanceVideo) ===
-                                        'youtube') ||
-                                pullDomainFrom(livePerformanceVideo) === 'youtu'
-                            }
-                            url={livePerformanceVideo}
-                        />
-                    </Grid>
-                ) : (
-                    ''
-                ),
-            ],
-        ],
+
         endSlide: [
             [
                 <Typography component="h2" sx={{ textAlign: 'center' }}>
@@ -1674,50 +969,50 @@ const EditArtistProfileForm = ({
                     check your profile to be sure everything is correct.
                 </Typography>,
             ],
-            [
-                slug && (
-                    <Grid
-                        item
-                        sx={{
-                            margin: '8px auto',
-                        }}
-                    >
-                        <Link to={'/artists/' + slug}>
-                            <Button btnwidth="300" className="">
-                                <AccountBoxTwoToneIcon /> View My Profile
-                            </Button>
-                        </Link>
-                    </Grid>
-                ),
-                theArtist.bookingWhen && theArtist.bookingWhen.length > 0 ? (
-                    <Grid
-                        item
-                        sx={{
-                            margin: '8px auto',
-                        }}
-                    >
-                        <Link to="/edit-artist-booking">
-                            <Button btnwidth="300" className="">
-                                <DateRangeTwoToneIcon /> Edit My Booking Info
-                            </Button>
-                        </Link>
-                    </Grid>
-                ) : theArtist.active ? (
-                    <Grid
-                        item
-                        sx={{
-                            margin: '8px auto',
-                        }}
-                    >
-                        <p> </p>
-                        <Link to="/edit-artist-booking">
-                            <Button className="">Start Booking Shows</Button>
-                        </Link>
-                    </Grid>
-                ) : (
-                    ''
-                ),
-            ],
+            // [
+            //     slug && (
+            //         <Grid
+            //             item
+            //             sx={{
+            //                 margin: '8px auto',
+            //             }}
+            //         >
+            //             <Link to={'/artists/' + slug}>
+            //                 <Button btnwidth="300" className="">
+            //                     <AccountBoxTwoToneIcon /> View My Profile
+            //                 </Button>
+            //             </Link>
+            //         </Grid>
+            //     ),
+            //     theHost.bookingWhen && theHost.bookingWhen.length > 0 ? (
+            //         <Grid
+            //             item
+            //             sx={{
+            //                 margin: '8px auto',
+            //             }}
+            //         >
+            //             <Link to="/edit-artist-booking">
+            //                 <Button btnwidth="300" className="">
+            //                     <DateRangeTwoToneIcon /> Edit My Booking Info
+            //                 </Button>
+            //             </Link>
+            //         </Grid>
+            //     ) : theHost.active ? (
+            //         <Grid
+            //             item
+            //             sx={{
+            //                 margin: '8px auto',
+            //             }}
+            //         >
+            //             <p> </p>
+            //             <Link to="/edit-artist-booking">
+            //                 <Button className="">Start Booking Shows</Button>
+            //             </Link>
+            //         </Grid>
+            //     ) : (
+            //         ''
+            //     ),
+            // ],
         ],
     };
 
@@ -1886,22 +1181,17 @@ const EditArtistProfileForm = ({
 };
 
 EditArtistProfileForm.propTypes = {
-    createMyArtist: PropTypes.func.isRequired,
-    getArtists: PropTypes.func.isRequired,
-    theArtist: PropTypes.object,
+    createMyHost: PropTypes.func.isRequired,
+    theHost: PropTypes.object,
     auth: PropTypes.object.isRequired,
-    artist: PropTypes.object.isRequired,
     updateUserAvatar: PropTypes.func.isRequired,
-    //cloudinaryUpload: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
-    artist: state.artist,
 });
 
 export default connect(mapStateToProps, {
-    createMyArtist,
-    getArtists,
+    createMyHost,
     updateUserAvatar,
 })(withRouter(EditArtistProfileForm)); //withRouter allows us to pass history objects

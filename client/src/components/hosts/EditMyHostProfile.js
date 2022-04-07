@@ -2,21 +2,17 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getCurrentArtist } from '../../actions/artist';
+import { getCurrentHost } from '../../actions/host';
 import Spinner from '../layout/Spinner';
 import EditHostProfileForm from './EditHostProfileForm';
 
-const EditMyArtistProfile = ({
-    auth,
-    getCurrentArtist,
-    artist: { me, loading },
-}) => {
+const EditMyHostProfile = ({ auth, getCurrentHost, host: { me, loading } }) => {
     useEffect(() => {
         // if (auth.user.email) {
-        getCurrentArtist();
+        getCurrentHost();
         // }
-    }, [getCurrentArtist]);
-    //}, [getCurrentArtist, auth]);
+    }, [getCurrentHost]);
+    //}, [getCurrentHost, auth]);
 
     return (
         <Fragment>
@@ -25,7 +21,7 @@ const EditMyArtistProfile = ({
             ) : me ? (
                 <Fragment>
                     {/* <h1 className='large text-primary'>Edit Your Artist Profile</h1> */}
-                    <EditHostProfileForm theArtist={me} />
+                    <EditHostProfileForm theHost={me} />
                     {/* <Link to='/dashboard' className='btn btn-light my-1'>
           Go Back
         </Link> */}
@@ -37,17 +33,17 @@ const EditMyArtistProfile = ({
     );
 };
 
-EditMyArtistProfile.propTypes = {
-    getCurrentArtist: PropTypes.func.isRequired,
-    artist: PropTypes.object.isRequired,
+EditMyHostProfile.propTypes = {
+    getCurrentHost: PropTypes.func.isRequired,
+    host: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-    artist: state.artist,
+    host: state.host,
     auth: state.auth,
 });
 
-export default connect(mapStateToProps, { getCurrentArtist })(
-    withRouter(EditMyArtistProfile)
+export default connect(mapStateToProps, { getCurrentHost })(
+    withRouter(EditMyHostProfile)
 ); //withRouter allows us to pass history objects

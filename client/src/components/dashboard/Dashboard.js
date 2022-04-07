@@ -67,19 +67,7 @@ const Dashboard = ({
                             again.
                         </p>
                     </Grid>
-                    <Grid
-                        item
-                        sx={{
-                            margin: '8px auto',
-                        }}
-                    >
-                        <p className="">
-                            Please make sure the information in your profile is
-                            always accurate and up-to-date. Your answers help us
-                            connect you with folks who want to host shows in
-                            their spaces.
-                        </p>
-                    </Grid>
+
                     {/* CALENDLY STUFF
       <Fragment>
           <DashboardActions></DashboardActions>
@@ -102,89 +90,107 @@ const Dashboard = ({
 					</Link>
 				</Fragment>
 			)} */}
-                    <Grid item container>
-                        {me && me._id ? (
-                            [
-                                <Grid
-                                    item
-                                    sx={{
-                                        margin: '8px auto',
-                                    }}
-                                >
-                                    <a
-                                        target="_blank"
-                                        href="https://docs.google.com/document/d/1skxIQjIhEOs07k06ymmss1lMO-Q9Q4j8kI68Vc0u5hE/edit?usp=sharing"
+                    {user && user.role && user.role.indexOf('ARTIST') != -1 ? (
+                        <Grid item container>
+                            <Grid
+                                item
+                                sx={{
+                                    margin: '8px auto',
+                                }}
+                            >
+                                <p className="">
+                                    Please make sure the information in your
+                                    profile is always accurate and up-to-date.
+                                    Your answers help us connect you with folks
+                                    who want to host shows in their spaces.
+                                </p>
+                            </Grid>
+                            {me && me._id ? (
+                                [
+                                    <Grid
+                                        item
+                                        sx={{
+                                            margin: '8px auto',
+                                        }}
                                     >
-                                        <Button btnwidth="300" className="">
-                                            <MenuBookTwoToneIcon /> Musician
-                                            Guide
-                                        </Button>
-                                    </a>
-                                </Grid>,
+                                        <a
+                                            target="_blank"
+                                            href="https://docs.google.com/document/d/1skxIQjIhEOs07k06ymmss1lMO-Q9Q4j8kI68Vc0u5hE/edit?usp=sharing"
+                                        >
+                                            <Button btnwidth="300" className="">
+                                                <MenuBookTwoToneIcon /> Musician
+                                                Guide
+                                            </Button>
+                                        </a>
+                                    </Grid>,
+                                    <Grid
+                                        item
+                                        sx={{
+                                            margin: '8px auto',
+                                        }}
+                                    >
+                                        <Link to="/edit-artist-profile">
+                                            <Button btnwidth="300" className="">
+                                                <EditTwoToneIcon /> Edit My
+                                                Profile
+                                            </Button>
+                                        </Link>
+                                    </Grid>,
+                                ]
+                            ) : (
                                 <Grid
                                     item
                                     sx={{
                                         margin: '8px auto',
                                     }}
                                 >
+                                    <p> </p>
                                     <Link to="/edit-artist-profile">
                                         <Button btnwidth="300" className="">
-                                            <EditTwoToneIcon /> Edit My Profile
+                                            <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
+                                            Create My Profile
                                         </Button>
                                     </Link>
-                                </Grid>,
-                            ]
-                        ) : (
-                            <Grid
-                                item
-                                sx={{
-                                    margin: '8px auto',
-                                }}
-                            >
-                                <p> </p>
-                                <Link to="/edit-artist-profile">
-                                    <Button btnwidth="300" className="">
-                                        <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
-                                        Create My Profile
-                                    </Button>
-                                </Link>
-                            </Grid>
-                        )}
-                        {me &&
-                        me._id &&
-                        me.active &&
-                        me.bookingWhen.length > 0 ? (
-                            <Grid
-                                item
-                                sx={{
-                                    margin: '8px auto',
-                                }}
-                            >
-                                <Link to="/edit-artist-booking">
-                                    <Button btnwidth="300" className="">
-                                        <DateRangeTwoToneIcon /> Edit My Booking
-                                        Info
-                                    </Button>
-                                </Link>
-                            </Grid>
-                        ) : me && me._id && me.active ? (
-                            <Grid
-                                item
-                                sx={{
-                                    margin: '8px auto',
-                                }}
-                            >
-                                <p> </p>
-                                <Link to="/edit-artist-booking">
-                                    <Button className="">
-                                        Start Booking Shows
-                                    </Button>
-                                </Link>
-                            </Grid>
-                        ) : (
-                            ''
-                        )}
-                    </Grid>
+                                </Grid>
+                            )}
+                            {me &&
+                            me._id &&
+                            me.active &&
+                            me.bookingWhen.length > 0 ? (
+                                <Grid
+                                    item
+                                    sx={{
+                                        margin: '8px auto',
+                                    }}
+                                >
+                                    <Link to="/edit-artist-booking">
+                                        <Button btnwidth="300" className="">
+                                            <DateRangeTwoToneIcon /> Edit My
+                                            Booking Info
+                                        </Button>
+                                    </Link>
+                                </Grid>
+                            ) : me && me._id && me.active ? (
+                                <Grid
+                                    item
+                                    sx={{
+                                        margin: '8px auto',
+                                    }}
+                                >
+                                    <p> </p>
+                                    <Link to="/edit-artist-booking">
+                                        <Button className="">
+                                            Start Booking Shows
+                                        </Button>
+                                    </Link>
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                        </Grid>
+                    ) : (
+                        ''
+                    )}
                 </Grid>
             </Grid>
         </Fragment>
