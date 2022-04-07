@@ -171,7 +171,7 @@ const EditArtistProfileForm = ({
         overnight: '',
         openers: '',
         travelingCompanions: [],
-        companionTravelers: '',
+        //companionTravelers: '',
         hangout: '',
         merchTable: false,
         allergies: [],
@@ -295,10 +295,10 @@ const EditArtistProfileForm = ({
                     loading || theArtist.travelingCompanions == null
                         ? []
                         : theArtist.travelingCompanions,
-                companionTravelers:
-                    loading || theArtist.companionTravelers == null
-                        ? false
-                        : theArtist.companionTravelers,
+                // companionTravelers:
+                //     loading || theArtist.companionTravelers == null
+                //         ? false
+                //         : theArtist.companionTravelers,
                 hangout:
                     loading || theArtist.hangout == null
                         ? false
@@ -400,7 +400,7 @@ const EditArtistProfileForm = ({
                     overnight: '',
                     openers: '',
                     travelingCompanions: [],
-                    companionTravelers: '',
+                    //companionTravelers: '',
                     hangout: '',
                     merchTable: false,
                     allergies: [],
@@ -460,7 +460,7 @@ const EditArtistProfileForm = ({
         overnight,
         openers,
         travelingCompanions,
-        companionTravelers,
+        //companionTravelers,
         hangout,
         merchTable,
         allergies,

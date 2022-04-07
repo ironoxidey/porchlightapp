@@ -283,27 +283,68 @@ router.post('/updateMe', [auth], async (req, res) => {
                       ))
                     : (artistFields.slug = convertToSlug(req.user.id));
 
+                //if (req.user.role === 'ADMIN' && artistFields.email !== '') {
                 if (
-                    (req.user.role &&
-                        req.user.role.indexOf('ADMIN') != -1 &&
-                        artistFields.email !== '') ||
-                    req.user.email.toLowerCase() ===
-                        artistFields.email.toLowerCase()
+                    req.user.role &&
+                    req.user.role.indexOf('ADMIN') != -1 &&
+                    artistFields.email !== ''
                 ) {
-                    //if requesting user is ADMIN and has authority to update all other users OR if the requesting user has the same email as the artist they're trying to edit;
+                    //console.log("User is ADMIN and has authority to update all other users.");
                     try {
                         //console.log(artistFields);
-                        if (
-                            req.user.email.toLowerCase() ===
-                                artistFields.email.toLowerCase() &&
-                            req.user.role &&
-                            req.user.role.indexOf('ADMIN') === -1
-                        ) {
-                            //if the user is not an ADMIN, but does have the right to edit their own profile
-                            delete artistFields.active; //to prevent someone from being able to change their active status
-                            artistFields.user = req.user.id;
-                        }
+                        // Using upsert option (creates new doc if no match is found):
+                        let artist = await Artist.findOneAndUpdate(
+                            { email: artistFields.email.toLowerCase() },
+                            { $set: artistFields },
+                            { new: true, upsert: true }
+                        ).select('-hadMeeting -sentFollowUp -notes');
 
+                        let user = await User.findOneAndUpdate(
+                            { email: artistFields.email.toLowerCase() },
+                            { $set: { artistProfile: artist._id } }
+                        );
+
+                        if (
+                            artistFields.bookingWhenWhere &&
+                            artistFields.bookingWhenWhere.length > 0
+                        ) {
+                            artistFields.bookingWhenWhere.map(
+                                async (bookingInfo) => {
+                                    //TODO: create a new Event for each bookingWhenWhere, and then figure out how to delete them
+                                    let event = await Event.findOneAndUpdate(
+                                        {
+                                            artistEmail:
+                                                artistFields.email.toLowerCase(),
+                                            bookingWhen: bookingInfo.when,
+                                        },
+                                        {
+                                            $set: artistFields,
+                                            artist: artist.id,
+                                            artistUser: user.id,
+                                            artistEmail: artistFields.email,
+                                            bookingWhen: bookingInfo.when,
+                                            bookingWhere: bookingInfo.where,
+                                        },
+                                        { new: true, upsert: true }
+                                    );
+                                }
+                            );
+                        }
+                        artistCount++;
+                        res.json(artist);
+                    } catch (err) {
+                        console.error(err.message);
+                        res.status(500).send('Server Error: ' + err.message);
+                    }
+                } else if (
+                    req.user.email.toLowerCase() ===
+                    artistFields.email.toLowerCase()
+                ) {
+                    //if the request user email matches the artist email they have authority to edit their own profile, removing admin things
+                    try {
+                        delete artistFields.active; //to prevent someone from being able to change their active status
+                        artistFields.user = req.user.id;
+                        console.log(artistFields);
                         // Using upsert option (creates new doc if no match is found):
                         let artist = await Artist.findOneAndUpdate(
                             { email: artistFields.email.toLowerCase() },
@@ -321,92 +362,31 @@ router.post('/updateMe', [auth], async (req, res) => {
                             status: 'PENDING',
                         });
 
-                        artistEventsDates = artistEvents.map((artistEvent) => {
-                            return artistEvent.bookingWhen;
-                        });
-
-                        //console.log('artistEventsDates', artistEventsDates);
+                        console.log('artistEvents', artistEvents);
 
                         if (
                             artistFields.bookingWhenWhere &&
                             artistFields.bookingWhenWhere.length > 0
                         ) {
-                            const artistBookingDates = await Promise.all(
-                                artistFields.bookingWhenWhere.map(
-                                    async (bookingInfo) => {
-                                        if (
-                                            bookingInfo.where &&
-                                            bookingInfo.where != ''
-                                        ) {
-                                            let event =
-                                                await Event.findOneAndUpdate(
-                                                    {
-                                                        artistEmail:
-                                                            artistFields.email.toLowerCase(),
-                                                        bookingWhen:
-                                                            bookingInfo.when,
-                                                    },
-                                                    {
-                                                        $set: artistFields,
-                                                        artist: artist.id,
-                                                        artistUser: user.id,
-                                                        artistEmail:
-                                                            artistFields.email,
-                                                        bookingWhen:
-                                                            bookingInfo.when,
-                                                        bookingWhere:
-                                                            bookingInfo.where,
-                                                    },
-                                                    { new: true, upsert: true }
-                                                );
-                                            return new Date(
-                                                bookingInfo.when
-                                            ).toISOString();
-                                        }
-                                    }
-                                )
-                            );
-
-                            // console.log(
-                            //     'artistBookingDates',
-                            //     artistBookingDates
-                            // );
-                            leftOverArtistEventsDates =
-                                artistEventsDates.filter(function (eventDate) {
-                                    if (
-                                        artistBookingDates.indexOf(
-                                            new Date(eventDate).toISOString()
-                                        ) === -1
-                                    ) {
-                                        //return eventDates only if they don't match a date in the artistBookingDates---later we'll remove any dates from the Events collection that are still in this array
-                                        return eventDate;
-                                    }
-                                });
-                            // console.log(
-                            //     'leftOverArtistEventsDates',
-                            //     leftOverArtistEventsDates
-                            // );
-
-                            leftOverArtistEventsDates.forEach(
-                                async (leftOverEventDate) => {
-                                    let removeEvent = await Event.deleteOne({
-                                        artistEmail:
-                                            artistFields.email.toLowerCase(),
-                                        bookingWhen: leftOverEventDate,
-                                        status: 'PENDING',
-                                    });
-                                }
-                            );
-                        } else if (artistEventsDates.length > 0) {
-                            //if there aren't any bookingWhenWheres, delete any PENDING event dates for that artist
-                            artistEventsDates.forEach(
-                                async (leftOverEventDate) => {
-                                    let removeEvent = await Event.deleteOne({
-                                        artistEmail:
-                                            artistFields.email.toLowerCase(),
-                                        bookingWhen: leftOverEventDate,
-                                        status: 'PENDING',
-                                    });
+                            artistFields.bookingWhenWhere.map(
+                                async (bookingInfo) => {
+                                    //TODO: create a new Event for each bookingWhenWhere, and then figure out how to delete them
+                                    let event = await Event.findOneAndUpdate(
+                                        {
+                                            artistEmail:
+                                                artistFields.email.toLowerCase(),
+                                            bookingWhen: bookingInfo.when,
+                                        },
+                                        {
+                                            $set: artistFields,
+                                            artist: artist.id,
+                                            artistUser: user.id,
+                                            artistEmail: artistFields.email,
+                                            bookingWhen: bookingInfo.when,
+                                            bookingWhere: bookingInfo.where,
+                                        },
+                                        { new: true, upsert: true }
+                                    );
                                 }
                             );
                         }
@@ -415,72 +395,9 @@ router.post('/updateMe', [auth], async (req, res) => {
                         res.json(artist);
                     } catch (err) {
                         console.error(err.message);
-                        res.status(500).send('Server Error: ' + err.message);
+                        res.status(500).send('Server Error');
                     }
-                }
-                // else if (
-                //     req.user.email.toLowerCase() ===
-                //     artistFields.email.toLowerCase()
-                // ) {
-                //     //if the request user email matches the artist email they have authority to edit their own profile, removing admin things
-                //     try {
-                //         delete artistFields.active; //to prevent someone from being able to change their active status
-                //         artistFields.user = req.user.id;
-                //         console.log(artistFields);
-                //         // Using upsert option (creates new doc if no match is found):
-                //         let artist = await Artist.findOneAndUpdate(
-                //             { email: artistFields.email.toLowerCase() },
-                //             { $set: artistFields },
-                //             { new: true, upsert: true }
-                //         ).select('-hadMeeting -sentFollowUp -notes');
-
-                //         let user = await User.findOneAndUpdate(
-                //             { email: artistFields.email.toLowerCase() },
-                //             { $set: { artistProfile: artist._id } }
-                //         );
-
-                //         let artistEvents = await Event.find({
-                //             artistEmail: artistFields.email.toLowerCase(),
-                //             status: 'PENDING',
-                //         });
-
-                //         console.log('artistEvents', artistEvents);
-
-                //         if (
-                //             artistFields.bookingWhenWhere &&
-                //             artistFields.bookingWhenWhere.length > 0
-                //         ) {
-                //             artistFields.bookingWhenWhere.map(
-                //                 async (bookingInfo) => {
-                //                     //TODO: create a new Event for each bookingWhenWhere, and then figure out how to delete them
-                //                     let event = await Event.findOneAndUpdate(
-                //                         {
-                //                             artistEmail:
-                //                                 artistFields.email.toLowerCase(),
-                //                             bookingWhen: bookingInfo.when,
-                //                         },
-                //                         {
-                //                             $set: artistFields,
-                //                             artist: artist.id,
-                //                             artistUser: user.id,
-                //                             artistEmail: artistFields.email,
-                //                             bookingWhen: bookingInfo.when,
-                //                             bookingWhere: bookingInfo.where,
-                //                         },
-                //                         { new: true, upsert: true }
-                //                     );
-                //                 }
-                //             );
-                //         }
-
-                //         artistCount++;
-                //         res.json(artist);
-                //     } catch (err) {
-                //         console.error(err.message);
-                //         res.status(500).send('Server Error');
-                //     }
-                // }
-                else {
+                } else {
                     console.error(
                         req.user.email +
                             " doesn't have authority to make these changes."

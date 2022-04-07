@@ -35,6 +35,8 @@ import WcTwoToneIcon from '@mui/icons-material/WcTwoTone';
 import TodayTwoToneIcon from '@mui/icons-material/TodayTwoTone';
 import LiquorTwoToneIcon from '@mui/icons-material/LiquorTwoTone';
 import NoDrinksTwoToneIcon from '@mui/icons-material/NoDrinksTwoTone';
+import AttachMoneyTwoToneIcon from '@mui/icons-material/AttachMoneyTwoTone';
+import MoneyOffTwoToneIcon from '@mui/icons-material/MoneyOffTwoTone';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -144,7 +146,7 @@ const ArtistProfile = ({
         overnight,
         openers,
         travelingCompanions,
-        companionTravelers,
+        //companionTravelers,
         hangout,
         merchTable,
         allergies,
@@ -489,7 +491,9 @@ const ArtistProfile = ({
                                             arrow
                                         >
                                             <a
-                                                href={artist.artistWebsite}
+                                                href={prependHttp(
+                                                    artist.artistWebsite
+                                                )}
                                                 target="_blank"
                                             >
                                                 <FontAwesomeIcon
@@ -1504,6 +1508,67 @@ const ArtistProfile = ({
 
                                     <Divider />
                                 </Grid>
+                            ) : (
+                                ''
+                            )}
+                            {(me && me.role && me.role.indexOf('ADMIN') > -1) ||
+                            isMe ? (
+                                artist.agreeToPayAdminFee ? (
+                                    <Grid
+                                        item
+                                        sx={{ marginTop: '0' }}
+                                        xs={12}
+                                        md={6}
+                                        className="agreeToPayAdminFee"
+                                    >
+                                        <Tooltip
+                                            arrow={true}
+                                            disableHoverListener={!isMe}
+                                            disableFocusListener={!isMe}
+                                            disableTouchListener={!isMe}
+                                            title={
+                                                <Link to="/edit-artist-booking?field=agreeToPayAdminFee">
+                                                    Edit
+                                                </Link>
+                                            }
+                                        >
+                                            <AttachMoneyTwoToneIcon></AttachMoneyTwoToneIcon>
+                                        </Tooltip>
+                                        <strong> Agreed </strong>{' '}
+                                        {
+                                            ' to pay 20% of gross ticket sales, tips, and merch sales '
+                                        }
+                                        <Divider />
+                                    </Grid>
+                                ) : (
+                                    <Grid
+                                        item
+                                        sx={{ marginTop: '0' }}
+                                        xs={12}
+                                        md={6}
+                                        className="agreeToPayAdminFee"
+                                    >
+                                        <Tooltip
+                                            arrow={true}
+                                            disableHoverListener={!isMe}
+                                            disableFocusListener={!isMe}
+                                            disableTouchListener={!isMe}
+                                            title={
+                                                <Link to="/edit-artist-booking?field=agreeToPayAdminFee">
+                                                    Edit
+                                                </Link>
+                                            }
+                                        >
+                                            <MoneyOffTwoToneIcon></MoneyOffTwoToneIcon>
+                                        </Tooltip>
+                                        <strong> Did NOT agree </strong>
+                                        {
+                                            ' to pay 20% of gross ticket sales, tips, and merch sales '
+                                        }
+
+                                        <Divider />
+                                    </Grid>
+                                )
                             ) : (
                                 ''
                             )}

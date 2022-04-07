@@ -49,7 +49,7 @@ const UserSchema = new mongoose.Schema({
             type: Number,
         },
         createdAt: {
-            type: Number,
+            type: Date,
         },
         owner: {
             type: String,
