@@ -61,10 +61,10 @@ const Login = ({ login, isAuthenticated }) => {
                     <Grid container spacing={2}>
                         <Grid item xs={12} sx={{ textAlign: 'center' }}>
                             <FormLabel component="legend">
-                                Let's get you logged in!
+                                Let’s get you logged in!
                             </FormLabel>
                             <Typography component="p">
-                                What's your email address and password?
+                                What’s your email address and password?
                             </Typography>
                         </Grid>
                         <Grid item xs={12}>
@@ -114,7 +114,7 @@ const Login = ({ login, isAuthenticated }) => {
                     <Grid container justifyContent="flex-end">
                         <Grid item>
                             <small>
-                                I don't have an account.{' '}
+                                I don’t have an account.{' '}
                                 <Link to="/register">Sign Up</Link>
                             </small>
                         </Grid>

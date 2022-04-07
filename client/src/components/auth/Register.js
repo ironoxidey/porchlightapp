@@ -98,10 +98,10 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
                     <Grid container spacing={2}>
                         <Grid item xs={12} sx={{ textAlign: 'center' }}>
                             <FormLabel component="legend">
-                                Let's get you signed up!
+                                Let’s get you signed up!
                             </FormLabel>
                             <Typography component="p">
-                                What's your name, email address, and password?
+                                What’s your name, email address, and password?
                             </Typography>
                         </Grid>
                         <Grid item xs={12}>
