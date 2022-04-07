@@ -117,6 +117,7 @@ function StackDateforDisplay(props) {
 }
 
 const ArtistProfile = ({
+    user,
     me,
     artist,
     artist: {
@@ -1511,8 +1512,9 @@ const ArtistProfile = ({
                             ) : (
                                 ''
                             )}
-                            {(me && me.role && me.role.indexOf('ADMIN') > -1) ||
-                            isMe ? (
+                            {user &&
+                            user.role &&
+                            user.role.indexOf('ADMIN') > -1 ? (
                                 artist.agreeToPayAdminFee ? (
                                     <Grid
                                         item
@@ -1563,9 +1565,11 @@ const ArtistProfile = ({
                                         </Tooltip>
                                         <strong> Did NOT agree </strong>
                                         {
-                                            ' to pay 20% of gross ticket sales, tips, and merch sales '
-                                        }
-
+                                            ' to pay 20% of gross ticket sales, tips, and merch sales.'
+                                        }{' '}
+                                        <strong>
+                                            Would like to discuss this further.
+                                        </strong>
                                         <Divider />
                                     </Grid>
                                 )
@@ -1585,10 +1589,12 @@ const ArtistProfile = ({
 ArtistProfile.propTypes = {
     artist: PropTypes.object.isRequired,
     me: PropTypes.object,
+    user: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
     me: state.artist.me,
+    user: state.auth.user,
 });
 
 export default connect(mapStateToProps)(withRouter(ArtistProfile)); //withRouter allows us to pass history objects
