@@ -8,6 +8,7 @@ import Experience from './Experience';
 import Education from './Education';
 import { deleteAccount, getCurrentProfile } from '../../actions/profile';
 import { getCurrentArtist } from '../../actions/artist';
+import { getCurrentHost } from '../../actions/host';
 import { Grid } from '@mui/material';
 import Button from '../layout/SvgButton';
 
@@ -22,7 +23,9 @@ const Dashboard = ({
     auth: { user },
     profile: { profile, loading },
     getCurrentArtist,
-    artist: { me },
+    artist,
+    getCurrentHost,
+    host,
 }) => {
     useEffect(() => {
         getCurrentProfile();
@@ -30,6 +33,9 @@ const Dashboard = ({
     useEffect(() => {
         getCurrentArtist();
     }, [getCurrentArtist, user]);
+    useEffect(() => {
+        getCurrentHost();
+    }, [getCurrentHost, user]);
     return loading && profile === null ? (
         <Spinner />
     ) : (
@@ -105,7 +111,7 @@ const Dashboard = ({
                                     who want to host shows in their spaces.
                                 </p>
                             </Grid>
-                            {me && me._id ? (
+                            {artist.me && artist.me._id ? (
                                 [
                                     <Grid
                                         item
@@ -132,7 +138,7 @@ const Dashboard = ({
                                         <Link to="/edit-artist-profile">
                                             <Button btnwidth="300" className="">
                                                 <EditTwoToneIcon /> Edit My
-                                                Profile
+                                                Artist Profile
                                             </Button>
                                         </Link>
                                     </Grid>,
@@ -153,10 +159,10 @@ const Dashboard = ({
                                     </Link>
                                 </Grid>
                             )}
-                            {me &&
-                            me._id &&
-                            me.active &&
-                            me.bookingWhen.length > 0 ? (
+                            {artist.me &&
+                            artist.me._id &&
+                            artist.me.active &&
+                            artist.me.bookingWhen.length > 0 ? (
                                 <Grid
                                     item
                                     sx={{
@@ -170,7 +176,9 @@ const Dashboard = ({
                                         </Button>
                                     </Link>
                                 </Grid>
-                            ) : me && me._id && me.active ? (
+                            ) : artist.me &&
+                              artist.me._id &&
+                              artist.me.active ? (
                                 <Grid
                                     item
                                     sx={{
@@ -189,6 +197,53 @@ const Dashboard = ({
                             )}
                         </Grid>
                     ) : (
+                        <Fragment></Fragment>
+                    )}
+
+                    {user &&
+                    user.role &&
+                    user.role.indexOf('ATTENDER') != -1 ? (
+                        <Grid item container>
+                            {user.role.indexOf('HOST') === -1 ? (
+                                <Grid
+                                    item
+                                    sx={{
+                                        margin: '8px auto',
+                                    }}
+                                >
+                                    <p> </p>
+                                    <Link to="/edit-host-profile">
+                                        <Button btnwidth="300" className="">
+                                            <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
+                                            Sign Up to Host
+                                        </Button>
+                                    </Link>
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                        </Grid>
+                    ) : (
+                        ''
+                    )}
+                    {user && user.role && user.role.indexOf('HOST') != -1 ? (
+                        <Grid item container>
+                            <Grid
+                                item
+                                sx={{
+                                    margin: '8px auto',
+                                }}
+                            >
+                                <p> </p>
+                                <Link to="/edit-host-profile">
+                                    <Button btnwidth="300" className="">
+                                        <EditTwoToneIcon />
+                                        Edit My Host Profile
+                                    </Button>
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    ) : (
                         ''
                     )}
                 </Grid>
@@ -204,16 +259,19 @@ Dashboard.propTypes = {
     auth: PropTypes.object.isRequired,
     profile: PropTypes.object.isRequired,
     artist: PropTypes.object.isRequired,
+    host: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
     profile: state.profile,
     artist: state.artist,
+    host: state.host,
 });
 
 export default connect(mapStateToProps, {
     getCurrentProfile,
     getCurrentArtist,
+    getCurrentHost,
     deleteAccount,
 })(Dashboard);

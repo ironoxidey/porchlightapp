@@ -292,7 +292,7 @@ const UserDataGrid = ({
         {
             field: 'role',
             headerName: 'Role(s)',
-            width: 350,
+            width: 500,
             // editable: true,
             sortable: false,
             renderCell: renderAutoCompleteEditInputCell,

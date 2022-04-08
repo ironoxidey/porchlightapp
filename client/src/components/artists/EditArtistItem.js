@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createArtist } from '../../actions/artist';
+//import { createArtist } from '../../actions/artist';
 import EditArtistAdmin from './EditArtistAdmin';
 
 import {

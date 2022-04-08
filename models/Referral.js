@@ -20,6 +20,10 @@ const ReferralSchema = new mongoose.Schema(
             type: Date,
             default: Date.now,
         },
+        numUsed: {
+            type: Number,
+            default: 0,
+        },
         usedBy: {
             type: [String],
         },

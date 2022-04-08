@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect, useRef } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createArtist, updateArtists } from '../../actions/artist';
+import { updateArtists } from '../../actions/artist';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {
     Switch,
@@ -30,7 +30,7 @@ const darkTheme = createTheme({
 
 const EditArtistAdmin = ({
     theArtist,
-    createArtist,
+    //createArtist,
     updateArtists,
     history,
     artist,
@@ -220,7 +220,7 @@ const EditArtistAdmin = ({
 };
 
 EditArtistAdmin.propTypes = {
-    createArtist: PropTypes.func.isRequired,
+    //createArtist: PropTypes.func.isRequired,
     updateArtists: PropTypes.func.isRequired,
     theArtist: PropTypes.object.isRequired,
     artist: PropTypes.object.isRequired,
@@ -230,6 +230,6 @@ const mapStateToProps = (state) => ({
     artist: state.artist,
 });
 
-export default connect(mapStateToProps, { createArtist, updateArtists })(
+export default connect(mapStateToProps, { updateArtists })(
     withRouter(EditArtistAdmin)
 ); //withRouter allows us to pass history objects

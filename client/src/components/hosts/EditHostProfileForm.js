@@ -511,10 +511,36 @@ const EditArtistProfileForm = ({
 
     const formGroups = {
         firstName: [
-            <FormLabel component="legend">
-                Thanks for your interest in becoming a host! <br />
-                What's your name?
-            </FormLabel>,
+            [
+                <FormLabel
+                    component="h3"
+                    sx={{ fontSize: '1.5em', textAlign: 'center' }}
+                >
+                    Thanks for your interest in becoming a host!
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{
+                        textAlign: 'left',
+                        display: 'block',
+                        maxWidth: '600px',
+                    }}
+                >
+                    Just so you know: answering these questions does not
+                    obligate you to host any particular event. This
+                    questionnaire signifies your interest to host, and loops you
+                    in to updates and opportunities to host.
+                    <br />
+                    <br />
+                    <em>
+                        Also, the information you submit is for internal use
+                        only, and will never be sold to a third party.
+                    </em>
+                </FormLabel>,
+                <FormLabel component="legend">
+                    Starting off, what is your name?
+                </FormLabel>,
+            ],
             <Grid
                 container
                 direction="row"
@@ -546,13 +572,20 @@ const EditArtistProfileForm = ({
             </Grid>,
         ],
         city: [
-            <FormLabel component="legend">
-                What is the address of your residence?
-                <small>
-                    Even if you don't plan on hosting at your residence, we
-                    sometimes snail-mail resources to our hosts.
-                </small>
-            </FormLabel>,
+            [
+                <FormLabel component="legend">
+                    What is the address of your residence?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    <em>
+                        Even if you don't plan on hosting at your residence, we
+                        sometimes snail-mail resources to our hosts.
+                    </em>
+                </FormLabel>,
+            ],
             [
                 <Grid
                     container
@@ -615,20 +648,27 @@ const EditArtistProfileForm = ({
             ],
         ],
         numDraw: [
-            <FormLabel component="legend">
-                How many people do you think you could draw to an event?
-                <small>
-                    Do not include what a musician or band might bring: we’re
-                    curious about your own “draw.”{' '}
-                </small>
-            </FormLabel>,
+            [
+                <FormLabel component="legend">
+                    How many people do you think you could draw to an event?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    <em>
+                        Do not include what a musician or band might bring:
+                        we’re curious about your own “draw.”{' '}
+                    </em>
+                </FormLabel>,
+            ],
             [
                 <Grid item>
                     <TextField
                         variant="standard"
                         name="numDraw"
                         id="numDraw"
-                        label="I think I could draw about "
+                        label="I could draw about "
                         value={numDraw}
                         helperText="people to an event."
                         onChange={(e) => onChange(e)}
@@ -657,13 +697,20 @@ const EditArtistProfileForm = ({
             ],
         ],
         phone: [
-            <FormLabel component="legend">
-                Would you provide your phone number?
-                <small>
-                    Sometimes last-minute event changes need a quick way to get
-                    in touch.
-                </small>
-            </FormLabel>,
+            [
+                <FormLabel component="legend">
+                    Would you provide your phone number?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    <em>
+                        Sometimes last-minute event changes need a quick way to
+                        get in touch.
+                    </em>
+                </FormLabel>,
+            ],
             [
                 <Grid item>
                     <ReactPhoneInput
@@ -688,16 +735,17 @@ const EditArtistProfileForm = ({
             ],
         ],
         connectionToUs: [
-            <FormLabel component="legend">
-                How did you hear about Porchlight?
-                <small>It’s a small world!</small>
-            </FormLabel>,
+            [
+                <FormLabel component="legend">
+                    How did you hear about Porchlight?
+                </FormLabel>,
+            ],
             <Grid item xs={12} sx={{ width: '100%' }}>
                 <TextField
                     variant="standard"
                     name="connectionToUs"
                     id="connectionToUs"
-                    //label="Bio"
+                    label="It’s a funny story..."
                     value={connectionToUs}
                     onChange={(e) => onChange(e)}
                     sx={{ width: '100%' }}
@@ -731,20 +779,27 @@ const EditArtistProfileForm = ({
             </Grid>,
         ],
         venueNickname: [
-            <FormLabel component="legend">
-                Does your {primarySpace || 'place'} have a name?
-                <small>
-                    Sometimes people even come up with a venue nickname for
-                    their house venue!
-                </small>
-            </FormLabel>,
+            [
+                <FormLabel component="legend">
+                    Does your {primarySpace || 'place'} have a name?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    <em>
+                        Sometimes people even come up with a nickname for their
+                        house venue!
+                    </em>
+                </FormLabel>,
+            ],
             [
                 <Grid item xs={12} sx={{ width: '100%' }}>
                     <TextField
                         variant="standard"
                         name="venueNickname"
                         id="venueNickname"
-                        //label="Bio"
+                        label={`Yeah, we call my ${primarySpace || 'place'} `}
                         value={venueNickname}
                         onChange={(e) => onChange(e)}
                         sx={{ width: '100%' }}
@@ -815,14 +870,21 @@ const EditArtistProfileForm = ({
             ],
         ],
         backupPlan: [
-            <FormLabel component="legend">
-                If the space is outdoors, is there a convenient "plan B" space
-                in the case of bad weather?
-                <small>
-                    A contingency is not necessary, but it’s good to know if
-                    there is one or not.
-                </small>
-            </FormLabel>,
+            [
+                <FormLabel component="legend">
+                    If the space is outdoors, is there a convenient "plan B"
+                    space in the case of bad weather?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    <em>
+                        A contingency is not necessary, but it’s good to know if
+                        there is one or not.
+                    </em>
+                </FormLabel>,
+            ],
             [
                 <FormControl component="fieldset">
                     <RadioGroup
@@ -937,7 +999,7 @@ const EditArtistProfileForm = ({
             ],
         ],
         specialNavDirections: [
-            <FormLabel component="legend">
+            <FormLabel component="legend" sx={{ maxWidth: '600px' }}>
                 Sometimes GPS doesn’t do a perfect job getting people to certain
                 spots. Please list any special directions or instructions for
                 people navigating to the venue on the day of the show.
@@ -959,7 +1021,7 @@ const EditArtistProfileForm = ({
         endSlide: [
             [
                 <Typography component="h2" sx={{ textAlign: 'center' }}>
-                    Those were all the questions we have for this section.
+                    Those were all the questions we have for right now.
                 </Typography>,
                 <Typography
                     component="p"

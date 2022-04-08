@@ -131,84 +131,85 @@ router.post(
 // @route    POST api/artists/batch
 // @desc     Batch create or update artists
 // @access   Private
-router.post('/batch', [auth], async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-    console.log('api/artists/batch');
-    //console.log(req.user);
-    if (req.body instanceof Array) {
-        let artistCount = 0;
-        await Promise.all(
-            req.body.map(async (artistFields) => {
-                artistFields.stageName && artistFields.stageName.length > 0
-                    ? (artistFields.slug = convertToSlug(
-                          artistFields.stageName
-                      ))
-                    : '';
+// router.post('/batch', [auth], async (req, res) => {
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//         return res.status(400).json({ errors: errors.array() });
+//     }
+//     console.log('api/artists/batch');
+//     //console.log(req.user);
+//     if (req.body instanceof Array) {
+//         let artistCount = 0;
+//         await Promise.all(
+//             req.body.map(async (artistFields) => {
+//                 artistFields.stageName && artistFields.stageName.length > 0
+//                     ? (artistFields.slug = convertToSlug(
+//                           artistFields.stageName
+//                       ))
+//                     : '';
 
-                //if (req.user.role === 'ADMIN' && artistFields.email !== '') {
-                if (
-                    req.user.role &&
-                    req.user.role.indexOf('ADMIN') != -1 &&
-                    artistFields.email !== ''
-                ) {
-                    //console.log("User is ADMIN and has authority to update all other users.");
-                    try {
-                        //console.log(artistFields);
-                        // Using upsert option (creates new doc if no match is found):
-                        let artist = await Artist.findOneAndUpdate(
-                            { email: artistFields.email.toLowerCase() },
-                            { $set: artistFields },
-                            { new: true, upsert: true }
-                        );
-                        let user = await User.findOneAndUpdate(
-                            { email: artistFields.email.toLowerCase() },
-                            { $set: { artistProfile: artist._id } }
-                        );
-                        artistCount++;
-                        res.json(artistFields);
-                    } catch (err) {
-                        console.error(err.message);
-                        res.status(500).send('Server Error: ' + err.message);
-                    }
-                } else if (
-                    req.user.email === artistFields.email.toLowerCase()
-                ) {
-                    //if the request user email matches the artist email they have authority to edit their own profile, removing admin things
-                    try {
-                        delete artistFields.active;
-                        console.log(artistFields);
-                        // Using upsert option (creates new doc if no match is found):
-                        let artist = await Artist.findOneAndUpdate(
-                            { email: artistFields.email.toLowerCase() },
-                            { $set: artistFields },
-                            { new: true, upsert: true }
-                        );
-                        let user = await User.findOneAndUpdate(
-                            { email: artistFields.email.toLowerCase() },
-                            { $set: { artistProfile: artist._id } }
-                        );
-                        artistCount++;
-                        res.json(artistFields);
-                    } catch (err) {
-                        console.error(err.message);
-                        res.status(500).send('Server Error');
-                    }
-                } else {
-                    console.error(
-                        "You don't have authority to make these changes."
-                    );
-                    res.status(500).send(
-                        'User does not have authority to make these changes.'
-                    );
-                }
-            })
-        );
-        //res.json(artistCount + " artist(s) submitted to the database."); //eventually remove this
-    }
-});
+//                 //if (req.user.role === 'ADMIN' && artistFields.email !== '') {
+//                 if (
+//                     req.user.role &&
+//                     req.user.role.indexOf('ADMIN') != -1 &&
+//                     artistFields.email !== ''
+//                 ) {
+//                     //console.log("User is ADMIN and has authority to update all other users.");
+//                     try {
+//                         //console.log(artistFields);
+//                         // Using upsert option (creates new doc if no match is found):
+//                         let artist = await Artist.findOneAndUpdate(
+//                             { email: artistFields.email.toLowerCase() },
+//                             { $set: artistFields },
+//                             { new: true, upsert: true }
+//                         );
+//                         let user = await User.findOneAndUpdate(
+//                             { email: artistFields.email.toLowerCase() },
+//                             { $set: { artistProfile: artist._id } }
+//                         );
+//                         artistCount++;
+//                         res.json(artistFields);
+//                     } catch (err) {
+//                         console.error(err.message);
+//                         res.status(500).send('Server Error: ' + err.message);
+//                     }
+//                 } else if (
+//                     req.user.email === artistFields.email.toLowerCase()
+//                 ) {
+//                     //if the request user email matches the artist email they have authority to edit their own profile, removing admin things
+//                     try {
+//                         delete artistFields.active;
+//                         console.log(artistFields);
+//                         // Using upsert option (creates new doc if no match is found):
+//                         let artist = await Artist.findOneAndUpdate(
+//                             { email: artistFields.email.toLowerCase() },
+//                             { $set: artistFields },
+//                             { new: true, upsert: true }
+//                         );
+//                         let user = await User.findOneAndUpdate(
+//                             { email: artistFields.email.toLowerCase() },
+//                             { $set: { artistProfile: artist._id } }
+//                         );
+//                         artistCount++;
+//                         res.json(artistFields);
+//                     } catch (err) {
+//                         console.error(err.message);
+//                         res.status(500).send('Server Error');
+//                     }
+//                 } else {
+//                     console.error(
+//                         "You don't have authority to make these changes."
+//                     );
+//                     res.status(500).send(
+//                         'User does not have authority to make these changes.'
+//                     );
+//                 }
+//             })
+//         );
+//         //res.json(artistCount + " artist(s) submitted to the database."); //eventually remove this
+//     }
+// });
+
 // @route    POST api/artists/admin-update
 // @desc     Batch create or update artists
 // @access   Private
@@ -230,7 +231,7 @@ router.post('/admin-update', [auth], async (req, res) => {
                 //if (req.user.role === 'ADMIN' && artistFields.email !== '') {
                 if (
                     req.user.role &&
-                    req.user.role.indexOf('ADMIN') != -1 &&
+                    req.user.role.indexOf('ADMIN') > -1 &&
                     artistFields.email !== ''
                 ) {
                     //console.log("User is ADMIN and has authority to update all other users.");
@@ -272,6 +273,20 @@ router.post('/updateMe', [auth], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
+    }
+
+    //if req.user.role.indexOf turns up -1 (no indexes found) for ARTIST and ADMIN, then {return}, don't proceed
+    if (
+        req.user.role &&
+        req.user.role.indexOf('ARTIST') === -1 &&
+        req.user.role.indexOf('ADMIN') === -1
+    ) {
+        console.error(
+            req.user.email + " doesn't have authority to make these changes."
+        );
+        return res
+            .status(500)
+            .send('User does not have authority to make these changes.');
     }
     if (req.body instanceof Array) {
         let artistCount = 0;

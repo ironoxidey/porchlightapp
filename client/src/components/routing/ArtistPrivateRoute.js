@@ -4,7 +4,7 @@ import Page from './Page';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-const AdminPrivateRoute = ({
+const ArtistPrivateRoute = ({
     component: Component,
     title,
     auth: { isAuthenticated, loading, user },
@@ -18,7 +18,7 @@ const AdminPrivateRoute = ({
             ) : // ) : user && user.role !== 'ADMIN' ? (
             user &&
               Array.isArray(user.role) &&
-              user.role.indexOf('ADMIN') > -1 ? (
+              user.role.indexOf('ARTIST') > -1 ? (
                 <Page title={title}>
                     <Component {...props} />
                 </Page>
@@ -29,7 +29,7 @@ const AdminPrivateRoute = ({
     />
 );
 
-AdminPrivateRoute.propTypes = {
+ArtistPrivateRoute.propTypes = {
     auth: PropTypes.object.isRequired,
 };
 
@@ -37,4 +37,4 @@ const mapStateToProps = (state) => ({
     auth: state.auth,
 });
 
-export default connect(mapStateToProps)(AdminPrivateRoute);
+export default connect(mapStateToProps)(ArtistPrivateRoute);

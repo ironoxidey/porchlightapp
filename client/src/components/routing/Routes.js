@@ -25,6 +25,7 @@ import Post from '../post/Post';
 import NotFound from '../layout/NotFound';
 import PrivateRoute from '../routing/PrivateRoute';
 import AdminPrivateRoute from '../routing/AdminPrivateRoute';
+import ArtistPrivateRoute from '../routing/ArtistPrivateRoute';
 import ResetPassword from '../auth/ResetPassword';
 import ForgotPassword from '../auth/ForgotPassword';
 
@@ -149,13 +150,13 @@ const Routes = ({ app }) => {
                                 component={CreateProfile}
                                 title="Create Your Profile"
                             />
-                            <PrivateRoute
+                            <ArtistPrivateRoute
                                 exact
                                 path="/edit-artist-profile"
                                 component={EditMyArtistProfile}
                                 title="Edit Your Artist Profile"
                             />
-                            <PrivateRoute
+                            <ArtistPrivateRoute
                                 exact
                                 path="/edit-artist-booking"
                                 component={EditMyArtistBooking}

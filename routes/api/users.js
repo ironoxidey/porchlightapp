@@ -50,7 +50,7 @@ router.post(
                         {
                             key: referralKey,
                         },
-                        { $push: { usedBy: email } }
+                        { $push: { usedBy: email }, $inc: { numUsed: 1 } }
                     );
 
                     if (referral && referral.setToRole === decoded.setToRole) {

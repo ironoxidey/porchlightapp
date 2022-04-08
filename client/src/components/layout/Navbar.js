@@ -10,6 +10,7 @@ import {
     // closeUserDrawer,
 } from '../../actions/app';
 import { getCurrentArtist } from '../../actions/artist';
+import { getCurrentHost } from '../../actions/host';
 
 import {
     Avatar,
@@ -44,8 +45,10 @@ const Navbar = ({
     // openUserDrawer,
     // closeUserDrawer,
     getCurrentArtist,
+    getCurrentHost,
     app: { navDrawer, userDrawer },
     artist,
+    host,
 }) => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -59,7 +62,10 @@ const Navbar = ({
 
     useEffect(() => {
         getCurrentArtist();
-    }, [getCurrentArtist]);
+    }, [getCurrentArtist, user]);
+    useEffect(() => {
+        getCurrentHost();
+    }, [getCurrentHost, user]);
 
     const handleOpenNavMenu = (event) => {
         openNavDrawer();
@@ -78,38 +84,68 @@ const Navbar = ({
         setAnchorElUser(null);
     };
 
-    const loggedInLinks = [
+    const guestLinks = [
+        <Link to="/login">
+            <ListItemIcon>
+                <LoginIcon></LoginIcon>
+            </ListItemIcon>
+            Login
+        </Link>,
+    ];
+
+    const dashboardLink = [
         <Link to="/dashboard">
             <ListItemIcon>
                 <DashboardTwoToneIcon></DashboardTwoToneIcon>
             </ListItemIcon>
             My Dashboard
         </Link>,
-        artist && artist.me && artist.me.slug ? (
+    ];
+
+    const logoutLink = [
+        <a onClick={logout} href="#!">
+            <ListItemIcon>
+                <LogoutIcon></LogoutIcon>
+            </ListItemIcon>
+            Logout
+        </a>,
+    ];
+
+    const attenderLinks = [
+        <Link to="/edit-host-profile">
+            <ListItemIcon>
+                <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
+            </ListItemIcon>
+            Sign Up to Host
+        </Link>,
+    ];
+
+    const hostLinks = [
+        <Link to="/edit-host-profile">
+            <ListItemIcon>
+                <EditTwoToneIcon></EditTwoToneIcon>
+            </ListItemIcon>
+            Edit My Host Profile
+        </Link>,
+    ];
+
+    const artistLinks = [
+        artist.me && artist.me.slug ? (
             <Link to={'/artists/' + artist.me.slug}>
                 <ListItemIcon>
                     <AccountBoxTwoToneIcon></AccountBoxTwoToneIcon>
                 </ListItemIcon>
-                My Profile
+                My Artist Profile
             </Link>
         ) : (
             ''
         ),
-        artist.me && artist.me._id ? (
-            <Link to="/edit-artist-profile">
-                <ListItemIcon>
-                    <EditTwoToneIcon></EditTwoToneIcon>
-                </ListItemIcon>
-                Edit My Profile
-            </Link>
-        ) : (
-            <Link to="/edit-artist-profile">
-                <ListItemIcon>
-                    <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
-                </ListItemIcon>
-                Create My Profile
-            </Link>
-        ),
+        <Link to="/edit-artist-profile">
+            <ListItemIcon>
+                <EditTwoToneIcon></EditTwoToneIcon>
+            </ListItemIcon>
+            Edit My Artist Profile
+        </Link>,
         (artist.me &&
             artist.me._id &&
             artist.me.active &&
@@ -139,35 +175,142 @@ const Navbar = ({
         ) : (
             ''
         ),
-        isAuthenticated &&
-        Array.isArray(user.role) &&
-        user.role.indexOf('ADMIN') != -1 ? ( //if ADMIN
-            <Link to="/edit-host-profile">
-                <ListItemIcon>
-                    <EditTwoToneIcon></EditTwoToneIcon>
-                </ListItemIcon>
-                Edit My Host Profile
-            </Link>
-        ) : (
-            ''
-        ),
-        <a onClick={logout} href="#!">
-            <ListItemIcon>
-                <LogoutIcon></LogoutIcon>
-            </ListItemIcon>
-            Logout
-        </a>,
-    ];
-    const loggedOutLink = [
-        <Link to="/login">
-            <ListItemIcon>
-                <LoginIcon></LoginIcon>
-            </ListItemIcon>
-            Login
-        </Link>,
     ];
 
-    let userLinks = isAuthenticated ? loggedInLinks : loggedOutLink;
+    const adminLinks = [];
+
+    // const loggedInLinks = [
+    //     <Link to="/dashboard">
+    //         <ListItemIcon>
+    //             <DashboardTwoToneIcon></DashboardTwoToneIcon>
+    //         </ListItemIcon>
+    //         My Dashboard
+    //     </Link>,
+    //     artist && artist.me && artist.me.slug ? (
+    //         <Link to={'/artists/' + artist.me.slug}>
+    //             <ListItemIcon>
+    //                 <AccountBoxTwoToneIcon></AccountBoxTwoToneIcon>
+    //             </ListItemIcon>
+    //             My Artist Profile
+    //         </Link>
+    //     ) : (
+    //         ''
+    //     ),
+    //     artist.me && artist.me._id ? (
+    //         <Link to="/edit-artist-profile">
+    //             <ListItemIcon>
+    //                 <EditTwoToneIcon></EditTwoToneIcon>
+    //             </ListItemIcon>
+    //             Edit My Artist Profile
+    //         </Link>
+    //     ) : (
+    //         <Link to="/edit-artist-profile">
+    //             <ListItemIcon>
+    //                 <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
+    //             </ListItemIcon>
+    //             Create My Artist Profile
+    //         </Link>
+    //     ),
+    //     (artist.me &&
+    //         artist.me._id &&
+    //         artist.me.active &&
+    //         artist.me.bookingWhen.length > 0) ||
+    //     (isAuthenticated &&
+    //         Array.isArray(user.role) &&
+    //         user.role.indexOf('ADMIN') != -1 &&
+    //         artist.me &&
+    //         artist.me._id &&
+    //         artist.me.bookingWhen.length > 0) ? ( //if ADMIN
+    //         <Link to="/edit-artist-booking">
+    //             <ListItemIcon>
+    //                 <DateRangeTwoToneIcon></DateRangeTwoToneIcon>
+    //             </ListItemIcon>
+    //             Edit My Booking Info
+    //         </Link>
+    //     ) : (artist.me && artist.me._id && artist.me.active) ||
+    //       (isAuthenticated &&
+    //           Array.isArray(user.role) &&
+    //           user.role.indexOf('ADMIN') != -1) ? (
+    //         <Link to="/edit-artist-booking">
+    //             <ListItemIcon>
+    //                 <DateRangeTwoToneIcon></DateRangeTwoToneIcon>
+    //             </ListItemIcon>
+    //             Start booking shows
+    //         </Link>
+    //     ) : (
+    //         ''
+    //     ),
+    //     isAuthenticated &&
+    //     Array.isArray(user.role) &&
+    //     user.role.indexOf('ADMIN') != -1 ? ( //if ADMIN
+    //         <Link to="/edit-host-profile">
+    //             <ListItemIcon>
+    //                 <EditTwoToneIcon></EditTwoToneIcon>
+    //             </ListItemIcon>
+    //             Edit My Host Profile
+    //         </Link>
+    //     ) : (
+    //         ''
+    //     ),
+    //     <a onClick={logout} href="#!">
+    //         <ListItemIcon>
+    //             <LogoutIcon></LogoutIcon>
+    //         </ListItemIcon>
+    //         Logout
+    //     </a>,
+    // ];
+    // const loggedOutLink = [
+    //     <Link to="/login">
+    //         <ListItemIcon>
+    //             <LoginIcon></LoginIcon>
+    //         </ListItemIcon>
+    //         Login
+    //     </Link>,
+    // ];
+
+    //let userLinks = isAuthenticated ? loggedInLinks : loggedOutLink;
+
+    const myNavLinks = () => {
+        let combinedLinks = [guestLinks];
+        if (isAuthenticated) {
+            combinedLinks = [dashboardLink];
+        }
+        if (
+            isAuthenticated &&
+            Array.isArray(user.role) &&
+            user.role.indexOf('ATTENDER') != -1 &&
+            user.role.indexOf('HOST') === -1
+        ) {
+            combinedLinks = combinedLinks.concat(attenderLinks);
+        }
+        if (
+            isAuthenticated &&
+            Array.isArray(user.role) &&
+            user.role.indexOf('HOST') != -1
+        ) {
+            combinedLinks = combinedLinks.concat(hostLinks);
+        }
+
+        if (
+            isAuthenticated &&
+            Array.isArray(user.role) &&
+            user.role.indexOf('ARTIST') != -1
+        ) {
+            combinedLinks = combinedLinks.concat(artistLinks);
+        }
+        if (
+            isAuthenticated &&
+            Array.isArray(user.role) &&
+            user.role.indexOf('ADMIN') != -1
+        ) {
+            combinedLinks = combinedLinks.concat(adminLinks);
+        }
+
+        if (isAuthenticated) {
+            combinedLinks = combinedLinks.concat(logoutLink);
+        }
+        return combinedLinks;
+    };
 
     return (
         <AppBar
@@ -272,7 +415,7 @@ const Navbar = ({
                             ) : (
                                 ''
                             )}
-                            {userLinks.map((userLink, index) => (
+                            {myNavLinks().map((userLink, index) => (
                                 <MenuItem
                                     key={index}
                                     onClick={handleCloseNavMenu}
@@ -295,12 +438,14 @@ Navbar.propTypes = {
     auth: PropTypes.object.isRequired,
     app: PropTypes.object.isRequired,
     artist: PropTypes.object,
+    host: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
     app: state.app,
     artist: state.artist,
+    host: state.host,
 });
 export default connect(mapStateToProps, {
     logout,
@@ -309,4 +454,5 @@ export default connect(mapStateToProps, {
     // openUserDrawer,
     // closeUserDrawer,
     getCurrentArtist,
+    getCurrentHost,
 })(Navbar);
