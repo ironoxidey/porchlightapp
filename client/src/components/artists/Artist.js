@@ -66,7 +66,8 @@ const Artist = ({
                         className=""
                         sx={{
                             padding: '20px',
-                            maxWidth: 'calc(2 * 70vh)',
+                            //maxWidth: 'calc(2 * 70vh)',
+                            maxWidth: '1200px',
                             m: '0 auto',
                         }}
                     >

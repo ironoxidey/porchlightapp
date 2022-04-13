@@ -41,7 +41,7 @@ export default function (state = initialState, action) {
         case LOGOUT:
             return {
                 ...state,
-                hosts: null,
+                hosts: [],
                 me: null,
             };
         default:

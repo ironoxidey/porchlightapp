@@ -78,6 +78,7 @@ const UploadInput = styled('input')({
 
 const EditArtistProfileForm = ({
     theHost, //passed in from EditMyHostProfile.js
+    inDialog, //passed in from EditMyHostProfile.js
     createMyHost,
     history,
     auth,
@@ -526,16 +527,32 @@ const EditArtistProfileForm = ({
                         maxWidth: '600px',
                     }}
                 >
-                    Just so you know: answering these questions does not
-                    obligate you to host any particular event. This
-                    questionnaire signifies your interest to host, and loops you
-                    in to updates and opportunities to host.
-                    <br />
-                    <br />
-                    <em>
-                        Also, the information you submit is for internal use
-                        only, and will never be sold to a third party.
-                    </em>
+                    {!inDialog ? (
+                        <Fragment>
+                            Just so you know: answering these questions does not
+                            obligate you to host any particular event. This
+                            questionnaire signifies your interest to host, and
+                            loops you in to updates and opportunities to host.
+                            <br />
+                            <br />
+                            <em>
+                                Also, the information you submit is for internal
+                                use only, and will never be sold to a third
+                                party.
+                            </em>
+                        </Fragment>
+                    ) : (
+                        <Fragment>
+                            We need some information, in order for you to offer
+                            to host an artist on the Porchlight network.
+                            <br />
+                            <br />
+                            <em>
+                                The information you submit is for internal use
+                                only, and will never be sold to a third party.
+                            </em>
+                        </Fragment>
+                    )}
                 </FormLabel>,
                 <FormLabel component="legend">
                     Starting off, what is your name?
@@ -1150,6 +1167,7 @@ const EditArtistProfileForm = ({
                         direction="row"
                         justifyContent="center"
                         alignItems="center"
+                        className="cardNav"
                     >
                         <Grid item>
                             {/* { cardIndex > 0 ? (  */}
@@ -1247,6 +1265,7 @@ EditArtistProfileForm.propTypes = {
     theHost: PropTypes.object,
     auth: PropTypes.object.isRequired,
     updateUserAvatar: PropTypes.func.isRequired,
+    inDialog: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({

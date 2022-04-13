@@ -1,54 +1,54 @@
 legend.MuiFormLabel-root,
 p.MuiFormLabel-root {
-	text-align: center;
-	font-size: 1.5em;
-	color: var(--primary-color);
-	margin-top: 8px;
-	margin-bottom: 8px;
+    text-align: center;
+    font-size: 1.5em;
+    color: var(--primary-color);
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 
 /* form numbers before the inquiry */
 legend.MuiFormLabel-root::before {
-	content: var(--form-num);
-	display: inline-flex;
-	border: 1px solid;
-	width: 35px;
-	height: 35px;
-	margin-right: 8px;
-	justify-content: center;
-	align-items: center;
-	border-radius: 18px;
+    content: var(--form-num);
+    display: inline-flex;
+    border: 1px solid;
+    width: 35px;
+    height: 35px;
+    margin-right: 8px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 18px;
 }
 
 .animatedFormGroup {
-	position: absolute;
-	display: flex;
-	align-items: flex-start;
-	justify-content: center;
-	width: 100vw;
-	min-height: 70vh;
-	will-change: transform, opacity;
-	top: 100px;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	padding: 20px;
-	margin-top: 20px;
+    position: absolute;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    /* width: 100vw; */
+    min-height: 70vh;
+    will-change: transform, opacity;
+    top: 100px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    margin-top: 20px;
 }
 .form-group {
-	padding-bottom: 80px;
+    padding-bottom: 80px;
 }
 
 .animatedFormGroup .MuiGrid-root.MuiGrid-item {
-	padding-right: 0;
+    padding-right: 0;
 }
 
 @media (max-width: 700px) {
-	.animatedFormGroup {
-		top: 170px;
-		padding-top: 0;
-	}
-	.form .form-group {
-		margin-top: 0;
-	}
+    .animatedFormGroup {
+        top: 170px;
+        padding-top: 0;
+    }
+    .form .form-group {
+        margin-top: 0;
+    }
 }

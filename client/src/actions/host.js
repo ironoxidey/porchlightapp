@@ -10,6 +10,7 @@ import {
     UPDATE_HOST_ERROR,
     HOST_ERROR,
     CLEAR_HOST,
+    USER_LOADED,
 } from './types';
 
 // Get current host's profile
@@ -69,7 +70,11 @@ export const createMyHost =
             );
             dispatch({
                 type: UPDATE_HOST_ME,
-                payload: res.data,
+                payload: res.data.host,
+            });
+            dispatch({
+                type: USER_LOADED,
+                payload: res.data.user,
             });
             //dispatch(setAlert(edit ? 'Artist Updated' : 'Artist Created', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
         } catch (err) {

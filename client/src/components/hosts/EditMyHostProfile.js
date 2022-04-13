@@ -6,7 +6,12 @@ import { getCurrentHost } from '../../actions/host';
 import Spinner from '../layout/Spinner';
 import EditHostProfileForm from './EditHostProfileForm';
 
-const EditMyHostProfile = ({ auth, getCurrentHost, host: { me, loading } }) => {
+const EditMyHostProfile = ({
+    auth,
+    getCurrentHost,
+    host: { me, loading },
+    inDialog,
+}) => {
     useEffect(() => {
         // if (auth.user.email) {
         getCurrentHost();
@@ -21,7 +26,7 @@ const EditMyHostProfile = ({ auth, getCurrentHost, host: { me, loading } }) => {
             ) : me ? (
                 <Fragment>
                     {/* <h1 className='large text-primary'>Edit Your Artist Profile</h1> */}
-                    <EditHostProfileForm theHost={me} />
+                    <EditHostProfileForm theHost={me} inDialog={inDialog} />
                     {/* <Link to='/dashboard' className='btn btn-light my-1'>
           Go Back
         </Link> */}
@@ -37,6 +42,7 @@ EditMyHostProfile.propTypes = {
     getCurrentHost: PropTypes.func.isRequired,
     host: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
+    inDialog: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({

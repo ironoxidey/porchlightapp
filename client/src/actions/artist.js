@@ -10,6 +10,7 @@ import {
     UPDATE_ARTISTS,
     UPDATE_ARTIST_ERROR,
     ARTIST_ERROR,
+    ARTIST_ME_ERROR,
     CLEAR_ARTIST,
     ACCOUNT_DELETED,
 } from './types';
@@ -25,7 +26,7 @@ export const getCurrentArtist = () => async (dispatch) => {
     } catch (err) {
         //dispatch({ type: CLEAR_ARTIST });
         dispatch({
-            type: ARTIST_ERROR,
+            type: ARTIST_ME_ERROR,
             payload: {
                 msg: err.response.statusText,
                 status: err.response.status,

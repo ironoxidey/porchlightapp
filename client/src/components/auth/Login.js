@@ -20,7 +20,7 @@ import Button from '../layout/SvgButton';
 
 //import axios from 'axios';
 
-const Login = ({ login, isAuthenticated }) => {
+const Login = ({ login, isAuthenticated, bookingDialog }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -37,7 +37,7 @@ const Login = ({ login, isAuthenticated }) => {
     };
 
     //Redirect if logged in
-    if (isAuthenticated) {
+    if (isAuthenticated && !bookingDialog) {
         return <Redirect to="/dashboard" />;
     }
 
@@ -45,7 +45,7 @@ const Login = ({ login, isAuthenticated }) => {
         <Fragment>
             <Box
                 sx={{
-                    marginTop: 8,
+                    marginTop: !bookingDialog ? 8 : 0,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -60,9 +60,13 @@ const Login = ({ login, isAuthenticated }) => {
                 >
                     <Grid container spacing={2}>
                         <Grid item xs={12} sx={{ textAlign: 'center' }}>
-                            <FormLabel component="legend">
-                                Let’s get you logged in!
-                            </FormLabel>
+                            {!bookingDialog ? (
+                                <FormLabel component="legend">
+                                    Let’s get you logged in!
+                                </FormLabel>
+                            ) : (
+                                ''
+                            )}
                             <Typography component="p">
                                 What’s your email address and password?
                             </Typography>
@@ -135,6 +139,7 @@ const Login = ({ login, isAuthenticated }) => {
 Login.propTypes = {
     login: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool,
+    bookingDialog: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({

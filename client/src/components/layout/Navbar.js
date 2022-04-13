@@ -11,6 +11,10 @@ import {
 } from '../../actions/app';
 import { getCurrentArtist } from '../../actions/artist';
 import { getCurrentHost } from '../../actions/host';
+import {
+    getMyEventsOfferedToHost,
+    getMyArtistEventsOffers,
+} from '../../actions/event';
 
 import {
     Avatar,
@@ -46,9 +50,12 @@ const Navbar = ({
     // closeUserDrawer,
     getCurrentArtist,
     getCurrentHost,
+    getMyEventsOfferedToHost,
+    getMyArtistEventsOffers,
     app: { navDrawer, userDrawer },
     artist,
     host,
+    events: { myHostEvents, myArtistEvents },
 }) => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -65,6 +72,10 @@ const Navbar = ({
     }, [getCurrentArtist, user]);
     useEffect(() => {
         getCurrentHost();
+    }, [getCurrentHost, user]);
+    useEffect(() => {
+        getMyEventsOfferedToHost();
+        getMyArtistEventsOffers();
     }, [getCurrentHost, user]);
 
     const handleOpenNavMenu = (event) => {
@@ -170,7 +181,7 @@ const Navbar = ({
                 <ListItemIcon>
                     <DateRangeTwoToneIcon></DateRangeTwoToneIcon>
                 </ListItemIcon>
-                Start booking shows
+                Start Booking Shows
             </Link>
         ) : (
             ''
@@ -439,6 +450,7 @@ Navbar.propTypes = {
     app: PropTypes.object.isRequired,
     artist: PropTypes.object,
     host: PropTypes.object,
+    events: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
@@ -446,6 +458,7 @@ const mapStateToProps = (state) => ({
     app: state.app,
     artist: state.artist,
     host: state.host,
+    events: state.event,
 });
 export default connect(mapStateToProps, {
     logout,
@@ -455,4 +468,6 @@ export default connect(mapStateToProps, {
     // closeUserDrawer,
     getCurrentArtist,
     getCurrentHost,
+    getMyEventsOfferedToHost,
+    getMyArtistEventsOffers,
 })(Navbar);

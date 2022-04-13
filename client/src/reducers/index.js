@@ -8,6 +8,7 @@ import calendly from './calendly';
 import datepicker from './datepicker';
 import app from './app';
 import host from './host';
+import event from './event';
 
 export default combineReducers({
     alert,
@@ -19,4 +20,5 @@ export default combineReducers({
     datepicker,
     app,
     host,
+    event,
 });

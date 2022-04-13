@@ -171,10 +171,12 @@ router.post('/updateMe', [auth], async (req, res) => {
                             {
                                 $addToSet: { role: 'HOST' },
                                 $set: { hostProfile: host.id },
-                            }
-                        );
+                            },
+                            { new: true }
+                        ).select('-password');
                         hostCount++;
-                        res.json(host);
+                        //res.json(host);
+                        res.json({ host: host, user: user });
                     } catch (err) {
                         console.error(err.message);
                         res.status(500).send('Server Error: ' + err.message);
@@ -198,10 +200,11 @@ router.post('/updateMe', [auth], async (req, res) => {
                             {
                                 $addToSet: { role: 'HOST' },
                                 $set: { hostProfile: host.id },
-                            }
-                        );
+                            },
+                            { new: true }
+                        ).select('-password');
                         hostCount++;
-                        res.json(host);
+                        res.json({ host: host, user: user });
                     } catch (err) {
                         console.error(err.message);
                         res.status(500).send('Server Error');

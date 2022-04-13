@@ -364,6 +364,7 @@ router.post('/updateMe', [auth], async (req, res) => {
                                                     {
                                                         $set: artistFields,
                                                         artist: artist.id,
+                                                        artistSlug: artist.slug,
                                                         artistUser: user.id,
                                                         artistEmail:
                                                             artistFields.email,
@@ -568,7 +569,7 @@ router.get('/slugs', [auth], async (req, res) => {
 });
 
 // @route    GET api/artists/:slug
-// @desc     Get artist by user ID
+// @desc     Get artist by slug
 // @access   Public
 router.get('/:slug', async (req, res) => {
     try {

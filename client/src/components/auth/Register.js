@@ -29,7 +29,7 @@ function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
 
-const Register = ({ setAlert, register, isAuthenticated }) => {
+const Register = ({ setAlert, register, isAuthenticated, bookingDialog }) => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -74,7 +74,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
     };
 
     //Redirect if logged in
-    if (isAuthenticated) {
+    if (isAuthenticated && !bookingDialog) {
         return <Redirect to="/dashboard" />;
     }
 
@@ -190,6 +190,7 @@ Register.propTypes = {
     setAlert: PropTypes.func.isRequired,
     register: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool,
+    bookingDialog: PropTypes.object,
 };
 const mapStateToProps = (state) => ({
     isAuthenticated: state.auth.isAuthenticated,

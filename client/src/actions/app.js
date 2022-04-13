@@ -12,6 +12,8 @@ import { updateUserAvatar } from './auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icon } from '@fortawesome/fontawesome-svg-core'; //for checking the existence of an icon
 
+import { Grid } from '@mui/material';
+
 export const openNavDrawer = () => (dispatch) => {
     dispatch({
         type: OPEN_NAV_DRAWER,
@@ -65,6 +67,69 @@ export const pullDomainFrom = (url) => {
     } catch (err) {
         return '';
     }
+};
+
+export const StackDateforDisplay = (props) => {
+    let theDate = new Date(props.date).toDateString().split(' ');
+    return (
+        <Grid
+            item
+            container
+            className="dateStack"
+            sx={{
+                fontFamily: 'var(--secondary-font)',
+                textTransform: 'uppercase',
+                lineHeight: '1',
+                textAlign: 'center',
+                border: '1px solid var(--link-color)',
+                width: '55px',
+            }}
+            direction="column"
+        >
+            <Grid
+                className="weekday"
+                item
+                sx={{
+                    color: 'var(--dark-color)',
+                    backgroundColor: 'var(--link-color)',
+                    margin: '0',
+                    padding: '2px',
+                }}
+            >
+                {theDate[0]}
+            </Grid>
+            <Grid
+                className="month"
+                item
+                sx={{
+                    marginTop: '4px',
+                }}
+            >
+                {theDate[1]}
+            </Grid>
+            <Grid
+                className="date"
+                item
+                sx={{
+                    fontSize: '1.8em',
+                    marginBottom: '-2px',
+                }}
+            >
+                {theDate[2]}
+            </Grid>
+            <Grid
+                item
+                className="year"
+                sx={{
+                    color: 'var(--primary-color)',
+                    fontSize: '.9em',
+                    marginBottom: '4px',
+                }}
+            >
+                {theDate[3]}
+            </Grid>
+        </Grid>
+    );
 };
 
 // export const pullYouTubeEmbedCode = (url) => {

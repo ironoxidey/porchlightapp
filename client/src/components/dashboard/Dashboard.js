@@ -9,7 +9,7 @@ import Education from './Education';
 import { deleteAccount, getCurrentProfile } from '../../actions/profile';
 import { getCurrentArtist } from '../../actions/artist';
 import { getCurrentHost } from '../../actions/host';
-import { Grid } from '@mui/material';
+import { Grid, Typography, Box } from '@mui/material';
 import Button from '../layout/SvgButton';
 
 import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
@@ -17,11 +17,14 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 import MenuBookTwoToneIcon from '@mui/icons-material/MenuBookTwoTone';
 
+import { StackDateforDisplay } from '../../actions/app';
+
 const Dashboard = ({
     getCurrentProfile,
     deleteAccount,
     auth: { user },
     profile: { profile, loading },
+    event: { myHostEvents, myArtistEvents },
     getCurrentArtist,
     artist,
     getCurrentHost,
@@ -246,6 +249,147 @@ const Dashboard = ({
                     ) : (
                         ''
                     )}
+
+                    {myHostEvents && myHostEvents.length > 0 && (
+                        <Grid item direction="column" xs={12} md={12}>
+                            <Grid item xs={12}>
+                                <Typography component="h2">
+                                    You have offered to host{' '}
+                                    {myHostEvents.length > 1
+                                        ? `these ${myHostEvents.length} shows`
+                                        : `this ${myHostEvents.length} show`}
+                                    :
+                                </Typography>
+                            </Grid>
+                            {/* {bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry */}
+                            <Grid
+                                container
+                                className="whenBooking"
+                                direction="row"
+                                justifyContent="center"
+                                alignItems="center"
+                                xs={12}
+                                spacing={2}
+                                sx={{
+                                    margin: '0px auto 16px',
+                                    width: '100%',
+                                }}
+                            ></Grid>
+                            {myHostEvents
+                                .filter((e) => e)
+                                .map(
+                                    (
+                                        thisEvent,
+                                        idx,
+                                        whenWhereOrig //.filter(e => e) to remove any null values
+                                    ) =>
+                                        thisEvent.bookingWhen &&
+                                        thisEvent.bookingWhere && (
+                                            <Grid
+                                                container
+                                                item
+                                                className="bookingWhen"
+                                                key={`bookingWhen${idx}`}
+                                                direction="row"
+                                                sm={5.5}
+                                                xs={12}
+                                                sx={{
+                                                    backgroundColor:
+                                                        'rgba(0,0,0,0.35)',
+                                                    '&:hover': {},
+                                                    padding: '16px',
+                                                    margin: '4px',
+                                                    color: 'var(--light-color)',
+                                                }}
+                                            >
+                                                <Grid item>
+                                                    <Box
+                                                        className="squareImgInACircle"
+                                                        sx={{
+                                                            height: '130px',
+                                                            width: '130px',
+                                                            maxHeight: '130px',
+                                                            maxWidth: '130px',
+                                                            borderRadius: '50%',
+                                                            overflow: 'hidden',
+                                                            backgroundImage: `url("${thisEvent.artist.squareImg}")`,
+                                                            backgroundPosition:
+                                                                '50% 25%',
+                                                            backgroundSize:
+                                                                'cover',
+                                                            padding: '4px',
+                                                            backgroundClip:
+                                                                'content-box',
+                                                            border: '1px solid var(--primary-color)',
+                                                            margin: '0 8px 0 0',
+                                                        }}
+                                                    ></Box>
+                                                </Grid>
+
+                                                <Grid
+                                                    container
+                                                    item
+                                                    direction="row"
+                                                    alignItems="center"
+                                                    className="dateLocationForBooking"
+                                                    xs={8}
+                                                >
+                                                    <Grid item container>
+                                                        <Link
+                                                            to={
+                                                                '/artists/' +
+                                                                thisEvent.artist
+                                                                    .slug
+                                                            }
+                                                        >
+                                                            <Typography component="h2">
+                                                                {
+                                                                    thisEvent
+                                                                        .artist
+                                                                        .stageName
+                                                                }
+                                                            </Typography>
+                                                        </Link>
+                                                    </Grid>
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            width: '55px',
+                                                        }}
+                                                    >
+                                                        <StackDateforDisplay
+                                                            date={
+                                                                thisEvent.bookingWhen
+                                                            }
+                                                        ></StackDateforDisplay>
+                                                    </Grid>
+                                                    <Grid item xs={8}>
+                                                        <Grid
+                                                            item
+                                                            sx={{
+                                                                fontSize:
+                                                                    '1.5em',
+                                                                marginLeft:
+                                                                    '8px',
+                                                                lineHeight:
+                                                                    '1.5',
+                                                            }}
+                                                        >
+                                                            {thisEvent
+                                                                .bookingWhere
+                                                                .city +
+                                                                ', ' +
+                                                                thisEvent
+                                                                    .bookingWhere
+                                                                    .state}
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                        )
+                                )}
+                        </Grid>
+                    )}
                 </Grid>
             </Grid>
         </Fragment>
@@ -260,6 +404,7 @@ Dashboard.propTypes = {
     profile: PropTypes.object.isRequired,
     artist: PropTypes.object.isRequired,
     host: PropTypes.object.isRequired,
+    event: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -267,6 +412,7 @@ const mapStateToProps = (state) => ({
     profile: state.profile,
     artist: state.artist,
     host: state.host,
+    event: state.event,
 });
 
 export default connect(mapStateToProps, {

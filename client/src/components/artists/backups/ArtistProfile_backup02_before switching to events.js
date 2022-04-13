@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 
 import Login from '../auth/Login';
 import EditMyHostProfile from '../hosts/EditMyHostProfile';
-import EventDetails from '../events/EventDetails';
 
 import prependHttp from 'prepend-http';
 
@@ -76,6 +75,47 @@ const ArtistProfile = ({
     hostRaiseHand,
     getArtistBookingEvents,
     artist,
+    artist: {
+        slug,
+        email,
+        firstName,
+        lastName,
+        stageName,
+        medium,
+        genres,
+        repLinks,
+        helpKind,
+        phone,
+        hometown,
+        city,
+        state,
+        zip,
+        costStructure,
+        namedPrice,
+        payoutPlatform,
+        payoutHandle,
+        bookingWhen,
+        bookingWhenWhere,
+        setLength,
+        schedule,
+        showSchedule,
+        overnight,
+        openers,
+        travelingCompanions,
+        //companionTravelers,
+        hangout,
+        merchTable,
+        allergies,
+        familyFriendly,
+        soundSystem,
+        agreeToPayAdminFee,
+        wideImg,
+        squareImg,
+        covidPrefs,
+        artistNotes,
+        financialHopes,
+        bio,
+    },
 }) => {
     let history = useHistory();
 
@@ -85,8 +125,8 @@ const ArtistProfile = ({
     }
 
     const wideImgBW =
-        artist.wideImg &&
-        artist.wideImg.replace(
+        wideImg &&
+        wideImg.replace(
             'https://res.cloudinary.com/porchlight/image/upload/',
             'https://res.cloudinary.com/porchlight/image/upload/e_saturation:-100/'
         );
@@ -149,19 +189,15 @@ const ArtistProfile = ({
     });
 
     useEffect(() => {
-        getArtistBookingEvents(artist.slug);
-    }, [getArtistBookingEvents, artist]);
+        getArtistBookingEvents(slug);
+    }, [getArtistBookingEvents]);
 
     //Booking Details Dialog Functions
     const [bookingDetailsDialogOpen, setBookingDetailsDialogOpen] =
         useState(false);
-
-    const [wantsToBook, setWantsToBook] = useState(false);
-
     const bookingDetailsDialogHandleClose = () => {
         setBookingDialogDetailsState({});
         setBookingDetailsDialogOpen(false);
-        setWantsToBook(false);
     };
 
     const [bookingDialogDetails, setBookingDialogDetailsState] = useState({});
@@ -171,25 +207,25 @@ const ArtistProfile = ({
         setBookingDetailsDialogOpen(true);
     }, [bookingDialogDetails]);
 
-    const handleBookingDetailsBtnClick = (theEvent) => {
+    const handleBookingDetailsBtnClick = (whenBooking) => {
         if (user && user._id) {
             if (user && user.role && user.role.indexOf('HOST') > -1) {
                 console.log('user:', user.role);
                 setBookingDialogDetailsState({
-                    ...theEvent,
+                    ...whenBooking,
                     hostSignUp: false,
                     login: false,
-                }); //open dialog box with 'theEvent' as the props
+                }); //open dialog box with 'whenBooking' as the props
             } else {
                 setBookingDialogDetailsState({
-                    ...theEvent,
+                    ...whenBooking,
                     hostSignUp: true,
                     login: false,
-                }); //open dialog box and make hostSignUp with 'theEvent' as the props
+                }); //open dialog box and make hostSignUp with 'whenBooking' as the props
             }
         } else {
             setBookingDialogDetailsState({
-                ...theEvent,
+                ...whenBooking,
                 login: true,
                 hostSignUp: false,
             }); //open dialog box and make login with 'whenBooking' as the props
@@ -201,7 +237,7 @@ const ArtistProfile = ({
 
     return (
         <Fragment>
-            {bookingDialogDetails && bookingDialogDetails.bookingWhen && (
+            {bookingDialogDetails && bookingDialogDetails.when && (
                 <Dialog
                     open={bookingDetailsDialogOpen}
                     onClose={bookingDetailsDialogHandleClose}
@@ -209,23 +245,22 @@ const ArtistProfile = ({
                     aria-describedby="alert-dialog-description"
                     scroll="paper"
                     fullWidth
-                    maxWidth={isAuthenticated || !wantsToBook ? 'md' : 'xs'}
+                    maxWidth={isAuthenticated ? 'md' : 'xs'}
                 >
                     <DialogTitle id="alert-dialog-title">
-                        {!isAuthenticated && wantsToBook
+                        {!isAuthenticated
                             ? `For you to offer to host this show, you'll need
                                 to login.`
                             : host &&
                               host.me &&
                               host.me._id &&
                               host.me.email &&
-                              host.me.streetAddress &&
-                              wantsToBook
+                              host.me.streetAddress
                             ? `Would you like to offer to host ` +
-                              artist.stageName +
+                              stageName +
                               ` on ` +
                               new Date(
-                                  bookingDialogDetails.bookingWhen
+                                  bookingDialogDetails.when
                               ).toLocaleDateString(undefined, {
                                   weekday: 'long',
                                   year: 'numeric',
@@ -233,23 +268,22 @@ const ArtistProfile = ({
                                   day: 'numeric',
                               }) +
                               ` near ` +
-                              bookingDialogDetails.bookingWhere.city +
+                              bookingDialogDetails.where.city +
                               ', ' +
-                              bookingDialogDetails.bookingWhere.state +
+                              bookingDialogDetails.where.state +
                               '?'
                             : ''}
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            {!isAuthenticated && wantsToBook ? (
+                            {!isAuthenticated && (
                                 <Login bookingDialog={bookingDialogDetails} />
-                            ) : !wantsToBook ? (
-                                <EventDetails theEvent={bookingDialogDetails} />
-                            ) : host &&
-                              host.me &&
-                              host.me._id &&
-                              host.me.email &&
-                              host.me.streetAddress ? (
+                            )}
+                            {host &&
+                            host.me &&
+                            host.me._id &&
+                            host.me.email &&
+                            host.me.streetAddress ? (
                                 <Grid
                                     container
                                     item
@@ -265,9 +299,7 @@ const ArtistProfile = ({
                                         }}
                                     >
                                         <StackDateforDisplay
-                                            date={
-                                                bookingDialogDetails.bookingWhen
-                                            }
+                                            date={bookingDialogDetails.when}
                                         ></StackDateforDisplay>
                                     </Grid>
                                     <Grid item>
@@ -279,11 +311,10 @@ const ArtistProfile = ({
                                                 lineHeight: '1.5',
                                             }}
                                         >
-                                            {bookingDialogDetails.bookingWhere
-                                                .city +
+                                            {bookingDialogDetails.where.city +
                                                 ', ' +
-                                                bookingDialogDetails
-                                                    .bookingWhere.state}
+                                                bookingDialogDetails.where
+                                                    .state}
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -307,8 +338,7 @@ const ArtistProfile = ({
                         host.me &&
                         host.me._id &&
                         host.me.email &&
-                        host.me.streetAddress &&
-                        wantsToBook && (
+                        host.me.streetAddress && (
                             <DialogActions>
                                 <Button
                                     onClick={bookingDetailsDialogHandleClose}
@@ -320,7 +350,7 @@ const ArtistProfile = ({
                                         hostRaiseHand({
                                             artist: artist,
                                             bookingWhen:
-                                                bookingDialogDetails.bookingWhen,
+                                                bookingDialogDetails.when,
                                         });
                                         bookingDetailsDialogHandleClose();
                                     }}
@@ -329,18 +359,6 @@ const ArtistProfile = ({
                                 </Button>
                             </DialogActions>
                         )}
-                    {!wantsToBook && (
-                        <DialogActions>
-                            <Button
-                                btnwidth="280"
-                                onClick={(e) => {
-                                    setWantsToBook(true);
-                                }}
-                            >
-                                I want to host this show
-                            </Button>
-                        </DialogActions>
-                    )}
                 </Dialog>
             )}
 
@@ -380,7 +398,7 @@ const ArtistProfile = ({
                             //maxWidth: '960px',
                             margin: '0 auto',
                             borderRadius: '8px 8px 0 0',
-                            backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0)), url("${artist.wideImg}")`,
+                            backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0)), url("${wideImg}")`,
                             backgroundColor: 'var(--secondary-dark-color)',
                             backgroundPosition: '50% 50%',
                             backgroundSize: 'cover',
@@ -777,7 +795,7 @@ const ArtistProfile = ({
                                     color: 'var(--primary-color)',
                                 }}
                             >
-                                About {artist.stageName}:
+                                About {stageName}:
                             </Typography>
                         </Tooltip>
 
@@ -906,10 +924,10 @@ const ArtistProfile = ({
                         </Grid>
                     </Grid>
                 </Grid>
-                {events &&
-                events.length > 0 &&
-                events[0].bookingWhen &&
-                events[0].bookingWhere != '' ? ( //check to be sure there's a valid first entry
+                {bookingWhenWhere &&
+                bookingWhenWhere.length > 0 &&
+                bookingWhenWhere[0].when &&
+                bookingWhenWhere[0].where != '' ? ( //check to be sure there's a valid first entry
                     <Grid
                         item
                         container
@@ -930,9 +948,8 @@ const ArtistProfile = ({
                         <Grid item direction="column" xs={12} md={12}>
                             <Grid item xs={12}>
                                 <Typography component="h2">
-                                    {artist.stageName} is looking to book a show
-                                    for{' '}
-                                    {events.length > 1
+                                    {stageName} is looking to book a show for{' '}
+                                    {bookingWhenWhere.length > 1
                                         ? 'these dates and locations'
                                         : 'this date and location'}
                                     :
@@ -952,21 +969,21 @@ const ArtistProfile = ({
                                     width: '100%',
                                 }}
                             >
-                                {events
+                                {bookingWhenWhere
                                     .filter((e) => e)
                                     .map(
                                         (
-                                            thisEvent,
+                                            whenBooking,
                                             idx,
                                             whenWhereOrig //.filter(e => e) to remove any null values
                                         ) =>
-                                            thisEvent.bookingWhen &&
-                                            thisEvent.bookingWhere != '' ? (
+                                            whenBooking &&
+                                            whenBooking.where != '' ? (
                                                 <Grid
                                                     container
                                                     item
-                                                    className="bookingWhen"
-                                                    key={`bookingWhen${idx}`}
+                                                    className="whenBooking"
+                                                    key={`whenBooking${idx}`}
                                                     direction="row"
                                                     md={3.7}
                                                     sm={5.5}
@@ -1012,7 +1029,7 @@ const ArtistProfile = ({
                                                             >
                                                                 <StackDateforDisplay
                                                                     date={
-                                                                        thisEvent.bookingWhen
+                                                                        whenBooking.when
                                                                     }
                                                                 ></StackDateforDisplay>
                                                             </Grid>
@@ -1028,12 +1045,12 @@ const ArtistProfile = ({
                                                                             '1.5',
                                                                     }}
                                                                 >
-                                                                    {thisEvent
-                                                                        .bookingWhere
+                                                                    {whenBooking
+                                                                        .where
                                                                         .city +
                                                                         ', ' +
-                                                                        thisEvent
-                                                                            .bookingWhere
+                                                                        whenBooking
+                                                                            .where
                                                                             .state}
                                                                 </Grid>
                                                                 <Grid
@@ -1046,7 +1063,7 @@ const ArtistProfile = ({
                                                                     <Button
                                                                         onClick={() => {
                                                                             handleBookingDetailsBtnClick(
-                                                                                thisEvent
+                                                                                whenBooking
                                                                             );
                                                                         }}
                                                                     >

@@ -6,6 +6,9 @@ const EventSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'artist',
         },
+        artistSlug: {
+            type: String,
+        },
         artistUser: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'user',
@@ -13,6 +16,55 @@ const EventSchema = new mongoose.Schema(
         artistEmail: {
             type: String,
         },
+        hostsOfferingToBook: {
+            type: [String],
+        },
+        offersFromHosts: [
+            {
+                host: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'host',
+                },
+                showSchedule: {
+                    setupTime: {
+                        type: String,
+                    },
+                    startTime: {
+                        type: String,
+                    },
+                    doorsOpen: {
+                        type: String,
+                    },
+                    hardWrap: {
+                        type: String,
+                    },
+                },
+                refreshments: {
+                    type: Object,
+                },
+                overnight: {
+                    type: String,
+                },
+                overnightArrangements: {
+                    type: String,
+                },
+                houseRules: {
+                    type: String,
+                },
+                eventbritePublicAddress: {
+                    type: String,
+                },
+                additionalRequests: {
+                    type: String,
+                },
+                guaranteeHonorarium: {
+                    type: String,
+                },
+                extraClarification: {
+                    type: String,
+                },
+            },
+        ],
         confirmedHost: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'host',
