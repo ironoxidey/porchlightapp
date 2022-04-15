@@ -1,75 +1,78 @@
 const mongoose = require('mongoose');
 
-const UserSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-    },
-    password: {
-        type: String,
-        required: true,
-    },
-    role: {
-        type: [String],
-        enum: ['ADMIN', 'ARTIST', 'ATTENDER', 'BOOKING', 'HOST'],
-        default: 'ATTENDER',
-    },
-    artistProfile: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'artist',
-    },
-    hostProfile: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'host',
-    },
-    referredBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-    },
-    lastLogin: {
-        type: Date,
-    },
-    calendly: {
-        authCode: {
-            //user pastes from 'code' url variable
+const UserSchema = new mongoose.Schema(
+    {
+        name: {
             type: String,
+            required: true,
         },
-        accessToken: {
+        email: {
             type: String,
+            required: true,
+            unique: true,
+            lowercase: true,
         },
-        refreshToken: {
+        password: {
             type: String,
+            required: true,
         },
-        expiresIn: {
-            type: Number,
+        role: {
+            type: [String],
+            enum: ['ADMIN', 'ARTIST', 'ATTENDER', 'BOOKING', 'HOST'],
+            default: 'ATTENDER',
         },
-        createdAt: {
+        artistProfile: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'artist',
+        },
+        hostProfile: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'host',
+        },
+        referredBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user',
+        },
+        lastLogin: {
             type: Date,
         },
-        owner: {
+        calendly: {
+            authCode: {
+                //user pastes from 'code' url variable
+                type: String,
+            },
+            accessToken: {
+                type: String,
+            },
+            refreshToken: {
+                type: String,
+            },
+            expiresIn: {
+                type: Number,
+            },
+            createdAt: {
+                type: Date,
+            },
+            owner: {
+                type: String,
+            },
+            organization: {
+                type: String,
+            },
+        },
+        avatar: {
             type: String,
         },
-        organization: {
-            type: String,
+        date: {
+            type: Date,
+            default: Date.now,
+        },
+        resetLink: {
+            data: String,
+            default: '',
         },
     },
-    avatar: {
-        type: String,
-    },
-    date: {
-        type: Date,
-        default: Date.now,
-    },
-    resetLink: {
-        data: String,
-        default: '',
-    },
-});
+    { timestamps: true }
+);
 
 module.exports = User = mongoose.model('user', UserSchema);

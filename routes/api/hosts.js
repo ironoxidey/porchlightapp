@@ -32,7 +32,7 @@ router.get('/me', auth, async (req, res) => {
         // const thisUser = await User.findOne({
         //   id: req.user.id,
         // });
-        console.log(req.user);
+        //console.log(req.user);
         const host = await Host.findOne({
             email: req.user.email,
         }); //.select('-hadMeeting -sentFollowUp -notes');

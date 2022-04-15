@@ -34,6 +34,9 @@ const HostSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
+        profileImg: {
+            type: String,
+        },
         latitude: {
             type: Number,
         },

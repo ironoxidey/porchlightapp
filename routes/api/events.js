@@ -34,11 +34,11 @@ router.get('/myEventsOfferedToHost', auth, async (req, res) => {
         // const thisUser = await User.findOne({
         //   id: req.user.id,
         // });
-        console.log(req.user);
+        //console.log(req.user);
         const offeredToBookEvents = await Event.find({
             hostsOfferingToBook: req.user.email,
         })
-            .select('-artistEmail -hostsOfferingToBook')
+            .select('-artistEmail -hostsOfferingToBook -offersFromHosts')
             .populate(
                 'artist',
                 '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
@@ -152,7 +152,7 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
     if (req.user.role && req.user.role.indexOf('HOST') > -1) {
         //console.log("User is HOST and can raise their hand to book shows.");
         try {
-            console.log(eventFields);
+            //console.log(eventFields);
             let host = await Host.findOne({ email: req.user.email });
 
             let eventDetails = await Event.findOneAndUpdate(
@@ -168,16 +168,71 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
                 },
                 { new: true }
             )
-                .select('-artistEmail -agreeToPayAdminFee -payoutHandle')
+                .select(
+                    '-artistEmail -agreeToPayAdminFee -payoutHandle -offersFromHosts -hostsOfferingToBook'
+                )
                 .populate(
                     'artist',
                     '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
                 );
             //res.json(event);
-            console.log('eventDetails', eventDetails);
+            //console.log('eventDetails', eventDetails);
             res.json(eventDetails);
         } catch (err) {
             console.error(err.message);
+            res.status(500).send('Server Error: ' + err.message);
+        }
+    } else {
+        console.error(
+            req.user.email + " doesn't have authority to make these changes."
+        );
+        res.status(500).send(
+            'User does not have authority to make these changes.'
+        );
+    }
+
+    //res.json(eventCount + " event(s) submitted to the database."); //eventually remove this
+});
+
+// @route    POST api/events/artistViewedHostOffer
+// @desc     Artist viewed host's offer
+// @access   Private
+router.post('/artistViewedHostOffer', [auth], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    let eventFields = req.body;
+
+    //if (req.user.role === 'ADMIN' && eventFields.email !== '') {
+    if (req.user.role && req.user.role.indexOf('ARTIST') > -1) {
+        try {
+            //console.log('eventFields', eventFields);
+
+            let eventDetails = await Event.findOneAndUpdate(
+                //https://www.mongodb.com/docs/manual/reference/operator/projection/
+                {
+                    artistEmail: req.user.email,
+                    bookingWhen: eventFields.bookingWhen,
+                    'offersFromHosts.host': eventFields.offeringHost._id,
+                },
+                {
+                    $set: {
+                        'offersFromHosts.$.artistViewedOn': new Date(),
+                    },
+                },
+                { new: true }
+            )
+                .select('-artistEmail -hostsOfferingToBook')
+                .populate(
+                    'offersFromHosts.host',
+                    '-user -email -phone -streetAddress -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin'
+                );
+            //console.log('eventDetails', eventDetails);
+            res.json(eventDetails);
+        } catch (err) {
+            //console.error(err.message);
             res.status(500).send('Server Error: ' + err.message);
         }
     } else {
@@ -206,6 +261,7 @@ router.get('/getArtistBooking/:slug', async (req, res) => {
                 agreeToPayAdminFee: 0,
                 payoutHandle: 0,
                 hostsOfferingToBook: 0,
+                offersFromHosts: 0,
                 'travelingCompanions.email': 0,
             }
         ).sort({ bookingWhen: 1 }); //.select('-artistEmail -agreeToPayAdminFee -payoutHandle'); //.select(['city', 'state', 'zipCode']); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
@@ -224,7 +280,7 @@ router.get('/myArtistEventsOffers', auth, async (req, res) => {
         // const thisUser = await User.findOne({
         //   id: req.user.id,
         // });
-        console.log(req.user);
+        //console.log(req.user);
         const myArtistEvents = await Event.find({
             artistEmail: req.user.email,
             'offersFromHosts.0': { $exists: true }, //checks to see if the first index of hostsOfferingToBook exists //https://www.mongodb.com/community/forums/t/is-there-a-way-to-query-array-fields-with-size-greater-than-some-specified-value/54597
@@ -232,7 +288,7 @@ router.get('/myArtistEventsOffers', auth, async (req, res) => {
             .select('-artistEmail -hostsOfferingToBook')
             .populate(
                 'offersFromHosts.host',
-                '-user -email -phone -streetAddress -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -specialNavDirections -lastLogin'
+                '-user -email -phone -streetAddress -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin'
             )
             .sort({ bookingWhen: 1 }); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
         if (!myArtistEvents) {

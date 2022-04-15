@@ -76,7 +76,7 @@ const UploadInput = styled('input')({
     display: 'none',
 });
 
-const EditArtistProfileForm = ({
+const EditHostProfileForm = ({
     theHost, //passed in from EditMyHostProfile.js
     inDialog, //passed in from EditMyHostProfile.js
     createMyHost,
@@ -95,6 +95,7 @@ const EditArtistProfileForm = ({
         city: '',
         state: '',
         zipCode: '',
+        profileImg: '',
         numDraw: '',
         numHostedBefore: '',
         phone: '',
@@ -130,6 +131,8 @@ const EditArtistProfileForm = ({
                 city: loading || !theHost.city ? '' : theHost.city,
                 state: loading || !theHost.state ? '' : theHost.state,
                 zipCode: loading || !theHost.zipCode ? '' : theHost.zipCode,
+                profileImg:
+                    loading || !theHost.profileImg ? '' : theHost.profileImg,
                 numDraw: loading || !theHost.numDraw ? '' : theHost.numDraw,
                 numHostedBefore:
                     loading || !theHost.numHostedBefore
@@ -202,6 +205,7 @@ const EditArtistProfileForm = ({
                     city: '',
                     state: '',
                     zipCode: '',
+                    profileImg: '',
                     numDraw: '',
                     numHostedBefore: '',
                     phone: '',
@@ -234,6 +238,7 @@ const EditArtistProfileForm = ({
         city,
         state,
         zipCode,
+        profileImg,
         numDraw,
         numHostedBefore,
         phone,
@@ -369,14 +374,12 @@ const EditArtistProfileForm = ({
         setFormData({ ...formData, [e.target.name]: updatedField });
     };
 
-    const cloudinaryUpload = async (fieldName, tags, artistID, preset) => {
+    const cloudinaryUpload = async (fieldName, tags, hostID, preset) => {
         let imageRatio =
-            fieldName === 'squareImg'
-                ? 'a square image'
-                : 'a wide image with a 2:1 ratio';
+            fieldName === 'profileImg' ? 'a square image' : 'an image';
 
         const stringToSign = {
-            public_id: 'uploads/' + artistID + '/' + fieldName,
+            public_id: 'uploads/' + hostID + '/' + fieldName,
             uploadPreset: preset,
             tags: tags,
         };
@@ -396,10 +399,6 @@ const EditArtistProfileForm = ({
             //added cloudinary script to /public/index.html
             {
                 ...stringToSign,
-                // uploadPreset: stringtoSign.uploadPreset,
-                // public_id: stringtoSign.public_id,
-                //public_id: 'uploads/' + artistID + '/' + fieldName,
-                // tags: stringtoSign.tags,
                 apiKey: '622466913451276', //data.apikey,
                 uploadSignatureTimestamp: data.timestamp,
                 uploadSignature: data.signature,
@@ -662,6 +661,54 @@ const EditArtistProfileForm = ({
                         />
                     </Grid>
                 </Grid>,
+            ],
+        ],
+        profileImg: [
+            <FormLabel component="legend">
+                We’d love to have a face to put with your name, {firstName}.
+                Would you upload a square picture that we could send to an
+                artist if you offer to book their show?
+            </FormLabel>,
+            [
+                <FormControl component="fieldset">
+                    <label htmlFor="profileImg">
+                        <Button
+                            variant="contained"
+                            component="span"
+                            onClick={(e) => {
+                                cloudinaryUpload(
+                                    'profileImg',
+                                    [
+                                        theHost.firstName + theHost.lastName,
+                                        'profileImg',
+                                    ],
+                                    theHost._id,
+                                    'porchlight_profileImg_upload'
+                                );
+                                // clickWideUpload();
+                            }}
+                        >
+                            <AddPhotoAlternateTwoToneIcon></AddPhotoAlternateTwoToneIcon>
+                            Upload
+                        </Button>
+                    </label>
+                </FormControl>,
+                profileImg ? (
+                    <img
+                        className="venueImg-image uploaded-image"
+                        src={profileImg}
+                        alt=""
+                        style={{
+                            marginTop: '16px',
+                            maxHeight: '60vh',
+                            maxWidth: '90vw',
+                            height: 'auto',
+                            width: 'auto',
+                        }}
+                    />
+                ) : (
+                    ''
+                ),
             ],
         ],
         numDraw: [
@@ -1260,7 +1307,7 @@ const EditArtistProfileForm = ({
     );
 };
 
-EditArtistProfileForm.propTypes = {
+EditHostProfileForm.propTypes = {
     createMyHost: PropTypes.func.isRequired,
     theHost: PropTypes.object,
     auth: PropTypes.object.isRequired,
@@ -1275,4 +1322,4 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
     createMyHost,
     updateUserAvatar,
-})(withRouter(EditArtistProfileForm)); //withRouter allows us to pass history objects
+})(withRouter(EditHostProfileForm)); //withRouter allows us to pass history objects

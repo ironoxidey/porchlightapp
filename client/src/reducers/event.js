@@ -4,6 +4,7 @@ import {
     GET_EVENTS_OFFERED_TO_HOST,
     GET_THIS_ARTIST_BOOKING_EVENTS,
     GET_THIS_ARTIST_EVENTS_OFFERS,
+    ARTIST_VIEWED_HOST_OFFER,
     EVENTS_ERROR,
     LOGOUT,
 } from '../actions/types';
@@ -35,7 +36,15 @@ export default function (state = initialState, action) {
         case GET_THIS_ARTIST_EVENTS_OFFERS:
             return {
                 ...state,
-                myArtistEvents: [...state.myArtistEvents, payload],
+                myArtistEvents: payload,
+                loading: false,
+            };
+        case ARTIST_VIEWED_HOST_OFFER:
+            return {
+                ...state,
+                myArtistEvents: state.myArtistEvents.map((myArtistEvent) =>
+                    myArtistEvent._id === payload._id ? payload : myArtistEvent
+                ),
                 loading: false,
             };
         case HOST_RAISE_HAND:

@@ -48,6 +48,9 @@ const EventSchema = new mongoose.Schema(
                 overnightArrangements: {
                     type: String,
                 },
+                openers: {
+                    type: String,
+                },
                 houseRules: {
                     type: String,
                 },
@@ -62,6 +65,9 @@ const EventSchema = new mongoose.Schema(
                 },
                 extraClarification: {
                     type: String,
+                },
+                artistViewedOn: {
+                    type: Date,
                 },
             },
         ],

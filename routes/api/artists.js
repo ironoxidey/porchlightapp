@@ -23,7 +23,7 @@ router.get('/me', auth, async (req, res) => {
         // const thisUser = await User.findOne({
         //   id: req.user.id,
         // });
-        console.log(req.user);
+        //console.log(req.user);
         const artist = await Artist.findOne({
             email: req.user.email,
         }).select('-hadMeeting -sentFollowUp -notes');
@@ -52,7 +52,7 @@ router.get('/my-avatar', auth, async (req, res) => {
         // const thisUser = await User.findOne({
         //   id: req.user.id,
         // });
-        console.log(req.user);
+        //console.log(req.user);
         const artist = await Artist.findOne({
             email: req.user.email,
         }).select('squareImg');
@@ -516,9 +516,11 @@ router.post('/updateMe', [auth], async (req, res) => {
 // @access   Public
 router.get('/', async (req, res) => {
     try {
-        const artists = await Artist.find({ active: true }).select(
-            '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
-        );
+        const artists = await Artist.find({ active: true })
+            .select(
+                '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
+            )
+            .sort({ updatedAt: -1 });
         res.json(artists);
     } catch (err) {
         console.error(err.message);

@@ -7,6 +7,7 @@ import {
     GET_EVENTS_OFFERED_TO_HOST,
     GET_THIS_ARTIST_BOOKING_EVENTS,
     GET_THIS_ARTIST_EVENTS_OFFERS,
+    ARTIST_VIEWED_HOST_OFFER,
     EVENTS_ERROR,
 } from './types';
 
@@ -53,7 +54,6 @@ export const getArtistBookingEvents = (artistSlug) => async (dispatch) => {
 //Get current user's artist's events where the hostsOfferingToBook has at least one index
 export const getMyArtistEventsOffers = () => async (dispatch) => {
     try {
-        console.log('getMyArtistEventsOffers');
         const res = await axios.get(`/api/events/myArtistEventsOffers/`);
         dispatch({
             type: GET_THIS_ARTIST_EVENTS_OFFERS,
@@ -90,7 +90,7 @@ export const getMyArtistEventsOffers = () => async (dispatch) => {
 //     }
 // };
 
-// Create or update host
+// Offer to host a show
 export const hostRaiseHand = (formData, history) => async (dispatch) => {
     try {
         const config = {
@@ -138,3 +138,41 @@ export const hostRaiseHand = (formData, history) => async (dispatch) => {
         dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
     }
 };
+
+// Artist viewed Host's offer to book
+export const artistViewedHostOffer =
+    (formData, history) => async (dispatch) => {
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            const res = await axios.post(
+                '/api/events/artistViewedHostOffer',
+                formData,
+                config
+            );
+            console.log('artistViewedHostOffer res.data:', res.data);
+            dispatch({
+                type: ARTIST_VIEWED_HOST_OFFER,
+                payload: res.data,
+            });
+        } catch (err) {
+            const errors = err.response.data.errors;
+            console.log('error: ' + err);
+            if (errors) {
+                errors.forEach((error) =>
+                    dispatch(setAlert(error.msg, 'danger'))
+                );
+            }
+            dispatch({
+                type: UPDATE_EVENT_ERROR,
+                payload: {
+                    msg: err.response.statusText,
+                    status: err.response.status,
+                },
+            });
+            //dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        }
+    };

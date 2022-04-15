@@ -66,6 +66,7 @@ import {
 } from '../../actions/app';
 
 import { hostRaiseHand, getArtistBookingEvents } from '../../actions/event';
+import EventSpecificHostForm from '../events/EventSpecificHostForm';
 
 const ArtistProfile = ({
     user,
@@ -174,7 +175,7 @@ const ArtistProfile = ({
     const handleBookingDetailsBtnClick = (theEvent) => {
         if (user && user._id) {
             if (user && user.role && user.role.indexOf('HOST') > -1) {
-                console.log('user:', user.role);
+                //console.log('user:', user.role);
                 setBookingDialogDetailsState({
                     ...theEvent,
                     hostSignUp: false,
@@ -212,7 +213,7 @@ const ArtistProfile = ({
                     maxWidth={isAuthenticated || !wantsToBook ? 'md' : 'xs'}
                 >
                     <DialogTitle id="alert-dialog-title">
-                        {!isAuthenticated && wantsToBook
+                        {/* {!isAuthenticated && wantsToBook
                             ? `For you to offer to host this show, you'll need
                                 to login.`
                             : host &&
@@ -237,7 +238,7 @@ const ArtistProfile = ({
                               ', ' +
                               bookingDialogDetails.bookingWhere.state +
                               '?'
-                            : ''}
+                            : ''} */}
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
@@ -259,16 +260,21 @@ const ArtistProfile = ({
                                     className="dateLocationForBooking"
                                 >
                                     <Grid
+                                        container
                                         item
-                                        sx={{
-                                            width: '55px',
-                                        }}
+                                        direction="row"
+                                        alignItems="start"
+                                        justifyContent="center"
+                                        height="100vh"
                                     >
-                                        <StackDateforDisplay
+                                        <EventSpecificHostForm
+                                            theEvent={bookingDialogDetails}
+                                        />
+                                        {/* <StackDateforDisplay
                                             date={
                                                 bookingDialogDetails.bookingWhen
                                             }
-                                        ></StackDateforDisplay>
+                                        ></StackDateforDisplay> */}
                                     </Grid>
                                     <Grid item>
                                         <Grid
@@ -315,7 +321,7 @@ const ArtistProfile = ({
                                 >
                                     No
                                 </Button>
-                                <Button
+                                {/* <Button
                                     onClick={(e) => {
                                         hostRaiseHand({
                                             artist: artist,
@@ -326,7 +332,7 @@ const ArtistProfile = ({
                                     }}
                                 >
                                     Yes
-                                </Button>
+                                </Button> */}
                             </DialogActions>
                         )}
                     {!wantsToBook && (
@@ -676,64 +682,6 @@ const ArtistProfile = ({
                                       )
                                     : ''}
                             </Grid>
-                            {/* {artist.streamingLinks &&
-                            Object.keys(artist.streamingLinks).length > 0 ? (
-                                <Grid
-                                    container
-                                    item
-                                    direction="row"
-                                    sx={{
-                                        margin: '8px auto',
-                                        width: '100%',
-                                    }}
-                                >
-                                    {artist.streamingLinks.map(
-                                        (eachStreamingLink, idx) => (
-                                            <Grid
-                                                item
-                                                xs={1}
-                                                //md={0.5}
-                                                className="link-icon"
-                                                key={`eachStreamingLink${idx}`}
-                                                sx={{
-                                                    marginRight: '8px',
-                                                }}
-                                            >
-                                                <Tooltip
-                                                    title={
-                                                        !isMe ? (
-                                                            toTitleCase(
-                                                                pullDomainFrom(
-                                                                    eachStreamingLink.link
-                                                                )
-                                                            )
-                                                        ) : (
-                                                            <Link to="/edit-artist-profile?field=streamingLinks">
-                                                                Edit
-                                                            </Link>
-                                                        )
-                                                    }
-                                                    placement="bottom"
-                                                    arrow
-                                                >
-                                                    <a
-                                                        href={
-                                                            eachStreamingLink.link
-                                                        }
-                                                        target="_blank"
-                                                    >
-                                                        {getFontAwesomeIcon(
-                                                            eachStreamingLink.link
-                                                        )}
-                                                    </a>
-                                                </Tooltip>
-                                            </Grid>
-                                        )
-                                    )}
-                                </Grid>
-                            ) : (
-                                ''
-                            )} */}
                         </Grid>
                     </Grid>
                 </Tooltip>
