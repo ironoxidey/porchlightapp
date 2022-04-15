@@ -4,6 +4,10 @@ p.MuiFormLabel-root {
     font-size: 1.5em;
     color: var(--primary-color);
     margin-top: 8px;
+    /* margin-bottom: 8px; */
+}
+
+.MuiGrid-root.MuiGrid-item.formInquiry {
     margin-bottom: 8px;
 }
 

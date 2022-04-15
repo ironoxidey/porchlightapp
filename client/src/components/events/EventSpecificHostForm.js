@@ -51,7 +51,11 @@ import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
 import { textAlign } from '@mui/system';
 
-import { getFontAwesomeIcon, pullDomainFrom } from '../../actions/app';
+import {
+    getFontAwesomeIcon,
+    pullDomainFrom,
+    StackDateforDisplay,
+} from '../../actions/app';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -276,11 +280,36 @@ const EventSpecificHostForm = ({
 
     const formGroups = {
         showSchedule: [
-            <FormLabel component="legend">
-                Does this schedule work for you?
-            </FormLabel>,
             [
-                <Grid item>
+                <FormLabel
+                    component="h3"
+                    sx={{ fontSize: '1.5em', textAlign: 'center' }}
+                >
+                    It’s so exciting you’re interested in hosting this{' '}
+                    {artist.stageName} show near {theEvent.bookingWhere.city},{' '}
+                    {theEvent.bookingWhere.state}!
+                </FormLabel>,
+                <Grid item container justifyContent="center" sx={{}}>
+                    <StackDateforDisplay
+                        date={theEvent.bookingWhen}
+                    ></StackDateforDisplay>
+                </Grid>,
+                <FormLabel component="legend" sx={{ marginBottom: '0px' }}>
+                    Does this schedule work for you?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{
+                        textAlign: 'center',
+                        display: 'block',
+                        marginBottom: '8px',
+                    }}
+                >
+                    <em>(propose whatever changes you need to make)</em>
+                </FormLabel>,
+            ],
+            [
+                <Grid item sx={{}}>
                     {artist.stageName} will need to start setting up at
                     <TextField
                         variant="standard"
@@ -396,7 +425,81 @@ const EventSpecificHostForm = ({
                 />
             </Grid>,
         ],
+        overnight: theEvent.overnight && [
+            [
+                <FormLabel component="legend">
+                    Are you able and willing to host the band overnight?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    <em>
+                        {artist.firstName} {artist.lastName} is traveling
+                        {theEvent.travelingCompanions &&
+                        theEvent.travelingCompanions.length > 0
+                            ? ` with a ` +
+                              theEvent.travelingCompanions.map(
+                                  (travelingCompanion, index) =>
+                                      theEvent.travelingCompanions.length > 1 &&
+                                      index ===
+                                          theEvent.travelingCompanions.length -
+                                              1
+                                          ? ' and ' + travelingCompanion.role
+                                          : ' ' + travelingCompanion.role
+                              )
+                            : ' alone'}
+                        .
+                    </em>
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        id="overnight"
+                        value={overnight}
+                        name="overnight"
+                        onChange={(e) => onChange(e)}
+                    >
+                        <FormControlLabel
+                            value="yes"
+                            control={<Radio />}
+                            label={`Yes, I can accommodate ${
+                                theEvent.travelingCompanions.length + 1
+                            }
+                                 ${
+                                     theEvent.travelingCompanions.length + 1 > 1
+                                         ? ' people'
+                                         : 'person'
+                                 } overnight.`}
+                        />
+                        <FormControlLabel
+                            value="no"
+                            control={<Radio />}
+                            label="No."
+                        />
+                    </RadioGroup>
 
+                    {overnight && overnight === 'yes' && (
+                        <Grid item xs={12} sx={{ width: '100%' }}>
+                            <FormLabel component="legend">
+                                Can you describe their potential sleeping
+                                arrangements?
+                            </FormLabel>
+                            <TextField
+                                variant="standard"
+                                name="overnightArrangements"
+                                id="overnightArrangements"
+                                label={`I'm able to offer `}
+                                value={overnightArrangements}
+                                onChange={(e) => onChange(e)}
+                                sx={{ width: '100%' }}
+                            />
+                        </Grid>
+                    )}
+                </FormControl>,
+            ],
+        ],
         endSlide: [
             [
                 <Typography component="h2" sx={{ textAlign: 'center' }}>
