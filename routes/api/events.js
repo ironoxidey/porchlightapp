@@ -152,7 +152,7 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
     if (req.user.role && req.user.role.indexOf('HOST') > -1) {
         //console.log("User is HOST and can raise their hand to book shows.");
         try {
-            //console.log(eventFields);
+            console.log('eventFields', eventFields);
             let host = await Host.findOne({ email: req.user.email });
 
             let eventDetails = await Event.findOneAndUpdate(
@@ -163,7 +163,10 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
                 {
                     $addToSet: {
                         hostsOfferingToBook: req.user.email,
-                        offersFromHosts: { host: host._id },
+                        offersFromHosts: {
+                            ...eventFields.theOffer,
+                            host: host._id,
+                        },
                     },
                 },
                 { new: true }

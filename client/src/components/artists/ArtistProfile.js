@@ -213,10 +213,11 @@ const ArtistProfile = ({
                     maxWidth={isAuthenticated || !wantsToBook ? 'md' : 'xs'}
                 >
                     <DialogTitle id="alert-dialog-title">
-                        {/* {!isAuthenticated && wantsToBook
-                            ? `For you to offer to host this show, you'll need
-                                to login.`
-                            : host &&
+                        {!isAuthenticated &&
+                            wantsToBook &&
+                            `For you to offer to host this show, you'll need
+                                to login.`}
+                        {/* : host &&
                               host.me &&
                               host.me._id &&
                               host.me.email &&
@@ -265,7 +266,7 @@ const ArtistProfile = ({
                                         direction="row"
                                         alignItems="start"
                                         justifyContent="center"
-                                        height="100vh"
+                                        height="80vh"
                                     >
                                         <EventSpecificHostForm
                                             theEvent={bookingDialogDetails}
@@ -275,22 +276,6 @@ const ArtistProfile = ({
                                                 bookingDialogDetails.bookingWhen
                                             }
                                         ></StackDateforDisplay> */}
-                                    </Grid>
-                                    <Grid item>
-                                        <Grid
-                                            item
-                                            sx={{
-                                                fontSize: '1.5em',
-                                                marginLeft: '8px',
-                                                lineHeight: '1.5',
-                                            }}
-                                        >
-                                            {bookingDialogDetails.bookingWhere
-                                                .city +
-                                                ', ' +
-                                                bookingDialogDetails
-                                                    .bookingWhere.state}
-                                        </Grid>
                                     </Grid>
                                 </Grid>
                             ) : (
@@ -316,11 +301,11 @@ const ArtistProfile = ({
                         host.me.streetAddress &&
                         wantsToBook && (
                             <DialogActions>
-                                <Button
+                                {/* <Button
                                     onClick={bookingDetailsDialogHandleClose}
                                 >
                                     No
-                                </Button>
+                                </Button> */}
                                 {/* <Button
                                     onClick={(e) => {
                                         hostRaiseHand({

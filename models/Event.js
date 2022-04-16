@@ -63,6 +63,9 @@ const EventSchema = new mongoose.Schema(
                 guaranteeHonorarium: {
                     type: String,
                 },
+                honorariumAmount: {
+                    type: String,
+                },
                 extraClarification: {
                     type: String,
                 },

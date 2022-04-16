@@ -29,6 +29,8 @@ import {
     Chip,
     withStyles,
     Typography,
+    SvgIcon,
+    Divider,
 } from '@mui/material';
 import ReactPhoneInput from 'react-phone-input-mui';
 import { styled } from '@mui/material/styles';
@@ -42,10 +44,15 @@ import SaveTwoToneIcon from '@mui/icons-material/SaveTwoTone';
 import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
+import LiquorTwoToneIcon from '@mui/icons-material/LiquorTwoTone';
+import NoDrinksTwoToneIcon from '@mui/icons-material/NoDrinksTwoTone';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
 import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+import { hostRaiseHand } from '../../actions/event';
 
 import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
@@ -79,6 +86,7 @@ const EventSpecificHostForm = ({
     history,
     auth,
     theEvent,
+    hostRaiseHand,
 }) => {
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     const dispatch = useDispatch();
@@ -99,6 +107,8 @@ const EventSpecificHostForm = ({
         eventbritePublicAddress: '',
         additionalRequests: '',
         guaranteeHonorarium: '',
+        honorariumAmount: '',
+        extraClarification: '',
     });
 
     useEffect(() => {
@@ -141,6 +151,14 @@ const EventSpecificHostForm = ({
                     loading || !host.me.guaranteeHonorarium
                         ? ''
                         : host.me.guaranteeHonorarium,
+                honorariumAmount:
+                    loading || !host.me.honorariumAmount
+                        ? ''
+                        : host.me.honorariumAmount,
+                extraClarification:
+                    loading || !host.me.extraClarification
+                        ? ''
+                        : host.me.extraClarification,
             });
         }
     }, [auth.loading, createMyHost, host.me]);
@@ -155,6 +173,8 @@ const EventSpecificHostForm = ({
         eventbritePublicAddress,
         additionalRequests,
         guaranteeHonorarium,
+        honorariumAmount,
+        extraClarification,
     } = formData;
 
     const onChange = (e) => {
@@ -289,6 +309,19 @@ const EventSpecificHostForm = ({
                     {artist.stageName} show near {theEvent.bookingWhere.city},{' '}
                     {theEvent.bookingWhere.state}!
                 </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{
+                        textAlign: 'center',
+                        display: 'block',
+                        marginBottom: '8px',
+                    }}
+                >
+                    <em>
+                        We need only a little more information before you can
+                        make an offer to book this show.
+                    </em>
+                </FormLabel>,
                 <Grid item container justifyContent="center" sx={{}}>
                     <StackDateforDisplay
                         date={theEvent.bookingWhen}
@@ -391,38 +424,125 @@ const EventSpecificHostForm = ({
                 Let's talk refreshments. Do you plan on having any food or
                 drinks?
             </FormLabel>,
-            <Grid item xs={12} sx={{ width: '100%' }}>
-                <Autocomplete
-                    multiple
-                    id="refreshments"
-                    value={refreshments}
-                    options={[]}
-                    freeSolo
-                    clearOnBlur={true}
-                    onChange={(event, value) =>
-                        onAutocompleteTagChange(event, 'refreshments', value)
-                    }
-                    renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                            <Chip
-                                variant="outlined"
+            <Grid
+                item
+                container
+                xs={12}
+                sx={{ width: '100%' }}
+                justifyContent="center"
+                className="bookingDetails"
+            >
+                <Grid item xs={12}>
+                    <Autocomplete
+                        multiple
+                        id="refreshments"
+                        value={refreshments}
+                        options={[]}
+                        freeSolo
+                        clearOnBlur={true}
+                        onChange={(event, value) =>
+                            onAutocompleteTagChange(
+                                event,
+                                'refreshments',
+                                value
+                            )
+                        }
+                        renderTags={(value, getTagProps) =>
+                            value.map((option, index) => (
+                                <Chip
+                                    variant="outlined"
+                                    name="refreshments"
+                                    label={option}
+                                    {...getTagProps({ index })}
+                                />
+                            ))
+                        }
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                sx={{ width: '100%' }}
+                                variant="standard"
+                                label={`I was thinking we’d have `}
                                 name="refreshments"
-                                label={option}
-                                {...getTagProps({ index })}
+                                helperText="Type and press [enter] to add stuff to the list"
                             />
-                        ))
-                    }
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            sx={{ width: '100%' }}
-                            variant="standard"
-                            label={`I was thinking we’d have `}
-                            name="refreshments"
-                            helperText="Type and press [enter] to add stuff to the list"
-                        />
-                    )}
-                />
+                        )}
+                    />
+                </Grid>
+                {artist.allergies && artist.allergies.length > 0 && (
+                    <Grid
+                        item
+                        sx={{
+                            marginTop: '8px',
+                            backgroundColor: 'rgba(0 0 0 /.3)',
+                            padding: '20px',
+                            color: 'var(--primary-color)',
+                        }}
+                        justifyContent="center"
+                        xs={12}
+                        md={5}
+                        className="allergies"
+                    >
+                        <SvgIcon
+                            style={{
+                                width: '26px',
+                                verticalAlign: 'baseline',
+                            }}
+                        >
+                            <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
+                        </SvgIcon>
+                        {artist.stageName + ' has these allergies: '}
+                        <strong>
+                            {artist.allergies.constructor.name === 'Array' &&
+                                artist.allergies.map((allergy, ind) => {
+                                    if (ind !== artist.allergies.length - 1) {
+                                        return allergy + ', ';
+                                    } else {
+                                        return allergy;
+                                    }
+                                })}{' '}
+                        </strong>
+                        .
+                    </Grid>
+                )}
+                {artist.alcohol && (
+                    <Grid
+                        item
+                        sx={{
+                            margin: '8px',
+                            backgroundColor: 'rgba(0 0 0 /.3)',
+                            padding: '20px',
+                            color: 'var(--primary-color)',
+                        }}
+                        justifyContent="center"
+                        xs={12}
+                        md={5}
+                        className="alcohol"
+                    >
+                        <LiquorTwoToneIcon></LiquorTwoToneIcon>
+                        {artist.stageName + ' is comfortable having '}
+                        <strong>alcohol</strong> at the show.
+                    </Grid>
+                )}
+                {!artist.alcohol && (
+                    <Grid
+                        item
+                        sx={{
+                            margin: '8px',
+                            backgroundColor: 'rgba(0 0 0 /.3)',
+                            padding: '20px',
+                            color: 'var(--primary-color)',
+                        }}
+                        justifyContent="center"
+                        xs={12}
+                        md={5}
+                        className="alcohol"
+                    >
+                        <NoDrinksTwoToneIcon></NoDrinksTwoToneIcon>
+                        {artist.stageName} Would prefer having{' '}
+                        <strong> no alcohol </strong> at the show.
+                    </Grid>
+                )}
             </Grid>,
         ],
         overnight: theEvent.overnight && [
@@ -500,18 +620,217 @@ const EventSpecificHostForm = ({
                 </FormControl>,
             ],
         ],
+        houseRules: [
+            <FormLabel component="legend">
+                Let's talk house rules! What rules about being in/around your
+                house would you like to make known to the attendees and artists?
+            </FormLabel>,
+            [
+                <Grid item xs={12} sx={{ width: '100%' }}>
+                    <TextField
+                        variant="standard"
+                        name="houseRules"
+                        id="houseRules"
+                        label={`These are my house rules:`}
+                        value={houseRules}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        eventbritePublicAddress: [
+            <FormLabel component="legend">
+                We usually set up Eventbrite pages for these shows. In the case
+                of the show you'll be hosting, do you mind if the address is
+                public?
+            </FormLabel>,
+            [
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        id="eventbritePublicAddress"
+                        value={eventbritePublicAddress}
+                        name="eventbritePublicAddress"
+                        onChange={(e) => onChange(e)}
+                    >
+                        <FormControlLabel
+                            value="yes"
+                            control={<Radio />}
+                            label="Yes"
+                        />
+                        <FormControlLabel
+                            value="no"
+                            control={<Radio />}
+                            label="No"
+                        />
+                        <FormControlLabel
+                            value="notSure"
+                            control={<Radio />}
+                            label="Not Sure"
+                        />
+                    </RadioGroup>
+                </FormControl>,
+            ],
+        ],
+        additionalRequests: [
+            <FormLabel component="legend">
+                As the host, do you have any other requests as we set up the
+                Eventbrite page for this show?
+            </FormLabel>,
+            [
+                <Grid item xs={12} sx={{ width: '100%' }}>
+                    <TextField
+                        variant="standard"
+                        name="additionalRequests"
+                        id="additionalRequests"
+                        label={`These are my additional requests:`}
+                        value={additionalRequests}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        guaranteeHonorarium: [
+            [
+                <FormLabel component="legend">
+                    If the band comes up short of their hoped-for $
+                    {artist.financialHopes} minimum, would you be willing to
+                    provide a guarantee or honorarium?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    <em>
+                        A guarantee is when the host covers the difference
+                        between the desired minimum and the amount made in
+                        tickets/donations. <br />
+                        An honorarium is a flat amount you’re willing to offer
+                        the musician to come play this concert
+                    </em>
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        id="guaranteeHonorarium"
+                        value={guaranteeHonorarium}
+                        name="guaranteeHonorarium"
+                        onChange={(e) => onChange(e)}
+                    >
+                        <FormControlLabel
+                            value="no"
+                            control={<Radio />}
+                            label="Not this time, thanks."
+                        />
+                        <FormControlLabel
+                            value="guarantee"
+                            control={<Radio />}
+                            label={`I’m willing to guarantee that ${artist.stageName} makes a minimum of $${artist.financialHopes}—I’ll make up the difference.`}
+                        />
+                        <FormControlLabel
+                            value="honorarium"
+                            control={<Radio />}
+                            label={`I’d like to offer ${artist.stageName} an honorarium...`}
+                        />
+                    </RadioGroup>
+                    {guaranteeHonorarium === 'honorarium' && (
+                        <TextField
+                            variant="standard"
+                            name="honorariumAmount"
+                            id="honorariumAmount"
+                            label="of "
+                            value={honorariumAmount || artist.financialHopes}
+                            onChange={(e) => onChange(e)}
+                            type="number"
+                            sx={{ maxWidth: '300px', margin: '8px auto' }}
+                            helperText="no matter how much the band makes otherwise."
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        $
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    )}
+                </FormControl>,
+            ],
+        ],
+        extraClarification: [
+            <FormLabel component="legend">
+                Would you like to clarify any of your answers? Do you have any
+                questions for us?
+            </FormLabel>,
+            [
+                <Grid item xs={12} sx={{ width: '100%' }}>
+                    <TextField
+                        variant="standard"
+                        name="extraClarification"
+                        id="extraClarification"
+                        label={`Extra Clarifications:`}
+                        value={extraClarification}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
         endSlide: [
             [
                 <Typography component="h2" sx={{ textAlign: 'center' }}>
-                    Those were all the questions we have for right now.
+                    That’s everything we think {artist.stageName} will need, in
+                    order to make a decision about this show.
                 </Typography>,
                 <Typography
                     component="p"
                     sx={{ textAlign: 'center', marginTop: '20px' }}
                 >
-                    Thank you for taking the time to respond to them! Please
-                    check your profile to be sure everything is correct.
+                    As soon as you submit this offer, a notification will be
+                    sent to {artist.stageName}, so that we can hopefully get
+                    this show booked for{' '}
+                    {new Date(theEvent.bookingWhen).toLocaleDateString(
+                        undefined,
+                        {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                        }
+                    )}{' '}
+                    near {theEvent.bookingWhere.city},{' '}
+                    {theEvent.bookingWhere.state}.
                 </Typography>,
+                <Typography
+                    component="p"
+                    sx={{ textAlign: 'center', marginTop: '20px' }}
+                >
+                    <em>
+                        We’ll be in touch, as soon as we hear what{' '}
+                        {artist.stageName} wants to do.
+                    </em>
+                </Typography>,
+                <Grid
+                    item
+                    container
+                    justifyContent="center"
+                    sx={{ marginTop: '8px' }}
+                >
+                    <Button
+                        btnwidth="300"
+                        onClick={(e) => {
+                            hostRaiseHand({
+                                artist: artist,
+                                bookingWhen: theEvent.bookingWhen,
+                                theOffer: formData,
+                            });
+                            //bookingDetailsDialogHandleClose();
+                        }}
+                    >
+                        Submit My Offer To Host
+                    </Button>
+                </Grid>,
             ],
         ],
     };
@@ -556,25 +875,35 @@ const EventSpecificHostForm = ({
     });
     const nextCard = (e) => {
         setDirection(1);
-        setIndex(
-            (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length
-        );
         if (changesMade.current) {
             onSubmit(e);
         }
+        setIndex((cardIndex) => {
+            //(cardIndex + 1) % Object.keys(formGroups).length;
+            if (cardIndex === Object.keys(formGroups).length - 1) {
+                //if it's at the end there's nothing next, don't loop around
+                return cardIndex;
+            } else {
+                return cardIndex + 1;
+            }
+        });
     };
     const previousCard = (e) => {
         setDirection(-1);
-        setIndex((cardIndex) => {
-            if (cardIndex == 0) {
-                cardIndex = Object.keys(formGroups).length;
-            }
-            //console.log(cardIndex);
-            return cardIndex - 1;
-        });
         if (changesMade.current) {
             onSubmit(e);
         }
+        setIndex((cardIndex) => {
+            // if (cardIndex == 0) { //loop around to the last index
+            //     cardIndex = Object.keys(formGroups).length;
+            // }
+            if (cardIndex == 0) {
+                //if it's at the benninging there's nothing previous, don't loop around
+                return cardIndex;
+            } else {
+                return cardIndex - 1;
+            }
+        });
     };
 
     return (
@@ -596,12 +925,17 @@ const EventSpecificHostForm = ({
                                 variant="contained"
                                 component="span"
                                 onClick={(e) => previousCard(e)}
+                                sx={{
+                                    opacity: cardIndex > 0 ? 1 : 0.2,
+                                    transition:
+                                        'opacity 450ms cubic-bezier(0.23, 1, 0.32, 1) 500ms',
+                                }}
                             >
                                 <ArrowBackIcon></ArrowBackIcon>Previous
                             </Button>
                             {/* ) : '' } */}
                         </Grid>
-                        <Grid item>
+                        {/* <Grid item>
                             <label htmlFor="submit">
                                 <input id="submit" type="submit" hidden />
                                 <Button
@@ -612,13 +946,22 @@ const EventSpecificHostForm = ({
                                     Save <SaveTwoToneIcon></SaveTwoToneIcon>
                                 </Button>
                             </label>
-                        </Grid>
+                        </Grid> */}
                         <Grid item>
                             {/* { cardIndex < formGroups.length - 1 ? ( */}
                             <Button
                                 variant="contained"
                                 component="span"
                                 onClick={(e) => nextCard(e)}
+                                sx={{
+                                    opacity:
+                                        cardIndex !==
+                                        Object.keys(formGroups).length - 1
+                                            ? 1
+                                            : 0.2,
+                                    transition:
+                                        'opacity 450ms cubic-bezier(0.23, 1, 0.32, 1) 500ms',
+                                }}
                             >
                                 Next<ArrowForwardIcon></ArrowForwardIcon>
                             </Button>
@@ -649,6 +992,7 @@ const EventSpecificHostForm = ({
                                     width: '100%',
                                     margin: '0 auto',
                                 }}
+                                //className="bookingDetails"
                             >
                                 {/* <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}> */}
 
@@ -688,6 +1032,8 @@ EventSpecificHostForm.propTypes = {
     theEvent: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     inDialog: PropTypes.object,
+
+    hostRaiseHand: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -697,5 +1043,6 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
+    hostRaiseHand,
     createMyHost,
 })(withRouter(EventSpecificHostForm)); //withRouter allows us to pass history objects

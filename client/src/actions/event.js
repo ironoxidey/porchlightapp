@@ -93,6 +93,7 @@ export const getMyArtistEventsOffers = () => async (dispatch) => {
 // Offer to host a show
 export const hostRaiseHand = (formData, history) => async (dispatch) => {
     try {
+        console.log('hostRaiseHand formData', formData);
         const config = {
             headers: {
                 'Content-Type': 'application/json',
@@ -109,7 +110,7 @@ export const hostRaiseHand = (formData, history) => async (dispatch) => {
         });
         dispatch(
             setAlert(
-                'You raised your hand for the show on ' +
+                'Your offer to host the show on ' +
                     new Date(formData.bookingWhen).toLocaleDateString(
                         undefined,
                         {
@@ -118,7 +119,8 @@ export const hostRaiseHand = (formData, history) => async (dispatch) => {
                             month: 'long',
                             day: 'numeric',
                         }
-                    ),
+                    ) +
+                    ' was submitted.',
                 'success'
             )
         ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)

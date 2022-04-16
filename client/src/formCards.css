@@ -44,7 +44,8 @@ legend.MuiFormLabel-root::before {
 }
 
 .animatedFormGroup .MuiGrid-root.MuiGrid-item {
-    padding-right: 0;
+    /*I don't know what I was doing with this ~April 15, 2022*/
+    /* padding-right: 0; */
 }
 
 @media (max-width: 700px) {
