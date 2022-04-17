@@ -25,6 +25,10 @@ const EventSchema = new mongoose.Schema(
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'host',
                 },
+                status: {
+                    type: String,
+                    default: 'OFFERED',
+                },
                 showSchedule: {
                     setupTime: {
                         type: String,
@@ -84,6 +88,9 @@ const EventSchema = new mongoose.Schema(
         },
         confirmedHostEmail: {
             type: String,
+        },
+        confirmedDate: {
+            type: Date,
         },
         costStructure: {
             type: String,

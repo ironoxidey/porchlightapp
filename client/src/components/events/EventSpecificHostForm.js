@@ -87,6 +87,7 @@ const EventSpecificHostForm = ({
     auth,
     theEvent,
     hostRaiseHand,
+    bookingDetailsDialogHandleClose,
 }) => {
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     const dispatch = useDispatch();
@@ -603,7 +604,7 @@ const EventSpecificHostForm = ({
                     {overnight && overnight === 'yes' && (
                         <Grid item xs={12} sx={{ width: '100%' }}>
                             <FormLabel component="legend">
-                                Can you describe their potential sleeping
+                                Can you describe the potential sleeping
                                 arrangements?
                             </FormLabel>
                             <TextField
@@ -825,7 +826,7 @@ const EventSpecificHostForm = ({
                                 bookingWhen: theEvent.bookingWhen,
                                 theOffer: formData,
                             });
-                            //bookingDetailsDialogHandleClose();
+                            bookingDetailsDialogHandleClose();
                         }}
                     >
                         Submit My Offer To Host
@@ -1034,6 +1035,8 @@ EventSpecificHostForm.propTypes = {
     inDialog: PropTypes.object,
 
     hostRaiseHand: PropTypes.func.isRequired,
+
+    bookingDetailsDialogHandleClose: PropTypes.func,
 };
 
 const mapStateToProps = (state) => ({

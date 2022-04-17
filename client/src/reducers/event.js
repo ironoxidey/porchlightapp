@@ -5,6 +5,7 @@ import {
     GET_THIS_ARTIST_BOOKING_EVENTS,
     GET_THIS_ARTIST_EVENTS_OFFERS,
     ARTIST_VIEWED_HOST_OFFER,
+    ARTIST_ACCEPTED_HOST_OFFER,
     EVENTS_ERROR,
     LOGOUT,
 } from '../actions/types';
@@ -40,6 +41,7 @@ export default function (state = initialState, action) {
                 loading: false,
             };
         case ARTIST_VIEWED_HOST_OFFER:
+        case ARTIST_ACCEPTED_HOST_OFFER:
             return {
                 ...state,
                 myArtistEvents: state.myArtistEvents.map((myArtistEvent) =>

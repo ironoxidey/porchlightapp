@@ -20,61 +20,78 @@ import Button from '../layout/SvgButton';
 import HostProfile from '../hosts/HostProfile';
 
 const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
-    //console.log(thisEvent);
+    console.log('ArtistDashboardEventCard thisEvent:', thisEvent);
 
     //Booking Details Dialog Functions
-    const [bookingDetailsDialogOpen, setBookingDetailsDialogOpen] =
-        useState(false);
+    const [eventDetailsDialogOpen, setEventDetailsDialogOpen] = useState(false);
 
     const [wantsToBook, setWantsToBook] = useState(false);
 
-    const bookingDetailsDialogHandleClose = () => {
-        setBookingDialogDetailsState({});
-        setBookingDetailsDialogOpen(false);
+    const eventDetailsDialogHandleClose = () => {
+        setDialogDetailsState({});
+        setEventDetailsDialogOpen(false);
         setWantsToBook(false);
     };
 
-    const [bookingDialogDetails, setBookingDialogDetailsState] = useState({});
+    const [eventDialogDetails, setDialogDetailsState] = useState({});
 
     useEffect(() => {
-        console.log('bookingDialogDetails', bookingDialogDetails);
-        setBookingDetailsDialogOpen(true);
-    }, [bookingDialogDetails]);
+        console.log('eventDialogDetails', eventDialogDetails);
+        setEventDetailsDialogOpen(true);
+    }, [eventDialogDetails]);
 
-    const handleBookingDetailsBtnClick = (theEvent) => {
-        setBookingDialogDetailsState(theEvent);
+    const handleEventBtnClick = (theOffer) => {
+        setDialogDetailsState(theOffer);
     };
 
     return (
         <>
-            {bookingDialogDetails && bookingDialogDetails.host && (
+            {eventDialogDetails && eventDialogDetails.host && (
                 <Dialog
-                    open={bookingDetailsDialogOpen}
-                    onClose={bookingDetailsDialogHandleClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    scroll="paper"
+                    open={eventDetailsDialogOpen}
+                    onClose={eventDetailsDialogHandleClose}
+                    // aria-labelledby="alert-dialog-title"
+                    // aria-describedby="alert-dialog-description"
+                    scroll="body"
                     fullWidth
                     maxWidth="md"
                 >
-                    <DialogTitle id="alert-dialog-title"></DialogTitle>
+                    {/* <DialogTitle id="alert-dialog-title"></DialogTitle> */}
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 0,
+                                    backgroundColor: 'rgba(0 0 0 /.6)',
+                                    padding: '0',
+                                }}
+                            >
+                                <StackDateforDisplay
+                                    date={thisEvent.bookingWhen}
+                                ></StackDateforDisplay>
+                            </Box>
                             <HostProfile
-                                theHost={bookingDialogDetails.host}
+                                theHost={eventDialogDetails.host}
+                                theEvent={thisEvent}
+                                theOffer={eventDialogDetails}
+                                eventDetailsDialogHandleClose={
+                                    eventDetailsDialogHandleClose
+                                }
                             ></HostProfile>
 
-                            <EventDetails
-                                theEvent={bookingDialogDetails.theEvent}
-                            />
+                            {/* <EventDetails
+                                theEvent={eventDialogDetails.theEvent}
+                            /> */}
                         </DialogContentText>
                     </DialogContent>
-                    <DialogActions>
-                        <Typography>
+                    {/*<DialogActions>
+                         <Typography>
                             {'Would you like to accept ' +
-                                bookingDialogDetails.host.firstName +
+                                eventDialogDetails.host.firstName +
                                 ' ' +
-                                bookingDialogDetails.host.lastName +
+                                eventDialogDetails.host.lastName +
                                 `’s offer to host your show on ` +
                                 new Date(
                                     thisEvent.bookingWhen
@@ -90,17 +107,17 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
                                 thisEvent.bookingWhere.state +
                                 '?'}
                         </Typography>
-                        <Button onClick={bookingDetailsDialogHandleClose}>
+                        <Button onClick={eventDetailsDialogHandleClose}>
                             No
                         </Button>
                         <Button
                             onClick={(e) => {
-                                bookingDetailsDialogHandleClose();
+                                eventDetailsDialogHandleClose();
                             }}
                         >
                             Yes
-                        </Button>
-                    </DialogActions>
+                        </Button> 
+                    </DialogActions>*/}
                 </Dialog>
             )}
             <Grid
@@ -208,20 +225,59 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
                                                                     border: `${
                                                                         !thisOffer.artistViewedOn
                                                                             ? '1px solid var(--primary-color)'
+                                                                            : thisOffer.status ===
+                                                                              'ACCEPTED'
+                                                                            ? '1px solid var(--link-color)'
                                                                             : '1px solid transparent'
                                                                     }`,
-                                                                    margin: '0 8px 0 0',
+                                                                    margin: '0',
                                                                     cursor: 'pointer',
+                                                                    opacity: `${
+                                                                        thisOffer.status ===
+                                                                        'ACCEPTED'
+                                                                            ? 1
+                                                                            : 0.8
+                                                                    }`,
+                                                                    transform: `${
+                                                                        thisOffer.status ===
+                                                                        'ACCEPTED'
+                                                                            ? 'scale(1.1)'
+                                                                            : 'scale(1)'
+                                                                    }`,
+                                                                    filter: `${
+                                                                        thisOffer.status ===
+                                                                        'ACCEPTED'
+                                                                            ? 'grayscale(0%)'
+                                                                            : 'grayscale(50%)'
+                                                                    }`,
+                                                                    '&:hover': {
+                                                                        filter: 'grayscale(0%)',
+                                                                        opacity: 1,
+                                                                        transform:
+                                                                            'scale(1.1)',
+                                                                    },
+                                                                    transition:
+                                                                        'all 450ms cubic-bezier(0.23, 1, 0.32, 1)',
                                                                 }}
                                                                 onClick={() => {
-                                                                    thisEvent.offeringHost =
-                                                                        thisOffer.host;
-                                                                    thisOffer.theEvent =
-                                                                        thisEvent;
-                                                                    artistViewedHostOffer(
-                                                                        thisEvent
-                                                                    );
-                                                                    handleBookingDetailsBtnClick(
+                                                                    //thisEvent.offeringHost = thisOffer.host;
+                                                                    let eventDetails =
+                                                                        {
+                                                                            ...thisEvent,
+
+                                                                            offeringHost:
+                                                                                thisOffer.host,
+                                                                        };
+                                                                    // thisOffer.theEvent =
+                                                                    //     thisEvent;
+                                                                    !thisOffer.artistViewedOn &&
+                                                                        artistViewedHostOffer(
+                                                                            thisOffer
+                                                                                .host
+                                                                                ._id,
+                                                                            thisEvent.bookingWhen
+                                                                        );
+                                                                    handleEventBtnClick(
                                                                         thisOffer
                                                                     );
                                                                 }}

@@ -63,6 +63,7 @@ const HostSchema = new mongoose.Schema(
         },
         primarySpace: {
             type: String,
+            default: 'residence',
         },
         specificBand: {
             type: String,

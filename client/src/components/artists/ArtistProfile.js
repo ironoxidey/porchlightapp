@@ -48,6 +48,8 @@ import LiquorTwoToneIcon from '@mui/icons-material/LiquorTwoTone';
 import NoDrinksTwoToneIcon from '@mui/icons-material/NoDrinksTwoTone';
 import AttachMoneyTwoToneIcon from '@mui/icons-material/AttachMoneyTwoTone';
 import MoneyOffTwoToneIcon from '@mui/icons-material/MoneyOffTwoTone';
+import InterpreterModeTwoToneIcon from '@mui/icons-material/InterpreterModeTwoTone'; //for opener
+// import SignLanguageTwoToneIcon from '@mui/icons-material/SignLanguageTwoTone'; //howFansCanShowSupport
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -208,7 +210,7 @@ const ArtistProfile = ({
                     onClose={bookingDetailsDialogHandleClose}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
-                    scroll="paper"
+                    scroll="body"
                     fullWidth
                     maxWidth={isAuthenticated || !wantsToBook ? 'md' : 'xs'}
                 >
@@ -270,6 +272,9 @@ const ArtistProfile = ({
                                     >
                                         <EventSpecificHostForm
                                             theEvent={bookingDialogDetails}
+                                            bookingDetailsDialogHandleClose={
+                                                bookingDetailsDialogHandleClose
+                                            }
                                         />
                                         {/* <StackDateforDisplay
                                             date={

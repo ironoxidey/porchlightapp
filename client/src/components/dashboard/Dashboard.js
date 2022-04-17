@@ -176,18 +176,20 @@ const Dashboard = ({
                                 user.role.indexOf('ADMIN') != -1 &&
                                 artist.me &&
                                 artist.me._id) ? (
-                                <Grid
-                                    item
-                                    sx={{
-                                        margin: '8px auto',
-                                    }}
-                                >
-                                    <Link to="/edit-artist-booking">
-                                        <Button btnwidth="300" className="">
-                                            <DateRangeTwoToneIcon /> Edit My
-                                            Booking Info
-                                        </Button>
-                                    </Link>
+                                <>
+                                    <Grid
+                                        item
+                                        sx={{
+                                            margin: '8px auto',
+                                        }}
+                                    >
+                                        <Link to="/edit-artist-booking">
+                                            <Button btnwidth="300" className="">
+                                                <DateRangeTwoToneIcon /> Edit My
+                                                Booking Info
+                                            </Button>
+                                        </Link>
+                                    </Grid>
                                     {myArtistEvents &&
                                         myArtistEvents.length > 0 && (
                                             <Grid
@@ -234,7 +236,7 @@ const Dashboard = ({
                                                     )}
                                             </Grid>
                                         )}
-                                </Grid>
+                                </>
                             ) : artist.me &&
                               artist.me._id &&
                               artist.me.active ? (

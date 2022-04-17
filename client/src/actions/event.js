@@ -8,6 +8,7 @@ import {
     GET_THIS_ARTIST_BOOKING_EVENTS,
     GET_THIS_ARTIST_EVENTS_OFFERS,
     ARTIST_VIEWED_HOST_OFFER,
+    ARTIST_ACCEPTED_HOST_OFFER,
     EVENTS_ERROR,
 } from './types';
 
@@ -143,26 +144,78 @@ export const hostRaiseHand = (formData, history) => async (dispatch) => {
 
 // Artist viewed Host's offer to book
 export const artistViewedHostOffer =
-    (formData, history) => async (dispatch) => {
+    (theHost, theEvent, history) => async (dispatch) => {
+        let formData = {
+            bookingWhen: theEvent,
+            offeringHost: { _id: theHost },
+        };
+        //console.log('artistViewedHostOffer formData', formData);
         try {
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             };
+            //let formData = { ...theEvent, offeringHost: theHost };
             const res = await axios.post(
                 '/api/events/artistViewedHostOffer',
                 formData,
                 config
             );
-            console.log('artistViewedHostOffer res.data:', res.data);
+            //console.log('artistViewedHostOffer res.data:', res.data);
             dispatch({
                 type: ARTIST_VIEWED_HOST_OFFER,
                 payload: res.data,
             });
         } catch (err) {
-            const errors = err.response.data.errors;
             console.log('error: ' + err);
+            const errors = err.response.data.errors;
+
+            if (errors) {
+                errors.forEach((error) =>
+                    dispatch(setAlert(error.msg, 'danger'))
+                );
+            }
+            dispatch({
+                type: UPDATE_EVENT_ERROR,
+                payload: {
+                    msg: err.response.statusText,
+                    status: err.response.status,
+                },
+            });
+            //dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        }
+    };
+
+// Artist viewed Host's offer to book
+export const artistAcceptOffer =
+    (bookingWhen, theOffer, history) => async (dispatch) => {
+        let formData = {
+            bookingWhen: bookingWhen,
+            offeringHost: { _id: theOffer.host._id },
+        };
+        //console.log('artistAcceptOffer formData', formData);
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            //let formData = { ...theEvent, offeringHost: theHost };
+            const res = await axios.post(
+                '/api/events/artistAcceptOffer',
+                formData,
+                config
+            );
+            //console.log('artistAcceptOffer res.data:', res.data);
+            dispatch({
+                type: ARTIST_ACCEPTED_HOST_OFFER,
+                payload: res.data,
+            });
+        } catch (err) {
+            //console.log('error: ' + err);
+            const errors = err.response.data.errors;
+
             if (errors) {
                 errors.forEach((error) =>
                     dispatch(setAlert(error.msg, 'danger'))
