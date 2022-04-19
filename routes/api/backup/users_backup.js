@@ -149,6 +149,32 @@ router.put(
         const { email } = req.body;
 
         try {
+            //console.log(req.body);
+            //console.log("You should be seeing this right before the findOne()");
+            // await User.findOne({ email }).then(userDoc => {
+            //     const payload = {
+            //       user: {
+            //         id: userDoc.id
+            //       },
+            //     };
+            //     const resetToken = jwt.sign(
+            //       payload,
+            //       config.get('resetPasswordKey'),
+            //       { expiresIn: '20m' }, //20 minutes
+            //     );
+            //     const link = `http://reviewthearts.com/reset-password?token=${resetToken}`;
+
+            //     userDoc.resetLink = resetToken;
+
+            //     userDoc.markModified('resetLink');
+
+            //     userDoc.save(err => console.log(err));
+
+            //     res.send('An email should get sent now.');
+            //     sendEmail(email,"Password Reset Request",{name: userDoc.name.trim().split(' ')[0], link: link,},"./template/requestResetPassword.handlebars");
+
+            // }).clone();
+
             let userDoc = await User.findOne({ email });
 
             if (!userDoc) {

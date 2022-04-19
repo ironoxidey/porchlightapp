@@ -6,7 +6,7 @@ import Spinner from '../layout/Spinner';
 import DashboardActions from './DashboardActions';
 //import Experience from './Experience';
 import Education from './Education';
-import { deleteAccount, getCurrentProfile } from '../../actions/profile';
+import { deleteAccount /* getCurrentProfile */ } from '../../actions/profile';
 import { getCurrentArtist } from '../../actions/artist';
 import { getCurrentHost } from '../../actions/host';
 import { Grid, Typography, Box } from '@mui/material';
@@ -21,26 +21,26 @@ import { StackDateforDisplay } from '../../actions/app';
 import ArtistDashboardEventCard from '../events/ArtistDashboardEventCard';
 
 const Dashboard = ({
-    getCurrentProfile,
+    //getCurrentProfile,
     deleteAccount,
-    auth: { user },
-    profile: { profile, loading },
+    auth: { user, loading },
+    //profile: { profile, loading },
     event: { myHostEvents, myArtistEvents },
     getCurrentArtist,
     artist,
     getCurrentHost,
     host,
 }) => {
-    useEffect(() => {
-        getCurrentProfile();
-    }, [getCurrentProfile]);
+    // useEffect(() => {
+    //     getCurrentProfile();
+    // }, [getCurrentProfile]);
     useEffect(() => {
         getCurrentArtist();
     }, [getCurrentArtist, user]);
     useEffect(() => {
         getCurrentHost();
     }, [getCurrentHost, user]);
-    return loading && profile === null ? (
+    return loading && user === null ? (
         <Spinner />
     ) : (
         <Fragment>
@@ -464,11 +464,12 @@ const Dashboard = ({
 };
 
 Dashboard.propTypes = {
-    getCurrentProfile: PropTypes.func.isRequired,
-    //getCurrentArist: PropTypes.func.isRequired,
+    //getCurrentProfile: PropTypes.func.isRequired,
+    getCurrentArist: PropTypes.func.isRequired,
+    getCurrentHost: PropTypes.func.isRequired,
     deleteAccount: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
-    profile: PropTypes.object.isRequired,
+    //profile: PropTypes.object.isRequired,
     artist: PropTypes.object.isRequired,
     host: PropTypes.object.isRequired,
     event: PropTypes.object.isRequired,
@@ -476,14 +477,14 @@ Dashboard.propTypes = {
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
-    profile: state.profile,
+    //profile: state.profile,
     artist: state.artist,
     host: state.host,
     event: state.event,
 });
 
 export default connect(mapStateToProps, {
-    getCurrentProfile,
+    //getCurrentProfile,
     getCurrentArtist,
     getCurrentHost,
     deleteAccount,

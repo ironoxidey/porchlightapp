@@ -10,6 +10,8 @@ const User = require('../../models/User');
 const Event = require('../../models/Event');
 const Host = require('../../models/Host');
 
+const sendEmail = require('../../utils/email/sendEmail');
+
 function convertToSlug(Text) {
     return Text.toLowerCase()
         .replace(/ /g, '-')
@@ -66,7 +68,7 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
     if (req.user.role && req.user.role.indexOf('HOST') > -1) {
         //console.log("User is HOST and can raise their hand to book shows.");
         try {
-            console.log('eventFields', eventFields);
+            //console.log('eventFields', eventFields);
             let host = await Host.findOne({ email: req.user.email });
 
             let eventDetails = await Event.findOneAndUpdate(
@@ -86,12 +88,35 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
                 { new: true }
             )
                 .select(
-                    '-artistEmail -agreeToPayAdminFee -payoutHandle -offersFromHosts -hostsOfferingToBook'
+                    //'-artistEmail -agreeToPayAdminFee -payoutHandle -offersFromHosts -hostsOfferingToBook'
+                    '-agreeToPayAdminFee -payoutHandle -offersFromHosts -hostsOfferingToBook'
                 )
                 .populate(
                     'artist',
                     '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
-                );
+                )
+                .lean(); //.lean required to delete artistEmail later -- Documents returned from queries with the lean option enabled are plain javascript objects, not Mongoose Documents. They have no save method, getters/setters, virtuals, or other Mongoose features. https://stackoverflow.com/a/71746004/3338608
+
+            let emailDate = new Date(
+                eventDetails.bookingWhen
+            ).toLocaleDateString(undefined, {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            });
+            //Send an email to the artist and then delete the artist's email address from the eventDetails object we return to the host in the app
+            sendEmail(eventDetails.artistEmail, {
+                event: 'HOST_OFFER',
+                template: 'BXKVWA13SK4G60N1ZE1S339YPKAM',
+                name: eventDetails.artist.firstName,
+                hostName: host.firstName + ' ' + host.lastName,
+                stageName: eventDetails.artist.stageName,
+                eventDate: emailDate,
+                hostLocation: host.city + ', ' + host.state,
+            });
+            delete eventDetails.artistEmail;
+
             //res.json(event);
             //console.log('eventDetails', eventDetails);
             res.json(eventDetails);

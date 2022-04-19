@@ -694,6 +694,15 @@ const EventSpecificHostForm = ({
         ],
         guaranteeHonorarium: [
             [
+                <FormLabel component="h3">
+                    You mentioned before that you might be able to draw{' '}
+                    {host.me.numDraw} people to a show. Considering that we’re{' '}
+                    {theEvent.costStructure === 'ticket'
+                        ? 'selling tickets for '
+                        : 'hoping for individual donations of '}{' '}
+                    ${theEvent.namedPrice}, {artist.stageName} is looking at
+                    maybe making ${host.me.numDraw * theEvent.namedPrice}.
+                </FormLabel>,
                 <FormLabel component="legend">
                     If the band comes up short of their hoped-for $
                     {artist.financialHopes} minimum, would you be willing to
