@@ -31,6 +31,7 @@ import {
     Typography,
     SvgIcon,
     Divider,
+    Tooltip,
 } from '@mui/material';
 import ReactPhoneInput from 'react-phone-input-mui';
 import { styled } from '@mui/material/styles';
@@ -110,6 +111,7 @@ const EventSpecificHostForm = ({
         guaranteeHonorarium: '',
         honorariumAmount: '',
         extraClarification: '',
+        seatingProvided: '',
     });
 
     useEffect(() => {
@@ -129,7 +131,6 @@ const EventSpecificHostForm = ({
                     loading || !host.me.refreshments
                         ? []
                         : host.me.refreshments,
-
                 overnight:
                     loading || !host.me.overnight ? '' : host.me.overnight,
                 overnightArrangements:
@@ -160,6 +161,10 @@ const EventSpecificHostForm = ({
                     loading || !host.me.extraClarification
                         ? ''
                         : host.me.extraClarification,
+                seatingProvided:
+                    loading || !host.me.seatingProvided
+                        ? ''
+                        : host.me.seatingProvided,
             });
         }
     }, [auth.loading, createMyHost, host.me]);
@@ -176,6 +181,7 @@ const EventSpecificHostForm = ({
         guaranteeHonorarium,
         honorariumAmount,
         extraClarification,
+        seatingProvided,
     } = formData;
 
     const onChange = (e) => {
@@ -323,23 +329,14 @@ const EventSpecificHostForm = ({
                         make an offer to book this show.
                     </em>
                 </FormLabel>,
-                <Grid item container justifyContent="center" sx={{}}>
-                    <StackDateforDisplay
-                        date={theEvent.bookingWhen}
-                    ></StackDateforDisplay>
-                </Grid>,
+                // <Grid item container justifyContent="center" sx={{}}>
+                //     <StackDateforDisplay
+                //         date={theEvent.bookingWhen}
+                //     ></StackDateforDisplay>
+                // </Grid>,
                 <FormLabel component="legend" sx={{ marginBottom: '0px' }}>
-                    Does this schedule work for you?
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{
-                        textAlign: 'center',
-                        display: 'block',
-                        marginBottom: '8px',
-                    }}
-                >
-                    <em>(propose whatever changes you need to make)</em>
+                    If this schedule doesn’t work for you, please propose
+                    whatever changes you need to make.
                 </FormLabel>,
             ],
             [
@@ -546,81 +543,113 @@ const EventSpecificHostForm = ({
                 )}
             </Grid>,
         ],
-        overnight: theEvent.overnight && [
-            [
-                <FormLabel component="legend">
-                    Are you able and willing to host the band overnight?
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{ textAlign: 'center', display: 'block' }}
-                >
-                    <em>
-                        {artist.firstName} {artist.lastName} is traveling
-                        {theEvent.travelingCompanions &&
-                        theEvent.travelingCompanions.length > 0
-                            ? ` with a ` +
-                              theEvent.travelingCompanions.map(
-                                  (travelingCompanion, index) =>
-                                      theEvent.travelingCompanions.length > 1 &&
-                                      index ===
-                                          theEvent.travelingCompanions.length -
-                                              1
-                                          ? ' and ' + travelingCompanion.role
-                                          : ' ' + travelingCompanion.role
-                              )
-                            : ' alone'}
-                        .
-                    </em>
-                </FormLabel>,
-            ],
+        seatingProvided: [
+            <FormLabel component="legend">
+                Do you have all the seating you'll need, or should we encourage
+                people to bring their own chairs?
+            </FormLabel>,
             [
                 <FormControl component="fieldset">
                     <RadioGroup
-                        id="overnight"
-                        value={overnight}
-                        name="overnight"
+                        id="seatingProvided"
+                        value={seatingProvided}
+                        name="seatingProvided"
                         onChange={(e) => onChange(e)}
                     >
                         <FormControlLabel
                             value="yes"
                             control={<Radio />}
-                            label={`Yes, I can accommodate ${
-                                theEvent.travelingCompanions.length + 1
-                            }
+                            label={`Yes, I've got all the seating needed for at least ${host.me.maxNumAttendees} people.`}
+                        />
+                        <FormControlLabel
+                            value="no"
+                            control={<Radio />}
+                            label="No, please encourage attenders to bring something to sit on."
+                        />
+                    </RadioGroup>
+                </FormControl>,
+            ],
+        ],
+        ...(theEvent.overnight && {
+            overnight: [
+                [
+                    <FormLabel component="legend">
+                        Are you able and willing to host the band overnight?
+                    </FormLabel>,
+                    <FormLabel
+                        component="small"
+                        sx={{ textAlign: 'center', display: 'block' }}
+                    >
+                        <em>
+                            {artist.firstName} {artist.lastName} is traveling
+                            {theEvent.travelingCompanions &&
+                            theEvent.travelingCompanions.length > 0
+                                ? ` with a ` +
+                                  theEvent.travelingCompanions.map(
+                                      (travelingCompanion, index) =>
+                                          theEvent.travelingCompanions.length >
+                                              1 &&
+                                          index ===
+                                              theEvent.travelingCompanions
+                                                  .length -
+                                                  1
+                                              ? ' and ' +
+                                                travelingCompanion.role
+                                              : ' ' + travelingCompanion.role
+                                  )
+                                : ' alone'}
+                            .
+                        </em>
+                    </FormLabel>,
+                ],
+                [
+                    <FormControl component="fieldset">
+                        <RadioGroup
+                            id="overnight"
+                            value={overnight}
+                            name="overnight"
+                            onChange={(e) => onChange(e)}
+                        >
+                            <FormControlLabel
+                                value="yes"
+                                control={<Radio />}
+                                label={`Yes, I can accommodate ${
+                                    theEvent.travelingCompanions.length + 1
+                                }
                                  ${
                                      theEvent.travelingCompanions.length + 1 > 1
                                          ? ' people'
                                          : 'person'
                                  } overnight.`}
-                        />
-                        <FormControlLabel
-                            value="no"
-                            control={<Radio />}
-                            label="No."
-                        />
-                    </RadioGroup>
-
-                    {overnight && overnight === 'yes' && (
-                        <Grid item xs={12} sx={{ width: '100%' }}>
-                            <FormLabel component="legend">
-                                Can you describe the potential sleeping
-                                arrangements?
-                            </FormLabel>
-                            <TextField
-                                variant="standard"
-                                name="overnightArrangements"
-                                id="overnightArrangements"
-                                label={`I'm able to offer `}
-                                value={overnightArrangements}
-                                onChange={(e) => onChange(e)}
-                                sx={{ width: '100%' }}
                             />
-                        </Grid>
-                    )}
-                </FormControl>,
+                            <FormControlLabel
+                                value="no"
+                                control={<Radio />}
+                                label="No."
+                            />
+                        </RadioGroup>
+
+                        {overnight && overnight === 'yes' && (
+                            <Grid item xs={12} sx={{ width: '100%' }}>
+                                <FormLabel component="legend">
+                                    Can you describe the potential sleeping
+                                    arrangements?
+                                </FormLabel>
+                                <TextField
+                                    variant="standard"
+                                    name="overnightArrangements"
+                                    id="overnightArrangements"
+                                    label={`I'm able to offer `}
+                                    value={overnightArrangements}
+                                    onChange={(e) => onChange(e)}
+                                    sx={{ width: '100%' }}
+                                />
+                            </Grid>
+                        )}
+                    </FormControl>,
+                ],
             ],
-        ],
+        }),
         houseRules: [
             <FormLabel component="legend">
                 Let's talk house rules! What rules about being in/around your
@@ -641,11 +670,21 @@ const EventSpecificHostForm = ({
             ],
         ],
         eventbritePublicAddress: [
-            <FormLabel component="legend">
-                We usually set up Eventbrite pages for these shows. In the case
-                of the show you'll be hosting, do you mind if the address is
-                public?
-            </FormLabel>,
+            [
+                <FormLabel component="h3">
+                    We usually set up Eventbrite pages for these shows. Some
+                    folks prefer to have their street address kept private, and
+                    shared in an email with only those who{' '}
+                    {theEvent.costStructure === 'ticket'
+                        ? 'buy a ticket'
+                        : 'RSVP'}
+                    .
+                </FormLabel>,
+                <FormLabel component="legend">
+                    Are you comfortable with your address being publicly
+                    viewable on the Eventbrite page?
+                </FormLabel>,
+            ],
             [
                 <FormControl component="fieldset">
                     <RadioGroup
@@ -706,19 +745,31 @@ const EventSpecificHostForm = ({
                 <FormLabel component="legend">
                     If the band comes up short of their hoped-for $
                     {artist.financialHopes} minimum, would you be willing to
-                    provide a guarantee or honorarium?
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{ textAlign: 'center', display: 'block' }}
-                >
-                    <em>
-                        A guarantee is when the host covers the difference
-                        between the desired minimum and the amount made in
-                        tickets/donations. <br />
-                        An honorarium is a flat amount you’re willing to offer
-                        the musician to come play this concert
-                    </em>
+                    provide a{' '}
+                    <Tooltip
+                        arrow={true}
+                        placement="bottom"
+                        title={
+                            'A guarantee is when the host covers the difference between the desired minimum and the amount made in tickets/donations.'
+                        }
+                    >
+                        <span style={{ textDecoration: 'underline dotted' }}>
+                            guarantee
+                        </span>
+                    </Tooltip>{' '}
+                    or{' '}
+                    <Tooltip
+                        arrow={true}
+                        placement="bottom"
+                        title={
+                            'An honorarium is a flat amount you’re willing to offer the musician to come play this concert.'
+                        }
+                    >
+                        <span style={{ textDecoration: 'underline dotted' }}>
+                            honorarium
+                        </span>
+                    </Tooltip>
+                    ?
                 </FormLabel>,
             ],
             [
@@ -918,6 +969,19 @@ const EventSpecificHostForm = ({
 
     return (
         <Fragment>
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    backgroundColor: 'rgba(0 0 0 /.6)',
+                    padding: '0',
+                }}
+            >
+                <StackDateforDisplay
+                    date={theEvent.bookingWhen}
+                ></StackDateforDisplay>
+            </Box>
             <form className="form" onSubmit={(e) => onSubmit(e)}>
                 <Grid container sx={{ padding: '20px!important' }}>
                     <Grid

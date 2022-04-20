@@ -5,9 +5,11 @@ const EventSchema = new mongoose.Schema(
         artist: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'artist',
+            required: true,
         },
         artistSlug: {
             type: String,
+            required: true,
         },
         artistUser: {
             type: mongoose.Schema.Types.ObjectId,
@@ -15,6 +17,7 @@ const EventSchema = new mongoose.Schema(
         },
         artistEmail: {
             type: String,
+            required: true,
         },
         hostsOfferingToBook: {
             type: [String],
@@ -103,6 +106,7 @@ const EventSchema = new mongoose.Schema(
         },
         bookingWhen: {
             type: Date,
+            required: true,
         },
         bookingWhere: {
             type: Object,

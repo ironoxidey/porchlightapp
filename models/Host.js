@@ -37,11 +37,18 @@ const HostSchema = new mongoose.Schema(
         profileImg: {
             type: String,
         },
-        latitude: {
-            type: Number,
-        },
-        longitude: {
-            type: Number,
+        latLong: {
+            //https://mongoosejs.com/docs/geojson.html#
+            type: {
+                type: String, // Don't do `{ latLong: { type: String } }`
+                enum: ['Point'], // 'latLong.type' must be 'Point'
+                required: true,
+                default: 'Point',
+            },
+            coordinates: {
+                type: [Number],
+                required: true,
+            },
         },
         date: {
             type: Date,
@@ -70,19 +77,15 @@ const HostSchema = new mongoose.Schema(
         },
         venueStreetAddress: {
             type: String,
-            required: true,
         },
         venueCity: {
             type: String,
-            required: true,
         },
         venueState: {
             type: String,
-            required: true,
         },
         venueZipCode: {
             type: Number,
-            required: true,
         },
         venueNickname: {
             type: String,

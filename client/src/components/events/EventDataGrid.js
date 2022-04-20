@@ -16,7 +16,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-const UserDataGrid = ({
+const EventDataGrid = ({
     getArtistByEmail,
     getAllUsers,
     updateUserRole,
@@ -105,108 +105,91 @@ const UserDataGrid = ({
         };
 
         return (
-            user &&
-            user.role &&
-            user.role.indexOf('ADMIN') > -1 && (
-                <Fragment>
-                    {adminAlertUser && adminAlertUser.value && (
-                        <Dialog
-                            open={adminAlertOpen}
-                            onClose={adminAlertHandleClose}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                        >
-                            <DialogTitle id="alert-dialog-title">
-                                <Avatar
-                                    alt={`${adminAlertUser.row.avatar}`}
-                                    src={`${adminAlertUser.row.avatar}`}
-                                    sx={{
-                                        width: '150px',
-                                        height: '150px',
-                                        margin: '0 auto',
-                                    }}
-                                />
-
-                                {'Are you sure you want ' +
-                                    adminAlertUser.row.name +
-                                    ' (' +
-                                    adminAlertUser.row.email +
-                                    ') to have the ADMIN role?'}
-                            </DialogTitle>
-                            <DialogContent>
-                                <DialogContentText id="alert-dialog-description">
-                                    Giving this user the ADMIN role will give
-                                    them access to everything. You should only
-                                    do this if you really trust{' '}
-                                    {adminAlertUser.row.name}.
-                                </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={adminAlertHandleClose}>
-                                    No
-                                </Button>
-                                <Button
-                                    onClick={(e) => {
-                                        adminAlertHandleClose();
-                                        onAutocompleteTagChange(
-                                            adminAlertUser.value
-                                        );
-                                    }}
-                                >
-                                    Yes
-                                </Button>
-                            </DialogActions>
-                        </Dialog>
-                    )}
-                    <Autocomplete
-                        ref={autoCompleteInput}
-                        //id="role"
-                        name="role"
-                        multiple
-                        disableCloseOnSelect
-                        disableClearable
-                        value={roleState || value}
-                        options={[
-                            'ADMIN',
-                            'ARTIST',
-                            'ATTENDER',
-                            'BOOKING',
-                            'HOST',
-                        ]}
-                        onChange={(event, value) => {
-                            // console.log();
-                            onAutocompleteConfirmTagChange(
-                                event,
-                                'role',
-                                value
-                            );
-                        }}
-                        renderTags={(value, getTagProps) =>
-                            value.map((option, index) => (
-                                <Chip
-                                    variant="outlined"
-                                    name="role"
-                                    label={option}
-                                    {...getTagProps({ index })}
-                                />
-                            ))
-                        }
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                error={params.length > 0}
-                                sx={{ width: '100%' }}
-                                variant="standard"
-                                //label={`Role`}
-                                name="role"
+            <Fragment>
+                {adminAlertUser && adminAlertUser.value && (
+                    <Dialog
+                        open={adminAlertOpen}
+                        onClose={adminAlertHandleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">
+                            <Avatar
+                                alt={`${adminAlertUser.row.avatar}`}
+                                src={`${adminAlertUser.row.avatar}`}
+                                sx={{
+                                    width: '150px',
+                                    height: '150px',
+                                    margin: '0 auto',
+                                }}
                             />
-                        )}
-                        sx={{
-                            width: '100%',
-                        }}
-                    />
-                </Fragment>
-            )
+
+                            {'Are you sure you want ' +
+                                adminAlertUser.row.name +
+                                ' (' +
+                                adminAlertUser.row.email +
+                                ') to have the ADMIN role?'}
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                Giving this user the ADMIN role will give them
+                                access to everything. You should only do this if
+                                you really trust {adminAlertUser.row.name}.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={adminAlertHandleClose}>No</Button>
+                            <Button
+                                onClick={(e) => {
+                                    adminAlertHandleClose();
+                                    onAutocompleteTagChange(
+                                        adminAlertUser.value
+                                    );
+                                }}
+                            >
+                                Yes
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                )}
+                <Autocomplete
+                    ref={autoCompleteInput}
+                    //id="role"
+                    name="role"
+                    multiple
+                    disableCloseOnSelect
+                    disableClearable
+                    value={roleState || value}
+                    options={['ADMIN', 'ARTIST', 'ATTENDER', 'BOOKING', 'HOST']}
+                    onChange={(event, value) => {
+                        // console.log();
+                        onAutocompleteConfirmTagChange(event, 'role', value);
+                    }}
+                    renderTags={(value, getTagProps) =>
+                        value.map((option, index) => (
+                            <Chip
+                                variant="outlined"
+                                name="role"
+                                label={option}
+                                {...getTagProps({ index })}
+                            />
+                        ))
+                    }
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            error={params.length > 0}
+                            sx={{ width: '100%' }}
+                            variant="standard"
+                            //label={`Role`}
+                            name="role"
+                        />
+                    )}
+                    sx={{
+                        width: '100%',
+                    }}
+                />
+            </Fragment>
         );
     }
 
@@ -380,9 +363,8 @@ const UserDataGrid = ({
     const [userRows, setUserRows] = useState([]);
 
     return (
-        user &&
-        user.role &&
-        user.role.indexOf('ADMIN') > -1 && (
+        (user && user.role && user.role.indexOf('ADMIN') > -1) ||
+        (user.role.indexOf('BOOKING') > -1 && (
             <DataGrid
                 rows={userRows}
                 columns={userColumns}
@@ -396,11 +378,11 @@ const UserDataGrid = ({
                     },
                 }}
             />
-        )
+        ))
     );
 };
 
-UserDataGrid.propTypes = {
+EventDataGrid.propTypes = {
     auth: PropTypes.object.isRequired,
     users: PropTypes.array.isRequired,
     getAllUsers: PropTypes.func.isRequired,
@@ -409,7 +391,6 @@ UserDataGrid.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    auth: state.auth,
     users: state.auth.users,
 });
 
@@ -417,4 +398,4 @@ export default connect(mapStateToProps, {
     getAllUsers,
     getArtistByEmail,
     updateUserRole,
-})(UserDataGrid);
+})(EventDataGrid);

@@ -72,25 +72,6 @@ export const getMyArtistEventsOffers = () => async (dispatch) => {
     }
 };
 
-// Get all hosts
-// export const getHostsLocations = () => async (dispatch) => {
-//     try {
-//         const res = await axios.get('/api/hosts');
-//         dispatch({
-//             type: GET_HOSTS,
-//             payload: res.data,
-//         });
-//     } catch (err) {
-//         dispatch({
-//             type: HOST_ERROR,
-//             payload: {
-//                 msg: err.response.statusText,
-//                 status: err.response.status,
-//             },
-//         });
-//     }
-// };
-
 // Offer to host a show
 export const hostRaiseHand = (formData, history) => async (dispatch) => {
     try {
@@ -231,3 +212,20 @@ export const artistAcceptOffer =
             //dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
         }
     };
+
+//Get all events for [ADMIN, BOOKING]
+export const getAllEvents = () => async (dispatch) => {
+    try {
+        const res = await axios.get('/api/events/edit');
+        //res.data.avatar = await axios.get('/api/artists/my-avatar');
+
+        dispatch({
+            type: GET_ALL_EVENTS,
+            payload: res.data,
+        });
+    } catch (err) {
+        dispatch({
+            type: AUTH_ERROR,
+        });
+    }
+};

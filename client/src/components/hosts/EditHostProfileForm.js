@@ -108,7 +108,7 @@ const EditHostProfileForm = ({
         venueNickname: '',
         backupPlan: '',
         maxNumAttendees: '',
-        seatingProvided: '',
+        //seatingProvided: '',
         venueImg: '',
         specialNavDirections: '',
         overnight: '',
@@ -169,10 +169,10 @@ const EditHostProfileForm = ({
                     loading || !theHost.maxNumAttendees
                         ? ''
                         : theHost.maxNumAttendees,
-                seatingProvided:
-                    loading || !theHost.seatingProvided
-                        ? ''
-                        : theHost.seatingProvided,
+                // seatingProvided:
+                //     loading || !theHost.seatingProvided
+                //         ? ''
+                //         : theHost.seatingProvided,
                 venueImg: loading || !theHost.venueImg ? '' : theHost.venueImg,
                 specialNavDirections:
                     loading || !theHost.specialNavDirections
@@ -218,7 +218,7 @@ const EditHostProfileForm = ({
                     venueNickname: '',
                     backupPlan: '',
                     maxNumAttendees: '',
-                    seatingProvided: '',
+                    //seatingProvided: '',
                     venueImg: '',
                     specialNavDirections: '',
                     overnight: '',
@@ -251,7 +251,7 @@ const EditHostProfileForm = ({
         venueNickname,
         backupPlan,
         maxNumAttendees,
-        seatingProvided,
+        //seatingProvided,
         venueImg,
         specialNavDirections,
         overnight,
@@ -989,33 +989,6 @@ const EditHostProfileForm = ({
                         type="number"
                     />
                 </Grid>,
-            ],
-        ],
-        seatingProvided: [
-            <FormLabel component="legend">
-                Do you have all the seating you'll need, or should we encourage
-                people to bring their own chairs?
-            </FormLabel>,
-            [
-                <FormControl component="fieldset">
-                    <RadioGroup
-                        id="seatingProvided"
-                        value={seatingProvided}
-                        name="seatingProvided"
-                        onChange={(e) => onChange(e)}
-                    >
-                        <FormControlLabel
-                            value="yes"
-                            control={<Radio />}
-                            label={`Yes, I've got all the seating needed for at least ${maxNumAttendees} people.`}
-                        />
-                        <FormControlLabel
-                            value="no"
-                            control={<Radio />}
-                            label="No, please encourage attenders to bring something to sit on."
-                        />
-                    </RadioGroup>
-                </FormControl>,
             ],
         ],
         venueImg: [

@@ -3,6 +3,7 @@ import {
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
     GET_THIS_ARTIST_BOOKING_EVENTS,
+    GET_ALL_EVENTS,
     GET_THIS_ARTIST_EVENTS_OFFERS,
     ARTIST_VIEWED_HOST_OFFER,
     ARTIST_ACCEPTED_HOST_OFFER,
@@ -29,6 +30,7 @@ export default function (state = initialState, action) {
                 loading: false,
             };
         case GET_THIS_ARTIST_BOOKING_EVENTS:
+        case GET_ALL_EVENTS:
             return {
                 ...state,
                 events: payload,

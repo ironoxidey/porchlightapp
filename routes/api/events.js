@@ -46,6 +46,7 @@ router.get('/getArtistBooking/:slug', async (req, res) => {
                 'travelingCompanions.email': 0,
             }
         ).sort({ bookingWhen: 1 }); //.select('-artistEmail -agreeToPayAdminFee -payoutHandle'); //.select(['city', 'state', 'zipCode']); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
+        console.log(events);
         res.json(events);
     } catch (err) {
         console.error(err.message);
@@ -75,6 +76,7 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
                 {
                     artist: eventFields.artist._id,
                     bookingWhen: eventFields.bookingWhen,
+                    status: 'PENDING', //only allow offers on pending booking dates
                 },
                 {
                     $addToSet: {
@@ -294,13 +296,50 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
             )
                 .select('-artistEmail -hostsOfferingToBook')
                 .populate(
+                    'confirmedHost',
+                    '_id email firstName lastName city state'
+                )
+                .populate(
                     'offersFromHosts.host',
                     '-user -email -phone -streetAddress -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin'
-                );
-            //console.log('eventDetails', eventDetails);
-            res.json(eventDetails);
+                )
+                .lean(); //.lean required to delete email later -- Documents returned from queries with the lean option enabled are plain javascript objects, not Mongoose Documents. They have no save method, getters/setters, virtuals, or other Mongoose features. https://stackoverflow.com/a/71746004/3338608
+
+            if (eventDetails) {
+                console.log('eventDetails', eventDetails);
+                let emailDate = new Date(
+                    eventFields.bookingWhen
+                ).toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                });
+                //Send an email to the artist and then delete the artist's email address from the eventDetails object we return to the host in the app
+                sendEmail(eventDetails.confirmedHost.email, {
+                    event: 'ARTIST_ACCEPTS_OFFER',
+                    template: 'TFJSKATYZZMWHSNEGNPZCCYM4E1B',
+                    hostName:
+                        eventDetails.confirmedHost.firstName +
+                        ' ' +
+                        eventDetails.confirmedHost.lastName,
+                    stageName: eventDetails.artistSlug,
+                    eventDate: emailDate,
+                    hostLocation:
+                        eventDetails.confirmedHost.city +
+                        ', ' +
+                        eventDetails.confirmedHost.state,
+                });
+                delete eventDetails.confirmedHost.email;
+
+                //console.log('eventDetails', eventDetails);
+                res.json(eventDetails);
+            } else {
+                console.log('This event is already booked.');
+                res.status(500).send('This event is already booked.');
+            }
         } catch (err) {
-            //console.error(err.message);
+            console.log('artistAcceptOffer err', err);
             res.status(500).send('Server Error: ' + err.message);
         }
     } else {
@@ -316,11 +355,14 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
 });
 
 // @route    GET api/events/edit
-// @desc     [ADMIN] Get all events for editing (everything)
+// @desc     [ADMIN, BOOKING] Get all events for editing (everything)
 // @access   Private
 router.get('/edit', [auth], async (req, res) => {
     //if (req.user.role === 'ADMIN') {
-    if (req.user.role && req.user.role.indexOf('ADMIN') != -1) {
+    if (
+        (req.user.role && req.user.role.indexOf('ADMIN') > -1) ||
+        req.user.role.indexOf('BOOKING') > -1
+    ) {
         //must be an ADMIN to get into all of this!
         try {
             const eventDetails = await Event.find();
@@ -341,7 +383,9 @@ router.get('/edit', [auth], async (req, res) => {
             res.status(500).send('Server Error');
         }
     } else {
-        res.status(500).send('Only ADMINs can edit all events.');
+        res.status(500).send(
+            'Only ADMINs and BOOKING coordinators can get all events like this.'
+        );
     }
 });
 

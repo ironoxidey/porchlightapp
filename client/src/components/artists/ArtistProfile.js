@@ -252,8 +252,12 @@ const ArtistProfile = ({
                             ) : host &&
                               host.me &&
                               host.me._id &&
+                              host.me.firstName &&
+                              host.me.lastName &&
                               host.me.email &&
-                              host.me.streetAddress ? (
+                              host.me.profileImg &&
+                              (host.me.streetAddress ||
+                                  host.me.venueStreetAddress) ? (
                                 <Grid
                                     container
                                     item
@@ -974,24 +978,27 @@ const ArtistProfile = ({
                                                                             .bookingWhere
                                                                             .state}
                                                                 </Grid>
-                                                                <Grid
-                                                                    item
-                                                                    sx={{
-                                                                        marginLeft:
-                                                                            '8px',
-                                                                    }}
-                                                                >
-                                                                    <Button
-                                                                        onClick={() => {
-                                                                            handleBookingDetailsBtnClick(
-                                                                                thisEvent
-                                                                            );
+                                                                {thisEvent.status ===
+                                                                    'PENDING' && (
+                                                                    <Grid
+                                                                        item
+                                                                        sx={{
+                                                                            marginLeft:
+                                                                                '8px',
                                                                         }}
                                                                     >
-                                                                        Hosting
-                                                                        Details
-                                                                    </Button>
-                                                                </Grid>
+                                                                        <Button
+                                                                            onClick={() => {
+                                                                                handleBookingDetailsBtnClick(
+                                                                                    thisEvent
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            Hosting
+                                                                            Details
+                                                                        </Button>
+                                                                    </Grid>
+                                                                )}
                                                             </Grid>
                                                         </Grid>
                                                     </Tooltip>
@@ -1673,7 +1680,7 @@ ArtistProfile.propTypes = {
     user: PropTypes.object,
     isAuthenticated: PropTypes.bool,
     host: PropTypes.object,
-    events: PropTypes.object,
+    events: PropTypes.array,
     hostRaiseHand: PropTypes.func.isRequired,
     getArtistBookingEvents: PropTypes.func.isRequired,
 };

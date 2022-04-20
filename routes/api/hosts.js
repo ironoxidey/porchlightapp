@@ -5,6 +5,8 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult, body } = require('express-validator');
 
+const addressGeocode = require('../../utils/maps/geocoding');
+
 const User = require('../../models/User');
 const Host = require('../../models/Host');
 
@@ -15,7 +17,7 @@ function convertToSlug(Text) {
 }
 
 function firstInt(inputString) {
-    const ints = inputString.match(/\d+/g); //returns an array of numbers
+    const ints = String(inputString).match(/\d+/g); //returns an array of numbers
     //console.log('hosts route - ints:', ints);
     if (ints && ints.length > 0) {
         return ints[0];
@@ -62,6 +64,7 @@ router.post('/admin-update', [auth], async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
     //console.log(req.user);
+    let numHostsUpdated = 0;
     if (req.body instanceof Array) {
         await Promise.all(
             req.body.map(async (hostFields) => {
@@ -70,6 +73,7 @@ router.post('/admin-update', [auth], async (req, res) => {
                     : '';
 
                 if (hostFields.numDraw) {
+                    console.log('hostFields.numDraw', hostFields.numDraw);
                     const numDraw = firstInt(hostFields.numDraw);
                     if (numDraw && numDraw > 0) {
                         hostFields.numDraw = numDraw;
@@ -78,6 +82,10 @@ router.post('/admin-update', [auth], async (req, res) => {
                     }
                 }
                 if (hostFields.numHostedBefore) {
+                    console.log(
+                        'hostFields.numHostedBefore',
+                        hostFields.numHostedBefore
+                    );
                     const numHostedBefore = firstInt(
                         hostFields.numHostedBefore
                     );
@@ -88,6 +96,11 @@ router.post('/admin-update', [auth], async (req, res) => {
                     }
                 }
                 if (hostFields.maxNumAttendees) {
+                    console.log(
+                        'hostFields.maxNumAttendees',
+                        hostFields.maxNumAttendees
+                    );
+
                     const maxNumAttendees = firstInt(
                         hostFields.maxNumAttendees
                     );
@@ -114,6 +127,7 @@ router.post('/admin-update', [auth], async (req, res) => {
                             { new: true, upsert: true }
                         );
                         //const hosts = await Host.find();
+                        numHostsUpdated++;
                         res.json(host);
                     } catch (err) {
                         console.error(err.message);
@@ -130,6 +144,7 @@ router.post('/admin-update', [auth], async (req, res) => {
             })
         );
     }
+    console.log(await numHostsUpdated);
 });
 
 // @route    POST api/hosts/updateMe
@@ -256,6 +271,65 @@ router.get('/edit', [auth], async (req, res) => {
 
             //   }
             // });
+
+            res.json(hosts);
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server Error');
+        }
+    } else {
+        res.status(500).send('Only ADMINs can edit all hosts.');
+    }
+});
+
+// @route    GET api/hosts/edit
+// @desc     [ADMIN] Get all hosts for editing (everything)
+// @access   Private
+router.get('/getAllHostLatLong', [auth], async (req, res) => {
+    //if (req.user.role === 'ADMIN') {
+    if (req.user.role && req.user.role.indexOf('ADMIN') > -1) {
+        //must be an ADMIN to get into all of this!
+        try {
+            //https://masteringjs.io/tutorials/mongoose/update#using-documentupdateone
+            const hosts = await Host.find();
+
+            //console.log('hosts', hosts);
+            hosts.forEach(async (host) => {
+                //if !latLong {
+                if (
+                    host.firstName &&
+                    host.lastName &&
+                    host.streetAddress &&
+                    host.city &&
+                    host.state &&
+                    host.zipCode &&
+                    host.latLong.coordinates.length <= 0
+                ) {
+                    //geocode with Google Maps API
+                    const geocodedAddress = await addressGeocode(
+                        host.streetAddress +
+                            ' ' +
+                            host.city +
+                            ', ' +
+                            host.state +
+                            ' ' +
+                            host.zipCode
+                    );
+                    console.log(
+                        host.firstName +
+                            ' ' +
+                            host.lastName +
+                            '’s geocodedAddress is: ',
+                        geocodedAddress
+                    );
+                    host.latLong.coordinates = geocodedAddress;
+                    // host.longitude = geocodedAddress[0];
+                    // host.latitude = geocodedAddress[1];
+                    host.markModified('latLong');
+                    //save in host doc
+                    await host.save();
+                }
+            });
 
             res.json(hosts);
         } catch (err) {
