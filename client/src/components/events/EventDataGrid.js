@@ -270,6 +270,24 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
         }
         return 0;
     };
+    const locationSort = (v1, v2) => {
+        if (v1.state.localeCompare(v2.state) === 0) {
+            return v1.city.localeCompare(v2.city);
+        }
+        return v1.state.localeCompare(v2.state);
+    };
+
+    const lengthSort = (v1, v2) => {
+        if (v1.length === v2.length) {
+            console.log('v1(' + v1.length + ') and v2(' + v2.length + ')');
+            return 0;
+        } else if (v1.length > v2.length) {
+            console.log('v1(' + v1.length + ') and v2(' + v2.length + ')');
+            return 1;
+        } else if (v1.length < v2.length) {
+            return -1;
+        }
+    };
 
     const eventColumns = [
         //https://codesandbox.io/s/e9o2j?file=/demo.js
@@ -328,6 +346,8 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
             width: 170,
             editable: false,
             type: 'string',
+            sortable: true,
+            sortComparator: locationSort,
             valueFormatter: (params) => {
                 if (params.value && params.value.city && params.value.state) {
                     return params.value.city + ', ' + params.value.state;
@@ -342,6 +362,8 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
             width: 700,
             editable: false,
             type: 'string',
+            sortable: true,
+            sortComparator: lengthSort,
             renderCell: (params) => {
                 if (params.value && params.value.length > 0) {
                     let hostsInReach = params.value.map((hostInReach, i) => {
@@ -364,6 +386,41 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                         );
                     });
                     return hostsInReach;
+                } else {
+                    return;
+                }
+            },
+        },
+        {
+            field: 'offersFromHosts',
+            headerName: 'Offers from Hosts',
+            width: 300,
+            editable: false,
+            type: 'string',
+            sortable: true,
+            sortComparator: lengthSort,
+            renderCell: (params) => {
+                if (params.value && params.value.length > 0) {
+                    let hostsOffering = params.value.map((hostOffer, i) => {
+                        return (
+                            <Tooltip
+                                arrow={true}
+                                placement="bottom"
+                                title={
+                                    hostOffer.host.city +
+                                    ', ' +
+                                    hostOffer.host.state
+                                }
+                            >
+                                <span>
+                                    {i > 0 && ', '}
+                                    {hostOffer.host.firstName}{' '}
+                                    {hostOffer.host.lastName}
+                                </span>
+                            </Tooltip>
+                        );
+                    });
+                    return hostsOffering;
                 } else {
                     return;
                 }

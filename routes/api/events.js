@@ -375,7 +375,8 @@ router.get('/edit', [auth], async (req, res) => {
         try {
             const events = await Event.find({})
                 .populate('artist')
-                .populate('hostsInReach.host');
+                .populate('hostsInReach.host')
+                .populate('offersFromHosts.host');
 
             events.forEach(async (eventDetails) => {
                 if (!eventDetails.artistSlug && eventDetails.artist.slug) {
