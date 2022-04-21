@@ -11,6 +11,7 @@ const Event = require('../../models/Event');
 const Host = require('../../models/Host');
 
 const sendEmail = require('../../utils/email/sendEmail');
+const addressGeocode = require('../../utils/maps/geocoding');
 
 function convertToSlug(Text) {
     return Text.toLowerCase()
@@ -38,12 +39,14 @@ router.get('/getArtistBooking/:slug', async (req, res) => {
                 artistSlug: req.params.slug,
             },
             {
+                latLong: 0,
                 artistEmail: 0,
                 agreeToPayAdminFee: 0,
                 payoutHandle: 0,
                 hostsOfferingToBook: 0,
                 offersFromHosts: 0,
                 'travelingCompanions.email': 0,
+                hostsInReach: 0,
             }
         ).sort({ bookingWhen: 1 }); //.select('-artistEmail -agreeToPayAdminFee -payoutHandle'); //.select(['city', 'state', 'zipCode']); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
         console.log(events);
@@ -91,7 +94,7 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
             )
                 .select(
                     //'-artistEmail -agreeToPayAdminFee -payoutHandle -offersFromHosts -hostsOfferingToBook'
-                    '-agreeToPayAdminFee -payoutHandle -offersFromHosts -hostsOfferingToBook'
+                    '-agreeToPayAdminFee -payoutHandle -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts'
                 )
                 .populate(
                     'artist',
@@ -151,7 +154,7 @@ router.get('/myEventsOfferedToHost', auth, async (req, res) => {
             hostsOfferingToBook: req.user.email,
         })
             .select(
-                '-artistEmail -hostsOfferingToBook -offersFromHosts -agreeToPayAdminFee -payoutHandle'
+                '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'
             )
             .populate(
                 'artist',
@@ -185,7 +188,7 @@ router.get('/myArtistEventsOffers', auth, async (req, res) => {
             artistEmail: req.user.email,
             'offersFromHosts.0': { $exists: true }, //checks to see if the first index of hostsOfferingToBook exists //https://www.mongodb.com/community/forums/t/is-there-a-way-to-query-array-fields-with-size-greater-than-some-specified-value/54597
         })
-            .select('-artistEmail -hostsOfferingToBook')
+            .select('-artistEmail -hostsOfferingToBook -latLong -hostsInReach')
             .populate(
                 'offersFromHosts.host',
                 '-user -email -phone -streetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin'
@@ -236,7 +239,9 @@ router.post('/artistViewedHostOffer', [auth], async (req, res) => {
                 },
                 { new: true }
             )
-                .select('-artistEmail -hostsOfferingToBook')
+                .select(
+                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach '
+                )
                 .populate(
                     'offersFromHosts.host',
                     '-user -email -phone -streetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin'
@@ -294,7 +299,9 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                 },
                 { new: true }
             )
-                .select('-artistEmail -hostsOfferingToBook')
+                .select(
+                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach'
+                )
                 .populate(
                     'confirmedHost',
                     '_id email firstName lastName city state'
@@ -363,21 +370,81 @@ router.get('/edit', [auth], async (req, res) => {
         (req.user.role && req.user.role.indexOf('ADMIN') > -1) ||
         req.user.role.indexOf('BOOKING') > -1
     ) {
+        let updatedEvents = 0;
         //must be an ADMIN to get into all of this!
         try {
-            const eventDetails = await Event.find();
+            const events = await Event.find({})
+                .populate('artist')
+                .populate('hostsInReach.host');
 
-            // events.forEach(event => {
-            //   //if no time exists in event.zoomDate {
-            //   if (event.zoomDate == null){
-            //     //async hit up Calendly for Scheduled events with event.email as the invitee_email {
+            events.forEach(async (eventDetails) => {
+                if (!eventDetails.artistSlug && eventDetails.artist.slug) {
+                    eventDetails.artistSlug = eventDetails.artist.slug;
+                    await eventDetails.save();
+                    updatedEvents++;
+                }
+                if (
+                    eventDetails.latLong &&
+                    eventDetails.latLong.coordinates &&
+                    eventDetails.latLong.coordinates.length <= 0 &&
+                    eventDetails.bookingWhere &&
+                    eventDetails.bookingWhere.city &&
+                    eventDetails.bookingWhere.state &&
+                    eventDetails.bookingWhere.zip
+                ) {
+                    //if the event doesn't yet have a latLong attached to it, make one based on just the city, state zip they selected
+                    const address =
+                        eventDetails.bookingWhere.city +
+                        ', ' +
+                        eventDetails.bookingWhere.state +
+                        ' ' +
+                        eventDetails.bookingWhere.zip;
+                    const geocodedAddress = await addressGeocode(address);
+                    console.log(
+                        eventDetails.artist.stageName +
+                            ' wants to play a concert near ' +
+                            address +
+                            ': ',
+                        geocodedAddress
+                    );
+                    eventDetails.latLong.coordinates = geocodedAddress;
+                    eventDetails.markModified('latLong');
+                    await eventDetails.save();
+                    updatedEvents++;
+                }
+                if (
+                    eventDetails.latLong &&
+                    eventDetails.latLong.coordinates &&
+                    eventDetails.latLong.coordinates.length > 0 &&
+                    (!eventDetails.hostsInReach ||
+                        eventDetails.hostsInReach.length <= 0)
+                ) {
+                    let hostsInReach = await Host.find({
+                        latLong: {
+                            $near: {
+                                $maxDistance: 30 * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
+                                $geometry: {
+                                    type: 'Point',
+                                    coordinates:
+                                        eventDetails.latLong.coordinates,
+                                },
+                            },
+                        },
+                    });
+                    //console.log(await hostsInReach);
+                    const hostsIDInReach = hostsInReach.map((hostInReach) => {
+                        //console.log('hostInReach._id', hostInReach._id);
+                        return { host: hostInReach._id };
+                    });
+                    eventDetails.hostsInReach = hostsIDInReach;
+                    //console.log('hostsIDInReach', await hostsIDInReach);
+                    await eventDetails.save();
+                    updatedEvents++;
+                }
+            });
+            //console.log('updatedEvents:', await updatedEvents);
 
-            //       //store collection[collection.length()-1].start_time in event.zoomDate
-
-            //   }
-            // });
-
-            res.json(eventDetails);
+            res.json(events);
         } catch (err) {
             console.error(err.message);
             res.status(500).send('Server Error');

@@ -25,9 +25,11 @@ import Post from '../post/Post';
 import NotFound from '../layout/NotFound';
 import PrivateRoute from '../routing/PrivateRoute';
 import AdminPrivateRoute from '../routing/AdminPrivateRoute';
+import BookingPrivateRoute from '../routing/BookingPrivateRoute';
 import ArtistPrivateRoute from '../routing/ArtistPrivateRoute';
 import ResetPassword from '../auth/ResetPassword';
 import ForgotPassword from '../auth/ForgotPassword';
+import EventDataGrid from '../events/EventDataGrid';
 
 import { useTransition, animated, config, useSpring } from '@react-spring/web';
 
@@ -149,6 +151,12 @@ const Routes = ({ app }) => {
                                 path="/create-profile"
                                 component={CreateProfile}
                                 title="Create Your Profile"
+                            />
+                            <BookingPrivateRoute
+                                exact
+                                path="/edit-events"
+                                component={EventDataGrid}
+                                title="Edit Events"
                             />
                             <ArtistPrivateRoute
                                 exact

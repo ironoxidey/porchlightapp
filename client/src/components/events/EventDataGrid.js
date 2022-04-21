@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { DataGrid } from '@mui/x-data-grid';
+import { Grid } from '@mui/material';
 
-import { getAllUsers, updateUserRole } from '../../actions/auth';
-import { getArtistByEmail } from '../../actions/artist';
+import { getAllEvents } from '../../actions/event';
 
 import { Avatar, Autocomplete, Chip, TextField, Button } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
@@ -16,13 +16,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-const EventDataGrid = ({
-    getArtistByEmail,
-    getAllUsers,
-    updateUserRole,
-    users,
-    auth: { user },
-}) => {
+const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
     const changesMade = useRef(false);
     const [editRowsModel, setEditRowsModel] = React.useState({});
 
@@ -76,7 +70,7 @@ const EventDataGrid = ({
         useEffect(() => {
             //console.log('roleState changed to', roleState);
             if (changesMade.current) {
-                updateUserRole({ userID: id, role: roleState });
+                //updateUserRole({ userID: id, role: roleState });
                 changesMade.current = false;
             }
         }, [roleState]);
@@ -100,7 +94,7 @@ const EventDataGrid = ({
             changesMade.current = true;
             autoCompleteInput.current.value = val;
             //console.log('autoCompleteInput', autoCompleteInput.current.value);
-            setRoleState(autoCompleteInput.current.value);
+            //setRoleState(autoCompleteInput.current.value);
             //setFormData({ ...formData, [theFieldName]: targetValue });
         };
 
@@ -253,8 +247,8 @@ const EventDataGrid = ({
     }
 
     useEffect(() => {
-        getAllUsers();
-    }, [getAllUsers]);
+        getAllEvents();
+    }, [getAllEvents]);
 
     const profileSort = (v1, v2) => {
         if (v1.slug && v2.slug) {
@@ -271,7 +265,7 @@ const EventDataGrid = ({
         return 0;
     };
 
-    const userColumns = [
+    const eventColumns = [
         //https://codesandbox.io/s/e9o2j?file=/demo.js
         {
             field: 'avatar',
@@ -290,15 +284,15 @@ const EventDataGrid = ({
             width: 250,
             editable: false,
         },
-        {
-            field: 'role',
-            headerName: 'Role(s)',
-            width: 500,
-            // editable: true,
-            sortable: false,
-            renderCell: renderAutoCompleteEditInputCell,
-            // renderEditCell: renderAutoCompleteEditInputCell,
-        },
+        // {
+        //     field: 'role',
+        //     headerName: 'Role(s)',
+        //     width: 500,
+        //     // editable: true,
+        //     sortable: false,
+        //     renderCell: renderAutoCompleteEditInputCell,
+        //     // renderEditCell: renderAutoCompleteEditInputCell,
+        // },
         {
             field: 'profile',
             headerName: 'Artist Profile',
@@ -309,22 +303,30 @@ const EventDataGrid = ({
             sortComparator: profileSort,
         },
         {
-            field: 'lastLogin',
-            headerName: 'Last Logged in',
+            field: 'bookingWhen',
+            headerName: 'Event Date',
             width: 200,
             editable: false,
-            type: 'dateTime',
+            type: 'date',
             valueFormatter: (params) => {
                 if (params.value) {
-                    return new Date(params.value).toLocaleString('en-US');
+                    return new Date(params.value).toLocaleDateString(
+                        undefined,
+                        {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                        }
+                    );
                 } else {
                     return;
                 }
             },
         },
         {
-            field: 'dateRegistered',
-            headerName: 'Registered on',
+            field: 'createdAt',
+            headerName: 'Created on',
             width: 220,
             editable: false,
             type: 'dateTime',
@@ -339,63 +341,71 @@ const EventDataGrid = ({
     ];
 
     useEffect(() => {
-        if (users) {
-            setUserRows(
-                users.map((user) => {
-                    const userRow = {
-                        id: user._id,
-                        avatar: user.avatar,
-                        name: user.name,
-                        email: user.email,
-                        role: user.role,
-                        profile: user.artistProfile || '',
-                        lastLogin: user.lastLogin || user.date,
-                        dateRegistered: user.date,
+        //console.log('adminEvents', adminEvents);
+        if (adminEvents && adminEvents.length > 0) {
+            setEventRows(
+                adminEvents.map((adminEvent) => {
+                    const eventRow = {
+                        id: adminEvent._id,
+                        avatar: adminEvent.artist.squareImg,
+                        name:
+                            adminEvent.artist.firstName +
+                            ' ' +
+                            adminEvent.artist.lastName,
+                        email: adminEvent.artistEmail,
+                        profile: adminEvent.artist || '',
+                        createdAt: adminEvent.createdAt,
+                        hostsInReach: adminEvent.hostsInReach,
+                        offersFromHosts: adminEvent.offersFromHosts,
+                        status: adminEvent.status,
+                        bookingWhen: adminEvent.bookingWhen,
+                        bookingWhere: adminEvent.bookingWhere,
                     };
 
-                    return userRow;
+                    return eventRow;
                 })
             );
-            //console.log(userRows);
+            console.log(eventRows);
         }
-    }, [users]);
+    }, [adminEvents]);
 
-    const [userRows, setUserRows] = useState([]);
+    const [eventRows, setEventRows] = useState([]);
 
     return (
-        (user && user.role && user.role.indexOf('ADMIN') > -1) ||
-        (user.role.indexOf('BOOKING') > -1 && (
-            <DataGrid
-                rows={userRows}
-                columns={userColumns}
-                pageSize={100}
-                rowsPerPageOptions={[]}
-                editRowsModel={editRowsModel}
-                onEditRowsModelChange={handleEditRowsModelChange}
-                initialState={{
-                    sorting: {
-                        sortModel: [{ field: 'lastLogin', sort: 'desc' }],
-                    },
-                }}
-            />
-        ))
+        user &&
+        user.role &&
+        (user.role.indexOf('ADMIN') > -1 ||
+            user.role.indexOf('BOOKING') > -1) && (
+            <Grid container direction="column" sx={{ height: '88vh' }}>
+                <DataGrid
+                    rows={eventRows}
+                    columns={eventColumns}
+                    pageSize={100}
+                    rowsPerPageOptions={[]}
+                    editRowsModel={editRowsModel}
+                    onEditRowsModelChange={handleEditRowsModelChange}
+                    initialState={{
+                        sorting: {
+                            sortModel: [{ field: 'lastLogin', sort: 'desc' }],
+                        },
+                    }}
+                />
+            </Grid>
+        )
     );
 };
 
 EventDataGrid.propTypes = {
+    getAllEvents: PropTypes.func.isRequired,
+    adminEvents: PropTypes.array,
     auth: PropTypes.object.isRequired,
-    users: PropTypes.array.isRequired,
-    getAllUsers: PropTypes.func.isRequired,
-    getArtistByEmail: PropTypes.func.isRequired,
-    updateUserRole: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-    users: state.auth.users,
+    auth: state.auth,
+    adminEvents: state.event.adminEvents,
 });
 
 export default connect(mapStateToProps, {
-    getAllUsers,
-    getArtistByEmail,
-    updateUserRole,
+    getAllEvents,
 })(EventDataGrid);

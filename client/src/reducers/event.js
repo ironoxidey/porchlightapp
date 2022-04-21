@@ -12,8 +12,8 @@ import {
 } from '../actions/types';
 
 const initialState = {
-    myHostEvents: [],
-    myArtistEvents: [],
+    //myHostEvents: [],
+    //myArtistEvents: [],
     events: [],
     loading: true,
     msg: {},
@@ -30,10 +30,15 @@ export default function (state = initialState, action) {
                 loading: false,
             };
         case GET_THIS_ARTIST_BOOKING_EVENTS:
-        case GET_ALL_EVENTS:
             return {
                 ...state,
                 events: payload,
+                loading: false,
+            };
+        case GET_ALL_EVENTS:
+            return {
+                ...state,
+                adminEvents: payload,
                 loading: false,
             };
         case GET_THIS_ARTIST_EVENTS_OFFERS:
@@ -69,6 +74,7 @@ export default function (state = initialState, action) {
                 ...state,
                 myArtistEvents: [],
                 myHostEvents: [],
+                adminEvents: [],
             };
         default:
             return state;

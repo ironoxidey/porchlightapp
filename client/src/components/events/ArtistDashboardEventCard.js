@@ -20,7 +20,7 @@ import Button from '../layout/SvgButton';
 import HostProfile from '../hosts/HostProfile';
 
 const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
-    console.log('ArtistDashboardEventCard thisEvent:', thisEvent);
+    //console.log('ArtistDashboardEventCard thisEvent:', thisEvent);
 
     //Booking Details Dialog Functions
     const [eventDetailsDialogOpen, setEventDetailsDialogOpen] = useState(false);
@@ -36,7 +36,7 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
     const [eventDialogDetails, setDialogDetailsState] = useState({});
 
     useEffect(() => {
-        console.log('eventDialogDetails', eventDialogDetails);
+        //console.log('eventDialogDetails', eventDialogDetails);
         setEventDetailsDialogOpen(true);
     }, [eventDialogDetails]);
 

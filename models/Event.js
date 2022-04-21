@@ -22,6 +22,31 @@ const EventSchema = new mongoose.Schema(
         hostsOfferingToBook: {
             type: [String],
         },
+        latLong: {
+            //https://mongoosejs.com/docs/geojson.html#
+            type: {
+                type: String, // Don't do `{ latLong: { type: String } }`
+                enum: ['Point'], // 'latLong.type' must be 'Point'
+                required: true,
+                default: 'Point',
+            },
+            coordinates: {
+                type: [Number],
+                required: true,
+            },
+        },
+        hostReachRadius: {
+            type: Number,
+            default: 25 * 1609.35, //the distance is in meters, 1609.35m = 1 mile
+        },
+        hostsInReach: [
+            {
+                host: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'host',
+                },
+            },
+        ],
         offersFromHosts: [
             {
                 host: {

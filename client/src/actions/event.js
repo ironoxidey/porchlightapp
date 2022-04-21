@@ -7,9 +7,11 @@ import {
     GET_EVENTS_OFFERED_TO_HOST,
     GET_THIS_ARTIST_BOOKING_EVENTS,
     GET_THIS_ARTIST_EVENTS_OFFERS,
+    GET_ALL_EVENTS,
     ARTIST_VIEWED_HOST_OFFER,
     ARTIST_ACCEPTED_HOST_OFFER,
     EVENTS_ERROR,
+    AUTH_ERROR,
 } from './types';
 
 // Get the events that I've offered to host
@@ -218,7 +220,6 @@ export const getAllEvents = () => async (dispatch) => {
     try {
         const res = await axios.get('/api/events/edit');
         //res.data.avatar = await axios.get('/api/artists/my-avatar');
-
         dispatch({
             type: GET_ALL_EVENTS,
             payload: res.data,

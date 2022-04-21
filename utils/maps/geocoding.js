@@ -2,7 +2,7 @@ const { Client } = require('@googlemaps/google-maps-services-js');
 const config = !process.env.NODE_ENV ? require('config') : process.env;
 
 const addressGeocode = async (payload) => {
-    //console.log('payload', payload);
+    console.log('payload', payload);
     const args = {
         params: {
             key: config['GOOGLE_MAPS_API_KEY'],

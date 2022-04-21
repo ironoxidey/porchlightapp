@@ -9,6 +9,8 @@ const User = require('../../models/User');
 const Artist = require('../../models/Artist');
 const Event = require('../../models/Event');
 
+const addressGeocode = require('../../utils/maps/geocoding');
+
 function convertToSlug(Text) {
     return Text.toLowerCase()
         .replace(/ /g, '-')
@@ -365,6 +367,20 @@ router.post('/updateMe', [auth], async (req, res) => {
                                             bookingInfo.where &&
                                             bookingInfo.where != ''
                                         ) {
+                                            // geocoding like this seems too expensive! Maybe geocode them when they're pull from the database, only if they don't have latLong.coordinates
+                                            // const address =
+                                            //     bookingInfo.where.city +
+                                            //     ', ' +
+                                            //     bookingInfo.where.state +
+                                            //     ' ' +
+                                            //     bookingInfo.where.zip;
+                                            // const geocodedAddress =
+                                            //     await addressGeocode(address);
+                                            // console.log(
+                                            //     address + ' => ',
+                                            //     geocodedAddress
+                                            // );
+
                                             let event =
                                                 await Event.findOneAndUpdate(
                                                     {
@@ -384,6 +400,8 @@ router.post('/updateMe', [auth], async (req, res) => {
                                                             bookingInfo.when,
                                                         bookingWhere:
                                                             bookingInfo.where,
+                                                        // 'latLong.coordinates':
+                                                        //     geocodedAddress,
                                                     },
                                                     { new: true, upsert: true }
                                                 );

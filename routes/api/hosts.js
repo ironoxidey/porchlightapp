@@ -144,7 +144,7 @@ router.post('/admin-update', [auth], async (req, res) => {
             })
         );
     }
-    console.log(await numHostsUpdated);
+    console.log('numHostsUpdated:', await numHostsUpdated);
 });
 
 // @route    POST api/hosts/updateMe
