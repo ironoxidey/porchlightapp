@@ -4,12 +4,18 @@ import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 
-import { DataGrid } from '@mui/x-data-grid';
-import { Grid } from '@mui/material';
-
 import { getAllEvents } from '../../actions/event';
 
-import { Avatar, Autocomplete, Chip, TextField, Button } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import {
+    Avatar,
+    Autocomplete,
+    Chip,
+    TextField,
+    Button,
+    Grid,
+    Tooltip,
+} from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -277,21 +283,13 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                 <Avatar alt={`${params.value}`} src={`${params.value}`} />
             ),
         },
-        { field: 'name', headerName: 'Name', width: 180 },
-        {
-            field: 'email',
-            headerName: 'Email',
-            width: 250,
-            editable: false,
-        },
+        { field: 'status', headerName: 'Status', width: 120 },
+        // { field: 'name', headerName: 'Name', width: 180 },
         // {
-        //     field: 'role',
-        //     headerName: 'Role(s)',
-        //     width: 500,
-        //     // editable: true,
-        //     sortable: false,
-        //     renderCell: renderAutoCompleteEditInputCell,
-        //     // renderEditCell: renderAutoCompleteEditInputCell,
+        //     field: 'email',
+        //     headerName: 'Email',
+        //     width: 250,
+        //     editable: false,
         // },
         {
             field: 'profile',
@@ -324,6 +322,54 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                 }
             },
         },
+        {
+            field: 'bookingWhere',
+            headerName: 'Location',
+            width: 170,
+            editable: false,
+            type: 'string',
+            valueFormatter: (params) => {
+                if (params.value && params.value.city && params.value.state) {
+                    return params.value.city + ', ' + params.value.state;
+                } else {
+                    return;
+                }
+            },
+        },
+        {
+            field: 'hostsInReach',
+            headerName: 'Hosts in Area',
+            width: 700,
+            editable: false,
+            type: 'string',
+            renderCell: (params) => {
+                if (params.value && params.value.length > 0) {
+                    let hostsInReach = params.value.map((hostInReach, i) => {
+                        return (
+                            <Tooltip
+                                arrow={true}
+                                placement="bottom"
+                                title={
+                                    hostInReach.host.city +
+                                    ', ' +
+                                    hostInReach.host.state
+                                }
+                            >
+                                <span>
+                                    {i > 0 && ', '}
+                                    {hostInReach.host.firstName}{' '}
+                                    {hostInReach.host.lastName}
+                                </span>
+                            </Tooltip>
+                        );
+                    });
+                    return hostsInReach;
+                } else {
+                    return;
+                }
+            },
+        },
+
         {
             field: 'createdAt',
             headerName: 'Created on',
