@@ -94,7 +94,7 @@ export const register =
 
 //Generate Referral
 export const generateReferral = () => async (dispatch) => {
-    console.log('generateReferral');
+    //console.log('generateReferral');
     const config = {
         headers: {
             'Content-Type': 'application/json',

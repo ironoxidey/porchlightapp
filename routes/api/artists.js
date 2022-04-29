@@ -138,7 +138,7 @@ router.post('/batch', [auth], async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    console.log('api/artists/batch');
+    //console.log('api/artists/batch');
     //console.log(req.user);
     if (req.body instanceof Array) {
         let artistCount = 0;

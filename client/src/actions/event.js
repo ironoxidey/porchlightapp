@@ -77,7 +77,7 @@ export const getMyArtistEventsOffers = () => async (dispatch) => {
 // Offer to host a show
 export const hostRaiseHand = (formData, history) => async (dispatch) => {
     try {
-        console.log('hostRaiseHand formData', formData);
+        //console.log('hostRaiseHand formData', formData);
         const config = {
             headers: {
                 'Content-Type': 'application/json',

@@ -49,7 +49,7 @@ router.get('/getArtistBooking/:slug', async (req, res) => {
                 hostsInReach: 0,
             }
         ).sort({ bookingWhen: 1 }); //.select('-artistEmail -agreeToPayAdminFee -payoutHandle'); //.select(['city', 'state', 'zipCode']); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
-        console.log(events);
+        //console.log(events);
         res.json(events);
     } catch (err) {
         console.error(err.message);
@@ -212,7 +212,7 @@ router.get('/myArtistEventsOffers', auth, async (req, res) => {
 // @desc     Artist viewed host's offer
 // @access   Private
 router.post('/artistViewedHostOffer', [auth], async (req, res) => {
-    console.log('artistViewedHostOffer req.body', req.body);
+    //console.log('artistViewedHostOffer req.body', req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -268,7 +268,7 @@ router.post('/artistViewedHostOffer', [auth], async (req, res) => {
 // @desc     Artist accepted host's offer
 // @access   Private
 router.post('/artistAcceptOffer', [auth], async (req, res) => {
-    console.log('artistAcceptOffer req.body', req.body);
+    //console.log('artistAcceptOffer req.body', req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -313,7 +313,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                 .lean(); //.lean required to delete email later -- Documents returned from queries with the lean option enabled are plain javascript objects, not Mongoose Documents. They have no save method, getters/setters, virtuals, or other Mongoose features. https://stackoverflow.com/a/71746004/3338608
 
             if (eventDetails) {
-                console.log('eventDetails', eventDetails);
+                //console.log('eventDetails', eventDetails);
                 let emailDate = new Date(
                     eventFields.bookingWhen
                 ).toLocaleDateString(undefined, {
@@ -342,7 +342,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                 //console.log('eventDetails', eventDetails);
                 res.json(eventDetails);
             } else {
-                console.log('This event is already booked.');
+                //console.log('This event is already booked.');
                 res.status(500).send('This event is already booked.');
             }
         } catch (err) {
@@ -401,13 +401,13 @@ router.get('/edit', [auth], async (req, res) => {
                         ' ' +
                         eventDetails.bookingWhere.zip;
                     const geocodedAddress = await addressGeocode(address);
-                    console.log(
-                        eventDetails.artist.stageName +
-                            ' wants to play a concert near ' +
-                            address +
-                            ': ',
-                        geocodedAddress
-                    );
+                    // console.log(
+                    //     eventDetails.artist.stageName +
+                    //         ' wants to play a concert near ' +
+                    //         address +
+                    //         ': ',
+                    //     geocodedAddress
+                    // );
                     eventDetails.latLong.coordinates = geocodedAddress;
                     eventDetails.markModified('latLong');
                     await eventDetails.save();

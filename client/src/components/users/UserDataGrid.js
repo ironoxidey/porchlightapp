@@ -93,7 +93,7 @@ const UserDataGrid = ({
             ) {
                 //if adding ADMIN to a user's roles, prompt for confirmation--checking 'value' to be sure they weren't already an admin
                 //if adding BOOKING to a user's roles, prompt for confirmation--checking 'value' to be sure they weren't already an admin
-                console.log(val);
+                //console.log(val);
                 setAdminAlertUserState({ ...props, value: val });
             } else {
                 onAutocompleteTagChange(val);
@@ -292,10 +292,10 @@ const UserDataGrid = ({
 
     const profileSort = (v1, v2) => {
         if (v1.slug && v2.slug) {
-            console.log(
-                'v1(' + v1.slug + ') and v2(' + v2.slug + ') returns: ',
-                v1.slug.localeCompare(v2.slug)
-            );
+            // console.log(
+            //     'v1(' + v1.slug + ') and v2(' + v2.slug + ') returns: ',
+            //     v1.slug.localeCompare(v2.slug)
+            // );
             return v1.slug.localeCompare(v2.slug);
         } else if (v1.slug) {
             return -1;

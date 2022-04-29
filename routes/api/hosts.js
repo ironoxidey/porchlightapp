@@ -73,7 +73,7 @@ router.post('/admin-update', [auth], async (req, res) => {
                     : '';
 
                 if (hostFields.numDraw) {
-                    console.log('hostFields.numDraw', hostFields.numDraw);
+                    //console.log('hostFields.numDraw', hostFields.numDraw);
                     const numDraw = firstInt(hostFields.numDraw);
                     if (numDraw && numDraw > 0) {
                         hostFields.numDraw = numDraw;
@@ -96,10 +96,10 @@ router.post('/admin-update', [auth], async (req, res) => {
                     }
                 }
                 if (hostFields.maxNumAttendees) {
-                    console.log(
-                        'hostFields.maxNumAttendees',
-                        hostFields.maxNumAttendees
-                    );
+                    // console.log(
+                    //     'hostFields.maxNumAttendees',
+                    //     hostFields.maxNumAttendees
+                    // );
 
                     const maxNumAttendees = firstInt(
                         hostFields.maxNumAttendees
@@ -144,7 +144,7 @@ router.post('/admin-update', [auth], async (req, res) => {
             })
         );
     }
-    console.log('numHostsUpdated:', await numHostsUpdated);
+    //console.log('numHostsUpdated:', await numHostsUpdated);
 });
 
 // @route    POST api/hosts/updateMe
@@ -203,7 +203,7 @@ router.post('/updateMe', [auth], async (req, res) => {
                     //if the request user email matches the host email they have authority to edit their own profile
                     try {
                         hostFields.user = req.user.id;
-                        console.log('hostFields', hostFields);
+                        //console.log('hostFields', hostFields);
                         // Using upsert option (creates new doc if no match is found):
                         let host = await Host.findOneAndUpdate(
                             { email: hostFields.email.toLowerCase() },
@@ -315,13 +315,13 @@ router.get('/getAllHostLatLong', [auth], async (req, res) => {
                             ' ' +
                             host.zipCode
                     );
-                    console.log(
-                        host.firstName +
-                            ' ' +
-                            host.lastName +
-                            '’s geocodedAddress is: ',
-                        geocodedAddress
-                    );
+                    // console.log(
+                    //     host.firstName +
+                    //         ' ' +
+                    //         host.lastName +
+                    //         '’s geocodedAddress is: ',
+                    //     geocodedAddress
+                    // );
                     host.latLong.coordinates = geocodedAddress;
                     // host.longitude = geocodedAddress[0];
                     // host.latitude = geocodedAddress[1];

@@ -71,7 +71,7 @@ const EventDetails = ({
         isMe = true;
     }
 
-    console.log('theEvent', theEvent);
+    //console.log('theEvent', theEvent);
 
     return (
         <Fragment>

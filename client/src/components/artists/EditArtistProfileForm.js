@@ -102,7 +102,7 @@ const EditArtistProfileForm = ({
 
             artists.map((eachArtist) => {
                 if (eachArtist.genres) {
-                    console.log('eachArtist.genres', eachArtist.genres);
+                    //console.log('eachArtist.genres', eachArtist.genres);
                     eachArtist.genres.map((genre) => {
                         let genreCapitalized = toTitleCase(genre.trim());
                         artistsGenre.push(genreCapitalized);
@@ -648,7 +648,7 @@ const EditArtistProfileForm = ({
 
     const onMultiTextChange = (theFieldKey, theFieldObj, idx, e) => {
         changesMade.current = true;
-        console.log(e.target.value);
+        //console.log(e.target.value);
         let targetValue = e.target.value;
         targetValue = e.target.value;
         let updatedField = theFieldObj.map((fieldObj, tFidx) => {

@@ -170,7 +170,7 @@ const ArtistProfile = ({
     const [bookingDialogDetails, setBookingDialogDetailsState] = useState({});
 
     useEffect(() => {
-        console.log('bookingDialogDetails', bookingDialogDetails);
+        //console.log('bookingDialogDetails', bookingDialogDetails);
         setBookingDetailsDialogOpen(true);
     }, [bookingDialogDetails]);
 
