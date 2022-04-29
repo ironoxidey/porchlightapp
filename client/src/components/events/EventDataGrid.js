@@ -17,6 +17,8 @@ import {
     Tooltip,
 } from '@mui/material';
 import { ProfileAvatar } from '../../common/components';
+import HostProfile from '../hosts/HostProfile';
+import EventHostDialog from './EventHostDialog';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -164,7 +166,6 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                     value={roleState || value}
                     options={['ADMIN', 'ARTIST', 'ATTENDER', 'BOOKING', 'HOST']}
                     onChange={(event, value) => {
-                        // console.log();
                         onAutocompleteConfirmTagChange(event, 'role', value);
                     }}
                     renderTags={(value, getTagProps) =>
@@ -462,30 +463,44 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
             renderCell: (params) => {
                 if (params.value && params.value.length > 0) {
                     let hostsOffering = params.value.map((hostOffer, i) => {
-                        //console.log('hostOffer', hostOffer);
+                        console.log('hostOffer params', params);
                         return (
-                            <ProfileAvatar
-                                firstName={hostOffer.host.firstName}
-                                lastName={hostOffer.host.lastName}
-                                city={hostOffer.host.city}
-                                state={hostOffer.host.state}
-                                profileImg={hostOffer.host.profileImg}
-                                tooltip={
-                                    <>
-                                        <div>{`${hostOffer.host.firstName} ${hostOffer.host.lastName}`}</div>
-                                        <div>
-                                            <PlaceTwoToneIcon
-                                                sx={{
-                                                    marginRight: '2px',
-                                                    fontSize: '1.4em',
-                                                    marginBottom: '2px',
-                                                }}
-                                            ></PlaceTwoToneIcon>
-                                            {`${hostOffer.host.city}, ${hostOffer.host.state}`}
-                                        </div>
-                                    </>
-                                }
-                            />
+                            <EventHostDialog
+                                theHost={hostOffer.host}
+                                theEvent={params.row}
+                                theOffer={hostOffer}
+                            >
+                                <ProfileAvatar
+                                    firstName={hostOffer.host.firstName}
+                                    lastName={hostOffer.host.lastName}
+                                    city={hostOffer.host.city}
+                                    state={hostOffer.host.state}
+                                    profileImg={hostOffer.host.profileImg}
+                                    tooltip={
+                                        <>
+                                            {/* <HostProfile
+                                            theHost={hostOffer.host}
+                                            theEvent={params.row}
+                                            theOffer={hostOffer}
+                                            // eventDetailsDialogHandleClose={
+                                            //     eventDetailsDialogHandleClose
+                                            // }
+                                        ></HostProfile> */}
+                                            <div>{`${hostOffer.host.firstName} ${hostOffer.host.lastName}`}</div>
+                                            <div>
+                                                <PlaceTwoToneIcon
+                                                    sx={{
+                                                        marginRight: '2px',
+                                                        fontSize: '1.4em',
+                                                        marginBottom: '2px',
+                                                    }}
+                                                ></PlaceTwoToneIcon>
+                                                {`${hostOffer.host.city}, ${hostOffer.host.state}`}
+                                            </div>
+                                        </>
+                                    }
+                                />
+                            </EventHostDialog>
                         );
                     });
                     return hostsOffering;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Avatar, Tooltip } from '@mui/material';
 import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
+//import { EventHostDialog } from '../../common/components';
 
 const ProfileAvatar = ({
     firstName,
@@ -10,9 +11,12 @@ const ProfileAvatar = ({
     profileImg,
     tooltip,
     url,
+    hostOffer,
+    thisEvent,
 }) => {
     return (
         <>
+            {/* <EventHostDialog hostOffer={hostOffer} thisEvent={thisEvent} /> */}
             {tooltip ? (
                 <Tooltip arrow={true} placement="bottom" title={tooltip}>
                     <Avatar

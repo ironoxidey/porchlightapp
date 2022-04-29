@@ -19,7 +19,8 @@ const BookingPrivateRoute = ({
             user &&
               user.role &&
               Array.isArray(user.role) &&
-              user.role.indexOf('BOOKING') > -1 ? (
+              (user.role.indexOf('BOOKING') > -1 ||
+                  user.role.indexOf('ADMIN') > -1) ? (
                 <Page title={title}>
                     <Component {...props} />
                 </Page>

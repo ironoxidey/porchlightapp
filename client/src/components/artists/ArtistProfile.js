@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link, withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -203,7 +203,7 @@ const ArtistProfile = ({
     };
 
     return (
-        <Fragment>
+        <>
             {bookingDialogDetails && bookingDialogDetails.bookingWhen && (
                 <Dialog
                     open={bookingDetailsDialogOpen}
@@ -1113,7 +1113,7 @@ const ArtistProfile = ({
                                 ''
                             )}
                             {artist.showSchedule ? (
-                                <Fragment>
+                                <>
                                     <Grid
                                         item
                                         sx={{ marginTop: '0' }}
@@ -1161,7 +1161,7 @@ const ArtistProfile = ({
 
                                         <Divider />
                                     </Grid>
-                                </Fragment>
+                                </>
                             ) : (
                                 ''
                             )}
@@ -1679,7 +1679,7 @@ const ArtistProfile = ({
                     ''
                 )}
             </Grid>
-        </Fragment>
+        </>
     );
 };
 

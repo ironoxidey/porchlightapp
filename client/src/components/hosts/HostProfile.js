@@ -34,6 +34,7 @@ import { toTitleCase } from '../../actions/app';
 import { artistAcceptOffer } from '../../actions/event';
 
 const HostProfile = ({
+    user,
     theHost,
     isMe = false,
     theOffer,
@@ -41,6 +42,7 @@ const HostProfile = ({
     eventDetailsDialogHandleClose,
     artistAcceptOffer,
 }) => {
+    console.log('theEvent', theEvent);
     return (
         <>
             <Grid
@@ -482,72 +484,81 @@ const HostProfile = ({
                     </Grid>
                 </Tooltip>
             </Grid>
-            {theEvent && theOffer && theEvent.status !== 'CONFIRMED' && (
-                <>
-                    <Typography
-                        component="h2"
-                        sx={{ textAlign: 'center', marginTop: '8px' }}
-                    >
-                        Would you like to accept this offer to have your show at{' '}
-                        {theHost.firstName} {theHost.lastName}’s{' '}
-                        {theHost.primarySpace} in{' '}
-                        {theHost.primarySpace === 'residence'
-                            ? toTitleCase(theHost.city) + ', ' + theHost.state
-                            : toTitleCase(theHost.venueCity) +
-                              ', ' +
-                              theHost.venueState}{' '}
-                        on{' '}
-                        {new Date(theEvent.bookingWhen).toLocaleDateString(
-                            undefined,
-                            {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                            }
-                        )}
-                        ?
-                    </Typography>
-                    <Typography
-                        component="p"
-                        sx={{ textAlign: 'center', marginTop: '8px' }}
-                    >
-                        <em>
-                            Accepting this offer will immediately send a
-                            notification to {theHost.firstName}{' '}
-                            {theHost.lastName}, and anyone else who might need
-                            to know.
-                        </em>
-                    </Typography>
-                    <Grid
-                        item
-                        container
-                        justifyContent="center"
-                        sx={{ marginTop: '16px' }}
-                    >
-                        <Button
-                            btnwidth="240"
-                            onClick={(e) => {
-                                artistAcceptOffer(
-                                    theEvent.bookingWhen,
-                                    theOffer
-                                );
-                                eventDetailsDialogHandleClose();
-                            }}
+            {theEvent &&
+                theOffer &&
+                theEvent.status !== 'CONFIRMED' &&
+                user &&
+                ((theEvent.artistUser && user._id === theEvent.artistUser) ||
+                    (theEvent.profile &&
+                        user.email === theEvent.profile.email)) && ( //make sure the logged-in user is the artist (mostly for when booking coordinators are looking at this)
+                    <>
+                        <Typography
+                            component="h2"
+                            sx={{ textAlign: 'center', marginTop: '8px' }}
                         >
-                            <HowToRegTwoToneIcon
-                                sx={{ marginRight: '8px' }}
-                            ></HowToRegTwoToneIcon>{' '}
-                            Accept This Offer
-                        </Button>
-                    </Grid>
-                </>
-            )}
+                            Would you like to accept this offer to have your
+                            show at {theHost.firstName} {theHost.lastName}’s{' '}
+                            {theHost.primarySpace} in{' '}
+                            {theHost.primarySpace === 'residence'
+                                ? toTitleCase(theHost.city) +
+                                  ', ' +
+                                  theHost.state
+                                : toTitleCase(theHost.venueCity) +
+                                  ', ' +
+                                  theHost.venueState}{' '}
+                            on{' '}
+                            {new Date(theEvent.bookingWhen).toLocaleDateString(
+                                undefined,
+                                {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                }
+                            )}
+                            ?
+                        </Typography>
+                        <Typography
+                            component="p"
+                            sx={{ textAlign: 'center', marginTop: '8px' }}
+                        >
+                            <em>
+                                Accepting this offer will immediately send a
+                                notification to {theHost.firstName}{' '}
+                                {theHost.lastName}, and anyone else who might
+                                need to know.
+                            </em>
+                        </Typography>
+                        <Grid
+                            item
+                            container
+                            justifyContent="center"
+                            sx={{ marginTop: '16px' }}
+                        >
+                            <Button
+                                btnwidth="240"
+                                onClick={(e) => {
+                                    artistAcceptOffer(
+                                        theEvent.bookingWhen,
+                                        theOffer
+                                    );
+                                    eventDetailsDialogHandleClose();
+                                }}
+                            >
+                                <HowToRegTwoToneIcon
+                                    sx={{ marginRight: '8px' }}
+                                ></HowToRegTwoToneIcon>{' '}
+                                Accept This Offer
+                            </Button>
+                        </Grid>
+                    </>
+                )}
         </>
     );
 };
 
 HostProfile.propTypes = {
+    user: PropTypes.object.isRequired,
     theHost: PropTypes.object.isRequired,
     theOffer: PropTypes.object,
     theEvent: PropTypes.object,
@@ -555,7 +566,9 @@ HostProfile.propTypes = {
     artistAcceptOffer: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+    user: state.auth.user,
+});
 
 export default connect(mapStateToProps, { artistAcceptOffer })(
     withRouter(HostProfile)
