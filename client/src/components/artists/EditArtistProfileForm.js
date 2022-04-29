@@ -1784,95 +1784,94 @@ const EditArtistProfileForm = ({
     };
 
     return (
-        <Fragment>
-            <form className="form" onSubmit={(e) => onSubmit(e)}>
-                <Grid container sx={{ padding: '20px!important' }}>
-                    <Grid
-                        container
-                        item
-                        sx={{ width: '100%' }}
-                        direction="row"
-                        justifyContent="center"
-                        alignItems="center"
-                    >
-                        <Grid item>
-                            {/* { cardIndex > 0 ? (  */}
+        <form className="form" onSubmit={(e) => onSubmit(e)}>
+            <Grid container sx={{ padding: '20px!important' }}>
+                <Grid
+                    container
+                    item
+                    sx={{ width: '100%' }}
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <Grid item>
+                        {/* { cardIndex > 0 ? (  */}
+                        <Button
+                            variant="contained"
+                            component="span"
+                            onClick={(e) => previousCard(e)}
+                        >
+                            <ArrowBackIcon></ArrowBackIcon>Previous
+                        </Button>
+                        {/* ) : '' } */}
+                    </Grid>
+                    <Grid item>
+                        <label htmlFor="submit">
+                            <input id="submit" type="submit" hidden />
                             <Button
                                 variant="contained"
                                 component="span"
-                                onClick={(e) => previousCard(e)}
+                                onClick={(e) => onSubmit(e)}
                             >
-                                <ArrowBackIcon></ArrowBackIcon>Previous
+                                Save <SaveTwoToneIcon></SaveTwoToneIcon>
                             </Button>
-                            {/* ) : '' } */}
-                        </Grid>
-                        <Grid item>
-                            <label htmlFor="submit">
-                                <input id="submit" type="submit" hidden />
-                                <Button
-                                    variant="contained"
-                                    component="span"
-                                    onClick={(e) => onSubmit(e)}
-                                >
-                                    Save <SaveTwoToneIcon></SaveTwoToneIcon>
-                                </Button>
-                            </label>
-                        </Grid>
-                        <Grid item>
-                            {/* { cardIndex < formGroups.length - 1 ? ( */}
-                            <Button
-                                variant="contained"
-                                component="span"
-                                onClick={(e) => nextCard(e)}
-                            >
-                                Next<ArrowForwardIcon></ArrowForwardIcon>
-                            </Button>
-                            {/* ) : ''} */}
-                        </Grid>
+                        </label>
+                    </Grid>
+                    <Grid item>
+                        {/* { cardIndex < formGroups.length - 1 ? ( */}
+                        <Button
+                            variant="contained"
+                            component="span"
+                            onClick={(e) => nextCard(e)}
+                        >
+                            Next<ArrowForwardIcon></ArrowForwardIcon>
+                        </Button>
+                        {/* ) : ''} */}
                     </Grid>
                 </Grid>
-                {transitions((style, i) => (
-                    <animated.div
-                        className={'animatedFormGroup'}
-                        key={'animatedFormGroup' + i}
-                        style={{
-                            ...style,
-                        }}
+            </Grid>
+            {transitions((style, i) => (
+                <animated.div
+                    className={'animatedFormGroup'}
+                    key={'animatedFormGroup' + i}
+                    style={{
+                        ...style,
+                    }}
+                >
+                    <div
+                        className="form-group"
+                        key={'form-group' + i}
+                        style={{ maxWidth: '100%' }}
                     >
-                        <div
-                            className="form-group"
-                            key={'form-group' + i}
-                            style={{ maxWidth: '100%' }}
+                        <Grid
+                            container
+                            direction="column"
+                            justifyContent="center"
+                            alignItems="center"
+                            //spacing={2}
+                            sx={{
+                                width: '100%',
+                                margin: '0 auto',
+                            }}
                         >
-                            <Grid
-                                container
-                                direction="column"
-                                justifyContent="center"
-                                alignItems="center"
-                                //spacing={2}
-                                sx={{
-                                    width: '100%',
-                                    margin: '0 auto',
-                                }}
-                            >
-                                {/* <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}> */}
+                            {/* <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}> */}
 
-                                {/* {formGroups && formGroups.length > 0 ? formGroups[i].map((formGroup, ind) => (  */}
-                                <Grid
-                                    item
-                                    xs={12}
-                                    sx={{ '--form-num': `'${i + 1}'` }}
-                                    data-form-num={i + 1}
-                                    className="formInquiry"
-                                >
-                                    {formGroups[Object.keys(formGroups)[i]][0]}
-                                </Grid>
-                                {formGroups[Object.keys(formGroups)[i]][1]}
+                            {/* {formGroups && formGroups.length > 0 ? formGroups[i].map((formGroup, ind) => (  */}
+                            <Grid
+                                item
+                                xs={12}
+                                sx={{ '--form-num': `'${i + 1}'` }}
+                                data-form-num={i + 1}
+                                className="formInquiry"
+                            >
+                                {formGroups[Object.keys(formGroups)[i]][0]}
                             </Grid>
-                        </div>
-                    </animated.div>
-                ))}
-                {/* <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+                            {formGroups[Object.keys(formGroups)[i]][1]}
+                        </Grid>
+                    </div>
+                </animated.div>
+            ))}
+            {/* <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
           <BottomNavigation
             showLabels
           >
@@ -1881,8 +1880,7 @@ const EditArtistProfileForm = ({
             <BottomNavigationAction label="Next" onClick={() => nextCard()} icon={<ArrowForwardIcon />} />
           </BottomNavigation>
         </Paper> */}
-            </form>
-        </Fragment>
+        </form>
     );
 };
 

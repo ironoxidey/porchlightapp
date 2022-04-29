@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, Fragment } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import { getAllEvents } from '../../actions/event';
 
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import {
     Avatar,
     Autocomplete,
@@ -16,11 +16,13 @@ import {
     Grid,
     Tooltip,
 } from '@mui/material';
+import { ProfileAvatar } from '../../common/components';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 
 const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
     const changesMade = useRef(false);
@@ -105,7 +107,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
         };
 
         return (
-            <Fragment>
+            <>
                 {adminAlertUser && adminAlertUser.value && (
                     <Dialog
                         open={adminAlertOpen}
@@ -189,7 +191,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                         width: '100%',
                     }}
                 />
-            </Fragment>
+            </>
         );
     }
 
@@ -240,16 +242,37 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
 
         //console.log('artistSlug', artistSlug);
         return (
-            <Fragment>
+            <>
                 {artistSlug && (
-                    <Link to={'/artists/' + artistSlug}>{artistStageName}</Link>
+                    <Link to={'/artists/' + artistSlug}>
+                        <ProfileAvatar
+                            firstName={props.value.firstName}
+                            lastName={props.value.lastName}
+                            profileImg={props.value.squareImg}
+                            tooltip={
+                                <>
+                                    <div>{`${props.value.firstName} ${props.value.lastName}`}</div>
+                                </>
+                            }
+                        />
+                    </Link>
                 )}
-            </Fragment>
+            </>
         );
     }
 
     function renderProfileCell(params) {
+        //console.log('ProfileCell params', params);
         return <ProfileCell {...params}></ProfileCell>;
+    }
+
+    function prettifyDate(date) {
+        return new Date(date).toLocaleDateString(undefined, {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
     }
 
     useEffect(() => {
@@ -258,10 +281,10 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
 
     const profileSort = (v1, v2) => {
         if (v1.slug && v2.slug) {
-            console.log(
-                'v1(' + v1.slug + ') and v2(' + v2.slug + ') returns: ',
-                v1.slug.localeCompare(v2.slug)
-            );
+            // console.log(
+            //     'v1(' + v1.slug + ') and v2(' + v2.slug + ') returns: ',
+            //     v1.slug.localeCompare(v2.slug)
+            // );
             return v1.slug.localeCompare(v2.slug);
         } else if (v1.slug) {
             return -1;
@@ -279,10 +302,10 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
 
     const lengthSort = (v1, v2) => {
         if (v1.length === v2.length) {
-            console.log('v1(' + v1.length + ') and v2(' + v2.length + ')');
+            //console.log('v1(' + v1.length + ') and v2(' + v2.length + ')');
             return 0;
         } else if (v1.length > v2.length) {
-            console.log('v1(' + v1.length + ') and v2(' + v2.length + ')');
+            //console.log('v1(' + v1.length + ') and v2(' + v2.length + ')');
             return 1;
         } else if (v1.length < v2.length) {
             return -1;
@@ -291,17 +314,15 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
 
     const eventColumns = [
         //https://codesandbox.io/s/e9o2j?file=/demo.js
+        { field: 'status', headerName: 'Status', width: 120 },
         {
             field: 'avatar',
             headerName: 'Avatar',
             width: 75,
             sortable: false,
             filterable: false,
-            renderCell: (params) => (
-                <Avatar alt={`${params.value}`} src={`${params.value}`} />
-            ),
+            renderCell: renderProfileCell,
         },
-        { field: 'status', headerName: 'Status', width: 120 },
         // { field: 'name', headerName: 'Name', width: 180 },
         // {
         //     field: 'email',
@@ -310,14 +331,23 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
         //     editable: false,
         // },
         {
-            field: 'profile',
-            headerName: 'Artist Profile',
+            field: 'stageName',
+            headerName: 'Artist Name',
             width: 200,
             sortable: true,
-            //valueParser: (params) => params.row.profile.slug,
-            renderCell: renderProfileCell,
-            sortComparator: profileSort,
+            // valueFormatter: (params) => {
+            //     if (params.value && params.value.stageName) {
+            //         return params.value.stageName;
+            //     }
+            // },
+            //sortComparator: profileSort,
         },
+        // {
+        //     field: 'profile',
+        //     headerName: 'Artist Profile',
+        //     width: 200,
+        //     renderCell: renderProfileCell,
+        // },
         {
             field: 'bookingWhen',
             headerName: 'Event Date',
@@ -326,15 +356,16 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
             type: 'date',
             valueFormatter: (params) => {
                 if (params.value) {
-                    return new Date(params.value).toLocaleDateString(
-                        undefined,
-                        {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                        }
-                    );
+                    return prettifyDate(params.value);
+                    // return new Date(params.value).toLocaleDateString(
+                    //     undefined,
+                    //     {
+                    //         weekday: 'long',
+                    //         year: 'numeric',
+                    //         month: 'long',
+                    //         day: 'numeric',
+                    //     }
+                    // );
                 } else {
                     return;
                 }
@@ -359,12 +390,13 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
         {
             field: 'hostsInReach',
             headerName: 'Hosts in Area',
-            width: 700,
+            width: 900,
             editable: false,
             type: 'string',
             sortable: true,
             sortComparator: lengthSort,
             renderCell: (params) => {
+                //console.log('hostsInReach params', params);
                 if (params.value && params.value.length > 0) {
                     let hostsInReach = params.value.map((hostInReach, i) => {
                         return (
@@ -372,9 +404,37 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                                 arrow={true}
                                 placement="bottom"
                                 title={
-                                    hostInReach.host.city +
-                                    ', ' +
-                                    hostInReach.host.state
+                                    <>
+                                        <div>
+                                            {hostInReach.host.city},{' '}
+                                            {hostInReach.host.state}
+                                        </div>
+                                        <div>
+                                            <a
+                                                target="_blank"
+                                                href={`mailto:${
+                                                    hostInReach.host.email
+                                                }?subject=${
+                                                    params.row.stageName
+                                                } is looking to play a Porchlight concert near you!&body=Hi ${
+                                                    hostInReach.host.firstName
+                                                },%0D%0A%0D%0A${
+                                                    params.row.stageName
+                                                } is looking to play a Porchlight concert near ${
+                                                    params.row.bookingWhere.city
+                                                }, ${
+                                                    params.row.bookingWhere
+                                                        .state
+                                                } on ${prettifyDate(
+                                                    params.row.bookingWhen
+                                                )}.%0D%0AWould you please visit https://app.porchlight.art/artists/${
+                                                    params.row.profile.slug
+                                                } to check out the details and let us know if you’re available, and wanting, to host the concert.%0D%0A%0D%0AThank you so much!`}
+                                            >
+                                                {hostInReach.host.email}
+                                            </a>
+                                        </div>
+                                    </>
                                 }
                             >
                                 <span>
@@ -402,22 +462,30 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
             renderCell: (params) => {
                 if (params.value && params.value.length > 0) {
                     let hostsOffering = params.value.map((hostOffer, i) => {
+                        //console.log('hostOffer', hostOffer);
                         return (
-                            <Tooltip
-                                arrow={true}
-                                placement="bottom"
-                                title={
-                                    hostOffer.host.city +
-                                    ', ' +
-                                    hostOffer.host.state
+                            <ProfileAvatar
+                                firstName={hostOffer.host.firstName}
+                                lastName={hostOffer.host.lastName}
+                                city={hostOffer.host.city}
+                                state={hostOffer.host.state}
+                                profileImg={hostOffer.host.profileImg}
+                                tooltip={
+                                    <>
+                                        <div>{`${hostOffer.host.firstName} ${hostOffer.host.lastName}`}</div>
+                                        <div>
+                                            <PlaceTwoToneIcon
+                                                sx={{
+                                                    marginRight: '2px',
+                                                    fontSize: '1.4em',
+                                                    marginBottom: '2px',
+                                                }}
+                                            ></PlaceTwoToneIcon>
+                                            {`${hostOffer.host.city}, ${hostOffer.host.state}`}
+                                        </div>
+                                    </>
                                 }
-                            >
-                                <span>
-                                    {i > 0 && ', '}
-                                    {hostOffer.host.firstName}{' '}
-                                    {hostOffer.host.lastName}
-                                </span>
-                            </Tooltip>
+                            />
                         );
                     });
                     return hostsOffering;
@@ -450,12 +518,13 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                 adminEvents.map((adminEvent) => {
                     const eventRow = {
                         id: adminEvent._id,
-                        avatar: adminEvent.artist.squareImg,
+                        avatar: adminEvent.artist,
                         name:
                             adminEvent.artist.firstName +
                             ' ' +
                             adminEvent.artist.lastName,
                         email: adminEvent.artistEmail,
+                        stageName: adminEvent.artist.stageName || '',
                         profile: adminEvent.artist || '',
                         createdAt: adminEvent.createdAt,
                         hostsInReach: adminEvent.hostsInReach,
@@ -468,7 +537,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                     return eventRow;
                 })
             );
-            console.log(eventRows);
+            //console.log(eventRows);
         }
     }, [adminEvents]);
 
@@ -489,8 +558,11 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                     onEditRowsModelChange={handleEditRowsModelChange}
                     initialState={{
                         sorting: {
-                            sortModel: [{ field: 'lastLogin', sort: 'desc' }],
+                            sortModel: [{ field: 'createdAt', sort: 'desc' }],
                         },
+                    }}
+                    components={{
+                        Toolbar: GridToolbar,
                     }}
                 />
             </Grid>

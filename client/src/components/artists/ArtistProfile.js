@@ -979,26 +979,35 @@ const ArtistProfile = ({
                                                                             .state}
                                                                 </Grid>
                                                                 {thisEvent.status ===
-                                                                    'PENDING' && (
-                                                                    <Grid
-                                                                        item
-                                                                        sx={{
-                                                                            marginLeft:
-                                                                                '8px',
-                                                                        }}
-                                                                    >
-                                                                        <Button
-                                                                            onClick={() => {
-                                                                                handleBookingDetailsBtnClick(
-                                                                                    thisEvent
-                                                                                );
+                                                                    'PENDING' &&
+                                                                    user &&
+                                                                    user.role &&
+                                                                    (user.role.indexOf(
+                                                                        'ADMIN'
+                                                                    ) > -1 ||
+                                                                        user.role.indexOf(
+                                                                            'BOOKING'
+                                                                        ) >
+                                                                            -1) && (
+                                                                        <Grid
+                                                                            item
+                                                                            sx={{
+                                                                                marginLeft:
+                                                                                    '8px',
                                                                             }}
                                                                         >
-                                                                            Hosting
-                                                                            Details
-                                                                        </Button>
-                                                                    </Grid>
-                                                                )}
+                                                                            <Button
+                                                                                onClick={() => {
+                                                                                    handleBookingDetailsBtnClick(
+                                                                                        thisEvent
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                                Hosting
+                                                                                Details
+                                                                            </Button>
+                                                                        </Grid>
+                                                                    )}
                                                             </Grid>
                                                         </Grid>
                                                     </Tooltip>
