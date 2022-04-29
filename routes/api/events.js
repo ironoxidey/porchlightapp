@@ -417,13 +417,15 @@ router.get('/edit', [auth], async (req, res) => {
                     eventDetails.latLong &&
                     eventDetails.latLong.coordinates &&
                     eventDetails.latLong.coordinates.length > 0 &&
+                    eventDetails.hostReachRadius &&
                     (!eventDetails.hostsInReach ||
                         eventDetails.hostsInReach.length <= 0)
                 ) {
                     let hostsInReach = await Host.find({
                         latLong: {
                             $near: {
-                                $maxDistance: 30 * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
+                                $maxDistance:
+                                    eventDetails.hostReachRadius * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
                                 $geometry: {
                                     type: 'Point',
                                     coordinates:
