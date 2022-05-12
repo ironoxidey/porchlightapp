@@ -37,7 +37,7 @@ const EventSchema = new mongoose.Schema(
         },
         hostReachRadius: {
             type: Number,
-            default: 15, //the distance is actually in meters, but I'm storing miles and converting it when I make the call to the database, 1609.35m = 1 mile
+            default: 40, //the distance is actually in meters, but I'm storing miles and converting it when I make the call to the database, 1609.35m = 1 mile
         },
         hostsInReach: [
             {
