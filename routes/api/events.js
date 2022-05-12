@@ -330,7 +330,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                         eventDetails.confirmedHost.firstName +
                         ' ' +
                         eventDetails.confirmedHost.lastName,
-                    stageName: eventDetails.artistSlug,
+                    stageName: eventFields.stageName,
                     eventDate: emailDate,
                     hostLocation:
                         eventDetails.confirmedHost.city +
@@ -370,8 +370,8 @@ router.get('/edit', [auth], async (req, res) => {
         (req.user.role && req.user.role.indexOf('ADMIN') > -1) ||
         req.user.role.indexOf('BOOKING') > -1
     ) {
+        //must be have ADMIN or BOOKING role to get into all of this!
         let updatedEvents = 0;
-        //must be an ADMIN to get into all of this!
         try {
             const events = await Event.find({})
                 .populate('artist')

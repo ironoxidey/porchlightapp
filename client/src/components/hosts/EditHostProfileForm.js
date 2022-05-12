@@ -31,9 +31,15 @@ import {
     withStyles,
     Typography,
 } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+
 import ReactPhoneInput from 'react-phone-input-mui';
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
+
+import HostProfile from '../hosts/HostProfile';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -83,7 +89,31 @@ const EditHostProfileForm = ({
     history,
     auth,
     updateUserAvatar,
+    hostMe,
 }) => {
+    //Booking Details Dialog Functions
+    const [hostDetailsDialogOpen, setHostDetailsDialogOpen] = useState(false);
+
+    const [wantsToBook, setWantsToBook] = useState(false);
+
+    const hostDetailsDialogHandleClose = () => {
+        setDialogDetailsState({});
+        setHostDetailsDialogOpen(false);
+        setWantsToBook(false);
+    };
+
+    const [hostDialogDetails, setDialogDetailsState] = useState({});
+
+    useEffect(() => {
+        console.log('hostDialogDetails', hostDialogDetails);
+        setHostDetailsDialogOpen(true);
+    }, [hostDialogDetails]);
+
+    const handleEventBtnClick = (hostMe) => {
+        setDialogDetailsState(hostMe);
+    };
+    //End of Dialog Functions
+
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     const dispatch = useDispatch();
 
@@ -1067,6 +1097,26 @@ const EditHostProfileForm = ({
                     Thank you for taking the time to respond to them! Please
                     check your profile to be sure everything is correct.
                 </Typography>,
+                hostMe && hostMe._id === theHost._id && (
+                    <Grid
+                        item
+                        container
+                        justifyContent="center"
+                        sx={{ marginTop: '16px' }}
+                    >
+                        <Button
+                            btnwidth="240"
+                            onClick={(e) => {
+                                handleEventBtnClick(hostMe);
+                            }}
+                        >
+                            {/* <HowToRegTwoToneIcon
+                                sx={{ marginRight: '8px' }}
+                            ></HowToRegTwoToneIcon>{' '} */}
+                            View My Host Profile
+                        </Button>
+                    </Grid>
+                ),
             ],
             // [
             //     slug && (
@@ -1177,7 +1227,37 @@ const EditHostProfileForm = ({
     };
 
     return (
-        <Fragment>
+        <>
+            {hostDialogDetails && hostDialogDetails._id && (
+                <Dialog
+                    open={hostDetailsDialogOpen}
+                    onClose={hostDetailsDialogHandleClose}
+                    // aria-labelledby="alert-dialog-title"
+                    // aria-describedby="alert-dialog-description"
+                    scroll="body"
+                    fullWidth
+                    maxWidth="md"
+                >
+                    {/* <DialogTitle id="alert-dialog-title"></DialogTitle> */}
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            <HostProfile
+                                theHost={hostDialogDetails}
+                                //theEvent={thisEvent}
+                                //theOffer={hostDialogDetails}
+                                hostDetailsDialogHandleClose={
+                                    hostDetailsDialogHandleClose
+                                }
+                            ></HostProfile>
+                        </DialogContentText>
+                    </DialogContent>
+                    {/* <DialogActions>
+                    <Button onClick={hostDetailsDialogHandleClose}>
+                        Close
+                    </Button>
+                </DialogActions> */}
+                </Dialog>
+            )}
             <form className="form" onSubmit={(e) => onSubmit(e)}>
                 <Grid container sx={{ padding: '20px!important' }}>
                     <Grid
@@ -1276,7 +1356,7 @@ const EditHostProfileForm = ({
           </BottomNavigation>
         </Paper> */}
             </form>
-        </Fragment>
+        </>
     );
 };
 
@@ -1286,10 +1366,12 @@ EditHostProfileForm.propTypes = {
     auth: PropTypes.object.isRequired,
     updateUserAvatar: PropTypes.func.isRequired,
     inDialog: PropTypes.object,
+    hostMe: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
+    hostMe: state.host.me,
 });
 
 export default connect(mapStateToProps, {

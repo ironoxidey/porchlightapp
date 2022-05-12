@@ -172,10 +172,11 @@ export const artistViewedHostOffer =
 
 // Artist viewed Host's offer to book
 export const artistAcceptOffer =
-    (bookingWhen, theOffer, history) => async (dispatch) => {
+    (bookingWhen, theOffer, stageName, history) => async (dispatch) => {
         let formData = {
             bookingWhen: bookingWhen,
             offeringHost: { _id: theOffer.host._id },
+            stageName: stageName,
         };
         //console.log('artistAcceptOffer formData', formData);
         try {

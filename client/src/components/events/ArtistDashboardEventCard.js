@@ -43,6 +43,7 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
     const handleEventBtnClick = (theOffer) => {
         setDialogDetailsState(theOffer);
     };
+    //End of Dialog Functions
 
     return (
         <>

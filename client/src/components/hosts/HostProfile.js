@@ -34,6 +34,7 @@ import { toTitleCase } from '../../actions/app';
 import { artistAcceptOffer } from '../../actions/event';
 
 const HostProfile = ({
+    artist,
     user,
     theHost,
     isMe = false,
@@ -319,7 +320,8 @@ const HostProfile = ({
                                     </Typography>
                                 </Grid>
                             )}
-                            {theOffer.refreshments &&
+                            {theOffer &&
+                                theOffer.refreshments &&
                                 theOffer.refreshments.constructor.name ===
                                     'Array' &&
                                 theOffer.refreshments.length > 0 && (
@@ -366,7 +368,7 @@ const HostProfile = ({
                                         </Typography>
                                     </Grid>
                                 )}
-                            {theOffer.overnight && (
+                            {theOffer && theOffer.overnight && (
                                 <Grid
                                     item
                                     container
@@ -412,7 +414,7 @@ const HostProfile = ({
                                     </Typography>
                                 </Grid>
                             )}
-                            {theOffer.houseRules && (
+                            {theOffer && theOffer.houseRules && (
                                 <Grid
                                     item
                                     container
@@ -488,9 +490,13 @@ const HostProfile = ({
                 theOffer &&
                 theEvent.status !== 'CONFIRMED' &&
                 user &&
-                ((theEvent.artistUser && user._id === theEvent.artistUser) ||
+                ((theEvent.artistUser &&
+                    user._id === theEvent.artistUser &&
+                    artist &&
+                    artist.me &&
+                    artist.me.stageName) ||
                     (theEvent.profile &&
-                        user.email === theEvent.profile.email)) && ( //make sure the logged-in user is the artist (mostly for when booking coordinators are looking at this)
+                        user.email === theEvent.profile.email)) && ( //make sure the logged-in user is the artist and has a stageName (mostly for when booking coordinators are looking at this)
                     <>
                         <Typography
                             component="h2"
@@ -540,7 +546,8 @@ const HostProfile = ({
                                 onClick={(e) => {
                                     artistAcceptOffer(
                                         theEvent.bookingWhen,
-                                        theOffer
+                                        theOffer,
+                                        artist.me.stageName
                                     );
                                     eventDetailsDialogHandleClose();
                                 }}
@@ -564,10 +571,12 @@ HostProfile.propTypes = {
     theEvent: PropTypes.object,
     eventDetailsDialogHandleClose: PropTypes.func,
     artistAcceptOffer: PropTypes.func.isRequired,
+    artist: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
     user: state.auth.user,
+    artist: state.artist,
 });
 
 export default connect(mapStateToProps, { artistAcceptOffer })(
