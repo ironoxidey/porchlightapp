@@ -39,6 +39,7 @@ jobs:
                   export mongoURI=${{secrets.MONGOURI}}
                   export jwtSecret=${{secrets.JWTSECRET}}
                   export resetPasswordKey=${{secrets.RESETPASSWORDKEY}}
+                  export GOOGLE_MAPS_API_KEY=${{secrets.GOOGLE_MAPS_API_KEY}}
                   export calendlyID=${{secrets.CALENDLYID}}
                   export calendlySecret=${{secrets.CALENDLYSECRET}}
                   export cloud_name=${{secrets.CLOUD_NAME}}
