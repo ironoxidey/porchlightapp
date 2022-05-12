@@ -982,13 +982,17 @@ const ArtistProfile = ({
                                                                     'PENDING' &&
                                                                     user &&
                                                                     user.role &&
-                                                                    (user.role.indexOf(
-                                                                        'ADMIN'
-                                                                    ) > -1 ||
-                                                                        user.role.indexOf(
-                                                                            'BOOKING'
-                                                                        ) >
-                                                                            -1) && (
+                                                                    user.role.indexOf(
+                                                                        'HOST'
+                                                                    ) > -1 && (
+                                                                        //(user.role.indexOf(
+                                                                        //    'ADMIN'
+                                                                        //) > -1 ||
+                                                                        //    user.role.indexOf(
+                                                                        //        'BOOKING'
+                                                                        //    ) >
+                                                                        //        -1 ||
+                                                                        //    )
                                                                         <Grid
                                                                             item
                                                                             sx={{

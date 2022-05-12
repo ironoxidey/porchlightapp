@@ -387,7 +387,7 @@ router.get('/edit', [auth], async (req, res) => {
                 if (
                     eventDetails.latLong &&
                     eventDetails.latLong.coordinates &&
-                    eventDetails.latLong.coordinates.length <= 0 && //if this is commented, it will geocode the event everytime
+                    eventDetails.latLong.coordinates.length == 0 && //if this is commented, it will geocode the event everytime
                     eventDetails.bookingWhere &&
                     eventDetails.bookingWhere.city &&
                     eventDetails.bookingWhere.state &&
