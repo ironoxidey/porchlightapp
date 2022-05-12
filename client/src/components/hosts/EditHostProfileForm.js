@@ -1094,8 +1094,11 @@ const EditHostProfileForm = ({
                     component="p"
                     sx={{ textAlign: 'center', marginTop: '20px' }}
                 >
-                    Thank you for taking the time to respond to them! Please
-                    check your profile to be sure everything is correct.
+                    Thank you for taking the time to respond to them! Check out
+                    your profile to see how artists will it. <br /> (An artist
+                    will see your profile, only after you make an offer to host
+                    their show. Even then, you can see, we don’t share much of
+                    your personal information with them.)
                 </Typography>,
                 hostMe && hostMe._id === theHost._id && (
                     <Grid
