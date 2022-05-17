@@ -68,8 +68,16 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
 
     let eventFields = req.body;
 
+    let userRole = req.user.role;
+
+    if (userRole && userRole.indexOf('HOST') === -1) {
+        //if the requesting user doesn't have the HOST role, check the database for the requesting user and see if they have the HOST user role there (this can happen if they just filled out the "Sign Up to Host" form but haven't relogged-in to update their auth token with the new HOST role)
+        let user = await User.findOne({ email: req.user.email }).select('role');
+        console.log('User has these roles: ', user);
+        userRole = user.role;
+    }
     //if (req.user.role === 'ADMIN' && eventFields.email !== '') {
-    if (req.user.role && req.user.role.indexOf('HOST') > -1) {
+    if (userRole && userRole.indexOf('HOST') > -1) {
         //console.log("User is HOST and can raise their hand to book shows.");
         try {
             //console.log('eventFields', eventFields);
@@ -131,7 +139,8 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
         }
     } else {
         console.error(
-            req.user.email + " doesn't have authority to make these changes."
+            req.user.email +
+                ' cannot make a hosting offer without the HOST user role.'
         );
         res.status(500).send(
             'User does not have authority to make these changes.'
