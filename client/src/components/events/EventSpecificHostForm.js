@@ -545,7 +545,7 @@ const EventSpecificHostForm = ({
         ],
         seatingProvided: [
             <FormLabel component="legend">
-                Do you have all the seating you'll need, or should we encourage
+                Do you have all the seating you’ll need, or should we encourage
                 people to bring their own chairs?
             </FormLabel>,
             [

@@ -74,6 +74,9 @@ const EventSchema = new mongoose.Schema(
                 refreshments: {
                     type: Object,
                 },
+                seatingProvided: {
+                    type: String,
+                },
                 overnight: {
                     type: String,
                 },

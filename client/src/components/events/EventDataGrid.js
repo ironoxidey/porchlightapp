@@ -119,8 +119,8 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                     >
                         <DialogTitle id="alert-dialog-title">
                             <Avatar
-                                alt={`${adminAlertUser.row.avatar}`}
-                                src={`${adminAlertUser.row.avatar}`}
+                                alt={`${adminAlertUser.row.artist}`}
+                                src={`${adminAlertUser.row.artist}`}
                                 sx={{
                                     width: '150px',
                                     height: '150px',
@@ -317,8 +317,8 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
         //https://codesandbox.io/s/e9o2j?file=/demo.js
         { field: 'status', headerName: 'Status', width: 120 },
         {
-            field: 'avatar',
-            headerName: 'Avatar',
+            field: 'artist',
+            headerName: 'Artist',
             width: 75,
             sortable: false,
             filterable: false,
@@ -467,7 +467,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                         return (
                             <EventHostDialog
                                 theHost={hostOffer.host}
-                                theEvent={params.row}
+                                theEvent={params.row.theEvent}
                                 theOffer={hostOffer}
                             >
                                 <ProfileAvatar
@@ -532,8 +532,9 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
             setEventRows(
                 adminEvents.map((adminEvent) => {
                     const eventRow = {
+                        theEvent: adminEvent,
                         id: adminEvent._id,
-                        avatar: adminEvent.artist,
+                        artist: adminEvent.artist,
                         name:
                             adminEvent.artist.firstName +
                             ' ' +

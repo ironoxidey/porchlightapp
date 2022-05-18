@@ -28,9 +28,17 @@ import PriceCheckTwoToneIcon from '@mui/icons-material/PriceCheckTwoTone'; // fo
 import RestaurantTwoToneIcon from '@mui/icons-material/RestaurantTwoTone'; // for refreshments
 import VolunteerActivismTwoToneIcon from '@mui/icons-material/VolunteerActivismTwoTone'; // for honorarium
 import GavelTwoToneIcon from '@mui/icons-material/GavelTwoTone';
+import PhoneTwoToneIcon from '@mui/icons-material/PhoneTwoTone';
+import DirectionsTwoToneIcon from '@mui/icons-material/DirectionsTwoTone';
+import ChairAltTwoToneIcon from '@mui/icons-material/ChairAltTwoTone';
+import FeedbackTwoToneIcon from '@mui/icons-material/FeedbackTwoTone';
+import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
+import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
+import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone';
+
 import Button from '../layout/SvgButton';
 
-import { toTitleCase } from '../../actions/app';
+import { toTitleCase, formatPhoneNumber } from '../../actions/app';
 import { artistAcceptOffer } from '../../actions/event';
 
 const HostProfile = ({
@@ -44,6 +52,41 @@ const HostProfile = ({
     artistAcceptOffer,
 }) => {
     console.log('theEvent', theEvent);
+    console.log('theHost', theHost);
+    console.log('theOffer', theOffer);
+    console.log('user', user);
+
+    let theHostAddress =
+        theHost.primarySpace === 'residence'
+            ? user &&
+              user.role &&
+              (user.role.indexOf('ADMIN') > -1 ||
+                  user.role.indexOf('BOOKING') > -1) &&
+              theEvent &&
+              theHost.streetAddress
+                ? theHost.streetAddress +
+                  ' ' +
+                  toTitleCase(theHost.city) +
+                  ', ' +
+                  theHost.state +
+                  ' ' +
+                  theHost.zipCode
+                : toTitleCase(theHost.city) + ', ' + theHost.state
+            : user &&
+              user.role &&
+              (user.role.indexOf('ADMIN') > -1 ||
+                  user.role.indexOf('BOOKING') > -1) &&
+              theEvent &&
+              theHost.venueStreetAddress //if not host's 'residence' display venue address
+            ? theHost.venueStreetAddress +
+              ' ' +
+              toTitleCase(theHost.venueCity) +
+              ', ' +
+              theHost.venueState +
+              ' ' +
+              theHost.venueZipCode
+            : toTitleCase(theHost.venueCity) + ', ' + theHost.venueState;
+
     return (
         <>
             <Grid
@@ -94,7 +137,7 @@ const HostProfile = ({
                         }}
                     >
                         {theHost.profileImg && (
-                            <Grid item>
+                            <Grid item sx={{ marginRight: '16px' }}>
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
@@ -121,7 +164,7 @@ const HostProfile = ({
                                             padding: '4px',
                                             backgroundClip: 'content-box',
                                             border: '1px solid var(--primary-color)',
-                                            margin: '0 8px 0 0',
+                                            margin: '0',
                                         }}
                                     ></Box>
                                 </Tooltip>
@@ -133,7 +176,7 @@ const HostProfile = ({
                                             direction="row"
                                             justifyContent="center"
                                             sx={{
-                                                margin: '8px auto',
+                                                margin: '8px auto 0',
                                                 width: '100%',
                                             }}
                                         >
@@ -144,6 +187,32 @@ const HostProfile = ({
                                         </Grid>
                                     </Grid>
                                 )}
+                                {user &&
+                                    user.role &&
+                                    (user.role.indexOf('ADMIN') > -1 ||
+                                        user.role.indexOf('BOOKING') > -1) &&
+                                    theHost.email && (
+                                        <Grid
+                                            item
+                                            container
+                                            alignItems="center"
+                                            sx={{
+                                                marginTop: '0px',
+                                            }}
+                                        >
+                                            <Typography
+                                                component="h3"
+                                                sx={{
+                                                    marginTop: '0px',
+                                                    width: '100%',
+                                                    textAlign: 'center',
+                                                    fontSize: '.8em',
+                                                }}
+                                            >
+                                                {`${theHost.email}`}
+                                            </Typography>
+                                        </Grid>
+                                    )}
                             </Grid>
                         )}
                         <Grid
@@ -160,6 +229,42 @@ const HostProfile = ({
                             alignItems="start"
                             className="topInfo"
                         >
+                            {user &&
+                                user.role &&
+                                (user.role.indexOf('ADMIN') > -1 ||
+                                    user.role.indexOf('BOOKING') > -1) &&
+                                theHost.phone && (
+                                    <Grid
+                                        item
+                                        container
+                                        alignItems="center"
+                                        sx={{ marginTop: '8px' }}
+                                    >
+                                        <Typography component="h3">
+                                            <Tooltip
+                                                title={
+                                                    !isMe ? (
+                                                        'Phone'
+                                                    ) : (
+                                                        <Link to="/edit-host-profile?field=phone">
+                                                            Edit
+                                                        </Link>
+                                                    )
+                                                }
+                                                placement="bottom"
+                                                arrow
+                                            >
+                                                <PhoneTwoToneIcon
+                                                    sx={{ marginRight: '8px' }}
+                                                ></PhoneTwoToneIcon>
+                                            </Tooltip>
+                                            {`${formatPhoneNumber(
+                                                theHost.phone
+                                            )}`}
+                                        </Typography>
+                                    </Grid>
+                                )}
+
                             {theHost.city && theHost.state && (
                                 <Grid
                                     item
@@ -185,20 +290,43 @@ const HostProfile = ({
                                                 sx={{ marginRight: '8px' }}
                                             ></PlaceTwoToneIcon>
                                         </Tooltip>
-                                        {`${
-                                            theHost.primarySpace === 'residence'
-                                                ? toTitleCase(theHost.city) +
-                                                  ', ' +
-                                                  theHost.state
-                                                : toTitleCase(
-                                                      theHost.venueCity
-                                                  ) +
-                                                  ', ' +
-                                                  theHost.venueState
-                                        }`}
+                                        {`${theHostAddress}`}
                                     </Typography>
                                 </Grid>
                             )}
+                            {user &&
+                                user.role &&
+                                (user.role.indexOf('ADMIN') > -1 ||
+                                    user.role.indexOf('BOOKING') > -1) &&
+                                theHost.specialNavDirections && (
+                                    <Grid
+                                        item
+                                        container
+                                        alignItems="center"
+                                        sx={{ marginTop: '8px' }}
+                                    >
+                                        <Typography component="h3">
+                                            <Tooltip
+                                                title={
+                                                    !isMe ? (
+                                                        'Special Navigation Directions'
+                                                    ) : (
+                                                        <Link to="/edit-host-profile?field=specialNavDirections">
+                                                            Edit
+                                                        </Link>
+                                                    )
+                                                }
+                                                placement="bottom"
+                                                arrow
+                                            >
+                                                <DirectionsTwoToneIcon
+                                                    sx={{ marginRight: '8px' }}
+                                                ></DirectionsTwoToneIcon>
+                                            </Tooltip>
+                                            {`${theHost.specialNavDirections}`}
+                                        </Typography>
+                                    </Grid>
+                                )}
                             {theHost.numDraw && (
                                 <Grid
                                     item
@@ -320,6 +448,78 @@ const HostProfile = ({
                                     </Typography>
                                 </Grid>
                             )}
+                            {user &&
+                                user.role &&
+                                (user.role.indexOf('ADMIN') > -1 ||
+                                    user.role.indexOf('BOOKING') > -1) &&
+                                theOffer.seatingProvided &&
+                                theOffer.seatingProvided == 'yes' && (
+                                    <Grid
+                                        item
+                                        container
+                                        alignItems="center"
+                                        sx={{ marginTop: '8px' }}
+                                    >
+                                        <Typography component="h3">
+                                            <Tooltip
+                                                title={
+                                                    !isMe ? (
+                                                        theHost.firstName +
+                                                        ` has the seating necessary for ${theHost.maxNumAttendees} people.`
+                                                    ) : (
+                                                        <Link to="/edit-host-profile?field=seatingProvided">
+                                                            Edit
+                                                        </Link>
+                                                    )
+                                                }
+                                                placement="bottom"
+                                                arrow
+                                            >
+                                                <ChairAltTwoToneIcon
+                                                    sx={{ marginRight: '8px' }}
+                                                ></ChairAltTwoToneIcon>
+                                            </Tooltip>
+                                            {theHost.firstName +
+                                                ` has the seating necessary for ${theHost.maxNumAttendees} people.`}
+                                        </Typography>
+                                    </Grid>
+                                )}
+                            {user &&
+                                user.role &&
+                                (user.role.indexOf('ADMIN') > -1 ||
+                                    user.role.indexOf('BOOKING') > -1) &&
+                                (!theOffer.seatingProvided ||
+                                    theOffer.seatingProvided == 'no') && (
+                                    <Grid
+                                        item
+                                        container
+                                        alignItems="center"
+                                        sx={{ marginTop: '8px' }}
+                                    >
+                                        <Typography component="h3">
+                                            <Tooltip
+                                                title={
+                                                    !isMe ? (
+                                                        theHost.firstName +
+                                                        ` does NOT have the seating necessary for ${theHost.maxNumAttendees} people.`
+                                                    ) : (
+                                                        <Link to="/edit-host-profile?field=seatingProvided">
+                                                            Edit
+                                                        </Link>
+                                                    )
+                                                }
+                                                placement="bottom"
+                                                arrow
+                                            >
+                                                <ChairAltTwoToneIcon
+                                                    sx={{ marginRight: '8px' }}
+                                                ></ChairAltTwoToneIcon>
+                                            </Tooltip>
+                                            {theHost.firstName +
+                                                ` does NOT have the seating necessary for ${theHost.maxNumAttendees} people.`}
+                                        </Typography>
+                                    </Grid>
+                                )}
                             {theOffer &&
                                 theOffer.refreshments &&
                                 theOffer.refreshments.constructor.name ===
@@ -381,10 +581,14 @@ const HostProfile = ({
                                                 !isMe ? (
                                                     theHost.firstName +
                                                     ' offered to accommodate ' +
-                                                    (theEvent
-                                                        .travelingCompanions
-                                                        .length +
-                                                        1) +
+                                                    (theEvent.travelingCompanions &&
+                                                        theEvent
+                                                            .travelingCompanions
+                                                            .constructor
+                                                            .name === 'Array' &&
+                                                        theEvent
+                                                            .travelingCompanions
+                                                            .length + 1) +
                                                     ' people overnight.'
                                                 ) : (
                                                     <Link to="/edit-host-profile?field=overnight">
@@ -402,6 +606,9 @@ const HostProfile = ({
                                         {`${
                                             theHost.firstName
                                         } offered to accommodate ${
+                                            theEvent.travelingCompanions &&
+                                            theEvent.travelingCompanions
+                                                .constructor.name === 'Array' &&
                                             theEvent.travelingCompanions
                                                 .length + 1
                                         } people overnight${
@@ -447,6 +654,39 @@ const HostProfile = ({
                                     </Typography>
                                 </Grid>
                             )}
+                            {theOffer && theOffer.extraClarification && (
+                                <Grid
+                                    item
+                                    container
+                                    alignItems="center"
+                                    sx={{ marginTop: '8px' }}
+                                >
+                                    <Typography component="h3">
+                                        <Tooltip
+                                            title={
+                                                !isMe ? (
+                                                    theHost.firstName +
+                                                    ' has these extra clarifications: ' +
+                                                    theOffer.extraClarification
+                                                ) : (
+                                                    <Link to="/edit-host-profile?field=extraClarification">
+                                                        Edit
+                                                    </Link>
+                                                )
+                                            }
+                                            placement="bottom"
+                                            arrow
+                                        >
+                                            <FeedbackTwoToneIcon
+                                                sx={{ marginRight: '8px' }}
+                                            ></FeedbackTwoToneIcon>
+                                        </Tooltip>
+                                        {theHost.firstName +
+                                            ' has these extra clarifications: ' +
+                                            theOffer.extraClarification}
+                                    </Typography>
+                                </Grid>
+                            )}
 
                             {theOffer &&
                             theOffer.guaranteeHonorarium === 'honorarium' &&
@@ -482,6 +722,98 @@ const HostProfile = ({
                             ) : (
                                 ''
                             )}
+
+                            {user &&
+                                user.role &&
+                                (user.role.indexOf('ADMIN') > -1 ||
+                                    user.role.indexOf('BOOKING') > -1) &&
+                                theOffer &&
+                                theOffer.additionalRequests && (
+                                    <Grid
+                                        item
+                                        container
+                                        alignItems="center"
+                                        sx={{ marginTop: '8px' }}
+                                    >
+                                        <Typography component="h3">
+                                            <Tooltip
+                                                title={
+                                                    !isMe ? (
+                                                        theHost.firstName +
+                                                        ' has these additional requests:'
+                                                    ) : (
+                                                        <Link to="/edit-host-profile?field=additionalRequests">
+                                                            Edit
+                                                        </Link>
+                                                    )
+                                                }
+                                                placement="bottom"
+                                                arrow
+                                            >
+                                                <AssignmentTwoToneIcon
+                                                    sx={{ marginRight: '8px' }}
+                                                ></AssignmentTwoToneIcon>
+                                            </Tooltip>
+                                            {theHost.firstName +
+                                                ' has these requests as we set up the Eventbrite page: ' +
+                                                theOffer.additionalRequests}
+                                        </Typography>
+                                    </Grid>
+                                )}
+                            {user &&
+                                user.role &&
+                                (user.role.indexOf('ADMIN') > -1 ||
+                                    user.role.indexOf('BOOKING') > -1) &&
+                                theOffer &&
+                                theOffer.eventbritePublicAddress && (
+                                    <Grid
+                                        item
+                                        container
+                                        alignItems="center"
+                                        sx={{ marginTop: '8px' }}
+                                    >
+                                        <Typography component="h3">
+                                            <Tooltip
+                                                title={
+                                                    !isMe ? (
+                                                        'EventBrite Address Privacy'
+                                                    ) : (
+                                                        <Link to="/edit-host-profile?field=eventbritePublicAddress">
+                                                            Edit
+                                                        </Link>
+                                                    )
+                                                }
+                                                placement="bottom"
+                                                arrow
+                                            >
+                                                {theOffer.eventbritePublicAddress ===
+                                                'yes' ? (
+                                                    <VisibilityTwoToneIcon
+                                                        sx={{
+                                                            marginRight: '8px',
+                                                        }}
+                                                    ></VisibilityTwoToneIcon>
+                                                ) : (
+                                                    <VisibilityOffTwoToneIcon
+                                                        sx={{
+                                                            marginRight: '8px',
+                                                        }}
+                                                    ></VisibilityOffTwoToneIcon>
+                                                )}
+                                            </Tooltip>
+                                            {theOffer.eventbritePublicAddress ===
+                                            'yes'
+                                                ? theHost.firstName +
+                                                  ' is comfortable with the address being publicly viewable on the Eventbrite page.'
+                                                : theOffer.eventbritePublicAddress ===
+                                                  'no'
+                                                ? theHost.firstName +
+                                                  ' is NOT comfortable with the address being publicly viewable on the Eventbrite page.'
+                                                : theHost.firstName +
+                                                  ' is NOT SURE about having the address being publicly viewable on the Eventbrite page.'}
+                                        </Typography>
+                                    </Grid>
+                                )}
                         </Grid>
                     </Grid>
                 </Tooltip>
