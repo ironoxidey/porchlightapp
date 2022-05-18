@@ -73,7 +73,7 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
     if (userRole && userRole.indexOf('HOST') === -1) {
         //if the requesting user doesn't have the HOST role, check the database for the requesting user and see if they have the HOST user role there (this can happen if they just filled out the "Sign Up to Host" form but haven't relogged-in to update their auth token with the new HOST role)
         let user = await User.findOne({ email: req.user.email }).select('role');
-        console.log('User has these roles: ', user);
+        //console.log('User has these roles: ', user);
         userRole = user.role;
     }
     //if (req.user.role === 'ADMIN' && eventFields.email !== '') {
@@ -127,6 +127,8 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
                 stageName: eventDetails.artist.stageName,
                 eventDate: emailDate,
                 hostLocation: host.city + ', ' + host.state,
+                hostImg: host.profileImg,
+                artistImg: eventDetails.artist.squareImg,
             });
             delete eventDetails.artistEmail;
 
