@@ -44,6 +44,7 @@ import LiquorTwoToneIcon from '@mui/icons-material/LiquorTwoTone';
 import NoDrinksTwoToneIcon from '@mui/icons-material/NoDrinksTwoTone';
 import AttachMoneyTwoToneIcon from '@mui/icons-material/AttachMoneyTwoTone';
 import MoneyOffTwoToneIcon from '@mui/icons-material/MoneyOffTwoTone';
+import BedtimeOffTwoToneIcon from '@mui/icons-material/BedtimeOffTwoTone';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -266,6 +267,32 @@ const EventDetails = ({
                                                 ? ' people'
                                                 : ' person')}
                                     </strong>
+
+                                    <Divider />
+                                </Grid>
+                            )}
+                            {theEvent.overnight && theEvent.overnight == 0 && (
+                                <Grid
+                                    item
+                                    sx={{ marginTop: '0' }}
+                                    xs={12}
+                                    md={6}
+                                    className="overnight"
+                                >
+                                    <Tooltip
+                                        arrow={true}
+                                        disableHoverListener={!isMe}
+                                        disableFocusListener={!isMe}
+                                        disableTouchListener={!isMe}
+                                        title={
+                                            <Link to="/edit-artist-booking?field=overnight">
+                                                Edit
+                                            </Link>
+                                        }
+                                    >
+                                        <BedtimeOffTwoToneIcon></BedtimeOffTwoToneIcon>
+                                    </Tooltip>
+                                    {' Does not need overnight accommodations.'}
 
                                     <Divider />
                                 </Grid>

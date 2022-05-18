@@ -71,8 +71,11 @@ const EventSchema = new mongoose.Schema(
                         type: String,
                     },
                 },
+                // refreshments: {
+                //     type: Object,
+                // },
                 refreshments: {
-                    type: Object,
+                    type: String,
                 },
                 seatingProvided: {
                     type: String,

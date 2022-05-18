@@ -520,7 +520,7 @@ const HostProfile = ({
                                         </Typography>
                                     </Grid>
                                 )}
-                            {theOffer &&
+                            {/* {theOffer &&
                                 theOffer.refreshments &&
                                 theOffer.refreshments.constructor.name ===
                                     'Array' &&
@@ -567,7 +567,42 @@ const HostProfile = ({
                                             )}
                                         </Typography>
                                     </Grid>
-                                )}
+                                )} */}
+                            {theOffer && theOffer.refreshments && (
+                                <Grid
+                                    item
+                                    container
+                                    alignItems="baseline"
+                                    sx={{ margin: '8px 0 -4px 0' }} // -4px compensating for the 4px added to the bottom of the icon to make it center on the line
+                                >
+                                    <Typography
+                                        component="h3"
+                                        sx={{ verticalAlign: 'start' }}
+                                    >
+                                        <Tooltip
+                                            title={
+                                                !isMe ? (
+                                                    'Refreshments'
+                                                ) : (
+                                                    <Link to="/edit-host-profile?field=refreshments">
+                                                        Edit
+                                                    </Link>
+                                                )
+                                            }
+                                            placement="bottom"
+                                            arrow
+                                        >
+                                            <RestaurantTwoToneIcon
+                                                sx={{
+                                                    margin: '0 8px 4px 0',
+                                                }}
+                                            ></RestaurantTwoToneIcon>
+                                        </Tooltip>
+                                        {`${theHost.firstName} said: `}
+                                        {theOffer.refreshments}
+                                    </Typography>
+                                </Grid>
+                            )}
                             {theOffer && theOffer.overnight && (
                                 <Grid
                                     item

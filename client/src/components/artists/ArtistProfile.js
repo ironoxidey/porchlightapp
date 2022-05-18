@@ -1022,7 +1022,7 @@ const ArtistProfile = ({
                                     )}
                             </Grid>
                         </Grid>
-                        <Grid
+                        {/* <Grid
                             container
                             direction="row"
                             xs={12}
@@ -1234,16 +1234,6 @@ const ArtistProfile = ({
                             ) : (
                                 ''
                             )}
-                            {/* {!artist.merchTable ?
-					<Grid
-						item
-						sx={{ marginTop: '0' }}
-						xs={6}
-					>
-					<TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>
-					{' '}<strong>{'Does NOT need a merch table'}</strong>{' '}
-					</Grid>
-				: ''} */}
                             {artist.allergies.length > 0 ? (
                                 <Grid
                                     item
@@ -1677,7 +1667,7 @@ const ArtistProfile = ({
                             ) : (
                                 ''
                             )}
-                        </Grid>
+                        </Grid>*/}
                     </Grid>
                 ) : (
                     ''

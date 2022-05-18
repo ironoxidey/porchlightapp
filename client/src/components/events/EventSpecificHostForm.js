@@ -101,7 +101,8 @@ const EventSpecificHostForm = ({
             hardWrap: '21:00',
             flexible: true,
         },
-        refreshments: [],
+        //refreshments: [],
+        refreshments: '',
         overnight: '',
         overnightArrangements: '',
         openers: '',
@@ -127,9 +128,13 @@ const EventSpecificHostForm = ({
                               flexible: true,
                           }
                         : theEvent.showSchedule,
+                // refreshments:
+                //     loading || !host.me.refreshments
+                //         ? []
+                //         : host.me.refreshments,
                 refreshments:
                     loading || !host.me.refreshments
-                        ? []
+                        ? ''
                         : host.me.refreshments,
                 overnight:
                     loading || !host.me.overnight ? '' : host.me.overnight,
@@ -155,7 +160,7 @@ const EventSpecificHostForm = ({
                         : host.me.guaranteeHonorarium,
                 honorariumAmount:
                     loading || !host.me.honorariumAmount
-                        ? ''
+                        ? artist.financialHopes
                         : host.me.honorariumAmount,
                 extraClarification:
                     loading || !host.me.extraClarification
@@ -417,131 +422,257 @@ const EventSpecificHostForm = ({
                 </Grid>,
             ],
         ],
+        // refreshments: [
+        //     <FormLabel component="legend">
+        //         Let's talk refreshments. Do you plan on having any food or
+        //         drinks?
+        //     </FormLabel>,
+        //     <Grid
+        //         item
+        //         container
+        //         xs={12}
+        //         sx={{ width: '100%' }}
+        //         justifyContent="center"
+        //         className="bookingDetails"
+        //     >
+        //         <Grid item xs={12}>
+        //             <Autocomplete
+        //                 multiple
+        //                 id="refreshments"
+        //                 value={refreshments}
+        //                 options={[]}
+        //                 freeSolo
+        //                 clearOnBlur={true}
+        //                 onChange={(event, value) =>
+        //                     onAutocompleteTagChange(
+        //                         event,
+        //                         'refreshments',
+        //                         value
+        //                     )
+        //                 }
+        //                 renderTags={(value, getTagProps) =>
+        //                     value.map((option, index) => (
+        //                         <Chip
+        //                             variant="outlined"
+        //                             name="refreshments"
+        //                             label={option}
+        //                             {...getTagProps({ index })}
+        //                         />
+        //                     ))
+        //                 }
+        //                 renderInput={(params) => (
+        //                     <TextField
+        //                         {...params}
+        //                         sx={{ width: '100%' }}
+        //                         variant="standard"
+        //                         label={`I was thinking we’d have `}
+        //                         name="refreshments"
+        //                         helperText="Type and press [enter] to add stuff to the list"
+        //                     />
+        //                 )}
+        //             />
+        //         </Grid>
+        //         {artist.allergies && artist.allergies.length > 0 && (
+        //             <Grid
+        //                 item
+        //                 sx={{
+        //                     marginTop: '8px',
+        //                     backgroundColor: 'rgba(0 0 0 /.3)',
+        //                     padding: '20px',
+        //                     color: 'var(--primary-color)',
+        //                 }}
+        //                 justifyContent="center"
+        //                 xs={12}
+        //                 md={5}
+        //                 className="allergies"
+        //             >
+        //                 <SvgIcon
+        //                     style={{
+        //                         width: '26px',
+        //                         verticalAlign: 'baseline',
+        //                     }}
+        //                 >
+        //                     <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
+        //                 </SvgIcon>
+        //                 {artist.stageName + ' has these allergies: '}
+        //                 <strong>
+        //                     {artist.allergies.constructor.name === 'Array' &&
+        //                         artist.allergies.map((allergy, ind) => {
+        //                             if (ind !== artist.allergies.length - 1) {
+        //                                 return allergy + ', ';
+        //                             } else {
+        //                                 return allergy;
+        //                             }
+        //                         })}{' '}
+        //                 </strong>
+        //                 .
+        //             </Grid>
+        //         )}
+        //         {artist.alcohol && (
+        //             <Grid
+        //                 item
+        //                 sx={{
+        //                     margin: '8px',
+        //                     backgroundColor: 'rgba(0 0 0 /.3)',
+        //                     padding: '20px',
+        //                     color: 'var(--primary-color)',
+        //                 }}
+        //                 justifyContent="center"
+        //                 xs={12}
+        //                 md={5}
+        //                 className="alcohol"
+        //             >
+        //                 <LiquorTwoToneIcon></LiquorTwoToneIcon>
+        //                 {artist.stageName + ' is comfortable having '}
+        //                 <strong>alcohol</strong> at the show.
+        //             </Grid>
+        //         )}
+        //         {!artist.alcohol && (
+        //             <Grid
+        //                 item
+        //                 sx={{
+        //                     margin: '8px',
+        //                     backgroundColor: 'rgba(0 0 0 /.3)',
+        //                     padding: '20px',
+        //                     color: 'var(--primary-color)',
+        //                 }}
+        //                 justifyContent="center"
+        //                 xs={12}
+        //                 md={5}
+        //                 className="alcohol"
+        //             >
+        //                 <NoDrinksTwoToneIcon></NoDrinksTwoToneIcon>
+        //                 {artist.stageName} Would prefer having{' '}
+        //                 <strong> no alcohol </strong> at the show.
+        //             </Grid>
+        //         )}
+        //     </Grid>,
+        // ],
         refreshments: [
             <FormLabel component="legend">
                 Let's talk refreshments. Do you plan on having any food or
                 drinks?
             </FormLabel>,
-            <Grid
-                item
-                container
-                xs={12}
-                sx={{ width: '100%' }}
-                justifyContent="center"
-                className="bookingDetails"
-            >
+            [
                 <Grid item xs={12}>
-                    <Autocomplete
-                        multiple
-                        id="refreshments"
-                        value={refreshments}
-                        options={[]}
-                        freeSolo
-                        clearOnBlur={true}
-                        onChange={(event, value) =>
-                            onAutocompleteTagChange(
-                                event,
-                                'refreshments',
-                                value
-                            )
-                        }
-                        renderTags={(value, getTagProps) =>
-                            value.map((option, index) => (
-                                <Chip
-                                    variant="outlined"
-                                    name="refreshments"
-                                    label={option}
-                                    {...getTagProps({ index })}
-                                />
-                            ))
-                        }
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                sx={{ width: '100%' }}
-                                variant="standard"
-                                label={`I was thinking we’d have `}
-                                name="refreshments"
-                                helperText="Type and press [enter] to add stuff to the list"
-                            />
-                        )}
-                    />
-                </Grid>
-                {artist.allergies && artist.allergies.length > 0 && (
-                    <Grid
-                        item
-                        sx={{
-                            marginTop: '8px',
-                            backgroundColor: 'rgba(0 0 0 /.3)',
-                            padding: '20px',
-                            color: 'var(--primary-color)',
-                        }}
-                        justifyContent="center"
-                        xs={12}
-                        md={5}
-                        className="allergies"
-                    >
-                        <SvgIcon
-                            style={{
-                                width: '26px',
-                                verticalAlign: 'baseline',
-                            }}
+                    <FormControl component="fieldset">
+                        <RadioGroup
+                            id="refreshments"
+                            value={refreshments}
+                            name="refreshments"
+                            onChange={(e) => onChange(e)}
                         >
-                            <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
-                        </SvgIcon>
-                        {artist.stageName + ' has these allergies: '}
-                        <strong>
-                            {artist.allergies.constructor.name === 'Array' &&
-                                artist.allergies.map((allergy, ind) => {
-                                    if (ind !== artist.allergies.length - 1) {
-                                        return allergy + ', ';
-                                    } else {
-                                        return allergy;
-                                    }
-                                })}{' '}
-                        </strong>
-                        .
-                    </Grid>
-                )}
-                {artist.alcohol && (
-                    <Grid
-                        item
-                        sx={{
-                            margin: '8px',
-                            backgroundColor: 'rgba(0 0 0 /.3)',
-                            padding: '20px',
-                            color: 'var(--primary-color)',
-                        }}
-                        justifyContent="center"
-                        xs={12}
-                        md={5}
-                        className="alcohol"
-                    >
-                        <LiquorTwoToneIcon></LiquorTwoToneIcon>
-                        {artist.stageName + ' is comfortable having '}
-                        <strong>alcohol</strong> at the show.
-                    </Grid>
-                )}
-                {!artist.alcohol && (
-                    <Grid
-                        item
-                        sx={{
-                            margin: '8px',
-                            backgroundColor: 'rgba(0 0 0 /.3)',
-                            padding: '20px',
-                            color: 'var(--primary-color)',
-                        }}
-                        justifyContent="center"
-                        xs={12}
-                        md={5}
-                        className="alcohol"
-                    >
-                        <NoDrinksTwoToneIcon></NoDrinksTwoToneIcon>
-                        {artist.stageName} Would prefer having{' '}
-                        <strong> no alcohol </strong> at the show.
-                    </Grid>
-                )}
-            </Grid>,
+                            <FormControlLabel
+                                value="I don't plan on providing any drinks or food."
+                                control={<Radio />}
+                                label={`I don't plan on providing any drinks or food.`}
+                            />
+                            <FormControlLabel
+                                value="I plan on providing some light snacks and drinks."
+                                control={<Radio />}
+                                label="I plan on providing some light snacks and drinks."
+                            />
+                            <FormControlLabel
+                                value="I plan on providing lots of finger foods and several drink options."
+                                control={<Radio />}
+                                label="I plan on providing lots of finger foods and several drink options."
+                            />
+                            <FormControlLabel
+                                value="I plan on providing a full meal for all my guests."
+                                control={<Radio />}
+                                label="I plan on providing a full meal for all my guests."
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                </Grid>,
+                <Grid
+                    item
+                    container
+                    xs={12}
+                    sx={{ width: '100%' }}
+                    justifyContent="center"
+                    className="bookingDetails"
+                >
+                    {artist.allergies && artist.allergies.length > 0 && (
+                        <Grid
+                            item
+                            sx={{
+                                marginTop: '8px',
+                                backgroundColor: 'rgba(0 0 0 /.3)',
+                                padding: '20px',
+                                color: 'var(--primary-color)',
+                            }}
+                            justifyContent="center"
+                            xs={12}
+                            md={5}
+                            className="allergies"
+                        >
+                            <SvgIcon
+                                style={{
+                                    width: '26px',
+                                    verticalAlign: 'baseline',
+                                }}
+                            >
+                                <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
+                            </SvgIcon>
+                            {artist.stageName + ' has these allergies: '}
+                            <strong>
+                                {artist.allergies.constructor.name ===
+                                    'Array' &&
+                                    artist.allergies.map((allergy, ind) => {
+                                        if (
+                                            ind !==
+                                            artist.allergies.length - 1
+                                        ) {
+                                            return allergy + ', ';
+                                        } else {
+                                            return allergy;
+                                        }
+                                    })}{' '}
+                            </strong>
+                            .
+                        </Grid>
+                    )}
+                    {artist.alcohol && (
+                        <Grid
+                            item
+                            sx={{
+                                margin: '8px',
+                                backgroundColor: 'rgba(0 0 0 /.3)',
+                                padding: '20px',
+                                color: 'var(--primary-color)',
+                            }}
+                            justifyContent="center"
+                            xs={12}
+                            md={5}
+                            className="alcohol"
+                        >
+                            <LiquorTwoToneIcon></LiquorTwoToneIcon>
+                            {artist.stageName + ' is comfortable having '}
+                            <strong>alcohol</strong> at the show.
+                        </Grid>
+                    )}
+                    {!artist.alcohol && (
+                        <Grid
+                            item
+                            sx={{
+                                margin: '8px',
+                                backgroundColor: 'rgba(0 0 0 /.3)',
+                                padding: '20px',
+                                color: 'var(--primary-color)',
+                            }}
+                            justifyContent="center"
+                            xs={12}
+                            md={5}
+                            className="alcohol"
+                        >
+                            <NoDrinksTwoToneIcon></NoDrinksTwoToneIcon>
+                            {artist.stageName} Would prefer having{' '}
+                            <strong> no alcohol </strong> at the show.
+                        </Grid>
+                    )}
+                </Grid>,
+            ],
         ],
         seatingProvided: [
             <FormLabel component="legend">
@@ -570,86 +701,89 @@ const EventSpecificHostForm = ({
                 </FormControl>,
             ],
         ],
-        ...(theEvent.overnight && {
-            overnight: [
-                [
-                    <FormLabel component="legend">
-                        Are you able and willing to host the band overnight?
-                    </FormLabel>,
-                    <FormLabel
-                        component="small"
-                        sx={{ textAlign: 'center', display: 'block' }}
-                    >
-                        <em>
-                            {artist.firstName} {artist.lastName} is traveling
-                            {theEvent.travelingCompanions &&
-                            theEvent.travelingCompanions.length > 0
-                                ? ` with a ` +
-                                  theEvent.travelingCompanions.map(
-                                      (travelingCompanion, index) =>
-                                          theEvent.travelingCompanions.length >
-                                              1 &&
-                                          index ===
-                                              theEvent.travelingCompanions
-                                                  .length -
-                                                  1
-                                              ? ' and ' +
-                                                travelingCompanion.role
-                                              : ' ' + travelingCompanion.role
-                                  )
-                                : ' alone'}
-                            .
-                        </em>
-                    </FormLabel>,
-                ],
-                [
-                    <FormControl component="fieldset">
-                        <RadioGroup
-                            id="overnight"
-                            value={overnight}
-                            name="overnight"
-                            onChange={(e) => onChange(e)}
+        ...(theEvent.overnight &&
+            theEvent.overnight > 0 && {
+                overnight: [
+                    [
+                        <FormLabel component="legend">
+                            Are you able and willing to host the band overnight?
+                        </FormLabel>,
+                        <FormLabel
+                            component="small"
+                            sx={{ textAlign: 'center', display: 'block' }}
                         >
-                            <FormControlLabel
-                                value="yes"
-                                control={<Radio />}
-                                label={`Yes, I can accommodate ${
-                                    theEvent.travelingCompanions.length + 1
-                                }
+                            <em>
+                                {artist.firstName} {artist.lastName} is
+                                traveling
+                                {theEvent.travelingCompanions &&
+                                theEvent.travelingCompanions.length > 0
+                                    ? ` with a ` +
+                                      theEvent.travelingCompanions.map(
+                                          (travelingCompanion, index) =>
+                                              theEvent.travelingCompanions
+                                                  .length > 1 &&
+                                              index ===
+                                                  theEvent.travelingCompanions
+                                                      .length -
+                                                      1
+                                                  ? ' and ' +
+                                                    travelingCompanion.role
+                                                  : ' ' +
+                                                    travelingCompanion.role
+                                      )
+                                    : ' alone'}
+                                .
+                            </em>
+                        </FormLabel>,
+                    ],
+                    [
+                        <FormControl component="fieldset">
+                            <RadioGroup
+                                id="overnight"
+                                value={overnight}
+                                name="overnight"
+                                onChange={(e) => onChange(e)}
+                            >
+                                <FormControlLabel
+                                    value="yes"
+                                    control={<Radio />}
+                                    label={`Yes, I can accommodate ${
+                                        theEvent.travelingCompanions.length + 1
+                                    }
                                  ${
                                      theEvent.travelingCompanions.length + 1 > 1
                                          ? ' people'
                                          : 'person'
                                  } overnight.`}
-                            />
-                            <FormControlLabel
-                                value="no"
-                                control={<Radio />}
-                                label="No."
-                            />
-                        </RadioGroup>
-
-                        {overnight && overnight === 'yes' && (
-                            <Grid item xs={12} sx={{ width: '100%' }}>
-                                <FormLabel component="legend">
-                                    Can you describe the potential sleeping
-                                    arrangements?
-                                </FormLabel>
-                                <TextField
-                                    variant="standard"
-                                    name="overnightArrangements"
-                                    id="overnightArrangements"
-                                    label={`I'm able to offer `}
-                                    value={overnightArrangements}
-                                    onChange={(e) => onChange(e)}
-                                    sx={{ width: '100%' }}
                                 />
-                            </Grid>
-                        )}
-                    </FormControl>,
+                                <FormControlLabel
+                                    value="no"
+                                    control={<Radio />}
+                                    label="No."
+                                />
+                            </RadioGroup>
+
+                            {overnight && overnight === 'yes' && (
+                                <Grid item xs={12} sx={{ width: '100%' }}>
+                                    <FormLabel component="legend">
+                                        Can you describe the potential sleeping
+                                        arrangements?
+                                    </FormLabel>
+                                    <TextField
+                                        variant="standard"
+                                        name="overnightArrangements"
+                                        id="overnightArrangements"
+                                        label={`I'm able to offer `}
+                                        value={overnightArrangements}
+                                        onChange={(e) => onChange(e)}
+                                        sx={{ width: '100%' }}
+                                    />
+                                </Grid>
+                            )}
+                        </FormControl>,
+                    ],
                 ],
-            ],
-        }),
+            }),
         houseRules: [
             <FormLabel component="legend">
                 Let's talk house rules! What rules about being in/around your
