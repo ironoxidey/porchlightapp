@@ -194,11 +194,21 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
                                                             arrow={true}
                                                             placement="bottom"
                                                             title={
-                                                                thisOffer.host
-                                                                    .firstName +
-                                                                ' ' +
-                                                                thisOffer.host
-                                                                    .lastName
+                                                                <>
+                                                                    <div>{`${thisOffer.host.firstName} ${thisOffer.host.lastName}`}</div>
+                                                                    {thisOffer.status ===
+                                                                        'ACCEPTED' && (
+                                                                        <div
+                                                                            style={{
+                                                                                fontFamily:
+                                                                                    'var(--secondary-font)',
+                                                                                color: 'var(--link-color)',
+                                                                            }}
+                                                                        >
+                                                                            ACCEPTED
+                                                                        </div>
+                                                                    )}
+                                                                </>
                                                             }
                                                         >
                                                             <Box

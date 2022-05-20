@@ -178,7 +178,7 @@ export const artistAcceptOffer =
             offeringHost: { _id: theOffer.host._id },
             stageName: stageName,
         };
-        //console.log('artistAcceptOffer formData', formData);
+        //console.log('artistAcceptOffer theOffer', theOffer);
         try {
             const config = {
                 headers: {
@@ -196,6 +196,26 @@ export const artistAcceptOffer =
                 type: ARTIST_ACCEPTED_HOST_OFFER,
                 payload: res.data,
             });
+            dispatch(
+                setAlert(
+                    'You accepted ' +
+                        theOffer.host.firstName +
+                        ' ' +
+                        theOffer.host.lastName +
+                        '’s offer to host your concert on ' +
+                        new Date(formData.bookingWhen).toLocaleDateString(
+                            undefined,
+                            {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                            }
+                        ) +
+                        '. Someone will be in touch soon!',
+                    'success'
+                )
+            ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
         } catch (err) {
             //console.log('error: ' + err);
             const errors = err.response.data.errors;
