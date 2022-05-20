@@ -21,10 +21,10 @@ const sendEmail = async (email, payload) => {
         body: JSON.stringify({
             message: {
                 brand_id: 'NK705MB72F4RXKQETMZE65SW4BS7',
-                routing: {
-                    method: 'single',
-                    channels: [],
-                },
+                // routing: {
+                //     method: 'single',
+                //     channels: ['email'],
+                // },
                 channels: {
                     email: {
                         providers: ['smtp'],
@@ -35,7 +35,7 @@ const sendEmail = async (email, payload) => {
                     event: payload.event, //'FORGOT_PASSWORD',
                 },
                 to: {
-                    preferences: {},
+                    //preferences: {},
                     email: email,
                 },
                 template: payload.template, //'WH46YVMBJ0MHFTGTP7T4CN7J1JQE',
