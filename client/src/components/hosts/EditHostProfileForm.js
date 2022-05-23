@@ -1228,8 +1228,7 @@ const EditHostProfileForm = ({
         setIndex(
             (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length
         );
-        //if (changesMade.current) { //commented out on May 23rd, 2022
-        if (changesMade.current && (state || zipCode)) {
+        if (changesMade.current) {
             onSubmit(e);
         }
     };
@@ -1242,8 +1241,7 @@ const EditHostProfileForm = ({
             //console.log(cardIndex);
             return cardIndex - 1;
         });
-        //if (changesMade.current) { //commented out on May 23rd, 2022
-        if (changesMade.current && (state || zipCode)) {
+        if (changesMade.current) {
             onSubmit(e);
         }
     };
