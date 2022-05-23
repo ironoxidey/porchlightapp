@@ -22,17 +22,29 @@ const HostSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        geocodedStreetAddress: {
+            type: String,
+        },
         city: {
             type: String,
             required: true,
+        },
+        geocodedCity: {
+            type: String,
         },
         state: {
             type: String,
             required: true,
         },
+        geocodedState: {
+            type: String,
+        },
         zipCode: {
             type: Number,
             required: true,
+        },
+        geocodedZipCode: {
+            type: Number,
         },
         profileImg: {
             type: String,

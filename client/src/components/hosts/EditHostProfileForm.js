@@ -161,6 +161,22 @@ const EditHostProfileForm = ({
                 city: loading || !theHost.city ? '' : theHost.city,
                 state: loading || !theHost.state ? '' : theHost.state,
                 zipCode: loading || !theHost.zipCode ? '' : theHost.zipCode,
+                geocodedStreetAddress:
+                    loading || !theHost.geocodedStreetAddress
+                        ? ''
+                        : theHost.geocodedStreetAddress,
+                geocodedCity:
+                    loading || !theHost.geocodedCity
+                        ? ''
+                        : theHost.geocodedCity,
+                geocodedState:
+                    loading || !theHost.geocodedState
+                        ? ''
+                        : theHost.geocodedState,
+                geocodedZipCode:
+                    loading || !theHost.geocodedZipCode
+                        ? ''
+                        : theHost.geocodedZipCode,
                 profileImg:
                     loading || !theHost.profileImg ? '' : theHost.profileImg,
                 numDraw: loading || !theHost.numDraw ? '' : theHost.numDraw,
@@ -362,6 +378,7 @@ const EditHostProfileForm = ({
 
     useEffect(() => {
         if (changesMade.current) {
+            //commented out on May 23rd, 2022
             createMyHost(formData, history, true);
             changesMade.current = false;
         }
@@ -1211,7 +1228,8 @@ const EditHostProfileForm = ({
         setIndex(
             (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length
         );
-        if (changesMade.current) {
+        //if (changesMade.current) { //commented out on May 23rd, 2022
+        if (changesMade.current && (state || zipCode)) {
             onSubmit(e);
         }
     };
@@ -1224,7 +1242,8 @@ const EditHostProfileForm = ({
             //console.log(cardIndex);
             return cardIndex - 1;
         });
-        if (changesMade.current) {
+        //if (changesMade.current) { //commented out on May 23rd, 2022
+        if (changesMade.current && (state || zipCode)) {
             onSubmit(e);
         }
     };

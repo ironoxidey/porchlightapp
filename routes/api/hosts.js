@@ -204,6 +204,43 @@ router.post('/updateMe', [auth], async (req, res) => {
                     try {
                         hostFields.user = req.user.id;
                         //console.log('hostFields', hostFields);
+
+                        //IF THERE'S A DIFFERENCE BETWEEN THE hostFields.streetAddress AND THE hostFields.geocodedStreetAddress THEN THE HOST UPDATED THEIR LOCATION, AND A NEW LATLONG NEEDS TO BE GENERATED
+                        if (
+                            hostFields.streetAddress !==
+                                hostFields.geocodedStreetAddress ||
+                            hostFields.city !== hostFields.geocodedCity ||
+                            hostFields.state !== hostFields.geocodedState ||
+                            hostFields.zipCode !== hostFields.geocodedZipCode
+                        ) {
+                            //geocode with Google Maps API
+                            const geocodedAddress = await addressGeocode(
+                                hostFields.streetAddress +
+                                    ' ' +
+                                    hostFields.city +
+                                    ', ' +
+                                    hostFields.state +
+                                    ' ' +
+                                    hostFields.zipCode
+                            );
+                            // console.log(
+                            //     host.firstName +
+                            //         ' ' +
+                            //         host.lastName +
+                            //         '’s geocodedAddress is: ',
+                            //     geocodedAddress
+                            // );
+                            hostFields.latLong = {
+                                type: 'Point',
+                                coordinates: geocodedAddress,
+                            };
+                            hostFields.geocodedStreetAddress =
+                                hostFields.streetAddress;
+                            hostFields.geocodedCity = hostFields.city;
+                            hostFields.geocodedState = hostFields.state;
+                            hostFields.geocodedZipCode = hostFields.zipCode;
+                        }
+
                         // Using upsert option (creates new doc if no match is found):
                         let host = await Host.findOneAndUpdate(
                             { email: hostFields.email.toLowerCase() },

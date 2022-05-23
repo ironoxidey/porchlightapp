@@ -979,39 +979,39 @@ const ArtistProfile = ({
                                                                             .state}
                                                                 </Grid>
                                                                 {thisEvent.status ===
-                                                                    'PENDING' &&
-                                                                    user &&
-                                                                    user.role &&
-                                                                    user.role.indexOf(
-                                                                        'HOST'
-                                                                    ) > -1 && (
-                                                                        //(user.role.indexOf(
-                                                                        //    'ADMIN'
-                                                                        //) > -1 ||
-                                                                        //    user.role.indexOf(
-                                                                        //        'BOOKING'
-                                                                        //    ) >
-                                                                        //        -1 ||
-                                                                        //    )
-                                                                        <Grid
-                                                                            item
-                                                                            sx={{
-                                                                                marginLeft:
-                                                                                    '8px',
+                                                                    'PENDING' && (
+                                                                    // user &&
+                                                                    // user.role &&
+                                                                    // user.role.indexOf(
+                                                                    //    'HOST'
+                                                                    //) > -1 &&
+                                                                    //(user.role.indexOf(
+                                                                    //    'ADMIN'
+                                                                    //) > -1 ||
+                                                                    //    user.role.indexOf(
+                                                                    //        'BOOKING'
+                                                                    //    ) >
+                                                                    //        -1 ||
+                                                                    //    )
+                                                                    <Grid
+                                                                        item
+                                                                        sx={{
+                                                                            marginLeft:
+                                                                                '8px',
+                                                                        }}
+                                                                    >
+                                                                        <Button
+                                                                            onClick={() => {
+                                                                                handleBookingDetailsBtnClick(
+                                                                                    thisEvent
+                                                                                );
                                                                             }}
                                                                         >
-                                                                            <Button
-                                                                                onClick={() => {
-                                                                                    handleBookingDetailsBtnClick(
-                                                                                        thisEvent
-                                                                                    );
-                                                                                }}
-                                                                            >
-                                                                                Hosting
-                                                                                Details
-                                                                            </Button>
-                                                                        </Grid>
-                                                                    )}
+                                                                            Hosting
+                                                                            Details
+                                                                        </Button>
+                                                                    </Grid>
+                                                                )}
                                                             </Grid>
                                                         </Grid>
                                                     </Tooltip>
