@@ -72,7 +72,7 @@ const EventDetails = ({
         isMe = true;
     }
 
-    //console.log('theEvent', theEvent);
+    console.log('theEvent', theEvent);
 
     return (
         <Fragment>
@@ -640,7 +640,7 @@ const EventDetails = ({
                                         <SavingsTwoToneIcon></SavingsTwoToneIcon>
                                     </Tooltip>
                                     {' It would be hard to make less than '}
-                                    <strong>${artist.financialHopes}</strong>
+                                    <strong>${theEvent.financialHopes}</strong>
                                     {' per show'}
 
                                     <Divider />

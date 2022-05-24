@@ -41,7 +41,7 @@ router.get('/getArtistBooking/:slug', async (req, res) => {
             {
                 latLong: 0,
                 artistEmail: 0,
-                agreeToPayAdminFee: 0,
+                //agreeToPayAdminFee: 0,
                 payoutHandle: 0,
                 hostsOfferingToBook: 0,
                 offersFromHosts: 0,
