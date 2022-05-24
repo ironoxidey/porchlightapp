@@ -142,6 +142,9 @@ const EventSchema = new mongoose.Schema(
         bookingWhere: {
             type: Object,
         },
+        geocodedBookingWhere: {
+            type: Object,
+        },
         payoutPlatform: {
             type: String,
             default: 'PayPal',

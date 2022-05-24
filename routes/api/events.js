@@ -396,9 +396,13 @@ router.get('/edit', [auth], async (req, res) => {
                     updatedEvents++;
                 }
                 if (
-                    eventDetails.latLong &&
-                    eventDetails.latLong.coordinates &&
-                    eventDetails.latLong.coordinates.length == 0 && //if this is commented, it will geocode the event everytime
+                    ((eventDetails.latLong &&
+                        eventDetails.latLong.coordinates &&
+                        eventDetails.latLong.coordinates.length == 0) || //if there is no latLong OR
+                        !eventDetails.geocodedBookingWhere || //if there is no geocodedBookingWhere OR
+                        (eventDetails.geocodedBookingWhere && //if there IS a geocodedBookingWhere AND
+                            eventDetails.bookingWhere.zip !==
+                                eventDetails.geocodedBookingWhere.zip)) && // the zip doesn't match the bookingWhere.zip, then the location has changed since last geocoded
                     eventDetails.bookingWhere &&
                     eventDetails.bookingWhere.city &&
                     eventDetails.bookingWhere.state &&
@@ -413,16 +417,44 @@ router.get('/edit', [auth], async (req, res) => {
                         eventDetails.bookingWhere.zip;
                     const geocodedAddress = await addressGeocode(address);
                     // console.log(
-                    //     eventDetails.artist.stageName +
+                    //     updatedEvents +
+                    //         ') ' +
+                    //         eventDetails.artist.stageName +
                     //         ' wants to play a concert near ' +
                     //         address +
                     //         ': ',
                     //     geocodedAddress
                     // );
+                    eventDetails.geocodedBookingWhere =
+                        eventDetails.bookingWhere;
                     eventDetails.latLong.coordinates = geocodedAddress;
                     eventDetails.markModified('latLong');
-                    await eventDetails.save();
-                    updatedEvents++;
+
+                    let hostsInReach = await Host.find({
+                        latLong: {
+                            $near: {
+                                $maxDistance:
+                                    eventDetails.hostReachRadius * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
+                                $geometry: {
+                                    type: 'Point',
+                                    coordinates: geocodedAddress,
+                                },
+                            },
+                        },
+                    });
+                    //console.log(await hostsInReach);
+                    const hostsIDInReach = hostsInReach.map((hostInReach) => {
+                        //console.log('hostInReach._id', hostInReach._id);
+                        return { host: hostInReach._id };
+                    });
+                    eventDetails.hostsInReach = hostsIDInReach;
+                    console.log('hostsIDInReach', await hostsIDInReach);
+
+                    let savedDetails = await eventDetails.save();
+                    if (savedDetails) {
+                        console.log('savedDetails:', savedDetails);
+                        updatedEvents++;
+                    }
                 }
                 if (
                     eventDetails.latLong &&
@@ -452,9 +484,10 @@ router.get('/edit', [auth], async (req, res) => {
                         return { host: hostInReach._id };
                     });
                     eventDetails.hostsInReach = hostsIDInReach;
+                    eventDetails.markModified('hostsInReach');
                     //console.log('hostsIDInReach', await hostsIDInReach);
-                    await eventDetails.save();
                     updatedEvents++;
+                    await eventDetails.save();
                 }
             });
             //console.log('updatedEvents:', await updatedEvents);
