@@ -33,6 +33,7 @@ function firstInt(inputString) {
 // @desc     Get all events by artist slug for public profile
 // @access   Public
 router.get('/getArtistBooking/:slug', async (req, res) => {
+    //console.log('getArtistBookingEvents req', req);
     try {
         const events = await Event.find(
             {
@@ -41,7 +42,7 @@ router.get('/getArtistBooking/:slug', async (req, res) => {
             {
                 latLong: 0,
                 artistEmail: 0,
-                //agreeToPayAdminFee: 0,
+                agreeToPayAdminFee: 0,
                 payoutHandle: 0,
                 hostsOfferingToBook: 0,
                 offersFromHosts: 0,
@@ -425,10 +426,12 @@ router.get('/edit', [auth], async (req, res) => {
                     //         ': ',
                     //     geocodedAddress
                     // );
-                    eventDetails.geocodedBookingWhere =
-                        eventDetails.bookingWhere;
-                    eventDetails.latLong.coordinates = geocodedAddress;
-                    eventDetails.markModified('latLong');
+
+                    // Commented out on May 24, 2022, because I think the updateOne on line 457 is handling this now.
+                    // eventDetails.geocodedBookingWhere =
+                    //     eventDetails.bookingWhere;
+                    // eventDetails.latLong.coordinates = geocodedAddress;
+                    // eventDetails.markModified('latLong');
 
                     let hostsInReach = await Host.find({
                         latLong: {
@@ -447,10 +450,19 @@ router.get('/edit', [auth], async (req, res) => {
                         //console.log('hostInReach._id', hostInReach._id);
                         return { host: hostInReach._id };
                     });
-                    eventDetails.hostsInReach = hostsIDInReach;
-                    console.log('hostsIDInReach', await hostsIDInReach);
+                    // Commented out on May 24, 2022, because I think the updateOne on line 457 is handling this now.
+                    //eventDetails.hostsInReach = hostsIDInReach;
+                    //console.log('hostsIDInReach', await hostsIDInReach);
 
-                    let savedDetails = await eventDetails.save();
+                    //let savedDetails = await eventDetails.save();
+                    let savedDetails = await eventDetails.updateOne(
+                        {
+                            hostsInReach: hostsIDInReach,
+                            'latLong.coordinates': geocodedAddress,
+                            geocodedBookingWhere: eventDetails.bookingWhere,
+                        },
+                        { new: true }
+                    );
                     if (savedDetails) {
                         console.log('savedDetails:', savedDetails);
                         updatedEvents++;
@@ -487,7 +499,10 @@ router.get('/edit', [auth], async (req, res) => {
                     eventDetails.markModified('hostsInReach');
                     //console.log('hostsIDInReach', await hostsIDInReach);
                     updatedEvents++;
-                    await eventDetails.save();
+                    //await eventDetails.save();
+                    await eventDetails.updateOne({
+                        hostsInReach: hostsIDInReach,
+                    });
                 }
             });
             //console.log('updatedEvents:', await updatedEvents);

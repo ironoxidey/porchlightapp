@@ -25,6 +25,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
+import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 
 const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
     const changesMade = useRef(false);
@@ -324,6 +326,21 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
             filterable: false,
             renderCell: renderProfileCell,
         },
+        {
+            field: 'agreeToPayAdminFee',
+            headerName: 'Agreed to Fee',
+            width: 75,
+            sortable: true,
+            renderCell: (params) => {
+                if (params.value === true) {
+                    return <ThumbUpIcon></ThumbUpIcon>;
+                } else {
+                    return (
+                        <ThumbDownAltOutlinedIcon></ThumbDownAltOutlinedIcon>
+                    );
+                }
+            },
+        },
         // { field: 'name', headerName: 'Name', width: 180 },
         // {
         //     field: 'email',
@@ -534,6 +551,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                     const eventRow = {
                         theEvent: adminEvent,
                         id: adminEvent._id,
+                        agreeToPayAdminFee: adminEvent.agreeToPayAdminFee,
                         artist: adminEvent.artist,
                         name:
                             adminEvent.artist.firstName +
