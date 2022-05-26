@@ -688,7 +688,8 @@ const EventDetails = ({
                             )}
                             {user &&
                                 user.role &&
-                                user.role.indexOf('ADMIN') > -1 &&
+                                (user.role.indexOf('ADMIN') > -1 ||
+                                    user.role.indexOf('BOOKING') > -1) &&
                                 (theEvent.agreeToPayAdminFee ? (
                                     <Grid
                                         item
