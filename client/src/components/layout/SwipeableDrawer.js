@@ -193,7 +193,9 @@ const SwipeableTemporaryDrawer = ({
         Array.isArray(user.role) &&
         user.role.indexOf('ADMIN') != -1 //if ADMIN
             ? adminLinks //return adminLinks
-            : user.role.indexOf('BOOKING') != -1 //else if BOOKING
+            : isAuthenticated &&
+              Array.isArray(user.role) &&
+              user.role.indexOf('BOOKING') != -1 //else if BOOKING
             ? bookingLinks //return bookingLinks
             : isAuthenticated //else if isAuthenticated
             ? attenderLinks //return attenderLinks
