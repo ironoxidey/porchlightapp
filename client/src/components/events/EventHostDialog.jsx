@@ -11,6 +11,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import EventDetails from './EventDetails';
+import ArtistTop from '../artists/ArtistTop';
 
 const EventHostDialog = (props) => {
     //console.log('EventHostDialog props', props);
@@ -57,6 +59,7 @@ const EventHostDialog = (props) => {
                                     right: 0,
                                     backgroundColor: 'rgba(0 0 0 /.6)',
                                     padding: '0',
+                                    zIndex: 100,
                                 }}
                             >
                                 <StackDateforDisplay
@@ -71,6 +74,20 @@ const EventHostDialog = (props) => {
                                     eventDetailsDialogHandleClose
                                 }
                             ></HostProfile>
+                            {props.theEvent && props.theEvent.artist && (
+                                <>
+                                    <Box sx={{ marginTop: '16px' }}>
+                                        <ArtistTop
+                                            artist={props.theEvent.artist}
+                                        ></ArtistTop>
+                                    </Box>
+                                    <Box sx={{ marginTop: '16px' }}>
+                                        <EventDetails
+                                            theEvent={props.theEvent}
+                                        />
+                                    </Box>
+                                </>
+                            )}
                         </DialogContentText>
                     </DialogContent>
                 </Dialog>

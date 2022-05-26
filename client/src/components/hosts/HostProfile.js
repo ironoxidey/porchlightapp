@@ -35,6 +35,7 @@ import FeedbackTwoToneIcon from '@mui/icons-material/FeedbackTwoTone';
 import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone';
+import DownloadIcon from '@mui/icons-material/Download';
 
 import Button from '../layout/SvgButton';
 
@@ -112,7 +113,7 @@ const HostProfile = ({
                         container
                         className="wideImgBG"
                         sx={{
-                            padding: '20px!important',
+                            padding: '20px 20px 40px!important',
                             height: {
                                 xs: '100%',
                                 md: '100%',
@@ -124,18 +125,40 @@ const HostProfile = ({
                             //width: 'calc(100% - 40px)',
                             //maxWidth: '960px',
                             margin: '0 auto',
-                            borderRadius: '4px 4px 0 0',
+                            //borderRadius: '4px 4px 0 0',
+                            borderRadius: '0 0',
                             backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.85), rgba(0,0,0,0.3)), url("${theHost.venueImg}")`,
                             backgroundColor: 'var(--secondary-dark-color)',
                             backgroundPosition: '50% 50%',
                             backgroundSize: 'cover',
                             alignItems: 'center',
+                            position: 'relative',
                             justifyContent: {
                                 md: 'start',
                                 xs: 'center',
                             },
                         }}
                     >
+                        {theEvent.artist.email && (
+                            <Grid
+                                item
+                                sx={{
+                                    width: '100%',
+                                    backgroundColor: 'rgba(0 0 0 /.5)',
+                                    textAlign: 'center',
+                                    padding: '8px 0 4px',
+                                    position: 'absolute',
+                                    bottom: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    // color: 'var(--link-color)',
+                                }}
+                            >
+                                <a href={theHost.venueImg} target="_blank">
+                                    <DownloadIcon></DownloadIcon>
+                                </a>
+                            </Grid>
+                        )}
                         {theHost.profileImg && (
                             <Grid item sx={{ marginRight: '16px' }}>
                                 <Tooltip
@@ -165,8 +188,32 @@ const HostProfile = ({
                                             backgroundClip: 'content-box',
                                             border: '1px solid var(--primary-color)',
                                             margin: '0',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'end',
                                         }}
-                                    ></Box>
+                                    >
+                                        {theEvent.artist.email && (
+                                            <Grid
+                                                item
+                                                sx={{
+                                                    width: '100%',
+                                                    backgroundColor:
+                                                        'rgba(0 0 0 /.5)',
+                                                    textAlign: 'center',
+                                                    padding: '8px 0 4px',
+                                                    // color: 'var(--link-color)',
+                                                }}
+                                            >
+                                                <a
+                                                    href={theHost.profileImg}
+                                                    target="_blank"
+                                                >
+                                                    <DownloadIcon></DownloadIcon>
+                                                </a>
+                                            </Grid>
+                                        )}
+                                    </Box>
                                 </Tooltip>
                                 {theHost.firstName && theHost.lastName && (
                                     <Grid item>
@@ -594,7 +641,8 @@ const HostProfile = ({
                                         >
                                             <RestaurantTwoToneIcon
                                                 sx={{
-                                                    margin: '0 8px 4px 0',
+                                                    //margin: '0 8px 4px 0',
+                                                    margin: '0 8px 0 0',
                                                 }}
                                             ></RestaurantTwoToneIcon>
                                         </Tooltip>
@@ -614,17 +662,7 @@ const HostProfile = ({
                                         <Tooltip
                                             title={
                                                 !isMe ? (
-                                                    theHost.firstName +
-                                                    ' offered to accommodate ' +
-                                                    (theEvent.travelingCompanions &&
-                                                        theEvent
-                                                            .travelingCompanions
-                                                            .constructor
-                                                            .name === 'Array' &&
-                                                        theEvent
-                                                            .travelingCompanions
-                                                            .length + 1) +
-                                                    ' people overnight.'
+                                                    'Overnight accommodatations'
                                                 ) : (
                                                     <Link to="/edit-host-profile?field=overnight">
                                                         Edit
@@ -646,7 +684,14 @@ const HostProfile = ({
                                                 .constructor.name === 'Array' &&
                                             theEvent.travelingCompanions
                                                 .length + 1
-                                        } people overnight${
+                                        } ${
+                                            theEvent.travelingCompanions
+                                                .length +
+                                                1 >
+                                            1
+                                                ? ' people'
+                                                : 'person'
+                                        } overnight${
                                             theOffer.overnightArrangements
                                                 ? ', saying, “I’d like to offer ' +
                                                   theOffer.overnightArrangements +

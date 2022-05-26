@@ -69,7 +69,6 @@ import {
 
 import { hostRaiseHand, getArtistBookingEvents } from '../../actions/event';
 import EventSpecificHostForm from '../events/EventSpecificHostForm';
-import ArtistTop from './ArtistTop';
 
 const ArtistProfile = ({
     user,
@@ -352,7 +351,383 @@ const ArtistProfile = ({
                     paddingBottom: '80px!important',
                 }}
             >
-                <ArtistTop artist={artist}></ArtistTop>
+                {/* {wideImg ? ( */}
+                <Tooltip
+                    arrow={true}
+                    disableHoverListener={!isMe}
+                    disableFocusListener={!isMe}
+                    disableTouchListener={!isMe}
+                    title={
+                        <Link to="/edit-artist-profile?field=wideImg">
+                            Edit
+                        </Link>
+                    }
+                >
+                    <Grid
+                        container
+                        className="wideImgBG"
+                        sx={{
+                            padding: '20px!important',
+                            height: {
+                                xs: '100%',
+                                md: '55vh',
+                            },
+                            maxHeight: {
+                                xs: '100%',
+                                md: '55vh',
+                            },
+                            //width: 'calc(100% - 40px)',
+                            //maxWidth: '960px',
+                            margin: '0 auto',
+                            borderRadius: '8px 8px 0 0',
+                            backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0)), url("${artist.wideImg}")`,
+                            backgroundColor: 'var(--secondary-dark-color)',
+                            backgroundPosition: '50% 50%',
+                            backgroundSize: 'cover',
+                            alignItems: 'center',
+                            justifyContent: {
+                                md: 'start',
+                                xs: 'center',
+                            },
+                        }}
+                    >
+                        {artist.squareImg ? (
+                            <Grid item>
+                                <Tooltip
+                                    arrow={true}
+                                    disableHoverListener={!isMe}
+                                    disableFocusListener={!isMe}
+                                    disableTouchListener={!isMe}
+                                    title={
+                                        <Link to="/edit-artist-profile?field=squareImg">
+                                            Edit
+                                        </Link>
+                                    }
+                                >
+                                    <Box
+                                        className="squareImgInACircle"
+                                        sx={{
+                                            height: '200px',
+                                            width: '200px',
+                                            maxHeight: '200px',
+                                            maxWidth: '200px',
+                                            borderRadius: '50%',
+                                            overflow: 'hidden',
+                                            backgroundImage: `url("${artist.squareImg}")`,
+                                            backgroundPosition: '50% 25%',
+                                            backgroundSize: 'cover',
+                                            padding: '4px',
+                                            backgroundClip: 'content-box',
+                                            border: '1px solid var(--primary-color)',
+                                            margin: '0 8px 0 0',
+                                        }}
+                                    ></Box>
+                                </Tooltip>
+                            </Grid>
+                        ) : (
+                            ''
+                        )}
+                        <Grid
+                            item
+                            container
+                            md={8}
+                            sx={{
+                                marginTop: '0',
+                                textShadow: '0 0 10px rgba(0,0,0,.8)',
+                                width: 'fit-content',
+                                maxWidth: 'fit-content',
+                            }}
+                            direction="column"
+                            alignItems="start"
+                            className="topInfo"
+                        >
+                            {artist.stageName ? (
+                                <Grid item>
+                                    <Grid
+                                        container
+                                        item
+                                        direction="row"
+                                        sx={{
+                                            margin: '8px auto',
+                                            width: '100%',
+                                        }}
+                                    >
+                                        <Typography component="h2">
+                                            {artist.stageName}
+                                        </Typography>{' '}
+                                    </Grid>
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                            {artist.genres &&
+                            artist.genres.constructor.name === 'Array' ? (
+                                <Grid item>
+                                    <Tooltip
+                                        title={
+                                            !isMe ? (
+                                                'Genre'
+                                            ) : (
+                                                <Link to="/edit-artist-profile?field=genres">
+                                                    Edit
+                                                </Link>
+                                            )
+                                        }
+                                        placement="bottom"
+                                        arrow
+                                    >
+                                        <SvgIcon
+                                            style={{
+                                                marginRight: '8px',
+                                                fontSize: '1.3rem',
+                                                verticalAlign: 'baseline',
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon="guitar"></FontAwesomeIcon>
+                                        </SvgIcon>
+                                    </Tooltip>
+                                    {artist.genres.map((genre, key) => (
+                                        <Chip
+                                            key={key}
+                                            label={genre}
+                                            size="small"
+                                            sx={{ margin: '0 4px' }}
+                                        ></Chip>
+                                    ))}
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                            {artist.city && artist.state ? (
+                                <Grid
+                                    item
+                                    container
+                                    alignItems="center"
+                                    sx={{ marginTop: '8px' }}
+                                >
+                                    <Tooltip
+                                        title={
+                                            !isMe ? (
+                                                'Location'
+                                            ) : (
+                                                <Link to="/edit-artist-profile?field=location">
+                                                    Edit
+                                                </Link>
+                                            )
+                                        }
+                                        placement="bottom"
+                                        arrow
+                                    >
+                                        <PlaceTwoToneIcon
+                                            sx={{ marginRight: '8px' }}
+                                        ></PlaceTwoToneIcon>
+                                    </Tooltip>
+                                    <Typography component="h3">
+                                        {toTitleCase(artist.city)},{' '}
+                                        {artist.state}
+                                    </Typography>
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+                            {artist.soundsLike &&
+                            artist.soundsLike.constructor.name === 'Array' ? (
+                                <Grid
+                                    item
+                                    container
+                                    alignItems="center"
+                                    sx={{ marginTop: '8px' }}
+                                >
+                                    <Tooltip
+                                        title={
+                                            !isMe ? (
+                                                'Inspired by'
+                                            ) : (
+                                                <Link to="/edit-artist-profile?field=soundsLike">
+                                                    Edit
+                                                </Link>
+                                            )
+                                        }
+                                        placement="bottom"
+                                        arrow
+                                    >
+                                        <EmojiObjectsTwoToneIcon
+                                            sx={{ marginRight: '8px' }}
+                                        ></EmojiObjectsTwoToneIcon>
+                                    </Tooltip>
+                                    {artist.soundsLike.map((sndsLike, key) => (
+                                        <Chip
+                                            key={key}
+                                            label={sndsLike}
+                                            size="small"
+                                            sx={{ margin: '0 4px' }}
+                                        ></Chip>
+                                    ))}
+                                </Grid>
+                            ) : (
+                                ''
+                            )}
+
+                            <Grid
+                                container
+                                item
+                                direction="row"
+                                sx={{
+                                    margin: '8px auto',
+                                    width: '100%',
+                                }}
+                            >
+                                <Grid
+                                    item
+                                    xs={1}
+                                    //md={0.5}
+                                    className="link-icon"
+                                    sx={{
+                                        marginRight: '4px',
+                                    }}
+                                >
+                                    {artist.artistWebsite ? (
+                                        <Tooltip
+                                            title={
+                                                !isMe ? (
+                                                    'Check out ' +
+                                                    artist.stageName +
+                                                    '’s website'
+                                                ) : (
+                                                    <Link to="/edit-artist-profile?field=artistWebsite">
+                                                        Edit
+                                                    </Link>
+                                                )
+                                            }
+                                            placement="bottom"
+                                            arrow
+                                        >
+                                            <a
+                                                href={prependHttp(
+                                                    artist.artistWebsite
+                                                )}
+                                                target="_blank"
+                                            >
+                                                <FontAwesomeIcon
+                                                    icon={[
+                                                        'fas',
+                                                        'globe-americas',
+                                                    ]}
+                                                    size="lg"
+                                                    fixedWidth
+                                                />
+                                            </a>
+                                        </Tooltip>
+                                    ) : (
+                                        ''
+                                    )}
+                                </Grid>
+
+                                {artist.socialLinks &&
+                                Object.keys(artist.socialLinks).length > 0
+                                    ? artist.socialLinks.map(
+                                          (eachSocialLink, idx) =>
+                                              eachSocialLink.link && (
+                                                  <Grid
+                                                      item
+                                                      xs={1}
+                                                      //md={0.5}
+                                                      className="link-icon"
+                                                      key={`eachSocialLink${idx}`}
+                                                      sx={{
+                                                          marginRight: '4px',
+                                                      }}
+                                                  >
+                                                      <Tooltip
+                                                          title={
+                                                              !isMe ? (
+                                                                  toTitleCase(
+                                                                      pullDomainFrom(
+                                                                          prependHttp(
+                                                                              eachSocialLink.link
+                                                                          )
+                                                                      )
+                                                                  )
+                                                              ) : (
+                                                                  <Link to="/edit-artist-profile?field=socialLinks">
+                                                                      Edit
+                                                                  </Link>
+                                                              )
+                                                          }
+                                                          placement="bottom"
+                                                          arrow
+                                                      >
+                                                          <a
+                                                              href={prependHttp(
+                                                                  eachSocialLink.link
+                                                              )}
+                                                              target="_blank"
+                                                          >
+                                                              {getFontAwesomeIcon(
+                                                                  prependHttp(
+                                                                      eachSocialLink.link
+                                                                  ),
+                                                                  'lg'
+                                                              )}
+                                                          </a>
+                                                      </Tooltip>
+                                                  </Grid>
+                                              )
+                                      )
+                                    : ''}
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Tooltip>
+                {/* ) : (
+				''
+			)} */}
+                {artist.bio ? (
+                    <Grid
+                        item
+                        container
+                        sx={{
+                            margin: '4px 0 0',
+                            color: 'var(--light-color)',
+                            // padding: '20px',
+                            // border: '3px solid var(--primary-color)',
+                        }}
+                        justifyContent="center"
+                        alignItems="center"
+                        alignContent="center"
+                        className="bio"
+                        //md={4}
+                        xs={12}
+                    >
+                        <Tooltip
+                            arrow={true}
+                            disableHoverListener={!isMe}
+                            disableFocusListener={!isMe}
+                            disableTouchListener={!isMe}
+                            title={
+                                <Link to={`/edit-artist-profile?field=bio`}>
+                                    Edit
+                                </Link>
+                            }
+                        >
+                            <Typography
+                                component="h2"
+                                sx={{
+                                    // fontFamily: 'var(--secondary-font)',
+                                    // textTransform: 'uppercase',
+                                    //letterSpacing: '1px',
+                                    color: 'var(--primary-color)',
+                                }}
+                            >
+                                About {artist.stageName}:
+                            </Typography>
+                        </Tooltip>
+
+                        {artist.bio}
+                    </Grid>
+                ) : (
+                    ''
+                )}
                 <Grid
                     item
                     container

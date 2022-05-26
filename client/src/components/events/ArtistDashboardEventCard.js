@@ -67,6 +67,7 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
                                     right: 0,
                                     backgroundColor: 'rgba(0 0 0 /.6)',
                                     padding: '0',
+                                    zIndex: 100,
                                 }}
                             >
                                 <StackDateforDisplay
