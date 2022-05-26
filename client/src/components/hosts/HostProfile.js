@@ -139,7 +139,7 @@ const HostProfile = ({
                             },
                         }}
                     >
-                        {theEvent.artist.email && (
+                        {theEvent && theEvent.artist && theEvent.artist.email && (
                             <Grid
                                 item
                                 sx={{
@@ -193,26 +193,30 @@ const HostProfile = ({
                                             alignItems: 'end',
                                         }}
                                     >
-                                        {theEvent.artist.email && (
-                                            <Grid
-                                                item
-                                                sx={{
-                                                    width: '100%',
-                                                    backgroundColor:
-                                                        'rgba(0 0 0 /.5)',
-                                                    textAlign: 'center',
-                                                    padding: '8px 0 4px',
-                                                    // color: 'var(--link-color)',
-                                                }}
-                                            >
-                                                <a
-                                                    href={theHost.profileImg}
-                                                    target="_blank"
+                                        {theEvent &&
+                                            theEvent.artist &&
+                                            theEvent.artist.email && (
+                                                <Grid
+                                                    item
+                                                    sx={{
+                                                        width: '100%',
+                                                        backgroundColor:
+                                                            'rgba(0 0 0 /.5)',
+                                                        textAlign: 'center',
+                                                        padding: '8px 0 4px',
+                                                        // color: 'var(--link-color)',
+                                                    }}
                                                 >
-                                                    <DownloadIcon></DownloadIcon>
-                                                </a>
-                                            </Grid>
-                                        )}
+                                                    <a
+                                                        href={
+                                                            theHost.profileImg
+                                                        }
+                                                        target="_blank"
+                                                    >
+                                                        <DownloadIcon></DownloadIcon>
+                                                    </a>
+                                                </Grid>
+                                            )}
                                     </Box>
                                 </Tooltip>
                                 {theHost.firstName && theHost.lastName && (
@@ -499,6 +503,7 @@ const HostProfile = ({
                                 user.role &&
                                 (user.role.indexOf('ADMIN') > -1 ||
                                     user.role.indexOf('BOOKING') > -1) &&
+                                theOffer &&
                                 theOffer.seatingProvided &&
                                 theOffer.seatingProvided == 'yes' && (
                                     <Grid
@@ -535,6 +540,7 @@ const HostProfile = ({
                                 user.role &&
                                 (user.role.indexOf('ADMIN') > -1 ||
                                     user.role.indexOf('BOOKING') > -1) &&
+                                theOffer &&
                                 (!theOffer.seatingProvided ||
                                     theOffer.seatingProvided == 'no') && (
                                     <Grid
