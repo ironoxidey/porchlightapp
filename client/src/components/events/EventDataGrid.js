@@ -406,6 +406,64 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
             },
         },
         {
+            field: 'offersFromHosts',
+            headerName: 'Offers from Hosts',
+            width: 300,
+            editable: false,
+            type: 'string',
+            sortable: true,
+            sortComparator: lengthSort,
+            renderCell: (params) => {
+                if (params.value && params.value.length > 0) {
+                    let hostsOffering = params.value.map((hostOffer, i) => {
+                        console.log('hostOffer params', params);
+                        return (
+                            <EventHostDialog
+                                theHost={hostOffer.host}
+                                theEvent={params.row.theEvent}
+                                theOffer={hostOffer}
+                            >
+                                <ProfileAvatar
+                                    firstName={hostOffer.host.firstName}
+                                    lastName={hostOffer.host.lastName}
+                                    city={hostOffer.host.city}
+                                    state={hostOffer.host.state}
+                                    profileImg={hostOffer.host.profileImg}
+                                    tooltip={
+                                        <>
+                                            {/* <HostProfile
+                                            theHost={hostOffer.host}
+                                            theEvent={params.row}
+                                            theOffer={hostOffer}
+                                            // eventDetailsDialogHandleClose={
+                                            //     eventDetailsDialogHandleClose
+                                            // }
+                                        ></HostProfile> */}
+                                            <div>{`${hostOffer.host.firstName} ${hostOffer.host.lastName}`}</div>
+                                            <div>
+                                                <PlaceTwoToneIcon
+                                                    sx={{
+                                                        marginRight: '2px',
+                                                        fontSize: '1.4em',
+                                                        marginBottom: '2px',
+                                                    }}
+                                                ></PlaceTwoToneIcon>
+                                                {`${hostOffer.host.city}, ${hostOffer.host.state}`}
+                                            </div>
+                                        </>
+                                    }
+                                />
+                            </EventHostDialog>
+                        );
+                    });
+                    return hostsOffering;
+                } else {
+                    return;
+                }
+            },
+        },
+
+        {
             field: 'hostsInReach',
             headerName: 'Hosts in Area',
             width: 900,
@@ -464,63 +522,6 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                         );
                     });
                     return hostsInReach;
-                } else {
-                    return;
-                }
-            },
-        },
-        {
-            field: 'offersFromHosts',
-            headerName: 'Offers from Hosts',
-            width: 300,
-            editable: false,
-            type: 'string',
-            sortable: true,
-            sortComparator: lengthSort,
-            renderCell: (params) => {
-                if (params.value && params.value.length > 0) {
-                    let hostsOffering = params.value.map((hostOffer, i) => {
-                        console.log('hostOffer params', params);
-                        return (
-                            <EventHostDialog
-                                theHost={hostOffer.host}
-                                theEvent={params.row.theEvent}
-                                theOffer={hostOffer}
-                            >
-                                <ProfileAvatar
-                                    firstName={hostOffer.host.firstName}
-                                    lastName={hostOffer.host.lastName}
-                                    city={hostOffer.host.city}
-                                    state={hostOffer.host.state}
-                                    profileImg={hostOffer.host.profileImg}
-                                    tooltip={
-                                        <>
-                                            {/* <HostProfile
-                                            theHost={hostOffer.host}
-                                            theEvent={params.row}
-                                            theOffer={hostOffer}
-                                            // eventDetailsDialogHandleClose={
-                                            //     eventDetailsDialogHandleClose
-                                            // }
-                                        ></HostProfile> */}
-                                            <div>{`${hostOffer.host.firstName} ${hostOffer.host.lastName}`}</div>
-                                            <div>
-                                                <PlaceTwoToneIcon
-                                                    sx={{
-                                                        marginRight: '2px',
-                                                        fontSize: '1.4em',
-                                                        marginBottom: '2px',
-                                                    }}
-                                                ></PlaceTwoToneIcon>
-                                                {`${hostOffer.host.city}, ${hostOffer.host.state}`}
-                                            </div>
-                                        </>
-                                    }
-                                />
-                            </EventHostDialog>
-                        );
-                    });
-                    return hostsOffering;
                 } else {
                     return;
                 }
