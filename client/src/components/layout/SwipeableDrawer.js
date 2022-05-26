@@ -96,6 +96,20 @@ const SwipeableTemporaryDrawer = ({
         //     Dashboard
         // </Link>,
     ];
+    const bookingLinks = [
+        <Link to="/artists">
+            <ListItemIcon>
+                <PeopleIcon></PeopleIcon>
+            </ListItemIcon>
+            Artists
+        </Link>,
+        <Link to="/edit-events">
+            <ListItemIcon>
+                <PeopleOutlineIcon></PeopleOutlineIcon>
+            </ListItemIcon>
+            Edit Events
+        </Link>,
+    ];
     const artistLinks = [
         // <Link to="/dashboard">
         //     <ListItemIcon>
@@ -179,6 +193,8 @@ const SwipeableTemporaryDrawer = ({
         Array.isArray(user.role) &&
         user.role.indexOf('ADMIN') != -1 //if ADMIN
             ? adminLinks //return adminLinks
+            : user.role.indexOf('BOOKING') != -1 //else if BOOKING
+            ? bookingLinks //return bookingLinks
             : isAuthenticated //else if isAuthenticated
             ? attenderLinks //return attenderLinks
             : guestLinks; //else return guestLinks
