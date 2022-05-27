@@ -145,6 +145,7 @@ const EditHostProfileForm = ({
         overnightArrangements: '',
         guaranteeHonorarium: '',
         lastLogin: new Date(),
+        completedProfileForm: false,
     });
 
     useEffect(() => {
@@ -235,6 +236,10 @@ const EditHostProfileForm = ({
                         ? ''
                         : theHost.guaranteeHonorarium,
                 lastLogin: new Date(),
+                completedProfileForm:
+                    loading || !hostMe.completedProfileForm
+                        ? false
+                        : hostMe.completedProfileForm,
             });
         } else {
             if (!auth.loading) {
@@ -271,6 +276,7 @@ const EditHostProfileForm = ({
                     overnightArrangements: '',
                     guaranteeHonorarium: '',
                     lastLogin: new Date(),
+                    completedProfileForm: false,
                 });
             }
         }
@@ -303,6 +309,7 @@ const EditHostProfileForm = ({
         overnight,
         overnightArrangements,
         guaranteeHonorarium,
+        completedProfileForm,
     } = formData;
 
     const onChange = (e) => {
@@ -383,6 +390,15 @@ const EditHostProfileForm = ({
             changesMade.current = false;
         }
     }, [venueImg]);
+    useEffect(() => {
+        if (completedForm.current) {
+            //commented out on May 23rd, 2022
+            console.log('useEffect createMyHost formData', formData);
+            console.log('completedProfileForm: ' + completedProfileForm);
+            createMyHost(formData, history, true);
+            changesMade.current = false;
+        }
+    }, [completedProfileForm]);
 
     const onCalendarChange = (target) => {
         changesMade.current = true;
@@ -545,11 +561,12 @@ const EditHostProfileForm = ({
 
     //const [changesMade, setChangesMade] = useState(false);
     const changesMade = useRef(false);
+    const completedForm = useRef(false);
     const firstLoad = useRef(true);
 
     const onSubmit = (e) => {
         e.preventDefault();
-        //console.log('Submitting...');
+        console.log('Submitting...', formData);
         createMyHost(formData, history, true);
         changesMade.current = false;
     };
@@ -582,9 +599,9 @@ const EditHostProfileForm = ({
                             <br />
                             <br />
                             <em>
-                                Also, the information you submit is for internal
-                                use only, and will never be sold to a third
-                                party.
+                                Also, the information you submit will be used by
+                                Porchlight only, and will never be sold to a
+                                third party.
                             </em>
                         </Fragment>
                     ) : (
@@ -1107,16 +1124,131 @@ const EditHostProfileForm = ({
                 <Typography component="h2" sx={{ textAlign: 'center' }}>
                     Those were all the questions we have for right now.
                 </Typography>,
-                <Typography
-                    component="p"
-                    sx={{ textAlign: 'center', marginTop: '20px' }}
-                >
-                    Thank you for taking the time to respond to them! Check out
-                    your profile to see how artists will it. <br /> (An artist
-                    will see your profile, only after you make an offer to host
-                    their show. Even then, you can see, we don’t share much of
-                    your personal information with them.)
-                </Typography>,
+                hostMe &&
+                hostMe._id === theHost._id &&
+                hostMe.firstName &&
+                hostMe.lastName &&
+                hostMe.profileImg &&
+                (hostMe.streetAddress || hostMe.venueStreetAddress) ? (
+                    <Typography
+                        component="p"
+                        sx={{ textAlign: 'center', marginTop: '20px' }}
+                    >
+                        Thank you for taking the time to respond to them! Check
+                        out your profile to see how artists will it. <br /> (An
+                        artist will see your profile, only after you make an
+                        offer to host their show. Even then, we don’t share much
+                        of your personal information with them.)
+                    </Typography>
+                ) : (
+                    <Typography
+                        component="div"
+                        sx={{ textAlign: 'center', marginTop: '20px' }}
+                    >
+                        Before you can host a Porchlight show we still need:{' '}
+                        <br />
+                        <ul>
+                            {!hostMe.firstName && (
+                                <li>
+                                    <a
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setIndex(
+                                                getFormCardIndex('firstName')
+                                            );
+                                        }}
+                                    >
+                                        Your first name
+                                    </a>
+                                </li>
+                            )}
+                            {!hostMe.lastName && (
+                                <li>
+                                    <a
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setIndex(
+                                                getFormCardIndex('firstName')
+                                            );
+                                        }}
+                                    >
+                                        Your last name
+                                    </a>
+                                </li>
+                            )}
+                            {!hostMe.profileImg && (
+                                <li>
+                                    <a
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setIndex(
+                                                getFormCardIndex('profileImg')
+                                            );
+                                        }}
+                                    >
+                                        A picture of you to share when you offer
+                                        to host an artist’s show
+                                    </a>
+                                </li>
+                            )}
+                            {!hostMe.streetAddress && (
+                                <li>
+                                    <a
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setIndex(getFormCardIndex('city'));
+                                        }}
+                                    >
+                                        Your street address
+                                    </a>
+                                </li>
+                            )}
+                            {!hostMe.city && (
+                                <li>
+                                    <a
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setIndex(getFormCardIndex('city'));
+                                        }}
+                                    >
+                                        The city you live in
+                                    </a>
+                                </li>
+                            )}
+                            {!hostMe.state && (
+                                <li>
+                                    <a
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setIndex(getFormCardIndex('city'));
+                                        }}
+                                    >
+                                        The state you live in
+                                    </a>
+                                </li>
+                            )}
+                            {!hostMe.zipCode && (
+                                <li>
+                                    <a
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setIndex(getFormCardIndex('city'));
+                                        }}
+                                    >
+                                        Your zip code
+                                    </a>
+                                </li>
+                            )}
+                        </ul>
+                    </Typography>
+                ),
                 hostMe && hostMe._id === theHost._id && (
                     <Grid
                         item
@@ -1189,12 +1321,20 @@ const EditHostProfileForm = ({
     const queryEditField = query.get('field');
     let formStartIndex = 0;
 
-    if (queryEditField) {
+    const getFormCardIndex = (queryEditField) => {
         const formGroupKeys = Object.keys(formGroups);
-        formStartIndex =
-            formGroupKeys.indexOf(queryEditField) > -1
-                ? formGroupKeys.indexOf(queryEditField)
-                : 0;
+        return formGroupKeys.indexOf(queryEditField) > -1
+            ? formGroupKeys.indexOf(queryEditField)
+            : 0;
+    };
+
+    if (queryEditField) {
+        formStartIndex = getFormCardIndex(queryEditField);
+        // const formGroupKeys = Object.keys(formGroups);
+        // formStartIndex =
+        //     formGroupKeys.indexOf(queryEditField) > -1
+        //         ? formGroupKeys.indexOf(queryEditField)
+        //         : 0;
     }
 
     //// CARD INDEX ///////
@@ -1226,9 +1366,16 @@ const EditHostProfileForm = ({
     const nextCard = (e) => {
         setDirection(1);
         setIndex(
-            (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length
+            (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length //loop around to the beginning
         );
-        if (changesMade.current) {
+        if (
+            completedProfileForm == false &&
+            cardIndex === Object.keys(formGroups).length - 2
+        ) {
+            //if completedProfileForm is false and we're leaving the second to last card into the last card
+            completedForm.current = true;
+            setFormData({ ...formData, completedProfileForm: true });
+        } else if (changesMade.current) {
             onSubmit(e);
         }
     };
@@ -1236,10 +1383,15 @@ const EditHostProfileForm = ({
         setDirection(-1);
         setIndex((cardIndex) => {
             if (cardIndex == 0) {
-                cardIndex = Object.keys(formGroups).length;
+                if (completedProfileForm === true) {
+                    cardIndex = Object.keys(formGroups).length - 1; //this loops around to the last card from the first
+                }
+                return cardIndex;
             }
             //console.log(cardIndex);
-            return cardIndex - 1;
+            else {
+                return cardIndex - 1;
+            }
         });
         if (changesMade.current) {
             onSubmit(e);

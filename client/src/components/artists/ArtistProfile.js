@@ -253,6 +253,7 @@ const ArtistProfile = ({
                             ) : host &&
                               host.me &&
                               host.me._id &&
+                              host.me.completedProfileForm &&
                               host.me.firstName &&
                               host.me.lastName &&
                               host.me.email &&
