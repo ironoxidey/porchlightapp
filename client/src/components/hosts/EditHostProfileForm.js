@@ -106,6 +106,8 @@ const EditHostProfileForm = ({
 
     useEffect(() => {
         console.log('hostDialogDetails', hostDialogDetails);
+        delete hostDialogDetails.email;
+        delete hostDialogDetails.phone;
         setHostDetailsDialogOpen(true);
     }, [hostDialogDetails]);
 
@@ -1135,8 +1137,8 @@ const EditHostProfileForm = ({
                         sx={{ textAlign: 'center', marginTop: '20px' }}
                     >
                         Thank you for taking the time to respond to them! Check
-                        out your profile to see how artists will it. <br /> (An
-                        artist will see your profile, only after you make an
+                        out your profile to see how artists will see it. <br />{' '}
+                        (An artist will see your profile, only after you make an
                         offer to host their show. Even then, we don’t share much
                         of your personal information with them.)
                     </Typography>
