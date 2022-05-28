@@ -148,6 +148,7 @@ const EditHostProfileForm = ({
         guaranteeHonorarium: '',
         lastLogin: new Date(),
         completedProfileForm: false,
+        mailChimped: false,
     });
 
     useEffect(() => {
@@ -242,6 +243,8 @@ const EditHostProfileForm = ({
                     loading || !hostMe.completedProfileForm
                         ? false
                         : hostMe.completedProfileForm,
+                mailChimped:
+                    loading || !hostMe.mailChimped ? false : hostMe.mailChimped,
             });
         } else {
             if (!auth.loading) {
@@ -279,6 +282,7 @@ const EditHostProfileForm = ({
                     guaranteeHonorarium: '',
                     lastLogin: new Date(),
                     completedProfileForm: false,
+                    mailChimped: false,
                 });
             }
         }
@@ -312,6 +316,7 @@ const EditHostProfileForm = ({
         overnightArrangements,
         guaranteeHonorarium,
         completedProfileForm,
+        mailChimped,
     } = formData;
 
     const onChange = (e) => {
@@ -330,7 +335,21 @@ const EditHostProfileForm = ({
         //console.log(targetName + ': ' + targetValue);
         //setFormData({ ...formData, [e.target.name]: targetValue });
         if (targetName.length === 1) {
-            setFormData({ ...formData, [targetName[0]]: targetValue });
+            if (
+                targetName === 'streetAddress' ||
+                targetName === 'city' ||
+                targetName === 'state' ||
+                targetName === 'zipCode'
+            ) {
+                //if any of these have changed, set mailChimped to false so that we can send the new info to MailChimp on the backend
+                setFormData({
+                    ...formData,
+                    [targetName[0]]: targetValue,
+                    mailChimped: false,
+                });
+            } else {
+                setFormData({ ...formData, [targetName[0]]: targetValue });
+            }
         } else {
             setFormData((prevData) => ({
                 ...prevData,
@@ -345,7 +364,11 @@ const EditHostProfileForm = ({
     const onPhoneChange = (theFieldName, val) => {
         changesMade.current = true;
         let targetValue = val;
-        setFormData({ ...formData, [theFieldName]: targetValue });
+        setFormData({
+            ...formData,
+            [theFieldName]: targetValue,
+            mailChimped: false,
+        });
     };
     const onAutocompleteTagChange = (e, theFieldName, val) => {
         //console.log(theFieldName);
@@ -394,9 +417,8 @@ const EditHostProfileForm = ({
     }, [venueImg]);
     useEffect(() => {
         if (completedForm.current) {
-            //commented out on May 23rd, 2022
-            console.log('useEffect createMyHost formData', formData);
-            console.log('completedProfileForm: ' + completedProfileForm);
+            //console.log('useEffect createMyHost formData', formData);
+            //console.log('completedProfileForm: ' + completedProfileForm);
             createMyHost(formData, history, true);
             changesMade.current = false;
         }
@@ -729,6 +751,44 @@ const EditHostProfileForm = ({
                 </Grid>,
             ],
         ],
+        phone: [
+            [
+                <FormLabel component="legend">
+                    Would you provide your phone number?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    <em>
+                        Sometimes last-minute event changes need a quick way to
+                        get in touch.
+                    </em>
+                </FormLabel>,
+            ],
+            [
+                <Grid item>
+                    <ReactPhoneInput
+                        name="phone"
+                        id="phone"
+                        value={phone || ''}
+                        onChange={(val) => onPhoneChange('phone', val)}
+                        helperText=""
+                        component={TextField}
+                        inputExtraProps={{
+                            name: 'phone',
+                            variant: 'standard',
+                            label: 'My phone number is',
+                        }}
+                        autoFormat={true}
+                        defaultCountry={'us'}
+                        onlyCountries={['us']}
+                        disableCountryCode={true}
+                        placeholder={''}
+                    />
+                </Grid>,
+            ],
+        ],
         profileImg: [
             <FormLabel component="legend">
                 We’d love to have a face to put with your name, {firstName}.
@@ -826,44 +886,7 @@ const EditHostProfileForm = ({
                 </Grid>,
             ],
         ],
-        phone: [
-            [
-                <FormLabel component="legend">
-                    Would you provide your phone number?
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{ textAlign: 'center', display: 'block' }}
-                >
-                    <em>
-                        Sometimes last-minute event changes need a quick way to
-                        get in touch.
-                    </em>
-                </FormLabel>,
-            ],
-            [
-                <Grid item>
-                    <ReactPhoneInput
-                        name="phone"
-                        id="phone"
-                        value={phone || ''}
-                        onChange={(val) => onPhoneChange('phone', val)}
-                        helperText=""
-                        component={TextField}
-                        inputExtraProps={{
-                            name: 'phone',
-                            variant: 'standard',
-                            label: 'My phone number is',
-                        }}
-                        autoFormat={true}
-                        defaultCountry={'us'}
-                        onlyCountries={['us']}
-                        disableCountryCode={true}
-                        placeholder={''}
-                    />
-                </Grid>,
-            ],
-        ],
+
         connectionToUs: [
             [
                 <FormLabel component="legend">
@@ -1130,6 +1153,7 @@ const EditHostProfileForm = ({
                 hostMe._id === theHost._id &&
                 hostMe.firstName &&
                 hostMe.lastName &&
+                hostMe.phone &&
                 hostMe.profileImg &&
                 (hostMe.streetAddress || hostMe.venueStreetAddress) ? (
                     <Typography
@@ -1156,6 +1180,7 @@ const EditHostProfileForm = ({
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
+                                            setDirection(-1);
                                             setIndex(
                                                 getFormCardIndex('firstName')
                                             );
@@ -1171,6 +1196,7 @@ const EditHostProfileForm = ({
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
+                                            setDirection(-1);
                                             setIndex(
                                                 getFormCardIndex('firstName')
                                             );
@@ -1180,12 +1206,27 @@ const EditHostProfileForm = ({
                                     </a>
                                 </li>
                             )}
+                            {!hostMe.phone && (
+                                <li>
+                                    <a
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setDirection(-1);
+                                            setIndex(getFormCardIndex('phone'));
+                                        }}
+                                    >
+                                        Your phone number
+                                    </a>
+                                </li>
+                            )}
                             {!hostMe.profileImg && (
                                 <li>
                                     <a
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
+                                            setDirection(-1);
                                             setIndex(
                                                 getFormCardIndex('profileImg')
                                             );
@@ -1202,6 +1243,7 @@ const EditHostProfileForm = ({
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
+                                            setDirection(-1);
                                             setIndex(getFormCardIndex('city'));
                                         }}
                                     >
@@ -1215,6 +1257,7 @@ const EditHostProfileForm = ({
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
+                                            setDirection(-1);
                                             setIndex(getFormCardIndex('city'));
                                         }}
                                     >
@@ -1228,6 +1271,7 @@ const EditHostProfileForm = ({
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
+                                            setDirection(-1);
                                             setIndex(getFormCardIndex('city'));
                                         }}
                                     >
@@ -1241,6 +1285,7 @@ const EditHostProfileForm = ({
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
+                                            setDirection(-1);
                                             setIndex(getFormCardIndex('city'));
                                         }}
                                     >
@@ -1388,7 +1433,7 @@ const EditHostProfileForm = ({
                 if (completedProfileForm === true) {
                     cardIndex = Object.keys(formGroups).length - 1; //this loops around to the last card from the first
                 }
-                return cardIndex;
+                return cardIndex; //don't loop around to the last card from the first one
             }
             //console.log(cardIndex);
             else {

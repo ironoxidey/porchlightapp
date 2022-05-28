@@ -6,6 +6,10 @@ const HostSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        mailChimped: {
+            type: Boolean,
+            default: false,
+        },
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'user',

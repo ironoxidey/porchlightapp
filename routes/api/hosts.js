@@ -1,9 +1,12 @@
 const express = require('express');
 //const request = require('request'); //I don't theink I need this. Maybe carried over from profile.js for github stuff ~ Jan 5th, 2022
-//const config = require('../../../porchlight-config/default.json');//require('config'); //I don't theink I need this. Maybe carried over from profile.js for github stuff ~ Jan 5th, 2022
+const config = !process.env.NODE_ENV ? require('config') : process.env;
 const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult, body } = require('express-validator');
+const mailchimp = require('@mailchimp/mailchimp_marketing');
+//const crypto = require('crypto'); //for hashing the host's email before sending to MailChimp
+const md5 = require('md5'); //for hashing the host's email before sending to MailChimp
 
 const addressGeocode = require('../../utils/maps/geocoding');
 
@@ -163,7 +166,9 @@ router.post('/updateMe', [auth], async (req, res) => {
                 if (
                     req.user.role &&
                     req.user.role.indexOf('ADMIN') != -1 &&
-                    hostFields.email !== ''
+                    hostFields.email !== '' &&
+                    req.user.email.toLowerCase() !==
+                        hostFields.email.toLowerCase()
                 ) {
                     //console.log("User is ADMIN and has authority to update all other users.");
                     try {
@@ -205,6 +210,7 @@ router.post('/updateMe', [auth], async (req, res) => {
                         hostFields.user = req.user.id;
                         //console.log('hostFields', hostFields);
 
+                        let locationChanged = false;
                         //IF THERE'S A DIFFERENCE BETWEEN THE hostFields.streetAddress AND THE hostFields.geocodedStreetAddress THEN THE HOST UPDATED THEIR LOCATION, AND A NEW LATLONG NEEDS TO BE GENERATED
                         if (
                             hostFields.streetAddress !==
@@ -213,6 +219,7 @@ router.post('/updateMe', [auth], async (req, res) => {
                             hostFields.state !== hostFields.geocodedState ||
                             hostFields.zipCode !== hostFields.geocodedZipCode
                         ) {
+                            locationChanged = true;
                             //geocode with Google Maps API
                             const geocodedAddress = await addressGeocode(
                                 hostFields.streetAddress +
@@ -245,18 +252,90 @@ router.post('/updateMe', [auth], async (req, res) => {
                         let host = await Host.findOneAndUpdate(
                             { email: hostFields.email.toLowerCase() },
                             { $set: hostFields },
-                            { new: true, upsert: true }
+                            { new: true, upsert: true, rawResult: true } //https://mongoosejs.com/docs/tutorials/findoneandupdate.html#raw-result
                         ); //.select('-hadMeeting -sentFollowUp -notes');
+
+                        console.log('host returned', host);
+
+                        //ADD HOST TO MAILCHIMP
+                        mailchimp.setConfig({
+                            apiKey: config['mailChimpApiKey'],
+                            server: 'us8',
+                        });
+                        if (
+                            hostFields.completedProfileForm === true && //if the host has completed the form
+                            hostFields.streetAddress &&
+                            hostFields.city &&
+                            hostFields.state && //and provided city, state, and zip, and phone
+                            hostFields.zipCode &&
+                            hostFields.phone &&
+                            (host.lastErrorObject.updatedExisting === false || //and if it did not update an existing object, then it's new //https://mongoosejs.com/docs/tutorials/findoneandupdate.html#raw-result
+                                hostFields.mailChimped == false || //or if this host hasn't been mailChimped
+                                locationChanged === true) //OR their location changed
+                        ) {
+                            const sendToMailChimp = async () => {
+                                try {
+                                    const hostEmail =
+                                        hostFields.email.toLowerCase();
+                                    //const hashedEmail = crypto.createHash('md5').update(hostEmail).digest('hex');
+                                    const hashedEmail = md5(hostEmail);
+
+                                    console.log(
+                                        'sending ' +
+                                            hostEmail +
+                                            ' (' +
+                                            hashedEmail +
+                                            ') to MailChimp.'
+                                    );
+
+                                    const response =
+                                        await mailchimp.lists.setListMember(
+                                            '57439ec968',
+                                            hashedEmail,
+                                            {
+                                                email_address: hostEmail,
+                                                status_if_new: 'pending',
+                                                merge_fields: {
+                                                    FNAME: hostFields.firstName,
+                                                    LNAME: hostFields.lastName,
+                                                    ADDRESS: {
+                                                        addr1: hostFields.streetAddress,
+                                                        city: hostFields.city,
+                                                        state: hostFields.state,
+                                                        zip: hostFields.zipCode.toString(),
+                                                    },
+                                                    PHONE: hostFields.phone,
+                                                },
+                                            }
+                                        );
+                                    console.log(
+                                        'mailChimp response:',
+                                        response
+                                    );
+                                } catch (err) {
+                                    console.log('mailChimp error:', err);
+                                }
+                            };
+                            sendToMailChimp();
+                            host = await Host.findOneAndUpdate(
+                                { email: hostFields.email.toLowerCase() },
+                                {
+                                    mailChimped: true,
+                                },
+                                { new: true, rawResult: true }
+                            );
+                        }
+
                         let user = await User.findOneAndUpdate(
                             { email: hostFields.email.toLowerCase() },
                             {
                                 $addToSet: { role: 'HOST' },
-                                $set: { hostProfile: host.id },
+                                $set: { hostProfile: host.value.id },
                             },
                             { new: true }
                         ).select('-password');
                         hostCount++;
-                        res.json({ host: host, user: user });
+                        res.json({ host: host.value, user: user });
                     } catch (err) {
                         console.error(err.message);
                         res.status(500).send('Server Error');
