@@ -176,7 +176,7 @@ const Register = ({ setAlert, register, isAuthenticated, bookingDialog }) => {
                             <Grid item>
                                 <small>
                                     I already have an account.{' '}
-                                    <Link to="/login">Back to Login</Link>
+                                    <Link to="/login">Go to Login</Link>
                                 </small>
                             </Grid>
                         </Grid>
