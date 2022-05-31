@@ -35,10 +35,24 @@ const Dashboard = ({
     //     getCurrentProfile();
     // }, [getCurrentProfile]);
     useEffect(() => {
-        getCurrentArtist();
+        if (
+            user &&
+            user.role &&
+            Array.isArray(user.role) &&
+            user.role.indexOf('ARTIST') != -1
+        ) {
+            getCurrentArtist();
+        }
     }, [getCurrentArtist, user]);
     useEffect(() => {
-        getCurrentHost();
+        if (
+            user &&
+            user.role &&
+            Array.isArray(user.role) &&
+            user.role.indexOf('HOST') != -1
+        ) {
+            getCurrentHost();
+        }
     }, [getCurrentHost, user]);
     return loading && user === null ? (
         <Spinner />

@@ -32,15 +32,18 @@ function useQuery() {
 const Register = ({ setAlert, register, isAuthenticated, bookingDialog }) => {
     const [formData, setFormData] = useState({
         name: '',
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
         password2: '',
     });
 
-    const { name, email, password, password2 } = formData;
+    const { name, firstName, lastName, email, password, password2 } = formData;
 
     let query = useQuery();
     const referralKey = query.get('referralKey');
+    const urlForm = query.get('form');
     //console.log('referralKey', referralKey);
 
     const onChange = (e) =>
@@ -48,10 +51,11 @@ const Register = ({ setAlert, register, isAuthenticated, bookingDialog }) => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
+        let regName = firstName + ' ' + lastName;
         if (password !== password2) {
             setAlert('Passwords do not match', 'danger');
         } else {
-            register({ name, email, password, referralKey });
+            register({ regName, email, password, referralKey });
             //   const newUser = {
             //     name,
             //     email,
@@ -75,20 +79,73 @@ const Register = ({ setAlert, register, isAuthenticated, bookingDialog }) => {
 
     //Redirect if logged in
     if (isAuthenticated && !bookingDialog) {
-        return <Redirect to="/dashboard" />;
+        if (urlForm === 'host') {
+            return <Redirect to="/edit-host-profile" />;
+        } else {
+            return <Redirect to="/dashboard" />;
+        }
     }
 
     return (
         <Fragment>
             <Box
                 sx={{
-                    marginTop: 8,
+                    marginTop: 3,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     padding: '20px',
                 }}
             >
+                {urlForm === 'host' && (
+                    <>
+                        <Grid
+                            container
+                            direction="column"
+                            justifyContent="center"
+                            alignItems="center"
+                            //spacing={2}
+                            sx={{
+                                width: '100%',
+                                margin: '0 auto',
+                            }}
+                        >
+                            <Grid item xs={12} sx={{ textAlign: 'center' }}>
+                                <FormLabel
+                                    component="h3"
+                                    sx={{
+                                        fontSize: '1.5em',
+                                        textAlign: 'center',
+                                    }}
+                                >
+                                    Thanks for your interest in becoming a host!
+                                </FormLabel>
+                                <FormLabel
+                                    component="small"
+                                    sx={{
+                                        textAlign: 'left',
+                                        display: 'block',
+                                        maxWidth: '600px',
+                                    }}
+                                >
+                                    Just so you know: answering these questions
+                                    does not obligate you to host any particular
+                                    event. This questionnaire signifies your
+                                    interest to host, and loops you in to
+                                    updates and opportunities to host.
+                                    <br />
+                                    <br />
+                                    <em>
+                                        Also, the information you submit will be
+                                        used by Porchlight only, and will never
+                                        be sold to a third party.
+                                    </em>
+                                </FormLabel>
+                            </Grid>
+                        </Grid>
+                    </>
+                )}
+
                 <Box
                     component="form"
                     noValidate
@@ -96,23 +153,41 @@ const Register = ({ setAlert, register, isAuthenticated, bookingDialog }) => {
                     sx={{ mt: 3, maxWidth: '350px' }}
                 >
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sx={{ textAlign: 'center' }}>
-                            <FormLabel component="legend">
-                                Let’s get you signed up!
-                            </FormLabel>
-                            <Typography component="p">
-                                What’s your name, email address, and password?
-                            </Typography>
+                        {urlForm !== 'host' && (
+                            <Grid item xs={12} sx={{ textAlign: 'center' }}>
+                                <>
+                                    <FormLabel component="legend">
+                                        Let’s get you signed up!
+                                    </FormLabel>
+                                    <Typography component="p">
+                                        What’s your name, email address, and
+                                        password?
+                                    </Typography>
+                                </>
+                            </Grid>
+                        )}
+                        <Grid item xs={12}>
+                            <TextField
+                                variant="standard"
+                                required
+                                fullWidth
+                                label="My first name is"
+                                autoComplete="firstName"
+                                name="firstName"
+                                value={firstName}
+                                onChange={(e) => onChange(e)} //call seperate onChange function above
+                                required
+                            />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 variant="standard"
                                 required
                                 fullWidth
-                                label="My name is"
-                                autoComplete="name"
-                                name="name"
-                                value={name}
+                                label="My last name is"
+                                autoComplete="lastName"
+                                name="lastName"
+                                value={lastName}
                                 onChange={(e) => onChange(e)} //call seperate onChange function above
                                 required
                             />

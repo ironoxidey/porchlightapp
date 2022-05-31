@@ -85,10 +85,10 @@ router.post('/admin-update', [auth], async (req, res) => {
                     }
                 }
                 if (hostFields.numHostedBefore) {
-                    console.log(
-                        'hostFields.numHostedBefore',
-                        hostFields.numHostedBefore
-                    );
+                    // console.log(
+                    //     'hostFields.numHostedBefore',
+                    //     hostFields.numHostedBefore
+                    // );
                     const numHostedBefore = firstInt(
                         hostFields.numHostedBefore
                     );
@@ -255,7 +255,7 @@ router.post('/updateMe', [auth], async (req, res) => {
                             { new: true, upsert: true, rawResult: true } //https://mongoosejs.com/docs/tutorials/findoneandupdate.html#raw-result
                         ); //.select('-hadMeeting -sentFollowUp -notes');
 
-                        console.log('host returned', host);
+                        //console.log('host returned', host);
 
                         //ADD HOST TO MAILCHIMP
                         mailchimp.setConfig({

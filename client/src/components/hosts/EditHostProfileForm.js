@@ -598,83 +598,84 @@ const EditHostProfileForm = ({
     const [open, setOpen] = useState(true);
 
     const formGroups = {
-        firstName: [
-            [
-                <FormLabel
-                    component="h3"
-                    sx={{ fontSize: '1.5em', textAlign: 'center' }}
-                >
-                    Thanks for your interest in becoming a host!
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{
-                        textAlign: 'left',
-                        display: 'block',
-                        maxWidth: '600px',
-                    }}
-                >
-                    {!inDialog ? (
-                        <Fragment>
-                            Just so you know: answering these questions does not
-                            obligate you to host any particular event. This
-                            questionnaire signifies your interest to host, and
-                            loops you in to updates and opportunities to host.
-                            <br />
-                            <br />
-                            <em>
-                                Also, the information you submit will be used by
-                                Porchlight only, and will never be sold to a
-                                third party.
-                            </em>
-                        </Fragment>
-                    ) : (
-                        <Fragment>
-                            We need some information, in order for you to offer
-                            to host an artist on the Porchlight network.
-                            <br />
-                            <br />
-                            <em>
-                                The information you submit is for internal use
-                                only, and will never be sold to a third party.
-                            </em>
-                        </Fragment>
-                    )}
-                </FormLabel>,
-                <FormLabel component="legend">
-                    Starting off, what is your name?
-                </FormLabel>,
-            ],
-            <Grid
-                container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-                spacing={2}
-                sx={{ width: '100%' }}
-            >
-                <Grid item xs={12} sm={6} textAlign="center">
-                    <TextField
-                        variant="standard"
-                        name="firstName"
-                        id="firstName"
-                        label="My first name is"
-                        value={firstName}
-                        onChange={(e) => onChange(e)}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} textAlign="center">
-                    <TextField
-                        variant="standard"
-                        name="lastName"
-                        id="lastName"
-                        label="and my last name is"
-                        value={lastName}
-                        onChange={(e) => onChange(e)}
-                    />
-                </Grid>
-            </Grid>,
-        ],
+        // firstName: [
+        //     [
+        //         <FormLabel
+        //             component="h3"
+        //             sx={{ fontSize: '1.5em', textAlign: 'center' }}
+        //         >
+        //             Thanks for your interest in becoming a host!
+        //         </FormLabel>,
+        //         <FormLabel
+        //             component="small"
+        //             sx={{
+        //                 textAlign: 'left',
+        //                 display: 'block',
+        //                 maxWidth: '600px',
+        //             }}
+        //         >
+        //             {!inDialog ? (
+        //                 <>
+        //                     Just so you know: answering these questions does not
+        //                     obligate you to host any particular event. This
+        //                     questionnaire signifies your interest to host, and
+        //                     loops you in to updates and opportunities to host.
+        //                     <br />
+        //                     <br />
+        //                     <em>
+        //                         Also, the information you submit will be used by
+        //                         Porchlight only, and will never be sold to a
+        //                         third party.
+        //                     </em>
+        //                 </>
+        //             ) : (
+        //                 <>
+        //                     We need some information, in order for you to offer
+        //                     to host an artist on the Porchlight network.
+        //                     <br />
+        //                     <br />
+        //                     <em>
+        //                         Also, the information you submit will be used by
+        //                         Porchlight only, and will never be sold to a
+        //                         third party.
+        //                     </em>
+        //                 </>
+        //             )}
+        //         </FormLabel>,
+        //         <FormLabel component="legend">
+        //             Starting off, what is your name?
+        //         </FormLabel>,
+        //     ],
+        //     <Grid
+        //         container
+        //         direction="row"
+        //         justifyContent="center"
+        //         alignItems="center"
+        //         spacing={2}
+        //         sx={{ width: '100%' }}
+        //     >
+        //         <Grid item xs={12} sm={6} textAlign="center">
+        //             <TextField
+        //                 variant="standard"
+        //                 name="firstName"
+        //                 id="firstName"
+        //                 label="My first name is"
+        //                 value={firstName}
+        //                 onChange={(e) => onChange(e)}
+        //             />
+        //         </Grid>
+        //         <Grid item xs={12} sm={6} textAlign="center">
+        //             <TextField
+        //                 variant="standard"
+        //                 name="lastName"
+        //                 id="lastName"
+        //                 label="and my last name is"
+        //                 value={lastName}
+        //                 onChange={(e) => onChange(e)}
+        //             />
+        //         </Grid>
+        //     </Grid>,
+        // ],
         city: [
             [
                 <FormLabel component="legend">
@@ -703,7 +704,7 @@ const EditHostProfileForm = ({
                             variant="standard"
                             name="streetAddress"
                             id="streetAddress"
-                            label="At the street address of"
+                            label="My residence is at the street address of"
                             value={streetAddress}
                             onChange={(e) => onChange(e)}
                             sx={{ width: '100%' }}

@@ -13,11 +13,11 @@ const EditMyHostProfile = ({
     inDialog,
 }) => {
     useEffect(() => {
-        // if (auth.user.email) {
+        //if (auth.user.email) {
         getCurrentHost();
-        // }
-    }, [getCurrentHost]);
-    //}, [getCurrentHost, auth]);
+        //}
+        //}, [getCurrentHost]);
+    }, [getCurrentHost, auth]);
 
     return (
         <Fragment>

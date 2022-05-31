@@ -70,7 +70,8 @@ const Navbar = ({
     useEffect(() => {
         if (
             isAuthenticated &&
-            isAuthenticated &&
+            user &&
+            user.role &&
             Array.isArray(user.role) &&
             user.role.indexOf('ARTIST') != -1
         ) {
@@ -81,11 +82,12 @@ const Navbar = ({
     useEffect(() => {
         if (
             isAuthenticated &&
+            user &&
+            user.role &&
             Array.isArray(user.role) &&
             user.role.indexOf('HOST') != -1
         ) {
             getCurrentHost();
-
             getMyEventsOfferedToHost();
         }
     }, [getCurrentHost, user]);
