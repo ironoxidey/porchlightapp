@@ -105,7 +105,7 @@ const EditHostProfileForm = ({
     const [hostDialogDetails, setDialogDetailsState] = useState({});
 
     useEffect(() => {
-        console.log('hostDialogDetails', hostDialogDetails);
+        //console.log('hostDialogDetails', hostDialogDetails);
         delete hostDialogDetails.email;
         delete hostDialogDetails.phone;
         setHostDetailsDialogOpen(true);
@@ -132,7 +132,7 @@ const EditHostProfileForm = ({
         numHostedBefore: '',
         phone: '',
         connectionToUs: '',
-        primarySpace: '',
+        primarySpace: 'residence',
         venueStreetAddress: '',
         venueCity: '',
         venueState: '',
@@ -195,7 +195,7 @@ const EditHostProfileForm = ({
                         : theHost.connectionToUs,
                 primarySpace:
                     loading || !theHost.primarySpace
-                        ? ''
+                        ? 'residence'
                         : theHost.primarySpace,
                 venueStreetAddress:
                     loading || !theHost.venueStreetAddress
@@ -266,7 +266,7 @@ const EditHostProfileForm = ({
                     numHostedBefore: '',
                     phone: '',
                     connectionToUs: '',
-                    primarySpace: '',
+                    primarySpace: 'residence',
                     venueStreetAddress: '',
                     venueCity: '',
                     venueState: '',
@@ -590,7 +590,7 @@ const EditHostProfileForm = ({
 
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log('Submitting...', formData);
+        //console.log('Submitting...', formData);
         createMyHost(formData, history, true);
         changesMade.current = false;
     };
@@ -1162,7 +1162,7 @@ const EditHostProfileForm = ({
                     >
                         Thank you for taking the time to respond to them! Check
                         out your profile to see how artists will see it. <br />{' '}
-                        (An artist will see your profile, only after you make an
+                        (An artist will see your profile only after you make an
                         offer to host their show. Even then, we don’t share much
                         of your personal information with them.)
                     </Typography>

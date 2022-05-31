@@ -68,15 +68,35 @@ const Navbar = ({
     }, [user]);
 
     useEffect(() => {
-        getCurrentArtist();
+        if (
+            isAuthenticated &&
+            isAuthenticated &&
+            Array.isArray(user.role) &&
+            user.role.indexOf('ARTIST') != -1
+        ) {
+            getCurrentArtist();
+            getMyArtistEventsOffers();
+        }
     }, [getCurrentArtist, user]);
     useEffect(() => {
-        getCurrentHost();
+        if (
+            isAuthenticated &&
+            Array.isArray(user.role) &&
+            user.role.indexOf('HOST') != -1
+        ) {
+            getCurrentHost();
+
+            getMyEventsOfferedToHost();
+        }
     }, [getCurrentHost, user]);
-    useEffect(() => {
-        getMyEventsOfferedToHost();
-        getMyArtistEventsOffers();
-    }, [getCurrentHost, user]);
+
+    //I'm not sure why I separated these from above ~commented out on May 31st,2022
+    // useEffect(() => {
+    //     if (isAuthenticated) {
+    //         getMyEventsOfferedToHost();
+    //         getMyArtistEventsOffers();
+    //     }
+    // }, [getCurrentHost, user]);
 
     const handleOpenNavMenu = (event) => {
         openNavDrawer();
