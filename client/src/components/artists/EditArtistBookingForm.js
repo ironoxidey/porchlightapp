@@ -96,11 +96,11 @@ const EditArtistBookingForm = ({
     const dispatch = useDispatch();
 
     //let hostLocations = [];
-    const [hostLocations, setHostLocations] = useState([]);
+    //const [hostLocations, setHostLocations] = useState([]);
 
     useEffect(() => {
         getHostsLocations();
-        setHostLocations(hosts);
+        //setHostLocations(hosts);
         // console.log(
         //     'The hard coded list:',
         //     getHostLocations(),
@@ -790,7 +790,7 @@ const EditArtistBookingForm = ({
                                                       whenBooking.where) ||
                                                   null
                                               }
-                                              options={hostLocations}
+                                              options={hosts}
                                               disableClearable
                                               groupBy={(option) =>
                                                   option.fullState

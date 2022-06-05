@@ -308,10 +308,10 @@ router.post('/updateMe', [auth], async (req, res) => {
                                                 },
                                             }
                                         );
-                                    console.log(
-                                        'mailChimp response:',
-                                        response
-                                    );
+                                    // console.log(
+                                    //     'mailChimp response:',
+                                    //     response
+                                    // );
                                 } catch (err) {
                                     console.log('mailChimp error:', err);
                                 }

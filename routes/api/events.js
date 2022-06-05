@@ -202,7 +202,7 @@ router.get('/nearMeToHost', auth, async (req, res) => {
         const eventsNearMeToHost = await Event.find({
             latLong: {
                 $near: {
-                    $maxDistance: 400 * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
+                    $maxDistance: 40 * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
                     $geometry: {
                         type: 'Point',
                         coordinates: thisHost.latLong.coordinates,
@@ -512,7 +512,7 @@ router.get('/edit', [auth], async (req, res) => {
                         { new: true }
                     );
                     if (savedDetails) {
-                        console.log('savedDetails:', savedDetails);
+                        //console.log('savedDetails:', savedDetails);
                         updatedEvents++;
                     }
                 }
