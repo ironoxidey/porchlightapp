@@ -25,7 +25,7 @@ const Dashboard = ({
     deleteAccount,
     auth: { user, loading },
     //profile: { profile, loading },
-    event: { myHostEvents, myArtistEvents },
+    event: { myHostEvents, myArtistEvents, nearMeToHost },
     getCurrentArtist,
     artist,
     getCurrentHost,

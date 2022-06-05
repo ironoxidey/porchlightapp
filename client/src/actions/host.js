@@ -1,5 +1,7 @@
 import axios from 'axios';
+import states from 'us-state-converter';
 import { setAlert } from './alert';
+import { toTitleCase } from './app';
 
 import {
     GET_HOST,
@@ -17,6 +19,7 @@ import {
 export const getCurrentHost = () => async (dispatch) => {
     try {
         const res = await axios.get(`/api/hosts/me`);
+
         dispatch({
             type: GET_HOST_ME,
             payload: res.data,
@@ -33,13 +36,81 @@ export const getCurrentHost = () => async (dispatch) => {
     }
 };
 
-// Get all hosts
+const sortStateCity = (a, b) => {
+    const aState = states(a.state).name;
+    const bState = states(b.state).name;
+    const aCity = a.city;
+    const bCity = b.city;
+
+    if (bState === aState) {
+        if (bCity > aCity) {
+            return -1;
+        } else if (bCity < aCity) {
+            return 1;
+        }
+    } else if (bState > aState) {
+        return -1;
+    } else if (bState < aState) {
+        return 1;
+    }
+    return 0;
+};
+
+// Get all hosts' locations
 export const getHostsLocations = () => async (dispatch) => {
     try {
-        const res = await axios.get('/api/hosts');
+        const res = await axios.get('/api/hosts/');
+
+        const hostLocations = res.data;
+        //console.log('getHostsLocations hostLocations', hostLocations);
+
+        let hostProcessedLocations = hostLocations.reduce(
+            (result, location) => {
+                if (
+                    location &&
+                    location.city &&
+                    location.state &&
+                    states(location.state).name &&
+                    location.zipCode
+                ) {
+                    const hostCityST = {};
+
+                    hostCityST.city = location.city
+                        ? toTitleCase(location.city)
+                        : '';
+                    hostCityST.state = location.state
+                        ? states(location.state).usps
+                        : '';
+                    hostCityST.fullState = location.state
+                        ? states(location.state).name
+                        : '';
+                    hostCityST.zip = location.zipCode ? location.zipCode : '';
+                    result.push(hostCityST);
+
+                    //return hostCityST;
+                }
+                return result;
+            },
+            []
+        );
+
+        let hostFilteredLocations = hostProcessedLocations.filter(
+            (value, index, self) =>
+                index ===
+                self.findIndex(
+                    (t) => t.city === value.city && t.state === value.state
+                )
+        );
+
+        let hostSortedLocations = hostFilteredLocations.sort((a, b) =>
+            sortStateCity(a, b)
+        );
+
+        //console.log('hostSortedLocations', hostSortedLocations);
+
         dispatch({
             type: GET_HOSTS,
-            payload: res.data,
+            payload: hostSortedLocations,
         });
     } catch (err) {
         dispatch({

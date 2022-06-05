@@ -56,6 +56,7 @@ import {
     getHostLocations,
     sortDates,
 } from '../../actions/app';
+import { getHostsLocations } from '../../actions/host';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
@@ -69,7 +70,13 @@ Object.filter = (obj, predicate) =>
         .filter((key) => predicate(obj[key]))
         .reduce((res, key) => ((res[key] = obj[key]), res), []);
 
-const hostLocations = getHostLocations();
+// const hostLocations = getHostsLocations();
+// console.log(
+//     'The hard coded list:',
+//     getHostLocations(),
+//     'The list from the database:',
+//     getHostsLocations()
+// );
 
 const UploadInput = styled('input')({
     display: 'none',
@@ -79,12 +86,28 @@ const EditArtistBookingForm = ({
     theArtist,
     //theArtist: { loading },
     createMyArtist,
+    getHostsLocations,
+    hosts,
     history,
     auth,
     updateUserAvatar,
 }) => {
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     const dispatch = useDispatch();
+
+    //let hostLocations = [];
+    const [hostLocations, setHostLocations] = useState([]);
+
+    useEffect(() => {
+        getHostsLocations();
+        setHostLocations(hosts);
+        // console.log(
+        //     'The hard coded list:',
+        //     getHostLocations(),
+        //     'The list from the database:',
+        //     hosts
+        // );
+    }, []);
 
     const [formData, setFormData] = useState({
         slug: '',
@@ -1976,6 +1999,8 @@ const EditArtistBookingForm = ({
 };
 
 EditArtistBookingForm.propTypes = {
+    getHostsLocations: PropTypes.func.isRequired,
+    hosts: PropTypes.array.isRequired,
     createMyArtist: PropTypes.func.isRequired,
     theArtist: PropTypes.object,
     auth: PropTypes.object.isRequired,
@@ -1984,8 +2009,11 @@ EditArtistBookingForm.propTypes = {
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
+    hosts: state.host.hosts,
 });
 
-export default connect(mapStateToProps, { createMyArtist, updateUserAvatar })(
-    withRouter(EditArtistBookingForm)
-); //withRouter allows us to pass history objects
+export default connect(mapStateToProps, {
+    getHostsLocations,
+    createMyArtist,
+    updateUserAvatar,
+})(withRouter(EditArtistBookingForm)); //withRouter allows us to pass history objects

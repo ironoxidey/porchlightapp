@@ -58,11 +58,6 @@ import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
 import { textAlign } from '@mui/system';
 
-import {
-    getFontAwesomeIcon,
-    getHostLocations,
-    pullDomainFrom,
-} from '../../actions/app';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
@@ -75,8 +70,6 @@ Object.filter = (obj, predicate) =>
     Object.keys(obj)
         .filter((key) => predicate(obj[key]))
         .reduce((res, key) => ((res[key] = obj[key]), res), []);
-
-const hostLocations = getHostLocations();
 
 const UploadInput = styled('input')({
     display: 'none',

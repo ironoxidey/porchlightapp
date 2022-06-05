@@ -260,6 +260,7 @@ export const sortDates = (a, b) => {
 
 export const getHostLocations = () => {
     //Host's locations as of Frebruary 3rd, 2022
+
     const hostLocations = [
         {
             submitted: '2021-07-22T02:41:02.000Z',

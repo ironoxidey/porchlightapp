@@ -49,6 +49,7 @@ import styles from '../../formCards.css';
 import { textAlign } from '@mui/system';
 
 import { getFontAwesomeIcon, getHostLocations } from '../../../actions/app';
+import { getHostsLocations } from '../../../actions/host';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
@@ -58,7 +59,7 @@ Object.filter = (obj, predicate) =>
         .filter((key) => predicate(obj[key]))
         .reduce((res, key) => ((res[key] = obj[key]), res), []);
 
-const hostLocations = getHostLocations();
+const hostLocations = getHostsLocations();
 
 const UploadInput = styled('input')({
     display: 'none',
