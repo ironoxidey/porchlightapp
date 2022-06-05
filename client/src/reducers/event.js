@@ -2,6 +2,7 @@ import {
     HOST_RAISE_HAND,
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
+    GET_EVENTS_NEAR_ME_TO_HOST,
     GET_THIS_ARTIST_BOOKING_EVENTS,
     GET_ALL_EVENTS,
     GET_THIS_ARTIST_EVENTS_OFFERS,
@@ -23,6 +24,12 @@ const initialState = {
 export default function (state = initialState, action) {
     const { type, payload } = action;
     switch (type) {
+        case GET_EVENTS_NEAR_ME_TO_HOST:
+            return {
+                ...state,
+                nearMeToHost: payload,
+                loading: false,
+            };
         case GET_EVENTS_OFFERED_TO_HOST:
             return {
                 ...state,
@@ -72,6 +79,7 @@ export default function (state = initialState, action) {
         case LOGOUT:
             return {
                 ...state,
+                nearMeToHost: [],
                 myArtistEvents: [],
                 myHostEvents: [],
                 adminEvents: [],

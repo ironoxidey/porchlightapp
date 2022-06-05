@@ -14,6 +14,7 @@ import { getCurrentHost } from '../../actions/host';
 import {
     getMyEventsOfferedToHost,
     getMyArtistEventsOffers,
+    getEventsNearMeToHost,
 } from '../../actions/event';
 
 import {
@@ -51,6 +52,7 @@ const Navbar = ({
     getCurrentArtist,
     getCurrentHost,
     getMyEventsOfferedToHost,
+    getEventsNearMeToHost,
     getMyArtistEventsOffers,
     app: { navDrawer, userDrawer },
     artist,
@@ -89,6 +91,7 @@ const Navbar = ({
         ) {
             getCurrentHost();
             getMyEventsOfferedToHost();
+            getEventsNearMeToHost();
         }
     }, [getCurrentHost, user]);
 
@@ -491,5 +494,6 @@ export default connect(mapStateToProps, {
     getCurrentArtist,
     getCurrentHost,
     getMyEventsOfferedToHost,
+    getEventsNearMeToHost,
     getMyArtistEventsOffers,
 })(Navbar);

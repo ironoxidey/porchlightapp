@@ -5,6 +5,7 @@ import {
     HOST_RAISE_HAND,
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
+    GET_EVENTS_NEAR_ME_TO_HOST,
     GET_THIS_ARTIST_BOOKING_EVENTS,
     GET_THIS_ARTIST_EVENTS_OFFERS,
     GET_ALL_EVENTS,
@@ -20,6 +21,25 @@ export const getMyEventsOfferedToHost = () => async (dispatch) => {
         const res = await axios.get(`/api/events/myEventsOfferedToHost`);
         dispatch({
             type: GET_EVENTS_OFFERED_TO_HOST,
+            payload: res.data,
+        });
+    } catch (err) {
+        //dispatch({ type: CLEAR_ARTIST });
+        dispatch({
+            type: EVENTS_ERROR,
+            payload: {
+                msg: err.response.statusText,
+                status: err.response.status,
+            },
+        });
+    }
+};
+// Get the events that I've offered to host
+export const getEventsNearMeToHost = () => async (dispatch) => {
+    try {
+        const res = await axios.get(`/api/events/nearMeToHost`);
+        dispatch({
+            type: GET_EVENTS_NEAR_ME_TO_HOST,
             payload: res.data,
         });
     } catch (err) {

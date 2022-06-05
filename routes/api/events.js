@@ -187,6 +187,54 @@ router.get('/myEventsOfferedToHost', auth, async (req, res) => {
     }
 });
 
+// @route    GET api/events/nearMeToHost
+// @desc     Get events that current user is near to host
+// @access   Private
+router.get('/nearMeToHost', auth, async (req, res) => {
+    try {
+        const thisHost = await Host.findOne({
+            email: req.user.email,
+        });
+        // const eventsNearMeToHost = await Event.find({
+        //     hostsInReach: { $elemMatch: { host: thisHost._id } },
+        //     status: 'PENDING',
+        // })
+        const eventsNearMeToHost = await Event.find({
+            latLong: {
+                $near: {
+                    $maxDistance: 400 * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
+                    $geometry: {
+                        type: 'Point',
+                        coordinates: thisHost.latLong.coordinates,
+                    },
+                },
+            },
+        })
+            .select(
+                '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'
+            )
+            .populate(
+                'artist',
+                '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
+            )
+            .sort({ bookingWhen: 1 });
+        if (!eventsNearMeToHost) {
+            console.log(
+                'There are no events associated with ' + req.user.email
+            );
+            return res.json({
+                email: req.user.email,
+                msg: 'There are no events associated with ' + req.user.email,
+            });
+        }
+        //console.log('eventsNearMeToHost ', eventsNearMeToHost);
+        res.json(eventsNearMeToHost);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 // @route    GET api/events/myArtistEvents
 // @desc     Get current user's events where the hostsOfferingToBook has at least one index
 // @access   Private
@@ -382,7 +430,7 @@ router.get('/edit', [auth], async (req, res) => {
         (req.user.role && req.user.role.indexOf('ADMIN') > -1) ||
         req.user.role.indexOf('BOOKING') > -1
     ) {
-        //must be have ADMIN or BOOKING role to get into all of this!
+        //must have ADMIN or BOOKING role to get into all of this!
         let updatedEvents = 0;
         try {
             const events = await Event.find({})

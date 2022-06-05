@@ -229,5 +229,5 @@ const EventSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
-
+EventSchema.index({ latLong: '2dsphere' });
 module.exports = Event = mongoose.model('event', EventSchema);

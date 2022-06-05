@@ -400,11 +400,100 @@ router.post('/updateMe', [auth], async (req, res) => {
                                                             bookingInfo.when,
                                                         bookingWhere:
                                                             bookingInfo.where,
-                                                        // 'latLong.coordinates':
-                                                        //     geocodedAddress,
+                                                        latLong: {
+                                                            coordinates: [0, 0],
+                                                            type: 'Point',
+                                                        },
                                                     },
                                                     { new: true, upsert: true }
                                                 );
+
+                                            //Geocode the event — pulled from events.js line 399 ~ June 4th,2022
+                                            if (
+                                                ((event.latLong &&
+                                                    event.latLong.coordinates &&
+                                                    event.latLong.coordinates
+                                                        .length == 0) || //if there is no latLong OR
+                                                    !event.geocodedBookingWhere || //if there is no geocodedBookingWhere OR
+                                                    (event.geocodedBookingWhere && //if there IS a geocodedBookingWhere AND
+                                                        event.bookingWhere
+                                                            .zip !==
+                                                            event
+                                                                .geocodedBookingWhere
+                                                                .zip)) && // the zip doesn't match the bookingWhere.zip, then the location has changed since last geocoded
+                                                event.bookingWhere &&
+                                                event.bookingWhere.city &&
+                                                event.bookingWhere.state &&
+                                                event.bookingWhere.zip
+                                            ) {
+                                                //if the event doesn't yet have a latLong attached to it, make one based on just the city, state zip they selected
+                                                const address =
+                                                    event.bookingWhere.city +
+                                                    ', ' +
+                                                    event.bookingWhere.state +
+                                                    ' ' +
+                                                    event.bookingWhere.zip;
+                                                const geocodedAddress =
+                                                    await addressGeocode(
+                                                        address
+                                                    );
+                                                // console.log(
+                                                //     updatedEvents +
+                                                //         ') ' +
+                                                //         event.artist.stageName +
+                                                //         ' wants to play a concert near ' +
+                                                //         address +
+                                                //         ': ',
+                                                //     geocodedAddress
+                                                // );
+
+                                                let hostsInReach =
+                                                    await Host.find({
+                                                        latLong: {
+                                                            $near: {
+                                                                $maxDistance:
+                                                                    event.hostReachRadius *
+                                                                    1609.35, //the distance is in meters, 1609.35m = 1 mile;
+                                                                $geometry: {
+                                                                    type: 'Point',
+                                                                    coordinates:
+                                                                        geocodedAddress,
+                                                                },
+                                                            },
+                                                        },
+                                                    });
+                                                //console.log(await hostsInReach);
+                                                const hostsIDInReach =
+                                                    hostsInReach.map(
+                                                        (hostInReach) => {
+                                                            //console.log('hostInReach._id', hostInReach._id);
+                                                            return {
+                                                                host: hostInReach._id,
+                                                            };
+                                                        }
+                                                    );
+
+                                                let savedDetails =
+                                                    await event.updateOne(
+                                                        {
+                                                            hostsInReach:
+                                                                hostsIDInReach,
+                                                            'latLong.coordinates':
+                                                                geocodedAddress,
+                                                            geocodedBookingWhere:
+                                                                event.bookingWhere,
+                                                        },
+                                                        { new: true }
+                                                    );
+                                                if (savedDetails) {
+                                                    console.log(
+                                                        'savedDetails:',
+                                                        savedDetails
+                                                    );
+                                                }
+                                            }
+                                            //end geocoding
+
                                             return new Date(
                                                 bookingInfo.when
                                             ).toISOString();

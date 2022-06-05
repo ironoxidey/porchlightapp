@@ -686,7 +686,7 @@ const EventDetails = ({
                                     <Divider />
                                 </Grid>
                             )}
-                            {user &&
+                            {/* {user &&
                                 user.role &&
                                 (user.role.indexOf('ADMIN') > -1 ||
                                     user.role.indexOf('BOOKING') > -1) &&
@@ -747,7 +747,7 @@ const EventDetails = ({
                                         </strong>
                                         <Divider />
                                     </Grid>
-                                ))}
+                                ))} */}
                         </Grid>
                     </Grid>
                 )}
