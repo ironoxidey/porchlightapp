@@ -481,12 +481,12 @@ router.post('/updateMe', [auth], async (req, res) => {
                                                         },
                                                         { new: true }
                                                     );
-                                                if (savedDetails) {
-                                                    console.log(
-                                                        'savedDetails:',
-                                                        savedDetails
-                                                    );
-                                                }
+                                                // if (savedDetails) {
+                                                //     console.log(
+                                                //         'savedDetails:',
+                                                //         savedDetails
+                                                //     );
+                                                // }
                                             }
                                             //end geocoding
 

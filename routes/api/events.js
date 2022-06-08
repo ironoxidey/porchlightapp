@@ -211,6 +211,7 @@ router.get('/nearMeToHost', auth, async (req, res) => {
             },
             offersFromHosts: { $not: { $elemMatch: { host: thisHost._id } } },
             status: 'PENDING',
+            bookingWhen: { $gt: new Date() },
         })
             .select(
                 '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'
@@ -435,7 +436,9 @@ router.get('/edit', [auth], async (req, res) => {
         //must have ADMIN or BOOKING role to get into all of this!
         let updatedEvents = 0;
         try {
-            const events = await Event.find({})
+            const events = await Event.find({
+                bookingWhen: { $gt: new Date() },
+            })
                 .populate('artist')
                 .populate('hostsInReach.host')
                 .populate('offersFromHosts.host');
