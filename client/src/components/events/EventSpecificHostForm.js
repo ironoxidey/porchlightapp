@@ -1249,7 +1249,7 @@ EventSpecificHostForm.propTypes = {
 const mapStateToProps = (state) => ({
     auth: state.auth,
     host: state.host,
-    artist: state.artist.artist,
+    //artist: state.artist.artist,
 });
 
 export default connect(mapStateToProps, {

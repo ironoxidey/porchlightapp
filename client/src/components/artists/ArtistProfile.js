@@ -277,6 +277,7 @@ const ArtistProfile = ({
                                         height="80vh"
                                     >
                                         <EventSpecificHostForm
+                                            artist={artist}
                                             theEvent={bookingDialogDetails}
                                             bookingDetailsDialogHandleClose={
                                                 bookingDetailsDialogHandleClose

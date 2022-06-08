@@ -400,10 +400,6 @@ router.post('/updateMe', [auth], async (req, res) => {
                                                             bookingInfo.when,
                                                         bookingWhere:
                                                             bookingInfo.where,
-                                                        latLong: {
-                                                            coordinates: [0, 0],
-                                                            type: 'Point',
-                                                        },
                                                     },
                                                     { new: true, upsert: true }
                                                 );

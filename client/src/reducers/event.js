@@ -58,15 +58,28 @@ export default function (state = initialState, action) {
         case ARTIST_ACCEPTED_HOST_OFFER:
             return {
                 ...state,
-                myArtistEvents: state.myArtistEvents.map((myArtistEvent) =>
-                    myArtistEvent._id === payload._id ? payload : myArtistEvent
+                myArtistEvents: state.myArtistEvents.map(
+                    (myArtistEvent) =>
+                        myArtistEvent._id === payload._id
+                            ? payload
+                            : myArtistEvent //updates an event in the state
                 ),
                 loading: false,
             };
         case HOST_RAISE_HAND:
+            let newNearMeToHost = state.nearMeToHost.filter(
+                (eventNearMeToHost) => {
+                    if (eventNearMeToHost._id !== payload._id) {
+                        return eventNearMeToHost;
+                    }
+                }
+            );
+            console.log('newNearMeToHost', newNearMeToHost);
             return {
                 ...state,
                 myHostEvents: [...state.myHostEvents, payload],
+                nearMeToHost: newNearMeToHost,
+
                 loading: false,
             };
         case UPDATE_EVENT_ERROR:

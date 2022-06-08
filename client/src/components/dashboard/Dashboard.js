@@ -19,6 +19,7 @@ import MenuBookTwoToneIcon from '@mui/icons-material/MenuBookTwoTone';
 
 import { StackDateforDisplay } from '../../actions/app';
 import ArtistDashboardEventCard from '../events/ArtistDashboardEventCard';
+import NearMeToHostEventCard from './NearMeToHostEventCard';
 
 const Dashboard = ({
     //getCurrentProfile,
@@ -468,6 +469,61 @@ const Dashboard = ({
                                         )}
                                 </Grid>
                             )}
+                            {/* End myHostEvents */}
+                            {user.role.indexOf('ADMIN') > -1 &&
+                                nearMeToHost &&
+                                nearMeToHost.length > 0 && (
+                                    <Grid
+                                        item
+                                        direction="column"
+                                        xs={12}
+                                        md={12}
+                                    >
+                                        <Grid item xs={12}>
+                                            <Typography component="h2">
+                                                {nearMeToHost.length > 1
+                                                    ? `There are these ${nearMeToHost.length} potential events `
+                                                    : `There is this ${nearMeToHost.length} potential event `}
+                                                looking to be hosted in your
+                                                area:
+                                            </Typography>
+                                        </Grid>
+                                        {/* {bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry */}
+                                        <Grid
+                                            container
+                                            className="whenBooking"
+                                            direction="row"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            xs={12}
+                                            spacing={2}
+                                            sx={{
+                                                margin: '0px auto 16px',
+                                                width: '100%',
+                                            }}
+                                        ></Grid>
+                                        {nearMeToHost
+                                            .filter((e) => e)
+                                            .map(
+                                                (
+                                                    thisEvent,
+                                                    idx,
+                                                    whenWhereOrig //.filter(e => e) to remove any null values
+                                                ) =>
+                                                    thisEvent.bookingWhen &&
+                                                    thisEvent.bookingWhere && (
+                                                        <NearMeToHostEventCard
+                                                            thisEvent={
+                                                                thisEvent
+                                                            }
+                                                            idx={idx}
+                                                            key={idx}
+                                                        ></NearMeToHostEventCard>
+                                                    )
+                                            )}
+                                    </Grid>
+                                )}
+                            {/* End nearMeToHost */}
                         </>
                     )}
                 </Grid>

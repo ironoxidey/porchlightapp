@@ -108,6 +108,7 @@ export const hostRaiseHand = (formData, history) => async (dispatch) => {
             formData,
             config
         );
+        console.log('hostRaiseHand res.data', res.data);
         dispatch({
             type: HOST_RAISE_HAND,
             payload: res.data,
@@ -129,8 +130,8 @@ export const hostRaiseHand = (formData, history) => async (dispatch) => {
             )
         ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
     } catch (err) {
-        const errors = err.response.data.errors;
         console.log('error: ' + err);
+        const errors = err.response.data.errors;
         if (errors) {
             errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
         }

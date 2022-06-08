@@ -209,6 +209,8 @@ router.get('/nearMeToHost', auth, async (req, res) => {
                     },
                 },
             },
+            offersFromHosts: { $not: { $elemMatch: { host: thisHost._id } } },
+            status: 'PENDING',
         })
             .select(
                 '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'
@@ -447,7 +449,9 @@ router.get('/edit', [auth], async (req, res) => {
                 if (
                     ((eventDetails.latLong &&
                         eventDetails.latLong.coordinates &&
-                        eventDetails.latLong.coordinates.length == 0) || //if there is no latLong OR
+                        (eventDetails.latLong.coordinates.length == 0 || //if there is no latLong OR
+                            (eventDetails.latLong.coordinates[0] === 0 &&
+                                eventDetails.latLong.coordinates[1] === 0))) || //if latLong.coordinates are default OR
                         !eventDetails.geocodedBookingWhere || //if there is no geocodedBookingWhere OR
                         (eventDetails.geocodedBookingWhere && //if there IS a geocodedBookingWhere AND
                             eventDetails.bookingWhere.zip !==
@@ -465,15 +469,15 @@ router.get('/edit', [auth], async (req, res) => {
                         ' ' +
                         eventDetails.bookingWhere.zip;
                     const geocodedAddress = await addressGeocode(address);
-                    // console.log(
-                    //     updatedEvents +
-                    //         ') ' +
-                    //         eventDetails.artist.stageName +
-                    //         ' wants to play a concert near ' +
-                    //         address +
-                    //         ': ',
-                    //     geocodedAddress
-                    // );
+                    console.log(
+                        updatedEvents +
+                            ') ' +
+                            eventDetails.artist.stageName +
+                            ' wants to play a concert near ' +
+                            address +
+                            ': ',
+                        geocodedAddress
+                    );
 
                     // Commented out on May 24, 2022, because I think the updateOne on line 457 is handling this now.
                     // eventDetails.geocodedBookingWhere =
@@ -519,7 +523,9 @@ router.get('/edit', [auth], async (req, res) => {
                 if (
                     eventDetails.latLong &&
                     eventDetails.latLong.coordinates &&
-                    eventDetails.latLong.coordinates.length > 0
+                    eventDetails.latLong.coordinates.length > 0 &&
+                    eventDetails.latLong.coordinates[0] !== 0 && //don't look for hostsInReach if eventDetails.latLong.coordinates are [0,0]
+                    eventDetails.latLong.coordinates[1] !== 0
                     // &&
                     // eventDetails.hostReachRadius &&
                     // (!eventDetails.hostsInReach ||
