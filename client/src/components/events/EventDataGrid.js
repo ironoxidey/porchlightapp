@@ -369,7 +369,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
         {
             field: 'bookingWhen',
             headerName: 'Event Date',
-            width: 200,
+            width: 230,
             editable: false,
             type: 'date',
             valueFormatter: (params) => {
@@ -473,8 +473,20 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
             sortComparator: lengthSort,
             renderCell: (params) => {
                 //console.log('hostsInReach params', params);
+
                 if (params.value && params.value.length > 0) {
                     let hostsInReach = params.value.map((hostInReach, i) => {
+                        const emailBody = `Hi ${
+                            hostInReach.host.firstName
+                        },%0D%0A%0D%0A${encodeURIComponent(
+                            params.row.stageName
+                        )} is looking to play a Porchlight concert near ${
+                            params.row.bookingWhere.city
+                        }, ${params.row.bookingWhere.state} on ${prettifyDate(
+                            params.row.bookingWhen
+                        )}.%0D%0AWould you please visit https://app.porchlight.art/artists/${
+                            params.row.profile.slug
+                        } to check out the details and let us know if you’re available, and wanting, to host the concert.%0D%0A%0D%0AThank you so much!`;
                         return (
                             <Tooltip
                                 arrow={true}
@@ -490,22 +502,9 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                                                 target="_blank"
                                                 href={`mailto:${
                                                     hostInReach.host.email
-                                                }?subject=${
+                                                }?subject=${encodeURIComponent(
                                                     params.row.stageName
-                                                } is looking to play a Porchlight concert near you!&body=Hi ${
-                                                    hostInReach.host.firstName
-                                                },%0D%0A%0D%0A${
-                                                    params.row.stageName
-                                                } is looking to play a Porchlight concert near ${
-                                                    params.row.bookingWhere.city
-                                                }, ${
-                                                    params.row.bookingWhere
-                                                        .state
-                                                } on ${prettifyDate(
-                                                    params.row.bookingWhen
-                                                )}.%0D%0AWould you please visit https://app.porchlight.art/artists/${
-                                                    params.row.profile.slug
-                                                } to check out the details and let us know if you’re available, and wanting, to host the concert.%0D%0A%0D%0AThank you so much!`}
+                                                )} is looking to play a Porchlight concert near you!&body=${emailBody}`}
                                             >
                                                 {hostInReach.host.email}
                                             </a>
