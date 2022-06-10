@@ -367,7 +367,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                 )
                 .populate(
                     'confirmedHost',
-                    '_id email firstName lastName city state'
+                    '_id email firstName lastName city state profileImg'
                 )
                 .populate(
                     'offersFromHosts.host',
@@ -385,7 +385,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                     month: 'long',
                     day: 'numeric',
                 });
-                //Send an email to the artist and then delete the artist's email address from the eventDetails object we return to the host in the app
+                //Send an email to the host and then delete the host's email address from the eventDetails object we return to the artist in the app
                 sendEmail(eventDetails.confirmedHost.email, {
                     event: 'ARTIST_ACCEPTS_OFFER',
                     template: 'TFJSKATYZZMWHSNEGNPZCCYM4E1B',
@@ -399,6 +399,8 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                         eventDetails.confirmedHost.city +
                         ', ' +
                         eventDetails.confirmedHost.state,
+                    hostImg: eventDetails.confirmedHost.profileImg,
+                    artistImg: eventDetails.artist.squareImg,
                 });
                 delete eventDetails.confirmedHost.email;
 

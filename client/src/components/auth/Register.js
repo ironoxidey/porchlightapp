@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect, useLocation } from 'react-router-dom';
 import { setAlert } from '../../actions/alert';
@@ -46,16 +46,26 @@ const Register = ({ setAlert, register, isAuthenticated, bookingDialog }) => {
     const urlForm = query.get('form');
     //console.log('referralKey', referralKey);
 
-    const onChange = (e) =>
+    const onChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value }); //separate onChange function // calls setFormData() // copies and spreads formData then changes the state of [e.target.name] referring to the name attr of each input, and setting the value to e.target.value
+    };
+
+    useEffect(() => {
+        if (firstName !== '' && lastName !== '') {
+            let regName = firstName + ' ' + lastName;
+            setFormData({ ...formData, name: regName }); //separate onChange function // calls setFormData() // copies and spreads formData then changes the state of [e.target.name] referring to the name attr of each input, and setting the value to e.target.value
+        } else {
+            setFormData({ ...formData, name: '' }); //separate onChange function // calls setFormData() // copies and spreads formData then changes the state of [e.target.name] referring to the name attr of each input, and setting the value to e.target.value
+        }
+    }, [firstName, lastName]);
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        let regName = firstName + ' ' + lastName;
         if (password !== password2) {
             setAlert('Passwords do not match', 'danger');
         } else {
-            register({ regName, email, password, referralKey });
+            console.log(name);
+            register({ name, email, password, referralKey });
             //   const newUser = {
             //     name,
             //     email,
