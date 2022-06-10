@@ -124,12 +124,55 @@ router.post('/admin-update', [auth], async (req, res) => {
                     try {
                         //console.log(hostFields);
                         // Using upsert option (creates new doc if no match is found):
-                        let host = await Host.findOneAndUpdate(
-                            { email: hostFields.email.toLowerCase() },
-                            { $set: hostFields },
-                            { new: true, upsert: true }
-                        );
+
+                        // let host = await Host.findOneAndUpdate(
+                        //     { email: hostFields.email.toLowerCase() },
+                        //     { $set: hostFields },
+                        //     { new: true, upsert: true }
+                        // );
+
                         //const hosts = await Host.find();
+
+                        const geocodedAddress = await addressGeocode(
+                            hostFields.streetAddress +
+                                ' ' +
+                                hostFields.city +
+                                ', ' +
+                                hostFields.state +
+                                ' ' +
+                                hostFields.zipCode
+                        );
+                        console.log(
+                            hostFields.firstName +
+                                ' ' +
+                                hostFields.lastName +
+                                '’s geocodedAddress is: ',
+                            geocodedAddress
+                        );
+                        hostFields.latLong = {
+                            type: 'Point',
+                            coordinates: geocodedAddress,
+                        };
+                        hostFields.geocodedStreetAddress =
+                            hostFields.streetAddress;
+                        hostFields.geocodedCity = hostFields.city;
+                        hostFields.geocodedState = hostFields.state;
+                        hostFields.geocodedZipCode = hostFields.zipCode;
+                        hostFields.mailChimped = true;
+
+                        console.log('hostFields', hostFields);
+
+                        const session = await Host.startSession();
+
+                        let host = {};
+                        await session.withTransaction(async () => {
+                            // Creates one document with the given session. Note the `[]`!
+                            host = await Host.create([{ ...hostFields }], {
+                                session,
+                            });
+                        });
+
+                        //let host = await Host.create([{ hostFields }]);
                         numHostsUpdated++;
                         res.json(host);
                     } catch (err) {
@@ -147,7 +190,7 @@ router.post('/admin-update', [auth], async (req, res) => {
             })
         );
     }
-    //console.log('numHostsUpdated:', await numHostsUpdated);
+    console.log('numHostsUpdated:', await numHostsUpdated);
 });
 
 // @route    POST api/hosts/updateMe
@@ -168,7 +211,7 @@ router.post('/updateMe', [auth], async (req, res) => {
                     req.user.role.indexOf('ADMIN') != -1 &&
                     hostFields.email !== '' &&
                     req.user.email.toLowerCase() !==
-                        hostFields.email.toLowerCase()
+                        hostFields.email.toLowerCase() //AND not ADMIN trying to update their own account
                 ) {
                     //console.log("User is ADMIN and has authority to update all other users.");
                     try {

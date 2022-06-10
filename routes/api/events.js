@@ -38,6 +38,7 @@ router.get('/getArtistBooking/:slug', async (req, res) => {
         const events = await Event.find(
             {
                 artistSlug: req.params.slug,
+                bookingWhen: { $gt: new Date() },
             },
             {
                 latLong: 0,
@@ -220,7 +221,7 @@ router.get('/nearMeToHost', auth, async (req, res) => {
                 'artist',
                 '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
             )
-            .sort({ bookingWhen: 1 });
+            .sort({ bookingWhen: -1 });
         if (!eventsNearMeToHost) {
             console.log(
                 'There are no events associated with ' + req.user.email
