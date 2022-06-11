@@ -37,6 +37,8 @@ import ReactPhoneInput from 'react-phone-input-mui';
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
 
+import HostProfile from '../hosts/HostProfile';
+
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -1025,6 +1027,38 @@ const EventSpecificHostForm = ({
                     >
                         Submit My Offer To Host
                     </Button>
+                </Grid>,
+                <Grid
+                    item
+                    container
+                    justifyContent="center"
+                    sx={{
+                        marginTop: 3,
+                        borderTop: 'dashed 2px var(--primary-color)',
+                    }}
+                >
+                    <Typography
+                        component="h2"
+                        sx={{
+                            paddingTop: 2,
+                            textAlign: 'center',
+                        }}
+                    >
+                        Below is what {artist.stageName} will see when reviewing
+                        your offer:
+                    </Typography>
+                </Grid>,
+                <Grid
+                    item
+                    container
+                    justifyContent="center"
+                    sx={{ marginTop: '8px' }}
+                >
+                    <HostProfile
+                        theHost={host.me}
+                        theEvent={theEvent}
+                        theOffer={formData}
+                    ></HostProfile>
                 </Grid>,
             ],
         ],
