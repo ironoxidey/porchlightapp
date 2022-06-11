@@ -7,6 +7,7 @@ import {
     PAGE_LOAD,
     FLIP_ARTIST_CARD,
     CLEAR_ARTIST,
+    CHANGE_HATS,
 } from '../actions/types';
 
 const intialState = {
@@ -16,11 +17,18 @@ const intialState = {
     artistCardFlip: false,
     doneFlipped: true,
     msg: '',
+    profileHat: '',
 };
 
 export default function (state = intialState, action) {
     const { type, payload } = action;
     switch (type) {
+        case CHANGE_HATS:
+            return {
+                ...state,
+                profileHat: payload,
+            };
+
         case FLIP_ARTIST_CARD:
             return {
                 ...state,

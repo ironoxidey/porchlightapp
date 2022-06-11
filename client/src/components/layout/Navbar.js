@@ -9,6 +9,8 @@ import {
     // openUserDrawer,
     // closeUserDrawer,
 } from '../../actions/app';
+import { ProfileAvatar } from '../../common/components';
+
 import { getCurrentArtist } from '../../actions/artist';
 import { getCurrentHost } from '../../actions/host';
 import {
@@ -54,7 +56,7 @@ const Navbar = ({
     getMyEventsOfferedToHost,
     getEventsNearMeToHost,
     getMyArtistEventsOffers,
-    app: { navDrawer, userDrawer },
+    app: { navDrawer, userDrawer, profileHat },
     artist,
     host,
     events: { myHostEvents, myArtistEvents },

@@ -510,7 +510,12 @@ const ArtistTop = ({ artist, user, isAuthenticated, me }) => {
                         </Typography>
                     </Tooltip>
 
-                    {artist.bio}
+                    <Typography
+                        component="pre"
+                        sx={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+                    >
+                        {artist.bio}
+                    </Typography>
                 </Grid>
             )}
         </>
