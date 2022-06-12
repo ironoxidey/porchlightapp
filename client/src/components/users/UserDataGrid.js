@@ -189,6 +189,7 @@ const UserDataGrid = ({
                             'ATTENDER',
                             'BOOKING',
                             'HOST',
+                            'TESTING',
                         ]}
                         onChange={(event, value) => {
                             // console.log();
