@@ -470,7 +470,9 @@ const Dashboard = ({
                                 </Grid>
                             )}
                             {/* End myHostEvents */}
-                            {user.role.indexOf('ADMIN') > -1 &&
+                            {(user.role.indexOf('ADMIN') > -1 ||
+                                user.role.indexOf('BOOKING') > -1 ||
+                                user.role.indexOf('TESTING') > -1) &&
                                 nearMeToHost &&
                                 nearMeToHost.length > 0 && (
                                     <Grid
