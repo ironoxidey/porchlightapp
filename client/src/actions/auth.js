@@ -47,6 +47,7 @@ export const loadUser = () => async (dispatch) => {
 
     try {
         const res = await axios.get('/api/auth');
+        //console.log('user res', res);
         //res.data.avatar = await axios.get('/api/artists/my-avatar');
 
         dispatch({

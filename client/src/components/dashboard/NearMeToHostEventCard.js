@@ -22,6 +22,14 @@ import Button from '../layout/SvgButton';
 import EventSpecificHostForm from '../events/EventSpecificHostForm';
 //import ArtistTop from './ArtistTop';
 
+const prettifyDate = (date) => {
+    return new Date(date).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+};
+
 const NearMeToHostEventCard = ({
     thisEvent,
     idx,
@@ -223,6 +231,7 @@ const NearMeToHostEventCard = ({
                     )}
                 </Dialog>
             )}
+
             <Grid
                 container
                 item
@@ -237,8 +246,31 @@ const NearMeToHostEventCard = ({
                     padding: '16px',
                     margin: '4px',
                     color: 'var(--light-color)',
+                    position: 'relative',
                 }}
             >
+                <Box
+                    className="createdAt"
+                    sx={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                    }}
+                >
+                    {' '}
+                    <Typography
+                        component="p"
+                        sx={{
+                            fontSize: '.6em',
+                            color:
+                                user.lastLastLogin < thisEvent.createdAt
+                                    ? 'var(--link-color)'
+                                    : 'var(--dark-color)',
+                        }}
+                    >
+                        Created On: {prettifyDate(thisEvent.createdAt)}
+                    </Typography>
+                </Box>
                 <Grid item>
                     <Box
                         className="squareImgInACircle"

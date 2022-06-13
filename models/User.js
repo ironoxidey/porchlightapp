@@ -36,6 +36,9 @@ const UserSchema = new mongoose.Schema(
         lastLogin: {
             type: Date,
         },
+        lastLastLogin: {
+            type: Date,
+        },
         calendly: {
             authCode: {
                 //user pastes from 'code' url variable

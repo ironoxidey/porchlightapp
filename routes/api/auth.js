@@ -48,7 +48,6 @@ router.post(
                     .status(400)
                     .json({ errors: [{ msg: 'Invalid Credentials' }] });
             }
-
             const isMatch = await bcrypt.compare(password, user.password);
 
             if (!isMatch) {
@@ -57,8 +56,13 @@ router.post(
                     .json({ errors: [{ msg: 'Invalid Credentials' }] });
             }
 
+            //Once they are authenicated
+
             let artist = user.artistProfile;
-            let userUpdates = { lastLogin: new Date() };
+            let userUpdates = {
+                lastLogin: new Date(),
+                lastLastLogin: user.lastLogin || user.date,
+            };
             if (!artist) {
                 //if we don't see an artist profile in the returned user, let's check for one in the artist profiles and add it
                 artist = await Artist.findOne({ email }).select('_id');
@@ -78,7 +82,7 @@ router.post(
                 },
             };
 
-            let lastLogin = await User.updateOne(
+            let updatedUser = await User.updateOne(
                 { _id: user.id },
                 {
                     $set: userUpdates,
@@ -91,6 +95,9 @@ router.post(
                 { expiresIn: 3600 }, //eventually change this to 3600
                 (err, token) => {
                     if (err) throw err;
+                    // console.log('user', user);
+                    // console.log('payload', payload);
+                    // console.log('token', token);
                     res.json({ token });
                 }
             );
