@@ -8,6 +8,8 @@ import {
     FLIP_ARTIST_CARD,
     CLEAR_ARTIST,
     CHANGE_HATS,
+    LOGOUT,
+    ACCOUNT_DELETED,
 } from '../actions/types';
 
 const intialState = {
@@ -72,6 +74,12 @@ export default function (state = intialState, action) {
                     payload.pageTitle !== ''
                         ? payload.pageTitle + ' | Porchlight: Art + Hospitality'
                         : 'Porchlight: Art + Hospitality',
+            };
+        case LOGOUT:
+        case ACCOUNT_DELETED:
+            return {
+                ...state,
+                profileHat: '',
             };
 
         default:

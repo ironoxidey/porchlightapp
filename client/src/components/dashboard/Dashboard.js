@@ -16,7 +16,8 @@ import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 import MenuBookTwoToneIcon from '@mui/icons-material/MenuBookTwoTone';
-import ChangeCircleTwoToneIcon from '@mui/icons-material/ChangeCircleTwoTone';
+//import ChangeCircleTwoToneIcon from '@mui/icons-material/ChangeCircleTwoTone';
+import CachedTwoToneIcon from '@mui/icons-material/CachedTwoTone';
 
 import { StackDateforDisplay, changeHats } from '../../actions/app';
 import ArtistDashboardEventCard from '../events/ArtistDashboardEventCard';
@@ -96,7 +97,7 @@ const Dashboard = ({
                     >
                         <Grid item textAlign="center">
                             <Typography component="h2">
-                                Welcome to your Dashboard
+                                Welcome to your Porchlight Dashboard
                                 {user && user.name
                                     ? ', ' + user.name.split(' ')[0] + '!'
                                     : '!'}
@@ -108,10 +109,12 @@ const Dashboard = ({
                                 margin: '8px auto',
                             }}
                         >
-                            <p className="">
-                                We have some big ideas for connecting artists
-                                with hosts to grow community culture around the
-                                arts again.
+                            <p className="welcomeNote">
+                                {app.profileHat === 'ARTIST'
+                                    ? 'We’re excited to connect you to our growing network of amazing hosts. Make sure you check out the musician guide (below). Thanks for joining us in this mission to  curate profound experiences and relationships around the true and beautiful.'
+                                    : app.profileHat === 'HOST'
+                                    ? 'We’re honored to serve you as you host profound experiences and develop relationships around the true and beautiful.'
+                                    : 'We’re eager to notify you concerning Porchlight events happening in your area. Also, if you ever decide you’d like to host a Porchlight event, just sign up to host below!'}
                             </p>
                         </Grid>
 
@@ -167,8 +170,8 @@ const Dashboard = ({
                                                 : changeHats('HOST');
                                         }}
                                     >
-                                        <ChangeCircleTwoToneIcon></ChangeCircleTwoToneIcon>{' '}
-                                        Change to{' '}
+                                        <CachedTwoToneIcon></CachedTwoToneIcon>{' '}
+                                        Put on your{' '}
                                         {app.profileHat === 'HOST'
                                             ? 'ARTIST'
                                             : 'HOST'}{' '}

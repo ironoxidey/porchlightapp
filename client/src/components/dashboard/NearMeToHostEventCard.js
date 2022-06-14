@@ -30,6 +30,7 @@ import Button from '../layout/SvgButton';
 import EventSpecificHostForm from '../events/EventSpecificHostForm';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import FlareTwoToneIcon from '@mui/icons-material/FlareTwoTone';
 
 //import ArtistTop from './ArtistTop';
 
@@ -260,28 +261,35 @@ const NearMeToHostEventCard = ({
                     position: 'relative',
                 }}
             >
-                <Box
-                    className="createdAt"
-                    sx={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                    }}
-                >
-                    {' '}
-                    <Typography
-                        component="p"
+                {user.lastLastLogin < thisEvent.createdAt && (
+                    <Box
+                        className="createdAt"
                         sx={{
-                            fontSize: '.7em',
-                            color:
-                                user.lastLastLogin < thisEvent.createdAt
-                                    ? 'var(--link-color)'
-                                    : 'var(--dark-color)',
+                            position: 'absolute',
+                            top: '8px',
+                            right: '8px',
                         }}
                     >
-                        Created On: {prettifyDate(thisEvent.createdAt)}
-                    </Typography>
-                </Box>
+                        {' '}
+                        <Typography
+                            component="p"
+                            sx={{
+                                fontSize: '.7em',
+                                fontFamily: 'var(--secondary-font)',
+                                color:
+                                    user.lastLastLogin < thisEvent.createdAt
+                                        ? 'var(--link-color)'
+                                        : 'var(--dark-color)',
+                            }}
+                        >
+                            <FlareTwoToneIcon
+                                style={{ fontSize: '1.5em' }}
+                            ></FlareTwoToneIcon>{' '}
+                            NEW
+                            {/* Created On: {prettifyDate(thisEvent.createdAt) */}
+                        </Typography>
+                    </Box>
+                )}
                 <Grid item>
                     <Link to={'/artists/' + thisEvent.artist.slug}>
                         <Box
