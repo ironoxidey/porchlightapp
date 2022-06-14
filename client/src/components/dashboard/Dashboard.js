@@ -171,7 +171,7 @@ const Dashboard = ({
                                         }}
                                     >
                                         <CachedTwoToneIcon></CachedTwoToneIcon>{' '}
-                                        Put on your{' '}
+                                        Put on my{' '}
                                         {app.profileHat === 'HOST'
                                             ? 'ARTIST'
                                             : 'HOST'}{' '}
