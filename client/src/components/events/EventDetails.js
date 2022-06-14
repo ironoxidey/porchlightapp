@@ -45,6 +45,8 @@ import NoDrinksTwoToneIcon from '@mui/icons-material/NoDrinksTwoTone';
 import AttachMoneyTwoToneIcon from '@mui/icons-material/AttachMoneyTwoTone';
 import MoneyOffTwoToneIcon from '@mui/icons-material/MoneyOffTwoTone';
 import BedtimeOffTwoToneIcon from '@mui/icons-material/BedtimeOffTwoTone';
+import InterpreterModeTwoToneIcon from '@mui/icons-material/InterpreterModeTwoTone';
+import SpeakerNotesTwoToneIcon from '@mui/icons-material/SpeakerNotesTwoTone';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -139,7 +141,7 @@ const EventDetails = ({
                                             <ConfirmationNumberTwoToneIcon></ConfirmationNumberTwoToneIcon>
                                         )}
                                     </Tooltip>{' '}
-                                    {'Concert will be '}
+                                    {'Wants the concert to be '}
                                     <strong>
                                         {theEvent.costStructure == 'ticket'
                                             ? 'ticketed'
@@ -237,6 +239,35 @@ const EventDetails = ({
                                     </Grid>
                                 </Fragment>
                             )}
+                            {theEvent.openers && (
+                                <Grid
+                                    item
+                                    sx={{ marginTop: '0' }}
+                                    xs={12}
+                                    md={6}
+                                    className="openers"
+                                >
+                                    <Tooltip
+                                        arrow={true}
+                                        disableHoverListener={!isMe}
+                                        disableFocusListener={!isMe}
+                                        disableTouchListener={!isMe}
+                                        title={
+                                            <Link to="/edit-artist-booking?field=openers">
+                                                Edit
+                                            </Link>
+                                        }
+                                    >
+                                        <InterpreterModeTwoToneIcon></InterpreterModeTwoToneIcon>
+                                    </Tooltip>
+                                    {` When asked about openers, ${
+                                        theEvent.artist.stageName ||
+                                        artist.artist.stageName
+                                    } said, `}
+                                    <strong>“{theEvent.openers}”</strong>
+                                    <Divider />
+                                </Grid>
+                            )}
                             {theEvent.overnight && theEvent.overnight > 0 && (
                                 <Grid
                                     item
@@ -261,7 +292,7 @@ const EventDetails = ({
                                     {
                                         ' If possible, overnight accommodation appreciated for '
                                     }
-                                    <strong>
+                                    <strong style={{ display: 'inline-block' }}>
                                         {theEvent.overnight +
                                             (theEvent.overnight > 1
                                                 ? ' people'
@@ -297,7 +328,7 @@ const EventDetails = ({
                                     <Divider />
                                 </Grid>
                             )}
-                            {(theEvent.merchTable || artist.merchTable) && (
+                            {theEvent.merchTable && (
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
@@ -332,9 +363,9 @@ const EventDetails = ({
 					{' '}<strong>{'Does NOT need a merch table'}</strong>{' '}
 					</Grid>
 				: ''} */}
-                            {artist &&
-                                artist.allergies &&
-                                artist.allergies.length > 0 && (
+                            {theEvent.artist &&
+                                theEvent.artist.allergies &&
+                                theEvent.artist.allergies.length > 0 && (
                                     <Grid
                                         item
                                         sx={{ marginTop: '0' }}
@@ -364,13 +395,14 @@ const EventDetails = ({
                                         </Tooltip>
                                         {' Has these allergies: '}
                                         <strong>
-                                            {artist.allergies.constructor
-                                                .name === 'Array' &&
-                                                artist.allergies.map(
+                                            {theEvent.artist.allergies
+                                                .constructor.name === 'Array' &&
+                                                theEvent.artist.allergies.map(
                                                     (allergy, ind) => {
                                                         if (
                                                             ind !==
-                                                            artist.allergies
+                                                            theEvent.artist
+                                                                .allergies
                                                                 .length -
                                                                 1
                                                         ) {
@@ -571,6 +603,8 @@ const EventDetails = ({
                                 </Grid>
                             )}
                             {theEvent.covidPrefs &&
+                                theEvent.covidPrefs.constructor.name ===
+                                    'Array' &&
                                 theEvent.covidPrefs.length > 0 && (
                                     <Grid
                                         item
@@ -594,14 +628,14 @@ const EventDetails = ({
                                         </Tooltip>
                                         {' Considering Covid, would prefer: '}
                                         <strong>
-                                            {artist.covidPrefs &&
-                                                artist.covidPrefs.constructor
+                                            {theEvent.covidPrefs &&
+                                                theEvent.covidPrefs.constructor
                                                     .name === 'Array' &&
-                                                artist.covidPrefs.map(
+                                                theEvent.covidPrefs.map(
                                                     (covidPref, ind) => {
                                                         if (
                                                             ind !==
-                                                            artist.covidPrefs
+                                                            theEvent.covidPrefs
                                                                 .length -
                                                                 1
                                                         ) {
@@ -646,13 +680,58 @@ const EventDetails = ({
                                     <Divider />
                                 </Grid>
                             )}
-                            {artist.fanActions && artist.fanActions.length > 0 && (
+                            {theEvent.artist.fanActions &&
+                                theEvent.artist.fanActions.constructor.name ===
+                                    'Array' &&
+                                theEvent.artist.fanActions.length > 0 && (
+                                    <Grid
+                                        item
+                                        sx={{ marginTop: '0' }}
+                                        xs={12}
+                                        md={6}
+                                        className="fanActions"
+                                    >
+                                        <Tooltip
+                                            arrow={true}
+                                            disableHoverListener={!isMe}
+                                            disableFocusListener={!isMe}
+                                            disableTouchListener={!isMe}
+                                            title={
+                                                <Link to="/edit-artist-booking?field=fanActions">
+                                                    Edit
+                                                </Link>
+                                            }
+                                        >
+                                            <ThumbUpTwoToneIcon></ThumbUpTwoToneIcon>
+                                        </Tooltip>
+                                        {' How new fans can show support: '}
+                                        <strong>
+                                            {theEvent.artist.fanActions.map(
+                                                (fanAction, ind) => {
+                                                    if (
+                                                        ind !==
+                                                        theEvent.artist
+                                                            .fanActions.length -
+                                                            1
+                                                    ) {
+                                                        return fanAction + ', ';
+                                                    } else {
+                                                        return fanAction;
+                                                    }
+                                                }
+                                            )}{' '}
+                                        </strong>
+
+                                        <Divider />
+                                    </Grid>
+                                )}
+                            {theEvent.artistNotes && (
                                 <Grid
                                     item
                                     sx={{ marginTop: '0' }}
                                     xs={12}
                                     md={6}
-                                    className="fanActions"
+                                    className="artistNotes"
                                 >
                                     <Tooltip
                                         arrow={true}
@@ -660,28 +739,15 @@ const EventDetails = ({
                                         disableFocusListener={!isMe}
                                         disableTouchListener={!isMe}
                                         title={
-                                            <Link to="/edit-artist-booking?field=fanActions">
+                                            <Link to="/edit-artist-booking?field=artistNotes">
                                                 Edit
                                             </Link>
                                         }
                                     >
-                                        <ThumbUpTwoToneIcon></ThumbUpTwoToneIcon>
+                                        <SpeakerNotesTwoToneIcon></SpeakerNotesTwoToneIcon>
                                     </Tooltip>
-                                    {' How new fans can show support: '}
-                                    <strong>
-                                        {artist.fanActions.map(
-                                            (fanAction, ind) => {
-                                                if (
-                                                    ind !==
-                                                    artist.fanActions.length - 1
-                                                ) {
-                                                    return fanAction + ', ';
-                                                } else {
-                                                    return fanAction;
-                                                }
-                                            }
-                                        )}{' '}
-                                    </strong>
+                                    {' Artist Notes: '}
+                                    <strong>{theEvent.artistNotes}</strong>
 
                                     <Divider />
                                 </Grid>

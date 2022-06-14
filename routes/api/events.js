@@ -50,7 +50,12 @@ router.get('/getArtistBooking/:slug', async (req, res) => {
                 'travelingCompanions.email': 0,
                 hostsInReach: 0,
             }
-        ).sort({ bookingWhen: 1 }); //.select('-artistEmail -agreeToPayAdminFee -payoutHandle'); //.select(['city', 'state', 'zipCode']); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
+        )
+            .populate(
+                'artist',
+                '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
+            )
+            .sort({ bookingWhen: 1 }); //.select('-artistEmail -agreeToPayAdminFee -payoutHandle'); //.select(['city', 'state', 'zipCode']); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
         //console.log(events);
         res.json(events);
     } catch (err) {

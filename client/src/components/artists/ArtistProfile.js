@@ -575,9 +575,11 @@ const ArtistProfile = ({
                                                         >
                                                             <Grid
                                                                 item
-                                                                sx={{
-                                                                    width: '55px',
-                                                                }}
+                                                                sx={
+                                                                    {
+                                                                        //width: '55px',
+                                                                    }
+                                                                }
                                                             >
                                                                 <StackDateforDisplay
                                                                     date={

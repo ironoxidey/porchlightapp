@@ -99,8 +99,8 @@ const EditHostProfileForm = ({
 
     useEffect(() => {
         //console.log('hostDialogDetails', hostDialogDetails);
-        delete hostDialogDetails.email;
-        delete hostDialogDetails.phone;
+        //delete hostDialogDetails.email;
+        //delete hostDialogDetails.phone;
         setHostDetailsDialogOpen(true);
     }, [hostDialogDetails]);
 

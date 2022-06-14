@@ -876,7 +876,13 @@ const EventSpecificHostForm = ({
                         ? 'selling tickets for '
                         : 'hoping for individual donations of '}{' '}
                     ${theEvent.namedPrice}, {artist.stageName} is looking at
-                    maybe making ${host.me.numDraw * theEvent.namedPrice}.
+                    maybe making $
+                    {Math.round(
+                        (host.me.numDraw * theEvent.namedPrice +
+                            Number.EPSILON) *
+                            100
+                    ) / 100}
+                    .
                 </FormLabel>,
                 <FormLabel component="legend">
                     If the band comes up short of their hoped-for $

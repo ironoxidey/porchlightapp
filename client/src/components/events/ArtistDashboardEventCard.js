@@ -144,7 +144,8 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
                     direction="row"
                     alignItems="center"
                     className="dateLocationForBooking"
-                    xs={8}
+                    md={8}
+                    xs={12}
                 >
                     <Grid item container>
                         <Link to={'/artists/' + thisEvent.artist.slug}>

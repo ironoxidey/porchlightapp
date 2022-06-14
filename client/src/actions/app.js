@@ -6,6 +6,7 @@ import {
     // OPEN_USER_DRAWER,
     // CLOSE_USER_DRAWER,
     FLIP_ARTIST_CARD,
+    CHANGE_HATS,
 } from './types';
 import { setAlert } from './alert';
 import { updateUserAvatar } from './auth';
@@ -23,6 +24,12 @@ export const openNavDrawer = () => (dispatch) => {
 export const closeNavDrawer = () => (dispatch) => {
     dispatch({
         type: CLOSE_NAV_DRAWER,
+    });
+};
+export const changeHats = (toRole) => (dispatch) => {
+    dispatch({
+        payload: toRole,
+        type: CHANGE_HATS,
     });
 };
 // export const openUserDrawer = () => (dispatch) => {
@@ -94,7 +101,7 @@ export const StackDateforDisplay = (props) => {
                 lineHeight: '1',
                 textAlign: 'center',
                 border: '1px solid var(--link-color)',
-                width: '55px',
+                width: '44px',
             }}
             direction="column"
         >

@@ -512,7 +512,13 @@ const ArtistTop = ({ artist, user, isAuthenticated, me }) => {
 
                     <Typography
                         component="pre"
-                        sx={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+                        sx={{
+                            whiteSpace: 'pre-wrap',
+                            wordWrap: 'break-word',
+                            display: 'block',
+                            width: '100%',
+                            lineHeight: '1.7',
+                        }}
                     >
                         {artist.bio}
                     </Typography>

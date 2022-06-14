@@ -4,7 +4,15 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { Grid, Typography, Box, Avatar, Tooltip } from '@mui/material';
+import {
+    Grid,
+    Typography,
+    Box,
+    Avatar,
+    Tooltip,
+    Chip,
+    SvgIcon,
+} from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -20,6 +28,9 @@ import EventDetails from '../events/EventDetails';
 import Button from '../layout/SvgButton';
 
 import EventSpecificHostForm from '../events/EventSpecificHostForm';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 //import ArtistTop from './ArtistTop';
 
 const prettifyDate = (date) => {
@@ -261,7 +272,7 @@ const NearMeToHostEventCard = ({
                     <Typography
                         component="p"
                         sx={{
-                            fontSize: '.6em',
+                            fontSize: '.7em',
                             color:
                                 user.lastLastLogin < thisEvent.createdAt
                                     ? 'var(--link-color)'
@@ -272,24 +283,26 @@ const NearMeToHostEventCard = ({
                     </Typography>
                 </Box>
                 <Grid item>
-                    <Box
-                        className="squareImgInACircle"
-                        sx={{
-                            height: '130px',
-                            width: '130px',
-                            maxHeight: '130px',
-                            maxWidth: '130px',
-                            borderRadius: '50%',
-                            overflow: 'hidden',
-                            backgroundImage: `url("${thisEvent.artist.squareImg}")`,
-                            backgroundPosition: '50% 25%',
-                            backgroundSize: 'cover',
-                            padding: '4px',
-                            backgroundClip: 'content-box',
-                            border: '1px solid var(--primary-color)',
-                            margin: '0 8px 0 0',
-                        }}
-                    ></Box>
+                    <Link to={'/artists/' + thisEvent.artist.slug}>
+                        <Box
+                            className="squareImgInACircle"
+                            sx={{
+                                height: '130px',
+                                width: '130px',
+                                maxHeight: '130px',
+                                maxWidth: '130px',
+                                borderRadius: '50%',
+                                overflow: 'hidden',
+                                backgroundImage: `url("${thisEvent.artist.squareImg}")`,
+                                backgroundPosition: '50% 25%',
+                                backgroundSize: 'cover',
+                                padding: '4px',
+                                backgroundClip: 'content-box',
+                                border: '1px solid var(--primary-color)',
+                                margin: '0 8px 0 0',
+                            }}
+                        ></Box>
+                    </Link>
                 </Grid>
 
                 <Grid
@@ -298,20 +311,46 @@ const NearMeToHostEventCard = ({
                     direction="row"
                     alignItems="center"
                     className="dateLocationForBooking"
-                    xs={8}
+                    md={8}
+                    xs={12}
                 >
-                    <Grid item container>
-                        <Link to={'/artists/' + thisEvent.artist.slug}>
-                            <Typography component="h2">
-                                {thisEvent.artist.stageName}
-                            </Typography>
-                        </Link>
+                    <Grid
+                        item
+                        container
+                        alignItems="start"
+                        direction={'column'}
+                    >
+                        <Grid item>
+                            <Link to={'/artists/' + thisEvent.artist.slug}>
+                                <Typography component="h2">
+                                    {thisEvent.artist.stageName}
+                                </Typography>
+                            </Link>
+                        </Grid>
+                        {thisEvent.artist.genres &&
+                            thisEvent.artist.genres.constructor.name ===
+                                'Array' && (
+                                <Grid item>
+                                    {thisEvent.artist.genres.map(
+                                        (genre, key) => (
+                                            <Chip
+                                                key={key}
+                                                label={genre}
+                                                size="small"
+                                                sx={{ margin: '0 4px 4px' }}
+                                            ></Chip>
+                                        )
+                                    )}
+                                </Grid>
+                            )}
                     </Grid>
                     <Grid
                         item
-                        sx={{
-                            width: '55px',
-                        }}
+                        sx={
+                            {
+                                // width: '55px',
+                            }
+                        }
                     >
                         <StackDateforDisplay
                             date={thisEvent.bookingWhen}
@@ -330,6 +369,7 @@ const NearMeToHostEventCard = ({
                                 ', ' +
                                 thisEvent.bookingWhere.state}
                         </Grid>
+
                         <Grid
                             item
                             sx={{

@@ -6,6 +6,7 @@ import { logout } from '../../actions/auth';
 import {
     openNavDrawer,
     closeNavDrawer,
+    changeHats,
     // openUserDrawer,
     // closeUserDrawer,
 } from '../../actions/app';
@@ -43,12 +44,14 @@ import DashboardTwoToneIcon from '@mui/icons-material/DashboardTwoTone';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import Alert from '../layout/Alert';
+import ArtistTop from '../artists/ArtistTop';
 
 const Navbar = ({
     auth: { isAuthenticated, loading, user },
     logout,
     openNavDrawer,
     closeNavDrawer,
+    changeHats,
     // openUserDrawer,
     // closeUserDrawer,
     getCurrentArtist,
@@ -402,8 +405,30 @@ const Navbar = ({
                             >
                                 {user && user.name && user.avatar !== null ? (
                                     <Avatar
-                                        alt={`${user.name}`}
-                                        src={`${user.avatar}`}
+                                        alt={`${
+                                            profileHat === 'HOST' &&
+                                            host &&
+                                            host.me
+                                                ? host.me.firstName +
+                                                  ' ' +
+                                                  host.me.lastName
+                                                : profileHat === 'ARTIST' &&
+                                                  artist &&
+                                                  artist.me
+                                                ? artist.me.stageName
+                                                : user.name
+                                        }`}
+                                        src={`${
+                                            profileHat === 'HOST' &&
+                                            host &&
+                                            host.me
+                                                ? host.me.profileImg
+                                                : profileHat === 'ARTIST' &&
+                                                  artist &&
+                                                  artist.me
+                                                ? artist.me.squareImg
+                                                : user.avatar
+                                        }`}
                                     />
                                 ) : (
                                     <Avatar />
@@ -438,7 +463,15 @@ const Navbar = ({
                                     }}
                                 >
                                     <Typography sx={{ textAlign: 'center' }}>
-                                        {artist.me && artist.me._id
+                                        {profileHat === 'HOST' &&
+                                        host &&
+                                        host.me
+                                            ? host.me.firstName +
+                                              ' ' +
+                                              host.me.lastName
+                                            : profileHat === 'ARTIST' &&
+                                              artist &&
+                                              artist.me
                                             ? artist.me.stageName
                                             : user && user.name
                                             ? user.name
@@ -491,6 +524,7 @@ export default connect(mapStateToProps, {
     logout,
     openNavDrawer,
     closeNavDrawer,
+    changeHats,
     // openUserDrawer,
     // closeUserDrawer,
     getCurrentArtist,

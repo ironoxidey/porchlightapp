@@ -295,7 +295,7 @@ const HostProfile = ({
                                             <Tooltip
                                                 title={
                                                     !isMe ? (
-                                                        'Phone'
+                                                        '' //'Phone'
                                                     ) : (
                                                         <Link to="/edit-host-profile?field=phone">
                                                             Edit
@@ -327,7 +327,7 @@ const HostProfile = ({
                                         <Tooltip
                                             title={
                                                 !isMe ? (
-                                                    'Location'
+                                                    '' //'Location'
                                                 ) : (
                                                     <Link to="/edit-host-profile?field=location">
                                                         Edit
@@ -360,7 +360,7 @@ const HostProfile = ({
                                             <Tooltip
                                                 title={
                                                     !isMe ? (
-                                                        'Special Navigation Directions'
+                                                        '' //'Special Navigation Directions'
                                                     ) : (
                                                         <Link to="/edit-host-profile?field=specialNavDirections">
                                                             Edit
@@ -389,10 +389,11 @@ const HostProfile = ({
                                         <Tooltip
                                             title={
                                                 !isMe ? (
-                                                    theHost.firstName +
-                                                    ' can draw about ' +
-                                                    theHost.numDraw +
-                                                    ' people.'
+                                                    // theHost.firstName +
+                                                    // ' can draw about ' +
+                                                    // theHost.numDraw +
+                                                    // ' people.'
+                                                    ''
                                                 ) : (
                                                     <Link to="/edit-host-profile?field=numDraw">
                                                         Edit
@@ -424,16 +425,17 @@ const HostProfile = ({
                                         <Tooltip
                                             title={
                                                 !isMe ? (
-                                                    theHost.firstName +
-                                                    ` has hosted ${
-                                                        theHost.numHostedBefore
-                                                    }${
-                                                        theHost.numHostedBefore >
-                                                        1
-                                                            ? ` events like this before.`
-                                                            : ` event like this before.`
-                                                    }`
+                                                    ''
                                                 ) : (
+                                                    // theHost.firstName +
+                                                    // ` has hosted ${
+                                                    //     theHost.numHostedBefore
+                                                    // }${
+                                                    //     theHost.numHostedBefore >
+                                                    //     1
+                                                    //         ? ` events like this before.`
+                                                    //         : ` event like this before.`
+                                                    // }`
                                                     <Link to="/edit-host-profile?field=numDraw">
                                                         Edit
                                                     </Link>
@@ -469,14 +471,15 @@ const HostProfile = ({
                                         <Tooltip
                                             title={
                                                 !isMe ? (
-                                                    theHost.firstName +
-                                                    `’s ${
-                                                        theHost.primarySpace ||
-                                                        'residence'
-                                                    } can host a maximum of ${
-                                                        theHost.maxNumAttendees
-                                                    } people.`
+                                                    ''
                                                 ) : (
+                                                    // theHost.firstName +
+                                                    // `’s ${
+                                                    //     theHost.primarySpace ||
+                                                    //     'residence'
+                                                    // } can host a maximum of ${
+                                                    //     theHost.maxNumAttendees
+                                                    // } people.`
                                                     <Link to="/edit-host-profile?field=numDraw">
                                                         Edit
                                                     </Link>
@@ -516,9 +519,10 @@ const HostProfile = ({
                                             <Tooltip
                                                 title={
                                                     !isMe ? (
-                                                        theHost.firstName +
-                                                        ` has the seating necessary for ${theHost.maxNumAttendees} people.`
+                                                        ''
                                                     ) : (
+                                                        // theHost.firstName +
+                                                        // ` has the seating necessary for ${theHost.maxNumAttendees} people.`
                                                         <Link to="/edit-host-profile?field=seatingProvided">
                                                             Edit
                                                         </Link>
@@ -553,9 +557,10 @@ const HostProfile = ({
                                             <Tooltip
                                                 title={
                                                     !isMe ? (
-                                                        theHost.firstName +
-                                                        ` does NOT have the seating necessary for ${theHost.maxNumAttendees} people.`
+                                                        ''
                                                     ) : (
+                                                        // theHost.firstName +
+                                                        // ` does NOT have the seating necessary for ${theHost.maxNumAttendees} people.`
                                                         <Link to="/edit-host-profile?field=seatingProvided">
                                                             Edit
                                                         </Link>
@@ -635,7 +640,7 @@ const HostProfile = ({
                                         <Tooltip
                                             title={
                                                 !isMe ? (
-                                                    'Refreshments'
+                                                    '' //'Refreshments'
                                                 ) : (
                                                     <Link to="/edit-host-profile?field=refreshments">
                                                         Edit
@@ -668,7 +673,7 @@ const HostProfile = ({
                                         <Tooltip
                                             title={
                                                 !isMe ? (
-                                                    'Overnight accommodatations'
+                                                    '' //'Overnight accommodatations'
                                                 ) : (
                                                     <Link to="/edit-host-profile?field=overnight">
                                                         Edit
@@ -718,9 +723,10 @@ const HostProfile = ({
                                         <Tooltip
                                             title={
                                                 !isMe ? (
-                                                    theHost.firstName +
-                                                    ' has these rules: ' +
-                                                    theOffer.houseRules
+                                                    // theHost.firstName +
+                                                    // ' has these rules: ' +
+                                                    // theOffer.houseRules
+                                                    ''
                                                 ) : (
                                                     <Link to="/edit-host-profile?field=overnight">
                                                         Edit
@@ -751,9 +757,10 @@ const HostProfile = ({
                                         <Tooltip
                                             title={
                                                 !isMe ? (
-                                                    theHost.firstName +
-                                                    ' has these extra clarifications: ' +
-                                                    theOffer.extraClarification
+                                                    // theHost.firstName +
+                                                    // ' has these extra clarifications: ' +
+                                                    // theOffer.extraClarification
+                                                    ''
                                                 ) : (
                                                     <Link to="/edit-host-profile?field=extraClarification">
                                                         Edit
@@ -825,8 +832,9 @@ const HostProfile = ({
                                             <Tooltip
                                                 title={
                                                     !isMe ? (
-                                                        theHost.firstName +
-                                                        ' has these additional requests:'
+                                                        // theHost.firstName +
+                                                        // ' has these additional requests'
+                                                        ''
                                                     ) : (
                                                         <Link to="/edit-host-profile?field=additionalRequests">
                                                             Edit
@@ -862,7 +870,7 @@ const HostProfile = ({
                                             <Tooltip
                                                 title={
                                                     !isMe ? (
-                                                        'EventBrite Address Privacy'
+                                                        '' //'EventBrite Address Privacy'
                                                     ) : (
                                                         <Link to="/edit-host-profile?field=eventbritePublicAddress">
                                                             Edit

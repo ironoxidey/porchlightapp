@@ -56,4 +56,12 @@ legend.MuiFormLabel-root::before {
     .form .form-group {
         margin-top: 0;
     }
+    legend.MuiFormLabel-root,
+    p.MuiFormLabel-root {
+        text-align: center;
+        font-size: 1.3em;
+        color: var(--primary-color);
+        margin-top: 8px;
+        /* margin-bottom: 8px; */
+    }
 }

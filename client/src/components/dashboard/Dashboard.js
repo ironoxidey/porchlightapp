@@ -16,13 +16,15 @@ import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 import MenuBookTwoToneIcon from '@mui/icons-material/MenuBookTwoTone';
+import ChangeCircleTwoToneIcon from '@mui/icons-material/ChangeCircleTwoTone';
 
-import { StackDateforDisplay } from '../../actions/app';
+import { StackDateforDisplay, changeHats } from '../../actions/app';
 import ArtistDashboardEventCard from '../events/ArtistDashboardEventCard';
 import NearMeToHostEventCard from './NearMeToHostEventCard';
 
 const Dashboard = ({
     //getCurrentProfile,
+    changeHats,
     deleteAccount,
     auth: { user, loading },
     //profile: { profile, loading },
@@ -31,6 +33,7 @@ const Dashboard = ({
     artist,
     getCurrentHost,
     host,
+    app,
 }) => {
     // useEffect(() => {
     //     getCurrentProfile();
@@ -40,9 +43,12 @@ const Dashboard = ({
             user &&
             user.role &&
             Array.isArray(user.role) &&
-            user.role.indexOf('ARTIST') != -1
+            user.role.indexOf('ARTIST') > -1
         ) {
             getCurrentArtist();
+            if (app.profileHat === '') {
+                changeHats('ARTIST');
+            }
         }
     }, [getCurrentArtist, user]);
     useEffect(() => {
@@ -50,9 +56,12 @@ const Dashboard = ({
             user &&
             user.role &&
             Array.isArray(user.role) &&
-            user.role.indexOf('HOST') != -1
+            user.role.indexOf('HOST') > -1
         ) {
             getCurrentHost();
+            if (app.profileHat === '') {
+                changeHats('HOST');
+            }
         }
     }, [getCurrentHost, user]);
     return loading && user === null ? (
@@ -62,42 +71,55 @@ const Dashboard = ({
             <Grid
                 container
                 justifyContent="center"
-                alignItems="center"
-                direction="column"
+                alignItems="start"
+                direction="row"
                 sx={{
                     minHeight: '80vh',
                     padding: '20px!important',
-                    maxWidth: 550,
+                    width: '100vw',
+                    maxWidth: '100vw',
                     margin: '0 auto',
                 }}
             >
-                <Grid item container>
-                    <Grid item textAlign="center">
-                        <h1 className="large text-primary">
-                            Welcome to your Dashboard
-                            {user && user.name
-                                ? ', ' + user.name.split(' ')[0] + '!'
-                                : '!'}
-                        </h1>
-                    </Grid>
+                <Grid
+                    item
+                    container
+                    direction="column"
+                    className="leftSide"
+                    md={3}
+                >
                     <Grid
                         item
-                        sx={{
-                            margin: '8px auto',
-                        }}
+                        container
+                        direction="column"
+                        className="welcomeSection"
                     >
-                        <p className="">
-                            We have some big ideas for connecting artists with
-                            hosts to grow community culture around the arts
-                            again.
-                        </p>
-                    </Grid>
+                        <Grid item textAlign="center">
+                            <Typography component="h2">
+                                Welcome to your Dashboard
+                                {user && user.name
+                                    ? ', ' + user.name.split(' ')[0] + '!'
+                                    : '!'}
+                            </Typography>
+                        </Grid>
+                        <Grid
+                            item
+                            sx={{
+                                margin: '8px auto',
+                            }}
+                        >
+                            <p className="">
+                                We have some big ideas for connecting artists
+                                with hosts to grow community culture around the
+                                arts again.
+                            </p>
+                        </Grid>
 
-                    {/* CALENDLY STUFF
+                        {/* CALENDLY STUFF
       <Fragment>
           <DashboardActions></DashboardActions>
       </Fragment> */}
-                    {/* {profile !== null ? (
+                        {/* {profile !== null ? (
 				<Fragment>
 					<Experience experience={profile.experience}></Experience>
 					<Education education={profile.education}></Education>
@@ -115,8 +137,51 @@ const Dashboard = ({
 					</Link>
 				</Fragment>
 			)} */}
-                    {user && user.role && user.role.indexOf('ARTIST') != -1 ? (
-                        <Grid item container>
+                    </Grid>
+                    {user &&
+                        user.role &&
+                        user.role.indexOf('ARTIST') != -1 &&
+                        user.role.indexOf('HOST') != -1 && (
+                            <Grid item container className="changeProfileHat">
+                                <Typography component={'p'}>
+                                    It looks like you’re an artist and a host!
+                                    That’s awesome! Right now you’re seeing your{' '}
+                                    {app.profileHat} stuff. Change your hat to
+                                    see your{' '}
+                                    {app.profileHat === 'HOST'
+                                        ? 'ARTIST'
+                                        : 'HOST'}{' '}
+                                    stuff.
+                                </Typography>
+                                <Grid
+                                    item
+                                    sx={{
+                                        margin: '8px auto 8px',
+                                    }}
+                                >
+                                    <Button
+                                        btnwidth="250"
+                                        onClick={() => {
+                                            app.profileHat === 'HOST'
+                                                ? changeHats('ARTIST')
+                                                : changeHats('HOST');
+                                        }}
+                                    >
+                                        <ChangeCircleTwoToneIcon></ChangeCircleTwoToneIcon>{' '}
+                                        Change to{' '}
+                                        {app.profileHat === 'HOST'
+                                            ? 'ARTIST'
+                                            : 'HOST'}{' '}
+                                        Hat
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        )}
+                    {app.profileHat === 'ARTIST' &&
+                    user &&
+                    user.role &&
+                    user.role.indexOf('ARTIST') != -1 ? (
+                        <Grid item container className="artistStuff">
                             {artist.me && artist.me._id ? (
                                 [
                                     <Grid
@@ -129,7 +194,7 @@ const Dashboard = ({
                                             target="_blank"
                                             href="https://docs.google.com/document/d/1skxIQjIhEOs07k06ymmss1lMO-Q9Q4j8kI68Vc0u5hE/edit?usp=sharing"
                                         >
-                                            <Button btnwidth="300" className="">
+                                            <Button btnwidth="250" className="">
                                                 <MenuBookTwoToneIcon /> Musician
                                                 Guide
                                             </Button>
@@ -142,7 +207,7 @@ const Dashboard = ({
                                         }}
                                     >
                                         <Link to="/edit-artist-profile">
-                                            <Button btnwidth="300" className="">
+                                            <Button btnwidth="250" className="">
                                                 <EditTwoToneIcon /> Edit My
                                                 Artist Profile
                                             </Button>
@@ -174,7 +239,7 @@ const Dashboard = ({
                                     >
                                         <p> </p>
                                         <Link to="/edit-artist-profile">
-                                            <Button btnwidth="300" className="">
+                                            <Button btnwidth="250" className="">
                                                 <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
                                                 Create My Profile
                                             </Button>
@@ -191,67 +256,19 @@ const Dashboard = ({
                                 user.role.indexOf('ADMIN') != -1 &&
                                 artist.me &&
                                 artist.me._id) ? (
-                                <>
-                                    <Grid
-                                        item
-                                        sx={{
-                                            margin: '8px auto',
-                                        }}
-                                    >
-                                        <Link to="/edit-artist-booking">
-                                            <Button btnwidth="300" className="">
-                                                <DateRangeTwoToneIcon /> Edit My
-                                                Booking Info
-                                            </Button>
-                                        </Link>
-                                    </Grid>
-                                    {myArtistEvents &&
-                                        myArtistEvents.length > 0 && (
-                                            <Grid
-                                                item
-                                                direction="column"
-                                                xs={12}
-                                                md={12}
-                                            >
-                                                <Grid item xs={12}>
-                                                    <Typography component="h2">
-                                                        {myArtistEvents.length >
-                                                        1
-                                                            ? `These ${myArtistEvents.length} shows have booking offers for you to consider`
-                                                            : `This ${myArtistEvents.length} show has booking offers for you to consider`}
-                                                        :
-                                                    </Typography>
-                                                </Grid>
-                                                {/* {bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry */}
-                                                <Grid
-                                                    container
-                                                    className="whenBooking"
-                                                    direction="row"
-                                                    justifyContent="center"
-                                                    alignItems="center"
-                                                    xs={12}
-                                                    spacing={2}
-                                                    sx={{
-                                                        margin: '0px auto 16px',
-                                                        width: '100%',
-                                                    }}
-                                                ></Grid>
-                                                {myArtistEvents
-                                                    .filter((e) => e) //.filter(e => e) to remove any null values
-                                                    .map(
-                                                        (thisEvent, idx) =>
-                                                            thisEvent.bookingWhen &&
-                                                            thisEvent.bookingWhere && (
-                                                                <ArtistDashboardEventCard
-                                                                    thisEvent={
-                                                                        thisEvent
-                                                                    }
-                                                                />
-                                                            )
-                                                    )}
-                                            </Grid>
-                                        )}
-                                </>
+                                <Grid
+                                    item
+                                    sx={{
+                                        margin: '8px auto',
+                                    }}
+                                >
+                                    <Link to="/edit-artist-booking">
+                                        <Button btnwidth="250" className="">
+                                            <DateRangeTwoToneIcon /> Edit My
+                                            Booking Info
+                                        </Button>
+                                    </Link>
+                                </Grid>
                             ) : artist.me &&
                               artist.me._id &&
                               artist.me.active ? (
@@ -263,7 +280,7 @@ const Dashboard = ({
                                 >
                                     <p> </p>
                                     <Link to="/edit-artist-booking">
-                                        <Button className="">
+                                        <Button btnwidth="250" className="">
                                             Start Booking Shows
                                         </Button>
                                     </Link>
@@ -273,13 +290,10 @@ const Dashboard = ({
                             )}
                         </Grid>
                     ) : (
-                        <Fragment></Fragment>
+                        <></>
                     )}
-
-                    {user &&
-                    user.role &&
-                    user.role.indexOf('ATTENDER') != -1 ? (
-                        <Grid item container>
+                    {user && user.role && user.role.indexOf('ATTENDER') != -1 && (
+                        <Grid item container className="attenderStuff">
                             {user.role.indexOf('HOST') === -1 ? (
                                 <Grid
                                     item
@@ -289,7 +303,7 @@ const Dashboard = ({
                                 >
                                     <p> </p>
                                     <Link to="/edit-host-profile">
-                                        <Button btnwidth="300" className="">
+                                        <Button btnwidth="250" className="">
                                             <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
                                             Sign Up to Host
                                         </Button>
@@ -299,27 +313,147 @@ const Dashboard = ({
                                 ''
                             )}
                         </Grid>
-                    ) : (
-                        ''
                     )}
-                    {user && user.role && user.role.indexOf('HOST') != -1 && (
-                        <>
-                            <Grid item container>
-                                <Grid
-                                    item
-                                    sx={{
-                                        margin: '8px auto',
-                                    }}
-                                >
-                                    <p> </p>
-                                    <Link to="/edit-host-profile">
-                                        <Button btnwidth="300" className="">
-                                            <EditTwoToneIcon />
-                                            Edit My Host Profile
-                                        </Button>
-                                    </Link>
+                    {app.profileHat === 'HOST' &&
+                        user &&
+                        user.role &&
+                        user.role.indexOf('HOST') != -1 && (
+                            <>
+                                <Grid item container className="hostStuff">
+                                    <Grid
+                                        item
+                                        sx={{
+                                            margin: '8px auto',
+                                        }}
+                                    >
+                                        <p> </p>
+                                        <Link to="/edit-host-profile">
+                                            <Button btnwidth="250" className="">
+                                                <EditTwoToneIcon />
+                                                Edit My Host Profile
+                                            </Button>
+                                        </Link>
+                                    </Grid>
                                 </Grid>
+                            </>
+                        )}
+                    {/* End welcomeSection */}
+                </Grid>
+                {/* End leftSide */}
+                {/* {user &&
+                    user.role &&
+                    (user.role.indexOf('ARTIST') != -1 ||
+                        user.role.indexOf('HOST') != -1 ||
+                        user.role.indexOf('ADMIN') != -1 ||
+                        user.role.indexOf('BOOKING') != -1) && ( */}
+                {/* <Grid
+                    item
+                    container
+                    direction="column"
+                    className="middle"
+                    md={6}
+                    sx={{ padding: '0 20px' }}
+                > */}
+                {app.profileHat === 'ARTIST' &&
+                    user &&
+                    user.role &&
+                    user.role.indexOf('ARTIST') != -1 &&
+                    myArtistEvents &&
+                    myArtistEvents.length > 0 && (
+                        <Grid
+                            item
+                            container
+                            direction="column"
+                            className="middle"
+                            md={6}
+                            xs={12}
+                            sx={{ padding: '0 20px' }}
+                        >
+                            <Grid
+                                item
+                                container
+                                className="artistStuff"
+                                xs={12}
+                                direction="column"
+                            >
+                                {((artist.me &&
+                                    artist.me._id &&
+                                    artist.me.active &&
+                                    artist.me.bookingWhen.length > 0 &&
+                                    myArtistEvents &&
+                                    myArtistEvents.length > 0) ||
+                                    (Array.isArray(user.role) &&
+                                        user.role.indexOf('ARTIST') != -1 &&
+                                        user.role.indexOf('ADMIN') != -1 &&
+                                        artist.me &&
+                                        artist.me._id &&
+                                        myArtistEvents &&
+                                        myArtistEvents.length > 0)) && (
+                                    <Grid container direction="column">
+                                        <Grid item>
+                                            <Typography component="h2">
+                                                {myArtistEvents.length > 1
+                                                    ? `These ${myArtistEvents.length} concerts have booking offers for you to consider`
+                                                    : `This concert has ${
+                                                          myArtistEvents[0]
+                                                              .offersFromHosts
+                                                              .length > 1
+                                                              ? 'booking offers'
+                                                              : 'a booking offer'
+                                                      } for you to consider`}
+                                                :
+                                            </Typography>
+                                        </Grid>
+                                        {/* {bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry */}
+                                        <Grid
+                                            container
+                                            className="whenBooking"
+                                            direction="row"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            spacing={2}
+                                            sx={{
+                                                margin: '0px auto 16px',
+                                                width: '100%',
+                                            }}
+                                        ></Grid>
+                                        {myArtistEvents
+                                            .filter((e) => e) //.filter(e => e) to remove any null values
+                                            .map(
+                                                (thisEvent, idx) =>
+                                                    thisEvent.bookingWhen &&
+                                                    thisEvent.bookingWhere && (
+                                                        <ArtistDashboardEventCard
+                                                            thisEvent={
+                                                                thisEvent
+                                                            }
+                                                        />
+                                                    )
+                                            )}
+                                    </Grid>
+                                )}
                             </Grid>
+                        </Grid>
+                    )}
+
+                {app.profileHat === 'HOST' &&
+                    user &&
+                    user.role &&
+                    user.role.indexOf('HOST') != -1 &&
+                    ((myHostEvents && myHostEvents.length > 0) ||
+                        ((user.role.indexOf('ADMIN') > -1 ||
+                            user.role.indexOf('BOOKING') > -1 ||
+                            user.role.indexOf('TESTING') > -1) &&
+                            nearMeToHost &&
+                            nearMeToHost.length > 0)) && (
+                        <Grid
+                            item
+                            container
+                            direction="column"
+                            className="middle"
+                            md={6}
+                            sx={{ padding: '0 20px' }}
+                        >
                             {myHostEvents && myHostEvents.length > 0 && (
                                 <Grid item direction="column" xs={12} md={12}>
                                     <Grid item xs={12}>
@@ -338,7 +472,6 @@ const Dashboard = ({
                                         direction="row"
                                         justifyContent="center"
                                         alignItems="center"
-                                        xs={12}
                                         spacing={2}
                                         sx={{
                                             margin: '0px auto 16px',
@@ -432,9 +565,11 @@ const Dashboard = ({
                                                             </Grid>
                                                             <Grid
                                                                 item
-                                                                sx={{
-                                                                    width: '55px',
-                                                                }}
+                                                                sx={
+                                                                    {
+                                                                        // width: '55px',
+                                                                    }
+                                                                }
                                                             >
                                                                 <StackDateforDisplay
                                                                     date={
@@ -497,7 +632,6 @@ const Dashboard = ({
                                             direction="row"
                                             justifyContent="center"
                                             alignItems="center"
-                                            xs={12}
                                             spacing={2}
                                             sx={{
                                                 margin: '0px auto 16px',
@@ -525,10 +659,9 @@ const Dashboard = ({
                                             )}
                                     </Grid>
                                 )}
-                            {/* End nearMeToHost */}
-                        </>
+                            {/* End .nearMeToHost */}
+                        </Grid>
                     )}
-                </Grid>
             </Grid>
         </Fragment>
     );
@@ -536,12 +669,13 @@ const Dashboard = ({
 
 Dashboard.propTypes = {
     //getCurrentProfile: PropTypes.func.isRequired,
-    getCurrentArist: PropTypes.func.isRequired,
-    getCurrentHost: PropTypes.func.isRequired,
+    getCurrentArist: PropTypes.func,
+    getCurrentHost: PropTypes.func,
     deleteAccount: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     //profile: PropTypes.object.isRequired,
     artist: PropTypes.object.isRequired,
+    app: PropTypes.object.isRequired,
     host: PropTypes.object.isRequired,
     event: PropTypes.object.isRequired,
 };
@@ -552,10 +686,12 @@ const mapStateToProps = (state) => ({
     artist: state.artist,
     host: state.host,
     event: state.event,
+    app: state.app,
 });
 
 export default connect(mapStateToProps, {
     //getCurrentProfile,
+    changeHats,
     getCurrentArtist,
     getCurrentHost,
     deleteAccount,
