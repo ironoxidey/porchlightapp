@@ -91,8 +91,10 @@ router.post('/setupEventbrite', [auth], async (req, res) => {
                 );
 
                 const startTime =
-                    new Date(
+                    new Date( //create a new javascript Date
+                        //Luxon -- https://moment.github.io/luxon/index.html#/tour?id=create-from-an-object
                         DateTime.fromObject(
+                            //create a Luxun DateTime from the object to combine the bookingWhen date and the startTime (24:00), in the host's timeZone
                             {
                                 year: event.bookingWhen.getFullYear(),
                                 month: event.bookingWhen.getMonth() + 1, //0-11
@@ -105,23 +107,11 @@ router.post('/setupEventbrite', [auth], async (req, res) => {
                                 )[1], //minutes
                             },
                             { zone: event.confirmedHost.timezone }
-                        )
-                            //.minus({ hours: event.confirmedHost.timezoneOffset })
-                            .toISO({
-                                //suppressMilliseconds: true,
-                                //includeOffset: false,
-                            })
+                        ).toISO({}) //still a Luxon thing -- https://moment.github.io/luxon/index.html#/tour?id=formatting-your-datetime
                     )
-                        .toISOString()
-                        .split('.')[0] + 'Z'; //removes milliseconds because EventBrite doesn't like that format for some reason;
+                        .toISOString() //convert that whole thing to a javascript ISOString
+                        .split('.')[0] + 'Z'; //remove the milliseconds because EventBrite doesn't like that format for some reason
 
-                // new Date(
-                //     new Date(event.bookingWhen).toDateString() +
-                //         ' ' +
-                //         acceptedOffer.showSchedule.startTime
-                // )
-                //     .toISOString()
-                //     .split('.')[0] + 'Z'; //removes milliseconds because EventBrite doesn't like that format for some reason
                 const endTime =
                     new Date(
                         DateTime.fromObject(
@@ -138,9 +128,9 @@ router.post('/setupEventbrite', [auth], async (req, res) => {
                             },
                             { zone: event.confirmedHost.timezone }
                         )
-                            .minus({
-                                hours: event.confirmedHost.timezoneOffset,
-                            })
+                            // .minus({
+                            //     hours: event.confirmedHost.timezoneOffset,
+                            // })
                             .toISO({
                                 //suppressMilliseconds: true,
                                 //includeOffset: false,

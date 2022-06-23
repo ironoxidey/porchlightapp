@@ -444,11 +444,10 @@ const Dashboard = ({
                     user.role &&
                     user.role.indexOf('HOST') != -1 &&
                     ((myHostEvents && myHostEvents.length > 0) ||
-                        ((user.role.indexOf('ADMIN') > -1 ||
-                            user.role.indexOf('BOOKING') > -1 ||
-                            user.role.indexOf('TESTING') > -1) &&
-                            nearMeToHost &&
-                            nearMeToHost.length > 0)) && (
+                        //(user.role.indexOf('ADMIN') > -1 ||
+                        //user.role.indexOf('BOOKING') > -1 ||
+                        //user.role.indexOf('TESTING') > -1) &&
+                        (nearMeToHost && nearMeToHost.length > 0)) && (
                         <Grid
                             item
                             container
@@ -608,11 +607,11 @@ const Dashboard = ({
                                 </Grid>
                             )}
                             {/* End myHostEvents */}
-                            {(user.role.indexOf('ADMIN') > -1 ||
-                                user.role.indexOf('BOOKING') > -1 ||
-                                user.role.indexOf('TESTING') > -1) &&
-                                nearMeToHost &&
-                                nearMeToHost.length > 0 && (
+                            {
+                                //(user.role.indexOf('ADMIN') > -1 ||
+                                //user.role.indexOf('BOOKING') > -1 ||
+                                //user.role.indexOf('TESTING') > -1) &&
+                                nearMeToHost && nearMeToHost.length > 0 && (
                                     <Grid
                                         item
                                         direction="column"
@@ -661,7 +660,8 @@ const Dashboard = ({
                                                     )
                                             )}
                                     </Grid>
-                                )}
+                                )
+                            }
                             {/* End .nearMeToHost */}
                         </Grid>
                     )}
