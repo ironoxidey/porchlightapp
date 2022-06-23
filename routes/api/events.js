@@ -1,4 +1,7 @@
 const express = require('express');
+const request = require('request'); //for eventBrite
+const { DateTime } = require('luxon'); //for sending dateTimes in the right timezone to eventBrite
+const config = !process.env.NODE_ENV ? require('config') : process.env;
 var mongoose = require('mongoose');
 //const request = require('request'); //I don't theink I need this. Maybe carried over from profile.js for github stuff ~ Jan 5th, 2022
 //const config = require('../../../porchlight-config/default.json');//require('config'); //I don't theink I need this. Maybe carried over from profile.js for github stuff ~ Jan 5th, 2022
@@ -28,6 +31,243 @@ function firstInt(inputString) {
         return 0;
     }
 }
+
+// @route    POST api/events/setupEventbrite
+// @desc     Setup Eventbrite event from eventID
+// @access   Private
+router.post('/setupEventbrite', [auth], async (req, res) => {
+    console.log('setupEventbrite req.body', req.body.eventID);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    //if (req.user.role === 'ADMIN' && eventFields.email !== '') {
+    if (
+        req.user.role &&
+        (req.user.role.indexOf('BOOKING') > -1 ||
+            req.user.role.indexOf('ADMIN') > -1)
+    ) {
+        try {
+            //console.log('setupEventbrite eventFields', eventFields);
+
+            let event = await Event.findOne({
+                _id: req.body.eventID,
+            }).populate('artist confirmedHost');
+
+            if (event) {
+                //console.log('event', event);
+                let emailDate = new Date(event.bookingWhen).toDateString(
+                    undefined,
+                    {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                    }
+                );
+
+                const acceptedOffer = event.offersFromHosts.find((offer) => {
+                    return offer.status === 'ACCEPTED';
+                });
+
+                console.log('event.bookingWhen', event.bookingWhen);
+                console.log(
+                    'event.bookingWhen.toDateString()',
+                    event.bookingWhen.toDateString()
+                );
+                console.log(
+                    'event.bookingWhen.toISOString()',
+                    event.bookingWhen.toISOString()
+                );
+                console.log('acceptedOffer', acceptedOffer);
+                console.log(
+                    'acceptedOffer.showSchedule.startTime.split(:)[0]',
+                    acceptedOffer.showSchedule.startTime.split(':')[0]
+                );
+                console.log(
+                    'event.bookingWhen.getMonth()',
+                    event.bookingWhen.getMonth()
+                );
+
+                const startTime =
+                    new Date(
+                        DateTime.fromObject(
+                            {
+                                year: event.bookingWhen.getFullYear(),
+                                month: event.bookingWhen.getMonth() + 1, //0-11
+                                day: event.bookingWhen.getDate(),
+                                hour: acceptedOffer.showSchedule.startTime.split(
+                                    ':'
+                                )[0], //hours
+                                minute: acceptedOffer.showSchedule.startTime.split(
+                                    ':'
+                                )[1], //minutes
+                            },
+                            { zone: event.confirmedHost.timezone }
+                        )
+                            //.minus({ hours: event.confirmedHost.timezoneOffset })
+                            .toISO({
+                                //suppressMilliseconds: true,
+                                //includeOffset: false,
+                            })
+                    )
+                        .toISOString()
+                        .split('.')[0] + 'Z'; //removes milliseconds because EventBrite doesn't like that format for some reason;
+
+                // new Date(
+                //     new Date(event.bookingWhen).toDateString() +
+                //         ' ' +
+                //         acceptedOffer.showSchedule.startTime
+                // )
+                //     .toISOString()
+                //     .split('.')[0] + 'Z'; //removes milliseconds because EventBrite doesn't like that format for some reason
+                const endTime =
+                    new Date(
+                        DateTime.fromObject(
+                            {
+                                year: event.bookingWhen.getFullYear(),
+                                month: event.bookingWhen.getMonth() + 1, //0-11
+                                day: event.bookingWhen.getDate(),
+                                hour: acceptedOffer.showSchedule.hardWrap.split(
+                                    ':'
+                                )[0], //hours
+                                minute: acceptedOffer.showSchedule.hardWrap.split(
+                                    ':'
+                                )[1], //minutes
+                            },
+                            { zone: event.confirmedHost.timezone }
+                        )
+                            .minus({
+                                hours: event.confirmedHost.timezoneOffset,
+                            })
+                            .toISO({
+                                //suppressMilliseconds: true,
+                                //includeOffset: false,
+                            })
+                    )
+                        .toISOString()
+                        .split('.')[0] + 'Z'; //removes milliseconds because EventBrite doesn't like that format for some reason;
+
+                // new Date(
+                //     Date.UTC(
+                //         event.bookingWhen.getFullYear(),
+                //         event.bookingWhen.getMonth(),
+                //         event.bookingWhen.getDate(),
+                //         acceptedOffer.showSchedule.hardWrap.split(':')[0], //hours
+                //         acceptedOffer.showSchedule.hardWrap.split(':')[1], //minutes
+                //         0 //seconds
+                //     )
+                // )
+                //     .toISOString()
+                //     .split('.')[0] + 'Z'; //removes milliseconds because EventBrite doesn't like that format for some reason
+
+                console.log('acceptedOffer', acceptedOffer);
+                console.log('startTime', startTime);
+                console.log('startTime', new Date(startTime).toString());
+                console.log('endTime', endTime);
+
+                //Eventbrite
+                request(
+                    {
+                        method: 'POST',
+                        url: 'https://www.eventbriteapi.com/v3/organizations/315915867803/events/',
+                        headers: {
+                            Authorization:
+                                'Bearer ' + config['eventbritePrivateToken'],
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            event: {
+                                name: {
+                                    html: `<p>Porchlight presents ${event.artist.stageName}</p>`,
+                                },
+                                summary: `<p>${event.artist.stageName} House Concert • ${event.confirmedHost.city}, ${event.confirmedHost.state}</p>`,
+
+                                start: {
+                                    timezone: event.confirmedHost.timezone,
+                                    utc: startTime,
+                                },
+                                end: {
+                                    timezone: event.confirmedHost.timezone,
+                                    utc: endTime,
+                                },
+                                currency: 'USD',
+
+                                online_event: false,
+                                // organizer_id: '',
+                                listed: true,
+                                shareable: true,
+                                invite_only: false,
+                                show_remaining: true,
+                                capacity: event.confirmedHost.maxNumAttendees,
+                                locale: 'en_US',
+                                // ticket_class: {
+                                //     name: 'General Admission',
+                                //     quantity_total:
+                                //         event.confirmedHost.maxNumAttendees,
+                                //     cost: 'USD,' + event.namedPrice * 100,
+                                // },
+                                format_id: '6',
+                                // format: {
+                                //     resource_uri:
+                                //         'https://www.eventbriteapi.com/v3/formats/6/',
+                                //     id: '6',
+                                //     name: 'Concert or Performance',
+                                //     name_localized: 'Concert or Performance',
+                                //     short_name: 'Performance',
+                                //     short_name_localized: 'Performance',
+                                // },
+                                category_id: '103',
+                                // category: {
+                                //     resource_uri:
+                                //         'https://www.eventbriteapi.com/v3/categories/103/',
+                                //     id: '103',
+                                //     name: 'Music',
+                                //     name_localized: 'Music',
+                                //     short_name: 'Music',
+                                //     short_name_localized: 'Music',
+                                //     // subcategories: [
+                                //     //     event.artist.genres.map((genre) => {
+                                //     //         return { name: genre };
+                                //     //     }),
+                                //     // ],
+                                // },
+                            },
+                        }),
+                    },
+                    function (error, response, body) {
+                        //console.log('Error:', error);
+                        //console.log('Status:', response);
+                        // console.log(
+                        //     'Headers:',
+                        //     JSON.stringify(response.headers)
+                        // );
+                        console.log('Response:', body);
+                    }
+                );
+
+                res.json(event);
+            } else {
+                //console.log('This event is already booked.');
+                res.status(500).send('Could not find event with this ID.');
+            }
+        } catch (err) {
+            console.log('setupEventbrite err', err);
+            res.status(500).send('Server Error: ' + err.message);
+        }
+    } else {
+        console.error(
+            req.user.email +
+                " doesn't have authority to setup Eventbrite events."
+        );
+        res.status(500).send(
+            'User does not have authority to setup Eventbrite events.'
+        );
+    }
+
+    //res.json(eventCount + " event(s) submitted to the database."); //eventually remove this
+});
 
 // @route    GET api/events/getArtistBooking/:slug
 // @desc     Get all events by artist slug for public profile

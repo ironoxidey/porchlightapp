@@ -57,6 +57,12 @@ const HostSchema = new mongoose.Schema(
         profileImg: {
             type: String,
         },
+        timezone: {
+            type: String,
+        },
+        timezoneOffset: {
+            type: String,
+        },
         latLong: {
             //https://mongoosejs.com/docs/geojson.html#
             type: {

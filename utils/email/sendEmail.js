@@ -1,3 +1,5 @@
+const config = !process.env.NODE_ENV ? require('config') : process.env;
+
 // Install with: npm install @trycourier/courier
 // const { CourierClient } = require('@trycourier/courier');
 

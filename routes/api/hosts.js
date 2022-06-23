@@ -9,6 +9,7 @@ const mailchimp = require('@mailchimp/mailchimp_marketing');
 const md5 = require('md5'); //for hashing the host's email before sending to MailChimp
 
 const addressGeocode = require('../../utils/maps/geocoding');
+const addressTimezone = require('../../utils/maps/timezone');
 
 const User = require('../../models/User');
 const Host = require('../../models/Host');
@@ -264,14 +265,19 @@ router.post('/updateMe', [auth], async (req, res) => {
                         ) {
                             locationChanged = true;
                             //geocode with Google Maps API
-                            const geocodedAddress = await addressGeocode(
+                            const hostAddress =
                                 hostFields.streetAddress +
-                                    ' ' +
-                                    hostFields.city +
-                                    ', ' +
-                                    hostFields.state +
-                                    ' ' +
-                                    hostFields.zipCode
+                                ' ' +
+                                hostFields.city +
+                                ', ' +
+                                hostFields.state +
+                                ' ' +
+                                hostFields.zipCode;
+                            const geocodedAddress = await addressGeocode(
+                                hostAddress
+                            );
+                            const timezoneAddress = await addressTimezone(
+                                geocodedAddress
                             );
                             // console.log(
                             //     host.firstName +
@@ -284,6 +290,9 @@ router.post('/updateMe', [auth], async (req, res) => {
                                 type: 'Point',
                                 coordinates: geocodedAddress,
                             };
+                            hostFields.timezone = timezoneAddress.timeZoneId;
+                            hostFields.timezoneOffset =
+                                timezoneAddress.rawOffset / 3600; //rawOffset is the offset from UTC (in seconds) for the given location. dividing rawOffset by 3600 you can get the GMT time of your requested time zone
                             hostFields.geocodedStreetAddress =
                                 hostFields.streetAddress;
                             hostFields.geocodedCity = hostFields.city;
@@ -441,7 +450,7 @@ router.get('/edit', [auth], async (req, res) => {
     }
 });
 
-// @route    GET api/hosts/edit
+// @route    GET api/hosts/getAllHostLatLong
 // @desc     [ADMIN] Get all hosts for editing (everything)
 // @access   Private
 router.get('/getAllHostLatLong', [auth], async (req, res) => {
@@ -486,6 +495,25 @@ router.get('/getAllHostLatLong', [auth], async (req, res) => {
                     // host.latitude = geocodedAddress[1];
                     host.markModified('latLong');
                     //save in host doc
+                    await host.save();
+                }
+                if (
+                    host.latLong.coordinates.length > 0 &&
+                    (!host.timezone || !host.timezoneOffset)
+                ) {
+                    const timezoneAddress = await addressTimezone(
+                        host.latLong.coordinates
+                    );
+                    host.timezone = timezoneAddress.timeZoneId;
+                    host.timezoneOffset = timezoneAddress.rawOffset / 3600; //rawOffset is the offset from UTC (in seconds) for the given location. dividing rawOffset by 3600 you can get the GMT time of your requested time zone
+
+                    console.log(
+                        host.firstName +
+                            ' ' +
+                            host.lastName +
+                            '’s timezone is: ',
+                        timezoneAddress
+                    );
                     await host.save();
                 }
             });

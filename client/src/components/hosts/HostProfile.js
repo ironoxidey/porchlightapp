@@ -36,10 +36,15 @@ import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone';
 import DownloadIcon from '@mui/icons-material/Download';
+import AccessTimeTwoToneIcon from '@mui/icons-material/AccessTimeTwoTone';
 
 import Button from '../layout/SvgButton';
 
-import { toTitleCase, formatPhoneNumber } from '../../actions/app';
+import {
+    toTitleCase,
+    formatPhoneNumber,
+    convert24HourTime,
+} from '../../actions/app';
 import { artistAcceptOffer } from '../../actions/event';
 
 const HostProfile = ({
@@ -56,6 +61,15 @@ const HostProfile = ({
     console.log('theHost', theHost);
     // console.log('theOffer', theOffer);
     // console.log('user', user);
+
+    // const convert24HourTime = (dateString) => {
+    //     let twelveHourTimeHour = dateString.split(':')[0] % 12;
+    //     let amPm = dateString.split(':')[0] > 11 ? ' PM' : ' AM';
+    //     let twelveHourTime =
+    //         twelveHourTimeHour + ':' + dateString.split(':')[1] + amPm;
+    //     console.log('twelveHourTime', twelveHourTime);
+    //     return twelveHourTime;
+    // };
 
     let theHostAddress =
         theHost.primarySpace === 'residence'
@@ -345,6 +359,106 @@ const HostProfile = ({
                                     </Typography>
                                 </Grid>
                             )}
+                            {theOffer.showSchedule && (
+                                <Grid
+                                    item
+                                    container
+                                    alignItems="center"
+                                    sx={{ marginTop: '8px' }}
+                                >
+                                    <Typography component="h3">
+                                        <Tooltip
+                                            title={
+                                                !isMe ? (
+                                                    '' //'Location'
+                                                ) : (
+                                                    <Link to="/edit-host-profile?field=showSchedule">
+                                                        Edit
+                                                    </Link>
+                                                )
+                                            }
+                                            placement="bottom"
+                                            arrow
+                                        >
+                                            <AccessTimeTwoToneIcon
+                                                sx={{ marginRight: '8px' }}
+                                            ></AccessTimeTwoToneIcon>
+                                        </Tooltip>
+                                        {theHost.firstName}{' '}
+                                        {theOffer.showSchedule.setupTime !==
+                                        theEvent.showSchedule.setupTime ? (
+                                            <>
+                                                {`said setup should instead be at `}
+                                                <span class="diffTime">
+                                                    {convert24HourTime(
+                                                        theOffer.showSchedule
+                                                            .setupTime
+                                                    )}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            ` said setup could be at ` +
+                                            convert24HourTime(
+                                                theOffer.showSchedule.setupTime
+                                            )
+                                        )}
+                                        {theOffer.showSchedule.doorsOpen !==
+                                        theEvent.showSchedule.doorsOpen ? (
+                                            <>
+                                                {`, doors should instead open at `}
+                                                <span class="diffTime">
+                                                    {convert24HourTime(
+                                                        theOffer.showSchedule
+                                                            .doorsOpen
+                                                    )}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            `, doors could open at ` +
+                                            convert24HourTime(
+                                                theOffer.showSchedule.doorsOpen
+                                            )
+                                        )}
+                                        {theOffer.showSchedule.startTime !==
+                                        theEvent.showSchedule.startTime ? (
+                                            <>
+                                                {`, for the show instead to start at `}
+                                                <span class="diffTime">
+                                                    {convert24HourTime(
+                                                        theOffer.showSchedule
+                                                            .startTime
+                                                    )}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            `, for the show to start at ` +
+                                            convert24HourTime(
+                                                theOffer.showSchedule.startTime
+                                            )
+                                        )}
+                                        {theOffer.showSchedule.hardWrap !==
+                                        theEvent.showSchedule.hardWrap ? (
+                                            <>
+                                                {`, and a hard wrap instead at about `}
+                                                <span class="diffTime">
+                                                    {convert24HourTime(
+                                                        theOffer.showSchedule
+                                                            .hardWrap
+                                                    )}
+                                                </span>
+                                                {`.`}
+                                            </>
+                                        ) : (
+                                            `, and a hard wrap at about ` +
+                                            convert24HourTime(
+                                                theOffer.showSchedule.hardWrap
+                                            ) +
+                                            `.`
+                                        )}
+                                    </Typography>
+                                </Grid>
+                            )}
+
                             {user &&
                                 user.role &&
                                 (user.role.indexOf('ADMIN') > -1 ||

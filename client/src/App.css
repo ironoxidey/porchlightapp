@@ -115,6 +115,10 @@ h2.MuiTypography-root {
     margin-bottom: 4px;
 }
 
+.diffTime {
+    color: var(--link-color);
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
