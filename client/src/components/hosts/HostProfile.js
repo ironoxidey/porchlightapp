@@ -776,56 +776,61 @@ const HostProfile = ({
                                     </Typography>
                                 </Grid>
                             )}
-                            {theOffer && theOffer.overnight && (
-                                <Grid
-                                    item
-                                    container
-                                    alignItems="center"
-                                    sx={{ marginTop: '8px' }}
-                                >
-                                    <Typography component="h3">
-                                        <Tooltip
-                                            title={
-                                                !isMe ? (
-                                                    '' //'Overnight accommodatations'
-                                                ) : (
-                                                    <Link to="/edit-host-profile?field=overnight">
-                                                        Edit
-                                                    </Link>
-                                                )
-                                            }
-                                            placement="bottom"
-                                            arrow
-                                        >
-                                            <LocalHotelTwoToneIcon
-                                                sx={{ marginRight: '8px' }}
-                                            ></LocalHotelTwoToneIcon>
-                                        </Tooltip>
-                                        {`${
-                                            theHost.firstName
-                                        } offered to accommodate ${
-                                            theEvent.travelingCompanions &&
-                                            theEvent.travelingCompanions
-                                                .constructor.name === 'Array' &&
-                                            theEvent.travelingCompanions
-                                                .length + 1
-                                        } ${
-                                            theEvent.travelingCompanions
-                                                .length +
-                                                1 >
-                                            1
-                                                ? ' people'
-                                                : 'person'
-                                        } overnight${
-                                            theOffer.overnightArrangements
-                                                ? ', saying, “I’d like to offer ' +
-                                                  theOffer.overnightArrangements +
-                                                  '”'
-                                                : '.'
-                                        }`}
-                                    </Typography>
-                                </Grid>
-                            )}
+                            {theOffer &&
+                                theOffer.overnight &&
+                                theOffer.overnight === 'yes' && (
+                                    <Grid
+                                        item
+                                        container
+                                        alignItems="center"
+                                        sx={{ marginTop: '8px' }}
+                                    >
+                                        <Typography component="h3">
+                                            <Tooltip
+                                                title={
+                                                    !isMe ? (
+                                                        '' //'Overnight accommodatations'
+                                                    ) : (
+                                                        <Link to="/edit-host-profile?field=overnight">
+                                                            Edit
+                                                        </Link>
+                                                    )
+                                                }
+                                                placement="bottom"
+                                                arrow
+                                            >
+                                                <LocalHotelTwoToneIcon
+                                                    sx={{
+                                                        marginRight: '8px',
+                                                    }}
+                                                ></LocalHotelTwoToneIcon>
+                                            </Tooltip>
+                                            {`${
+                                                theHost.firstName
+                                            } offered to accommodate ${
+                                                theEvent.travelingCompanions &&
+                                                theEvent.travelingCompanions
+                                                    .constructor.name ===
+                                                    'Array' &&
+                                                theEvent.travelingCompanions
+                                                    .length + 1
+                                            } ${
+                                                theEvent.travelingCompanions
+                                                    .length +
+                                                    1 >
+                                                1
+                                                    ? ' people'
+                                                    : 'person'
+                                            } overnight${
+                                                theOffer.overnightArrangements
+                                                    ? ', saying, “I’d like to offer ' +
+                                                      theOffer.overnightArrangements +
+                                                      '”'
+                                                    : '.'
+                                            }`}
+                                        </Typography>
+                                    </Grid>
+                                )}
                             {theOffer && theOffer.houseRules && (
                                 <Grid
                                     item
