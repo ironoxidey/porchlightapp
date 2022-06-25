@@ -9,7 +9,7 @@ import Education from './Education';
 import { deleteAccount /* getCurrentProfile */ } from '../../actions/profile';
 import { getCurrentArtist } from '../../actions/artist';
 import { getCurrentHost } from '../../actions/host';
-import { Grid, Typography, Box } from '@mui/material';
+import { Grid, Typography, Box, Tooltip } from '@mui/material';
 import Button from '../layout/SvgButton';
 
 import AutoAwesomeTwoToneIcon from '@mui/icons-material/AutoAwesomeTwoTone';
@@ -18,6 +18,7 @@ import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 import MenuBookTwoToneIcon from '@mui/icons-material/MenuBookTwoTone';
 //import ChangeCircleTwoToneIcon from '@mui/icons-material/ChangeCircleTwoTone';
 import CachedTwoToneIcon from '@mui/icons-material/CachedTwoTone';
+import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
 
 import { StackDateforDisplay, changeHats } from '../../actions/app';
 import ArtistDashboardEventCard from '../events/ArtistDashboardEventCard';
@@ -39,6 +40,13 @@ const Dashboard = ({
     // useEffect(() => {
     //     getCurrentProfile();
     // }, [getCurrentProfile]);
+    const confirmedMy = (thisEvent) =>
+        thisEvent.confirmedHost &&
+        host.me &&
+        host.me._id &&
+        thisEvent.confirmedHost === host.me._id
+            ? true
+            : false;
     useEffect(() => {
         if (
             user &&
@@ -508,32 +516,62 @@ const Dashboard = ({
                                                         }}
                                                     >
                                                         <Grid item>
-                                                            <Box
-                                                                className="squareImgInACircle"
-                                                                sx={{
-                                                                    height: '130px',
-                                                                    width: '130px',
-                                                                    maxHeight:
-                                                                        '130px',
-                                                                    maxWidth:
-                                                                        '130px',
-                                                                    borderRadius:
-                                                                        '50%',
-                                                                    overflow:
-                                                                        'hidden',
-                                                                    backgroundImage: `url("${thisEvent.artist.squareImg}")`,
-                                                                    backgroundPosition:
-                                                                        '50% 25%',
-                                                                    backgroundSize:
-                                                                        'cover',
-                                                                    padding:
-                                                                        '4px',
-                                                                    backgroundClip:
-                                                                        'content-box',
-                                                                    border: '1px solid var(--primary-color)',
-                                                                    margin: '0 8px 0 0',
-                                                                }}
-                                                            ></Box>
+                                                            <Tooltip
+                                                                title={
+                                                                    thisEvent
+                                                                        .artist
+                                                                        .stageName +
+                                                                    ' accepted your offer.'
+                                                                }
+                                                                arrow={true}
+                                                                placement="bottom"
+                                                                disableHoverListener={
+                                                                    !confirmedMy(
+                                                                        thisEvent
+                                                                    )
+                                                                }
+                                                                disableFocusListener={
+                                                                    !confirmedMy(
+                                                                        thisEvent
+                                                                    )
+                                                                }
+                                                                disableTouchListener={
+                                                                    !confirmedMy(
+                                                                        thisEvent
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Box
+                                                                    className="squareImgInACircle"
+                                                                    sx={{
+                                                                        height: '130px',
+                                                                        width: '130px',
+                                                                        maxHeight:
+                                                                            '130px',
+                                                                        maxWidth:
+                                                                            '130px',
+                                                                        borderRadius:
+                                                                            '50%',
+                                                                        overflow:
+                                                                            'hidden',
+                                                                        backgroundImage: `url("${thisEvent.artist.squareImg}")`,
+                                                                        backgroundPosition:
+                                                                            '50% 25%',
+                                                                        backgroundSize:
+                                                                            'cover',
+                                                                        padding:
+                                                                            '4px',
+                                                                        backgroundClip:
+                                                                            'content-box',
+                                                                        border: confirmedMy(
+                                                                            thisEvent
+                                                                        )
+                                                                            ? '1px solid var(--link-color)'
+                                                                            : '1px solid var(--primary-color)',
+                                                                        margin: '0 8px 0 0',
+                                                                    }}
+                                                                ></Box>
+                                                            </Tooltip>
                                                         </Grid>
 
                                                         <Grid
@@ -601,6 +639,33 @@ const Dashboard = ({
                                                                 </Grid>
                                                             </Grid>
                                                         </Grid>
+                                                        {confirmedMy(
+                                                            thisEvent
+                                                        ) && (
+                                                            <Grid
+                                                                item
+                                                                alignContent="center"
+                                                                container
+                                                                xs={0.5}
+                                                            >
+                                                                <Tooltip
+                                                                    title={
+                                                                        thisEvent
+                                                                            .artist
+                                                                            .stageName +
+                                                                        ' accepted your offer.'
+                                                                    }
+                                                                    placement="bottom"
+                                                                    arrow
+                                                                >
+                                                                    <ThumbUpAltTwoToneIcon
+                                                                        sx={{
+                                                                            color: 'var(--link-color)',
+                                                                        }}
+                                                                    ></ThumbUpAltTwoToneIcon>
+                                                                </Tooltip>
+                                                            </Grid>
+                                                        )}
                                                     </Grid>
                                                 )
                                         )}
