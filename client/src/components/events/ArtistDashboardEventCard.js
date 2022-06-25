@@ -11,6 +11,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
+
 import { StackDateforDisplay } from '../../actions/app';
 import { artistViewedHostOffer } from '../../actions/event';
 
@@ -18,6 +20,7 @@ import EventDetails from '../events/EventDetails';
 
 import Button from '../layout/SvgButton';
 import HostProfile from '../hosts/HostProfile';
+import { relativeTimeRounding } from 'moment';
 
 const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
     //console.log('ArtistDashboardEventCard thisEvent:', thisEvent);
@@ -197,7 +200,12 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
                                                             placement="bottom"
                                                             title={
                                                                 <>
-                                                                    <div>{`${thisOffer.host.firstName} ${thisOffer.host.lastName}`}</div>
+                                                                    <div
+                                                                        style={{
+                                                                            textAlign:
+                                                                                'center',
+                                                                        }}
+                                                                    >{`${thisOffer.host.firstName} ${thisOffer.host.lastName}`}</div>
                                                                     {thisOffer.status ===
                                                                         'ACCEPTED' && (
                                                                         <div
@@ -205,9 +213,14 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
                                                                                 fontFamily:
                                                                                     'var(--secondary-font)',
                                                                                 color: 'var(--link-color)',
+                                                                                textAlign:
+                                                                                    'center',
                                                                             }}
                                                                         >
-                                                                            ACCEPTED
+                                                                            You
+                                                                            accepted
+                                                                            this
+                                                                            offer
                                                                         </div>
                                                                     )}
                                                                 </>
@@ -271,6 +284,15 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
                                                                     },
                                                                     transition:
                                                                         'all 450ms cubic-bezier(0.23, 1, 0.32, 1)',
+                                                                    display:
+                                                                        'flex',
+                                                                    alignItems:
+                                                                        'center',
+                                                                    justifyContent:
+                                                                        'center',
+                                                                    position:
+                                                                        'relative',
+                                                                    zIndex: '0',
                                                                 }}
                                                                 onClick={() => {
                                                                     //thisEvent.offeringHost = thisOffer.host;
@@ -294,7 +316,24 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
                                                                         thisOffer
                                                                     );
                                                                 }}
-                                                            ></Box>
+                                                            >
+                                                                {thisOffer.status ===
+                                                                    'ACCEPTED' && (
+                                                                    <ThumbUpAltOutlinedIcon
+                                                                        sx={{
+                                                                            fontSize:
+                                                                                '2em',
+                                                                            color: 'var(--link-color)',
+                                                                            filter: 'drop-shadow(0 0 3px rgba(0,0,0, 1))',
+                                                                            position:
+                                                                                'relative',
+                                                                            zIndex: '5',
+                                                                            opacity:
+                                                                                '.8',
+                                                                        }}
+                                                                    ></ThumbUpAltOutlinedIcon>
+                                                                )}
+                                                            </Box>
                                                         </Tooltip>
                                                     </Grid>
                                                 )
