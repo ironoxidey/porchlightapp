@@ -425,8 +425,10 @@ const Dashboard = ({
                                                           ).length
                                                       } concerts have booking offers for you to consider`
                                                     : `This concert has ${
-                                                          myArtistEvents[0]
-                                                              .offersFromHosts
+                                                          myArtistEvents.filter(
+                                                              (event) =>
+                                                                  !event.confirmedHost
+                                                          )[0].offersFromHosts
                                                               .length > 1
                                                               ? 'booking offers'
                                                               : 'a booking offer'
