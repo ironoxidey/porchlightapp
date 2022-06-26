@@ -19,6 +19,7 @@ import MenuBookTwoToneIcon from '@mui/icons-material/MenuBookTwoTone';
 //import ChangeCircleTwoToneIcon from '@mui/icons-material/ChangeCircleTwoTone';
 import CachedTwoToneIcon from '@mui/icons-material/CachedTwoTone';
 import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
+import ThumbDownAltTwoToneIcon from '@mui/icons-material/ThumbDownAltTwoTone';
 
 import { StackDateforDisplay, changeHats } from '../../actions/app';
 import ArtistDashboardEventCard from '../events/ArtistDashboardEventCard';
@@ -392,19 +393,37 @@ const Dashboard = ({
                                     artist.me.active &&
                                     artist.me.bookingWhen.length > 0 &&
                                     myArtistEvents &&
-                                    myArtistEvents.length > 0) ||
+                                    myArtistEvents.length > 0 &&
+                                    myArtistEvents.filter(
+                                        (event) => !event.confirmedHost
+                                    ).length > 0) ||
                                     (Array.isArray(user.role) &&
                                         user.role.indexOf('ARTIST') != -1 &&
                                         user.role.indexOf('ADMIN') != -1 &&
                                         artist.me &&
                                         artist.me._id &&
                                         myArtistEvents &&
-                                        myArtistEvents.length > 0)) && (
-                                    <Grid container direction="column">
+                                        myArtistEvents.length > 0 &&
+                                        myArtistEvents.filter(
+                                            (event) => !event.confirmedHost
+                                        ).length > 0)) && (
+                                    <Grid
+                                        container
+                                        direction="column"
+                                        sx={{ marginBottom: '20px' }}
+                                    >
                                         <Grid item>
                                             <Typography component="h2">
-                                                {myArtistEvents.length > 1
-                                                    ? `These ${myArtistEvents.length} concerts have booking offers for you to consider`
+                                                {myArtistEvents.filter(
+                                                    (event) =>
+                                                        !event.confirmedHost
+                                                ).length > 1
+                                                    ? `These ${
+                                                          myArtistEvents.filter(
+                                                              (event) =>
+                                                                  !event.confirmedHost
+                                                          ).length
+                                                      } concerts have booking offers for you to consider`
                                                     : `This concert has ${
                                                           myArtistEvents[0]
                                                               .offersFromHosts
@@ -429,7 +448,74 @@ const Dashboard = ({
                                             }}
                                         ></Grid>
                                         {myArtistEvents
-                                            .filter((e) => e) //.filter(e => e) to remove any null values
+                                            .filter(
+                                                (event) => !event.confirmedHost
+                                            ) //.filter(e => e) to remove any null values
+                                            .map(
+                                                (thisEvent, idx) =>
+                                                    thisEvent.bookingWhen &&
+                                                    thisEvent.bookingWhere && (
+                                                        <ArtistDashboardEventCard
+                                                            thisEvent={
+                                                                thisEvent
+                                                            }
+                                                        />
+                                                    )
+                                            )}
+                                    </Grid>
+                                )}
+                                {((artist.me &&
+                                    artist.me._id &&
+                                    artist.me.active &&
+                                    artist.me.bookingWhen.length > 0 &&
+                                    myArtistEvents &&
+                                    myArtistEvents.length > 0 &&
+                                    myArtistEvents.filter(
+                                        (event) => event.confirmedHost
+                                    ).length > 0) ||
+                                    (Array.isArray(user.role) &&
+                                        user.role.indexOf('ARTIST') > -1 &&
+                                        user.role.indexOf('ADMIN') > -1 &&
+                                        artist.me &&
+                                        artist.me._id &&
+                                        myArtistEvents &&
+                                        myArtistEvents.filter(
+                                            (event) => event.confirmedHost
+                                        ).length > 0)) && (
+                                    <Grid container direction="column">
+                                        <Grid item>
+                                            <Typography component="h2">
+                                                {myArtistEvents.filter(
+                                                    (event) =>
+                                                        event.confirmedHost
+                                                ).length > 1
+                                                    ? `These ${
+                                                          myArtistEvents.filter(
+                                                              (event) =>
+                                                                  event.confirmedHost
+                                                          ).length
+                                                      } concerts have been confirmed`
+                                                    : `This concert has been confirmed`}
+                                                :
+                                            </Typography>
+                                        </Grid>
+                                        {/* {bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry */}
+                                        <Grid
+                                            container
+                                            className="whenBooking"
+                                            direction="row"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            spacing={2}
+                                            sx={{
+                                                margin: '0px auto 16px',
+                                                width: '100%',
+                                            }}
+                                        ></Grid>
+                                        {myArtistEvents
+                                            .filter(
+                                                (event) => event.confirmedHost
+                                            )
                                             .map(
                                                 (thisEvent, idx) =>
                                                     thisEvent.bookingWhen &&
@@ -471,7 +557,7 @@ const Dashboard = ({
                                             You have offered to host{' '}
                                             {myHostEvents.length > 1
                                                 ? `these ${myHostEvents.length} shows`
-                                                : `this ${myHostEvents.length} show`}
+                                                : `this show`}
                                             :
                                         </Typography>
                                     </Grid>
@@ -641,7 +727,7 @@ const Dashboard = ({
                                                         </Grid>
                                                         {confirmedMy(
                                                             thisEvent
-                                                        ) && (
+                                                        ) ? (
                                                             <Grid
                                                                 item
                                                                 alignContent="center"
@@ -665,6 +751,35 @@ const Dashboard = ({
                                                                     ></ThumbUpAltTwoToneIcon>
                                                                 </Tooltip>
                                                             </Grid>
+                                                        ) : (
+                                                            thisEvent.confirmedHost &&
+                                                            !confirmedMy(
+                                                                thisEvent
+                                                            ) && (
+                                                                <Grid
+                                                                    item
+                                                                    alignContent="center"
+                                                                    container
+                                                                    xs={0.5}
+                                                                >
+                                                                    <Tooltip
+                                                                        title={
+                                                                            thisEvent
+                                                                                .artist
+                                                                                .stageName +
+                                                                            ' accepted a different host’s offer.'
+                                                                        }
+                                                                        placement="bottom"
+                                                                        arrow
+                                                                    >
+                                                                        <ThumbDownAltTwoToneIcon
+                                                                            sx={{
+                                                                                color: 'var(--primary-color)',
+                                                                            }}
+                                                                        ></ThumbDownAltTwoToneIcon>
+                                                                    </Tooltip>
+                                                                </Grid>
+                                                            )
                                                         )}
                                                     </Grid>
                                                 )
