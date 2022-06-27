@@ -429,6 +429,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                                     city={hostOffer.host.city}
                                     state={hostOffer.host.state}
                                     profileImg={hostOffer.host.profileImg}
+                                    hostOffer={hostOffer}
                                     tooltip={
                                         <>
                                             {/* <HostProfile
@@ -439,8 +440,12 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                                             //     eventDetailsDialogHandleClose
                                             // }
                                         ></HostProfile> */}
-                                            <div>{`${hostOffer.host.firstName} ${hostOffer.host.lastName}`}</div>
-                                            <div>
+                                            <div
+                                                style={{ textAlign: 'center' }}
+                                            >{`${hostOffer.host.firstName} ${hostOffer.host.lastName}`}</div>
+                                            <div
+                                                style={{ textAlign: 'center' }}
+                                            >
                                                 <PlaceTwoToneIcon
                                                     sx={{
                                                         marginRight: '2px',
@@ -448,8 +453,17 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                                                         marginBottom: '2px',
                                                     }}
                                                 ></PlaceTwoToneIcon>
+
                                                 {`${hostOffer.host.city}, ${hostOffer.host.state}`}
                                             </div>
+                                            {hostOffer.status ===
+                                                'ACCEPTED' && (
+                                                <div
+                                                    style={{
+                                                        color: 'var(--link-color)',
+                                                    }}
+                                                >{`${params.row.theEvent.artist.stageName} accepted this offer`}</div>
+                                            )}
                                         </>
                                     }
                                 />

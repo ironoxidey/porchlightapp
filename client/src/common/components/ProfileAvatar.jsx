@@ -14,6 +14,7 @@ const ProfileAvatar = ({
     hostOffer,
     thisEvent,
 }) => {
+    //console.log('hostOffer', hostOffer);
     return (
         <>
             {/* <EventHostDialog hostOffer={hostOffer} thisEvent={thisEvent} /> */}
@@ -25,6 +26,15 @@ const ProfileAvatar = ({
                             margin: '0 4px',
                             width: '30px',
                             height: '30px',
+                            outline: `${
+                                hostOffer && !hostOffer.artistViewedOn
+                                    ? '1px solid var(--primary-color)'
+                                    : hostOffer &&
+                                      hostOffer.status === 'ACCEPTED'
+                                    ? '1px solid var(--link-color)'
+                                    : '1px solid transparent'
+                            }`,
+                            outlineOffset: '2px',
                         }}
                     />
                 </Tooltip>

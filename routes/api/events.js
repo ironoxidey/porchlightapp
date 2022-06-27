@@ -279,11 +279,11 @@ router.get('/getArtistBooking/:slug', async (req, res) => {
                 offersFromHosts: 0,
                 'travelingCompanions.email': 0,
                 hostsInReach: 0,
-            }
+            } //don't return these fields
         )
             .populate(
                 'artist',
-                '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
+                '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes' //don't return these fields
             )
             .sort({ bookingWhen: 1 }); //.select('-artistEmail -agreeToPayAdminFee -payoutHandle'); //.select(['city', 'state', 'zipCode']); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
         //console.log(events);
@@ -673,13 +673,16 @@ router.get('/edit', [auth], async (req, res) => {
     ) {
         //must have ADMIN or BOOKING role to get into all of this!
         let updatedEvents = 0;
+        let yesterDate = new Date();
+        yesterDate.setDate(yesterDate.getDate() - 1);
         try {
             const events = await Event.find({
-                bookingWhen: { $gt: new Date() },
+                bookingWhen: { $gt: yesterDate }, //if we ask for $gte: new Date(), some of the events today won't show up because the time in the event's bookingWhen isn't the start time
             })
                 .populate('artist')
                 .populate('hostsInReach.host')
-                .populate('offersFromHosts.host');
+                .populate('offersFromHosts.host')
+                .populate('confirmedHost');
 
             events.forEach(async (eventDetails) => {
                 if (!eventDetails.artistSlug && eventDetails.artist.slug) {
@@ -710,15 +713,27 @@ router.get('/edit', [auth], async (req, res) => {
                         ' ' +
                         eventDetails.bookingWhere.zip;
                     const geocodedAddress = await addressGeocode(address);
-                    console.log(
-                        updatedEvents +
-                            ') ' +
+
+                    eventDetails.createdBy &&
+                        eventDetails.createdBy == 'ARTIST' &&
+                        console.log(
                             eventDetails.artist.stageName +
-                            ' wants to play a concert near ' +
-                            address +
-                            ': ',
-                        geocodedAddress
-                    );
+                                ' wants to play a concert near ' +
+                                address +
+                                ': ',
+                            geocodedAddress
+                        );
+                    eventDetails.createdBy &&
+                        eventDetails.createdBy == 'HOST' &&
+                        console.log(
+                            eventDetails.confirmedHost.firstName +
+                                ' ' +
+                                eventDetails.confirmedHost.lastName +
+                                ' wants to host a concert near ' +
+                                address +
+                                ': ',
+                            geocodedAddress
+                        );
 
                     // Commented out on May 24, 2022, because I think the updateOne on line 457 is handling this now.
                     // eventDetails.geocodedBookingWhere =

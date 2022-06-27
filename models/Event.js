@@ -2,14 +2,19 @@ const mongoose = require('mongoose');
 
 const EventSchema = new mongoose.Schema(
     {
+        createdBy: {
+            type: String,
+            required: true,
+            default: 'ARTIST',
+        },
         artist: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'artist',
-            required: true,
+            //required: true, //commented out June 27th, 2022 to make way for Host's to propose events
         },
         artistSlug: {
             type: String,
-            required: true,
+            //required: true, //commented out June 27th, 2022 to make way for Host's to propose events
         },
         artistUser: {
             type: mongoose.Schema.Types.ObjectId,
@@ -17,7 +22,7 @@ const EventSchema = new mongoose.Schema(
         },
         artistEmail: {
             type: String,
-            required: true,
+            //required: true, //commented out June 27th, 2022 to make way for Host's to propose events
         },
         hostsOfferingToBook: {
             type: [String],
