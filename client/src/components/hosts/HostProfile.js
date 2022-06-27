@@ -200,7 +200,18 @@ const HostProfile = ({
                                             backgroundSize: 'cover',
                                             padding: '4px',
                                             backgroundClip: 'content-box',
-                                            border: '1px solid var(--primary-color)',
+                                            //border: '1px solid var(--primary-color)',
+                                            border: `${
+                                                !theOffer ||
+                                                (theOffer &&
+                                                    !theOffer.artistViewedOn)
+                                                    ? '1px solid var(--primary-color)'
+                                                    : theOffer &&
+                                                      theOffer.status ===
+                                                          'ACCEPTED'
+                                                    ? '1px solid var(--link-color)'
+                                                    : '1px solid transparent'
+                                            }`,
                                             margin: '0',
                                             display: 'flex',
                                             justifyContent: 'center',
@@ -245,7 +256,18 @@ const HostProfile = ({
                                                 width: '100%',
                                             }}
                                         >
-                                            <Typography component="h2">
+                                            <Typography
+                                                component="h2"
+                                                sx={{
+                                                    color: `${
+                                                        theOffer &&
+                                                        theOffer.status ===
+                                                            'ACCEPTED'
+                                                            ? 'var(--link-color)!important'
+                                                            : 'var(--primary-color)'
+                                                    }`,
+                                                }}
+                                            >
                                                 {theHost.firstName}{' '}
                                                 {theHost.lastName}
                                             </Typography>{' '}
@@ -359,7 +381,7 @@ const HostProfile = ({
                                     </Typography>
                                 </Grid>
                             )}
-                            {theOffer.showSchedule && (
+                            {theOffer && theOffer.showSchedule && (
                                 <Grid
                                     item
                                     container
