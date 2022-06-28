@@ -274,10 +274,11 @@ const HostProfile = ({
                                         </Grid>
                                     </Grid>
                                 )}
-                                {user &&
-                                    user.role &&
-                                    (user.role.indexOf('ADMIN') > -1 ||
-                                        user.role.indexOf('BOOKING') > -1) &&
+                                {
+                                    //user &&
+                                    //user.role &&
+                                    //(user.role.indexOf('ADMIN') > -1 ||
+                                    //    user.role.indexOf('BOOKING') > -1) &&
                                     theHost.email && (
                                         <Grid
                                             item
@@ -299,7 +300,8 @@ const HostProfile = ({
                                                 {`${theHost.email}`}
                                             </Typography>
                                         </Grid>
-                                    )}
+                                    )
+                                }
                             </Grid>
                         )}
                         <Grid
@@ -316,10 +318,11 @@ const HostProfile = ({
                             alignItems="start"
                             className="topInfo"
                         >
-                            {user &&
-                                user.role &&
-                                (user.role.indexOf('ADMIN') > -1 ||
-                                    user.role.indexOf('BOOKING') > -1) &&
+                            {
+                                //user &&
+                                //user.role &&
+                                //(user.role.indexOf('ADMIN') > -1 ||
+                                //    user.role.indexOf('BOOKING') > -1) &&
                                 theHost.phone && (
                                     <Grid
                                         item
@@ -350,7 +353,8 @@ const HostProfile = ({
                                             )}`}
                                         </Typography>
                                     </Grid>
-                                )}
+                                )
+                            }
 
                             {theHost.city && theHost.state && (
                                 <Grid

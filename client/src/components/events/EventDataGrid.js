@@ -568,11 +568,15 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                         agreeToPayAdminFee: adminEvent.agreeToPayAdminFee,
                         artist: adminEvent.artist,
                         name:
+                            adminEvent.artist &&
                             adminEvent.artist.firstName +
-                            ' ' +
-                            adminEvent.artist.lastName,
+                                ' ' +
+                                adminEvent.artist.lastName,
                         email: adminEvent.artistEmail,
-                        stageName: adminEvent.artist.stageName || '',
+                        stageName:
+                            (adminEvent.artist &&
+                                adminEvent.artist.stageName) ||
+                            '',
                         profile: adminEvent.artist || '',
                         createdAt: adminEvent.createdAt,
                         hostsInReach: adminEvent.hostsInReach,

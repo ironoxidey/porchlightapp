@@ -499,8 +499,8 @@ const ArtistProfile = ({
                         <Grid item direction="column" xs={12} md={12}>
                             <Grid item xs={12}>
                                 <Typography component="h2">
-                                    {artist.stageName} is looking to book a show
-                                    for{' '}
+                                    {artist.stageName} is looking to book a
+                                    concert for{' '}
                                     {events.length > 1
                                         ? 'these dates and locations'
                                         : 'this date and location'}

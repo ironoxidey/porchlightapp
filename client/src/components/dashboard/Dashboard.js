@@ -42,6 +42,7 @@ const Dashboard = ({
     //     getCurrentProfile();
     // }, [getCurrentProfile]);
     const confirmedMy = (thisEvent) =>
+        thisEvent.createdBy !== 'HOST' &&
         thisEvent.confirmedHost &&
         host.me &&
         host.me._id &&
@@ -606,10 +607,11 @@ const Dashboard = ({
                                                         <Grid item>
                                                             <Tooltip
                                                                 title={
+                                                                    thisEvent.artist &&
                                                                     thisEvent
                                                                         .artist
                                                                         .stageName +
-                                                                    ' accepted your offer.'
+                                                                        ' accepted your offer.'
                                                                 }
                                                                 arrow={true}
                                                                 placement="bottom"
@@ -642,7 +644,12 @@ const Dashboard = ({
                                                                             '50%',
                                                                         overflow:
                                                                             'hidden',
-                                                                        backgroundImage: `url("${thisEvent.artist.squareImg}")`,
+                                                                        backgroundImage: `url("${
+                                                                            thisEvent.artist &&
+                                                                            thisEvent
+                                                                                .artist
+                                                                                .squareImg
+                                                                        }")`,
                                                                         backgroundPosition:
                                                                             '50% 25%',
                                                                         backgroundSize:
@@ -677,17 +684,17 @@ const Dashboard = ({
                                                                 <Link
                                                                     to={
                                                                         '/artists/' +
-                                                                        thisEvent
-                                                                            .artist
-                                                                            .slug
+                                                                        (thisEvent.artist &&
+                                                                            thisEvent
+                                                                                .artist
+                                                                                .slug)
                                                                     }
                                                                 >
                                                                     <Typography component="h2">
-                                                                        {
+                                                                        {thisEvent.artist &&
                                                                             thisEvent
                                                                                 .artist
-                                                                                .stageName
-                                                                        }
+                                                                                .stageName}
                                                                     </Typography>
                                                                 </Link>
                                                             </Grid>
@@ -754,10 +761,12 @@ const Dashboard = ({
                                                                 </Tooltip>
                                                             </Grid>
                                                         ) : (
-                                                            thisEvent.confirmedHost &&
+                                                            thisEvent.createdBy !==
+                                                                'HOST' && //if this event is not created by a host
+                                                            thisEvent.confirmedHost && //and if the event has a confirmedHost
                                                             !confirmedMy(
                                                                 thisEvent
-                                                            ) && (
+                                                            ) && ( //and it's not me
                                                                 <Grid
                                                                     item
                                                                     alignContent="center"
@@ -766,9 +775,10 @@ const Dashboard = ({
                                                                 >
                                                                     <Tooltip
                                                                         title={
-                                                                            thisEvent
-                                                                                .artist
-                                                                                .stageName +
+                                                                            (thisEvent.artist &&
+                                                                                thisEvent
+                                                                                    .artist
+                                                                                    .stageName) +
                                                                             ' accepted a different host’s offer.'
                                                                         }
                                                                         placement="bottom"

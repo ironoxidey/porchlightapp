@@ -886,8 +886,8 @@ const EventSpecificHostForm = ({
                 </FormLabel>,
                 <FormLabel component="legend">
                     If the band comes up short of their hoped-for $
-                    {artist.financialHopes} minimum, we’d like to encourage you
-                    to consider offering a{' '}
+                    {artist.financialHopes} minimum, would you be willing to
+                    provide a{' '}
                     <Tooltip
                         arrow={true}
                         placement="bottom"
@@ -911,69 +911,54 @@ const EventSpecificHostForm = ({
                             honorarium
                         </span>
                     </Tooltip>
-                    .
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{
-                        textAlign: 'center',
-                        display: 'block',
-                        marginTop: '6px',
-                    }}
-                >
-                    <em>
-                        We want to give you the opportunity to make this offer
-                        personally, if {artist.stageName} reaches out to pursue
-                        your offer, rather than through this cold and impersonal
-                        form.
-                    </em>
+                    ?
                 </FormLabel>,
             ],
             [
-                // <FormControl component="fieldset">
-                //     <RadioGroup
-                //         id="guaranteeHonorarium"
-                //         value={guaranteeHonorarium}
-                //         name="guaranteeHonorarium"
-                //         onChange={(e) => onChange(e)}
-                //     >
-                //         <FormControlLabel
-                //             value="no"
-                //             control={<Radio />}
-                //             label="Not this time, thanks."
-                //         />
-                //         <FormControlLabel
-                //             value="guarantee"
-                //             control={<Radio />}
-                //             label={`I’m willing to guarantee that ${artist.stageName} makes a minimum of $${artist.financialHopes}—I’ll make up the difference.`}
-                //         />
-                //         <FormControlLabel
-                //             value="honorarium"
-                //             control={<Radio />}
-                //             label={`I’d like to offer ${artist.stageName} an honorarium...`}
-                //         />
-                //     </RadioGroup>
-                //     {guaranteeHonorarium === 'honorarium' && (
-                //         <TextField
-                //             variant="standard"
-                //             name="honorariumAmount"
-                //             id="honorariumAmount"
-                //             label="of "
-                //             value={honorariumAmount || artist.financialHopes}
-                //             onChange={(e) => onChange(e)}
-                //             type="number"
-                //             sx={{ maxWidth: '300px', margin: '8px auto' }}
-                //             helperText="no matter how much the band makes otherwise."
-                //             InputProps={{
-                //                 startAdornment: (
-                //                     <InputAdornment position="start">
-                //                         $
-                //                     </InputAdornment>
-                //                 ),
-                //             }}
-                //         />
-                //     )}
-                // </FormControl>,
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        id="guaranteeHonorarium"
+                        value={guaranteeHonorarium}
+                        name="guaranteeHonorarium"
+                        onChange={(e) => onChange(e)}
+                    >
+                        <FormControlLabel
+                            value="no"
+                            control={<Radio />}
+                            label="Not this time, thanks."
+                        />
+                        <FormControlLabel
+                            value="guarantee"
+                            control={<Radio />}
+                            label={`I’m willing to guarantee that ${artist.stageName} makes a minimum of $${artist.financialHopes}—I’ll make up the difference.`}
+                        />
+                        <FormControlLabel
+                            value="honorarium"
+                            control={<Radio />}
+                            label={`I’d like to offer ${artist.stageName} an honorarium...`}
+                        />
+                    </RadioGroup>
+                    {guaranteeHonorarium === 'honorarium' && (
+                        <TextField
+                            variant="standard"
+                            name="honorariumAmount"
+                            id="honorariumAmount"
+                            label="of "
+                            value={honorariumAmount || artist.financialHopes}
+                            onChange={(e) => onChange(e)}
+                            type="number"
+                            sx={{ maxWidth: '300px', margin: '8px auto' }}
+                            helperText="no matter how much the band makes otherwise."
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        $
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    )}
+                </FormControl>,
             ],
         ],
         extraClarification: [
