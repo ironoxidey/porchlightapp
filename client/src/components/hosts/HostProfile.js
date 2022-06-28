@@ -302,6 +302,33 @@ const HostProfile = ({
                                         </Grid>
                                     )
                                 }
+                                {
+                                    //user &&
+                                    //user.role &&
+                                    //(user.role.indexOf('ADMIN') > -1 ||
+                                    //    user.role.indexOf('BOOKING') > -1) &&
+                                    theHost.phone && (
+                                        <Grid
+                                            item
+                                            container
+                                            alignItems="center"
+                                        >
+                                            <Typography
+                                                component="h3"
+                                                sx={{
+                                                    marginTop: '0px',
+                                                    width: '100%',
+                                                    textAlign: 'center',
+                                                    fontSize: '.8em',
+                                                }}
+                                            >
+                                                {`${formatPhoneNumber(
+                                                    theHost.phone
+                                                )}`}
+                                            </Typography>
+                                        </Grid>
+                                    )
+                                }
                             </Grid>
                         )}
                         <Grid
@@ -318,7 +345,7 @@ const HostProfile = ({
                             alignItems="start"
                             className="topInfo"
                         >
-                            {
+                            {/* {
                                 //user &&
                                 //user.role &&
                                 //(user.role.indexOf('ADMIN') > -1 ||
@@ -354,7 +381,7 @@ const HostProfile = ({
                                         </Typography>
                                     </Grid>
                                 )
-                            }
+                            } */}
 
                             {theHost.city && theHost.state && (
                                 <Grid
