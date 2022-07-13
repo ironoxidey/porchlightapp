@@ -116,7 +116,7 @@ h2.MuiTypography-root {
 }
 
 .diffTime {
-    color: var(--link-color);
+    color: var(--light-color);
 }
 
 * {

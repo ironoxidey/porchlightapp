@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Link, withRouter } from 'react-router-dom';
@@ -12,6 +12,9 @@ import {
     Tooltip,
     SvgIcon,
     Chip,
+    Checkbox,
+    FormGroup,
+    FormControlLabel,
 } from '@mui/material';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -37,6 +40,7 @@ import VisibilityTwoToneIcon from '@mui/icons-material/VisibilityTwoTone';
 import VisibilityOffTwoToneIcon from '@mui/icons-material/VisibilityOffTwoTone';
 import DownloadIcon from '@mui/icons-material/Download';
 import AccessTimeTwoToneIcon from '@mui/icons-material/AccessTimeTwoTone';
+import EmailTwoToneIcon from '@mui/icons-material/EmailTwoTone';
 
 import Button from '../layout/SvgButton';
 
@@ -70,6 +74,8 @@ const HostProfile = ({
     //     console.log('twelveHourTime', twelveHourTime);
     //     return twelveHourTime;
     // };
+
+    const [artistReachedOut, setArtistReachedOut] = useState(false);
 
     let theHostAddress =
         theHost.primarySpace === 'residence'
@@ -284,21 +290,31 @@ const HostProfile = ({
                                             item
                                             container
                                             alignItems="center"
+                                            justifyContent="center"
                                             sx={{
-                                                marginTop: '0px',
+                                                marginTop: '4px',
                                             }}
                                         >
-                                            <Typography
-                                                component="h3"
-                                                sx={{
-                                                    marginTop: '0px',
-                                                    width: '100%',
-                                                    textAlign: 'center',
-                                                    fontSize: '.8em',
-                                                }}
-                                            >
-                                                {`${theHost.email}`}
-                                            </Typography>
+                                            <a href={`mailto:${theHost.email}`}>
+                                                <Typography
+                                                    component="h3"
+                                                    sx={{
+                                                        marginTop: '0px',
+                                                        width: '100%',
+                                                        textAlign: 'center',
+                                                        fontSize: '.8em',
+                                                    }}
+                                                >
+                                                    <EmailTwoToneIcon
+                                                        sx={{
+                                                            fontSize: '1.3em',
+                                                            verticalAlign:
+                                                                'middle!important',
+                                                        }}
+                                                    ></EmailTwoToneIcon>
+                                                    {` ${theHost.email}`}
+                                                </Typography>
+                                            </a>
                                         </Grid>
                                     )
                                 }
@@ -312,20 +328,29 @@ const HostProfile = ({
                                             item
                                             container
                                             alignItems="center"
+                                            justifyContent="center"
+                                            marginTop="8px"
                                         >
-                                            <Typography
-                                                component="h3"
-                                                sx={{
-                                                    marginTop: '0px',
-                                                    width: '100%',
-                                                    textAlign: 'center',
-                                                    fontSize: '.8em',
-                                                }}
-                                            >
-                                                {`${formatPhoneNumber(
-                                                    theHost.phone
-                                                )}`}
-                                            </Typography>
+                                            <a href={`tel:${theHost.phone}`}>
+                                                <Typography
+                                                    component="h3"
+                                                    sx={{
+                                                        marginTop: '0px',
+                                                        width: '100%',
+                                                        textAlign: 'center',
+                                                        fontSize: '.8em',
+                                                    }}
+                                                >
+                                                    <PhoneTwoToneIcon
+                                                        sx={{
+                                                            fontSize: '1.3em',
+                                                        }}
+                                                    ></PhoneTwoToneIcon>
+                                                    {` ${formatPhoneNumber(
+                                                        theHost.phone
+                                                    )}`}
+                                                </Typography>
+                                            </a>
                                         </Grid>
                                     )
                                 }
@@ -1100,62 +1125,99 @@ const HostProfile = ({
                             component="h2"
                             sx={{ textAlign: 'center', marginTop: '8px' }}
                         >
-                            Would you like to accept this offer to have your
-                            show at {theHost.firstName} {theHost.lastName}’s{' '}
-                            {theHost.primarySpace} in{' '}
-                            {theHost.primarySpace === 'residence'
-                                ? toTitleCase(theHost.city) +
-                                  ', ' +
-                                  theHost.state
-                                : toTitleCase(theHost.venueCity) +
-                                  ', ' +
-                                  theHost.venueState}{' '}
-                            on{' '}
-                            {new Date(theEvent.bookingWhen).toLocaleDateString(
-                                undefined,
-                                {
-                                    weekday: 'long',
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
+                            If you choose to pursue this offer, you are expected
+                            to reach out to {theHost.firstName}{' '}
+                            {theHost.lastName} to discuss details.
+                        </Typography>
+                        <FormGroup>
+                            <FormControlLabel
+                                sx={{ textAlign: 'center', margin: '0 auto' }}
+                                control={
+                                    <Checkbox
+                                        onChange={() =>
+                                            setArtistReachedOut(
+                                                !artistReachedOut
+                                            )
+                                        }
+                                        checked={artistReachedOut}
+                                        inputProps={{
+                                            'aria-label': 'controlled',
+                                        }}
+                                    />
                                 }
-                            )}
-                            ?
-                        </Typography>
-                        <Typography
-                            component="p"
-                            sx={{ textAlign: 'center', marginTop: '8px' }}
-                        >
-                            <em>
-                                Accepting this offer will immediately send a
-                                notification to {theHost.firstName}{' '}
-                                {theHost.lastName}, and anyone else who might
-                                need to know.
-                            </em>
-                        </Typography>
-                        <Grid
-                            item
-                            container
-                            justifyContent="center"
-                            sx={{ marginTop: '16px' }}
-                        >
-                            <Button
-                                btnwidth="240"
-                                onClick={(e) => {
-                                    artistAcceptOffer(
-                                        theEvent.bookingWhen,
-                                        theOffer,
-                                        artist.me.stageName
-                                    );
-                                    eventDetailsDialogHandleClose();
-                                }}
-                            >
-                                <HowToRegTwoToneIcon
-                                    sx={{ marginRight: '8px' }}
-                                ></HowToRegTwoToneIcon>{' '}
-                                Accept This Offer
-                            </Button>
-                        </Grid>
+                                label={`I reached out and discussed the details of this offer with ${theHost.firstName} ${theHost.lastName}.`}
+                            />
+                        </FormGroup>
+                        {artistReachedOut && (
+                            <>
+                                <Typography
+                                    component="h2"
+                                    sx={{
+                                        textAlign: 'center',
+                                        marginTop: '8px',
+                                    }}
+                                >
+                                    Would you like to accept this offer to have
+                                    your show at {theHost.firstName}{' '}
+                                    {theHost.lastName}’s {theHost.primarySpace}{' '}
+                                    in{' '}
+                                    {theHost.primarySpace === 'residence'
+                                        ? toTitleCase(theHost.city) +
+                                          ', ' +
+                                          theHost.state
+                                        : toTitleCase(theHost.venueCity) +
+                                          ', ' +
+                                          theHost.venueState}{' '}
+                                    on{' '}
+                                    {new Date(
+                                        theEvent.bookingWhen
+                                    ).toLocaleDateString(undefined, {
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                    })}
+                                    ?
+                                </Typography>
+                                <Typography
+                                    component="p"
+                                    sx={{
+                                        textAlign: 'center',
+                                        marginTop: '8px',
+                                    }}
+                                >
+                                    <em>
+                                        Accepting this offer will immediately
+                                        send a notification to{' '}
+                                        {theHost.firstName} {theHost.lastName},
+                                        and anyone else who might need to know.
+                                    </em>
+                                </Typography>
+                                <Grid
+                                    item
+                                    container
+                                    justifyContent="center"
+                                    sx={{ marginTop: '16px' }}
+                                >
+                                    <Button
+                                        btnwidth="240"
+                                        onClick={(e) => {
+                                            artistAcceptOffer(
+                                                theEvent.bookingWhen,
+                                                theOffer,
+                                                artist.me.stageName
+                                            );
+                                            eventDetailsDialogHandleClose();
+                                        }}
+                                    >
+                                        <HowToRegTwoToneIcon
+                                            sx={{ marginRight: '8px' }}
+                                        ></HowToRegTwoToneIcon>{' '}
+                                        Accept This Offer
+                                    </Button>
+                                </Grid>
+                            </>
+                        )}
                     </>
                 )}
         </>
