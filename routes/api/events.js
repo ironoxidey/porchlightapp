@@ -151,7 +151,6 @@ router.post('/', [auth], async (req, res) => {
         eventFields.bookingWhen &&
         eventFields.bookingWhere
     ) {
-        //console.log("User is HOST and can raise their hand to book shows.");
         try {
             //console.log('eventFields', eventFields);
             let artist = await Artist.findOne({
@@ -159,6 +158,7 @@ router.post('/', [auth], async (req, res) => {
             }).select('-hadMeeting -sentFollowUp -notes');
 
             if (artist.active || userRole.indexOf('ADMIN') > -1) {
+                //only active artists OR ADMINs (mostly for development testing)
                 let event = await Event.findOneAndUpdate(
                     {
                         artistEmail: req.user.email.toLowerCase(),
@@ -707,9 +707,9 @@ router.get('/nearMeToHost', auth, async (req, res) => {
 });
 
 // @route    GET api/events/myArtistEvents
-// @desc     Get current user's events where the hostsOfferingToBook has at least one index
+// @desc     Get current user's events where the artistEmail matches the logged in user's
 // @access   Private
-router.get('/myArtistEventsOffers', auth, async (req, res) => {
+router.get('/myArtistEvents', auth, async (req, res) => {
     try {
         // const thisUser = await User.findOne({
         //   id: req.user.id,
@@ -717,7 +717,7 @@ router.get('/myArtistEventsOffers', auth, async (req, res) => {
         //console.log(req.user);
         const myArtistEvents = await Event.find({
             artistEmail: req.user.email,
-            'offersFromHosts.0': { $exists: true }, //checks to see if the first index of hostsOfferingToBook exists //https://www.mongodb.com/community/forums/t/is-there-a-way-to-query-array-fields-with-size-greater-than-some-specified-value/54597
+            //'offersFromHosts.0': { $exists: true }, //checks to see if the first index of hostsOfferingToBook exists //https://www.mongodb.com/community/forums/t/is-there-a-way-to-query-array-fields-with-size-greater-than-some-specified-value/54597
         })
             .select('-artistEmail -hostsOfferingToBook -latLong -hostsInReach')
             .populate(
@@ -738,6 +738,39 @@ router.get('/myArtistEventsOffers', auth, async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+// @route    GET api/events/myArtistEventsOffers
+// @desc     Get current user's events where the hostsOfferingToBook has at least one index
+// @access   Private
+// router.get('/myArtistEventsOffers', auth, async (req, res) => {
+//     try {
+//         // const thisUser = await User.findOne({
+//         //   id: req.user.id,
+//         // });
+//         //console.log(req.user);
+//         const myArtistEvents = await Event.find({
+//             artistEmail: req.user.email,
+//             'offersFromHosts.0': { $exists: true }, //checks to see if the first index of hostsOfferingToBook exists //https://www.mongodb.com/community/forums/t/is-there-a-way-to-query-array-fields-with-size-greater-than-some-specified-value/54597
+//         })
+//             .select('-artistEmail -hostsOfferingToBook -latLong -hostsInReach')
+//             .populate(
+//                 'offersFromHosts.host',
+//                 '-user -streetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin'
+//             )
+//             .sort({ bookingWhen: 1 }); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
+//         if (!myArtistEvents) {
+//             return res.json({
+//                 email: req.user.email,
+//                 msg: 'There are no events associated with ' + req.user.email,
+//             });
+//         }
+
+//         res.json(myArtistEvents);
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).send('Server Error');
+//     }
+// });
 
 // @route    POST api/events/artistViewedHostOffer
 // @desc     Artist viewed host's offer

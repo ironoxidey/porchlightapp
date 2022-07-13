@@ -7,7 +7,7 @@ import {
     GET_EVENTS_OFFERED_TO_HOST,
     GET_EVENTS_NEAR_ME_TO_HOST,
     GET_THIS_ARTIST_BOOKING_EVENTS,
-    GET_THIS_ARTIST_EVENTS_OFFERS,
+    GET_THIS_ARTIST_EVENTS,
     GET_ALL_EVENTS,
     ARTIST_VIEWED_HOST_OFFER,
     ARTIST_ACCEPTED_HOST_OFFER,
@@ -77,9 +77,9 @@ export const getArtistBookingEvents = (artistSlug) => async (dispatch) => {
 //Get current user's artist's events where the hostsOfferingToBook has at least one index
 export const getMyArtistEventsOffers = () => async (dispatch) => {
     try {
-        const res = await axios.get(`/api/events/myArtistEventsOffers/`);
+        const res = await axios.get(`/api/events/myArtistEvents/`);
         dispatch({
-            type: GET_THIS_ARTIST_EVENTS_OFFERS,
+            type: GET_THIS_ARTIST_EVENTS,
             payload: res.data,
         });
     } catch (err) {

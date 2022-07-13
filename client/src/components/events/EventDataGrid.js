@@ -221,8 +221,8 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
         /**
          * The cell value, but if the column has valueGetter, use getValue.
          */
-        value: PropTypes.oneOfType([PropTypes.array, PropTypes.string])
-            .isRequired,
+        value: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+        //.isRequired,
     };
 
     function ProfileCell(props) {
@@ -234,7 +234,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
         const [artistStageName, setArtistStageName] = useState('');
 
         const getArtistSlug = async () => {
-            const gottenArtistSlug = value; //await getArtistByEmail(artistEmail);
+            const gottenArtistSlug = value || { slug: '', stageName: '' }; //await getArtistByEmail(artistEmail);
             setArtistSlug(gottenArtistSlug.slug);
             setArtistStageName(gottenArtistSlug.stageName);
         };

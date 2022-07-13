@@ -389,6 +389,7 @@ const Dashboard = ({
                                 xs={12}
                                 direction="column"
                             >
+                                {/* Offers to consider */}
                                 {((artist.me &&
                                     artist.me._id &&
                                     artist.me.active &&
@@ -396,7 +397,10 @@ const Dashboard = ({
                                     myArtistEvents &&
                                     myArtistEvents.length > 0 &&
                                     myArtistEvents.filter(
-                                        (event) => !event.confirmedHost
+                                        (event) =>
+                                            !event.confirmedHost &&
+                                            event.offersFromHosts &&
+                                            event.offersFromHosts.length > 0
                                     ).length > 0) ||
                                     (Array.isArray(user.role) &&
                                         user.role.indexOf('ARTIST') != -1 &&
@@ -406,7 +410,10 @@ const Dashboard = ({
                                         myArtistEvents &&
                                         myArtistEvents.length > 0 &&
                                         myArtistEvents.filter(
-                                            (event) => !event.confirmedHost
+                                            (event) =>
+                                                !event.confirmedHost &&
+                                                event.offersFromHosts &&
+                                                event.offersFromHosts.length > 0
                                         ).length > 0)) && (
                                     <Grid
                                         container
@@ -417,18 +424,31 @@ const Dashboard = ({
                                             <Typography component="h2">
                                                 {myArtistEvents.filter(
                                                     (event) =>
-                                                        !event.confirmedHost
+                                                        !event.confirmedHost &&
+                                                        event.offersFromHosts &&
+                                                        event.offersFromHosts
+                                                            .length > 0
                                                 ).length > 1
                                                     ? `These ${
                                                           myArtistEvents.filter(
                                                               (event) =>
-                                                                  !event.confirmedHost
+                                                                  !event.confirmedHost &&
+                                                                  event.offersFromHosts &&
+                                                                  event
+                                                                      .offersFromHosts
+                                                                      .length >
+                                                                      0
                                                           ).length
                                                       } concerts have booking offers for you to consider`
                                                     : `This concert has ${
                                                           myArtistEvents.filter(
                                                               (event) =>
-                                                                  !event.confirmedHost
+                                                                  !event.confirmedHost &&
+                                                                  event.offersFromHosts &&
+                                                                  event
+                                                                      .offersFromHosts
+                                                                      .length >
+                                                                      0
                                                           )[0].offersFromHosts
                                                               .length > 1
                                                               ? 'booking offers'
@@ -452,7 +472,11 @@ const Dashboard = ({
                                         ></Grid>
                                         {myArtistEvents
                                             .filter(
-                                                (event) => !event.confirmedHost
+                                                (event) =>
+                                                    !event.confirmedHost &&
+                                                    event.offersFromHosts &&
+                                                    event.offersFromHosts
+                                                        .length > 0
                                             ) //.filter(e => e) to remove any null values
                                             .map(
                                                 (thisEvent, idx) =>
@@ -467,6 +491,7 @@ const Dashboard = ({
                                             )}
                                     </Grid>
                                 )}
+                                {/* Confirmed Concerts */}
                                 {((artist.me &&
                                     artist.me._id &&
                                     artist.me.active &&
@@ -485,7 +510,11 @@ const Dashboard = ({
                                         myArtistEvents.filter(
                                             (event) => event.confirmedHost
                                         ).length > 0)) && (
-                                    <Grid container direction="column">
+                                    <Grid
+                                        container
+                                        direction="column"
+                                        sx={{ marginBottom: '20px' }}
+                                    >
                                         <Grid item>
                                             <Typography component="h2">
                                                 {myArtistEvents.filter(
@@ -518,6 +547,86 @@ const Dashboard = ({
                                         {myArtistEvents
                                             .filter(
                                                 (event) => event.confirmedHost
+                                            )
+                                            .map(
+                                                (thisEvent, idx) =>
+                                                    thisEvent.bookingWhen &&
+                                                    thisEvent.bookingWhere && (
+                                                        <ArtistDashboardEventCard
+                                                            thisEvent={
+                                                                thisEvent
+                                                            }
+                                                        />
+                                                    )
+                                            )}
+                                    </Grid>
+                                )}
+                                {/* Waiting for a host to offer */}
+                                {((artist.me &&
+                                    artist.me._id &&
+                                    artist.me.active &&
+                                    artist.me.bookingWhen.length > 0 &&
+                                    myArtistEvents &&
+                                    myArtistEvents.length > 0 &&
+                                    myArtistEvents.filter(
+                                        (event) =>
+                                            event.offersFromHosts &&
+                                            event.offersFromHosts.length === 0
+                                    ).length > 0) ||
+                                    (Array.isArray(user.role) &&
+                                        user.role.indexOf('ARTIST') > -1 &&
+                                        user.role.indexOf('ADMIN') > -1 &&
+                                        artist.me &&
+                                        artist.me._id &&
+                                        myArtistEvents &&
+                                        myArtistEvents.filter(
+                                            (event) =>
+                                                event.offersFromHosts &&
+                                                event.offersFromHosts.length ===
+                                                    0
+                                        ).length > 0)) && (
+                                    <Grid container direction="column">
+                                        <Grid item>
+                                            <Typography component="h2">
+                                                {myArtistEvents.filter(
+                                                    (event) =>
+                                                        event.offersFromHosts &&
+                                                        event.offersFromHosts
+                                                            .length === 0
+                                                ).length > 1
+                                                    ? `These ${
+                                                          myArtistEvents.filter(
+                                                              (event) =>
+                                                                  event.offersFromHosts &&
+                                                                  event
+                                                                      .offersFromHosts
+                                                                      .length ===
+                                                                      0
+                                                          ).length
+                                                      } concerts are waiting for a host`
+                                                    : `This concert is waiting for a host`}
+                                                :
+                                            </Typography>
+                                        </Grid>
+                                        {/* {bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry */}
+                                        <Grid
+                                            container
+                                            className="whenBooking"
+                                            direction="row"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            spacing={2}
+                                            sx={{
+                                                margin: '0px auto 16px',
+                                                width: '100%',
+                                            }}
+                                        ></Grid>
+                                        {myArtistEvents
+                                            .filter(
+                                                (event) =>
+                                                    event.offersFromHosts &&
+                                                    event.offersFromHosts
+                                                        .length === 0
                                             )
                                             .map(
                                                 (thisEvent, idx) =>

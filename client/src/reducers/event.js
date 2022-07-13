@@ -5,7 +5,7 @@ import {
     GET_EVENTS_NEAR_ME_TO_HOST,
     GET_THIS_ARTIST_BOOKING_EVENTS,
     GET_ALL_EVENTS,
-    GET_THIS_ARTIST_EVENTS_OFFERS,
+    GET_THIS_ARTIST_EVENTS,
     ARTIST_VIEWED_HOST_OFFER,
     ARTIST_ACCEPTED_HOST_OFFER,
     EVENTS_ERROR,
@@ -48,7 +48,7 @@ export default function (state = initialState, action) {
                 adminEvents: payload,
                 loading: false,
             };
-        case GET_THIS_ARTIST_EVENTS_OFFERS:
+        case GET_THIS_ARTIST_EVENTS:
             return {
                 ...state,
                 myArtistEvents: payload,
