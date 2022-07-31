@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
 import { setAlert } from '../../actions/alert';
-import { createMyArtist } from '../../actions/artist';
+import { editArtistEvent } from '../../actions/event';
 import {
     TextField,
     //Button,
@@ -80,10 +80,18 @@ const UploadInput = styled('input')({
     display: 'none',
 });
 
+const prettifyDate = (date) => {
+    return new Date(date).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+};
+
 const EditArtistBookingForm = ({
     theArtist,
     //theArtist: { loading },
-    createMyArtist,
+    editArtistEvent,
     getHostsLocations,
     hosts,
     history,
@@ -136,8 +144,8 @@ const EditArtistBookingForm = ({
         payoutPlatform: 'PayPal',
         payoutHandle: '',
         tourVibe: [],
-        bookingWhen: [],
-        bookingWhenWhere: [],
+        bookingWhen: '',
+        bookingWhere: {},
         setLength: '',
         schedule: '',
         showSchedule: {
@@ -244,12 +252,12 @@ const EditArtistBookingForm = ({
                     loading || !theArtist.tourVibe ? [] : theArtist.tourVibe,
                 bookingWhen:
                     loading || !theArtist.bookingWhen
-                        ? []
+                        ? ''
                         : theArtist.bookingWhen,
-                bookingWhenWhere:
-                    loading || !theArtist.bookingWhenWhere
-                        ? []
-                        : theArtist.bookingWhenWhere,
+                bookingWhere:
+                    loading || !theArtist.bookingWhere
+                        ? {}
+                        : theArtist.bookingWhere,
                 setLength:
                     loading || !theArtist.setLength ? '' : theArtist.setLength,
                 schedule:
@@ -365,8 +373,8 @@ const EditArtistBookingForm = ({
                     payoutPlatform: 'PayPal',
                     payoutHandle: '',
                     tourVibe: [],
-                    bookingWhen: [],
-                    bookingWhenWhere: [],
+                    bookingWhen: '',
+                    bookingWhere: {},
                     setLength: '',
                     schedule: '',
                     showSchedule: {
@@ -399,7 +407,7 @@ const EditArtistBookingForm = ({
                 });
             }
         }
-    }, [auth.loading, createMyArtist, theArtist]);
+    }, [auth.loading, editArtistEvent, theArtist]);
 
     const {
         slug,
@@ -432,7 +440,7 @@ const EditArtistBookingForm = ({
         tourVibe,
         namedPrice,
         bookingWhen,
-        bookingWhenWhere,
+        bookingWhere,
         setLength,
         schedule,
         showSchedule,
@@ -537,90 +545,92 @@ const EditArtistBookingForm = ({
 
     useEffect(() => {
         if (changesMade.current) {
-            createMyArtist(formData, history, true);
-            changesMade.current = false;
-        }
-    }, [bookingWhenWhere]);
-
-    useEffect(() => {
-        if (bookingWhen && bookingWhen.length > 0) {
-            let writeToState = false;
-            let updatedField = [];
-            let whenWhereFiltered = [];
-            let bookingWhenDated = bookingWhen.map((messyDate) => {
-                return new Date(messyDate).toISOString();
-            });
-            bookingWhenDated.forEach((whenBooking, idx) => {
-                //return an object trim out of bookingWhenWhere any whens that aren't in bookingWhen
-                whenWhereFiltered = Object.filter(
-                    bookingWhenWhere,
-                    (whenWhere) => {
-                        //https://stackoverflow.com/a/37616104/3338608
-                        if (whenWhere) {
-                            //occasionally I get null values out of the database (not sure how they're getting in there)
-                            let datedWhen = new Date(
-                                whenWhere.when
-                            ).toISOString();
-                            return bookingWhenDated.includes(datedWhen);
-                        }
-                    }
-                );
-                // whenWhereFiltered = whenWhereFiltered.sort((a, b) =>
-                //     sortDates(a, b)
-                // );
-                let existsInWhere =
-                    whenWhereFiltered
-                        .map((item) => {
-                            return new Date(item.when).toISOString();
-                        })
-                        .indexOf(whenBooking) > -1
-                        ? true
-                        : false;
-
-                //whenWhereFiltered.filter(e => e);
-                //filter out null or empty values -- I think they must be coming from deleting booking dates
-                let temp = [];
-                for (let i of whenWhereFiltered) i && temp.push(i); // copy each non-empty value to the 'temp' array
-                whenWhereFiltered = temp;
-
-                if (existsInWhere) {
-                    //console.log("bookingWhenWhere already has " + whenBooking);
-                } else {
-                    //if new, add when and last where to the updatedField object
-                    writeToState = true;
-                    updatedField = updatedField.concat(
-                        whenWhereFiltered
-                            .concat([
-                                //{ when: whenBooking, where: null },
-                                {
-                                    when: whenBooking,
-                                    where:
-                                        whenWhereFiltered.length > 0
-                                            ? whenWhereFiltered[
-                                                  whenWhereFiltered.length - 1
-                                              ].where
-                                            : '',
-                                    updated: new Date(),
-                                },
-                            ])
-                            .sort((a, b) => sortDates(a, b))
-                    );
-                }
-            });
-            if (bookingWhenWhere.length > bookingWhen.length) {
-                writeToState = true;
-                updatedField = whenWhereFiltered;
+            if (bookingWhen && bookingWhere && bookingWhere.city) {
+                editArtistEvent(formData, history, true);
+                changesMade.current = false;
             }
-            if (writeToState) {
-                setFormData({
-                    ...formData,
-                    ['bookingWhenWhere']: updatedField,
-                });
-            }
-        } else {
-            setFormData({ ...formData, ['bookingWhenWhere']: [] });
         }
-    }, [bookingWhen]);
+    }, [bookingWhere]);
+
+    // useEffect(() => {
+    //     if (bookingWhen && bookingWhen.length > 0) {
+    //         let writeToState = false;
+    //         let updatedField = [];
+    //         let whenWhereFiltered = [];
+    //         let bookingWhenDated = bookingWhen.map((messyDate) => {
+    //             return new Date(messyDate).toISOString();
+    //         });
+    //         bookingWhenDated.forEach((whenBooking, idx) => {
+    //             //return an object trim out of bookingWhenWhere any whens that aren't in bookingWhen
+    //             whenWhereFiltered = Object.filter(
+    //                 bookingWhenWhere,
+    //                 (whenWhere) => {
+    //                     //https://stackoverflow.com/a/37616104/3338608
+    //                     if (whenWhere) {
+    //                         //occasionally I get null values out of the database (not sure how they're getting in there)
+    //                         let datedWhen = new Date(
+    //                             whenWhere.when
+    //                         ).toISOString();
+    //                         return bookingWhenDated.includes(datedWhen);
+    //                     }
+    //                 }
+    //             );
+    //             // whenWhereFiltered = whenWhereFiltered.sort((a, b) =>
+    //             //     sortDates(a, b)
+    //             // );
+    //             let existsInWhere =
+    //                 whenWhereFiltered
+    //                     .map((item) => {
+    //                         return new Date(item.when).toISOString();
+    //                     })
+    //                     .indexOf(whenBooking) > -1
+    //                     ? true
+    //                     : false;
+
+    //             //whenWhereFiltered.filter(e => e);
+    //             //filter out null or empty values -- I think they must be coming from deleting booking dates
+    //             let temp = [];
+    //             for (let i of whenWhereFiltered) i && temp.push(i); // copy each non-empty value to the 'temp' array
+    //             whenWhereFiltered = temp;
+
+    //             if (existsInWhere) {
+    //                 //console.log("bookingWhenWhere already has " + whenBooking);
+    //             } else {
+    //                 //if new, add when and last where to the updatedField object
+    //                 writeToState = true;
+    //                 updatedField = updatedField.concat(
+    //                     whenWhereFiltered
+    //                         .concat([
+    //                             //{ when: whenBooking, where: null },
+    //                             {
+    //                                 when: whenBooking,
+    //                                 where:
+    //                                     whenWhereFiltered.length > 0
+    //                                         ? whenWhereFiltered[
+    //                                               whenWhereFiltered.length - 1
+    //                                           ].where
+    //                                         : '',
+    //                                 updated: new Date(),
+    //                             },
+    //                         ])
+    //                         .sort((a, b) => sortDates(a, b))
+    //                 );
+    //             }
+    //         });
+    //         if (bookingWhenWhere.length > bookingWhen.length) {
+    //             writeToState = true;
+    //             updatedField = whenWhereFiltered;
+    //         }
+    //         if (writeToState) {
+    //             setFormData({
+    //                 ...formData,
+    //                 ['bookingWhenWhere']: updatedField,
+    //             });
+    //         }
+    //     } else {
+    //         setFormData({ ...formData, ['bookingWhenWhere']: [] });
+    //     }
+    // }, [bookingWhen]);
 
     const onCalendarChange = (target) => {
         changesMade.current = true;
@@ -666,8 +676,10 @@ const EditArtistBookingForm = ({
     const onSubmit = (e) => {
         e.preventDefault();
         //console.log('Submitting...');
-        createMyArtist(formData, history, true);
-        changesMade.current = false;
+        if (bookingWhen && bookingWhere && bookingWhere.city) {
+            editArtistEvent(formData, history, true);
+            changesMade.current = false;
+        }
     };
 
     const [open, setOpen] = useState(true);
@@ -675,8 +687,7 @@ const EditArtistBookingForm = ({
     const formGroups = {
         bookingWhen: [
             <FormLabel component="legend">
-                Please select the dates (and then locations) you’d like to try
-                to play a show:
+                Please select a date you’d like to try to play a concert:
             </FormLabel>,
             [
                 // bookingWhen && bookingWhen.length > 0
@@ -684,42 +695,45 @@ const EditArtistBookingForm = ({
                 // 		handleAddMultiInput('bookingWhenWhere',bookingWhenWhere, whenBooking)
                 // 	  ))
                 // 	: '',
-                bookingWhenWhere && bookingWhenWhere.length > 0
-                    ? bookingWhenWhere
-                          .filter((e) => e)
-                          .map(
-                              (
-                                  whenBooking,
-                                  idx,
-                                  whenWhereOrig //.filter(e => e) to remove any null values
-                              ) => (
-                                  <Grid
-                                      className="whenBooking"
-                                      key={`whenBooking${idx}`}
-                                      container
-                                      direction="row"
-                                      justifyContent="space-around"
-                                      alignItems="start"
-                                      spacing={2}
-                                      sx={{
-                                          // borderColor: 'primary.dark',
-                                          // borderWidth: '2px',
-                                          // borderStyle: 'solid',
-                                          backgroundColor: 'rgba(0,0,0,0.15)',
-                                          '&:hover': {},
-                                          border:
-                                              whenBooking.when ===
-                                              bookingWhen[
-                                                  bookingWhen.length - 1
-                                              ]
-                                                  ? `1px var(--link-color) solid`
-                                                  : `1px var(--light-color) solid`,
-                                          padding: '0 10px 10px',
-                                          margin: '0px auto',
-                                          width: '100%',
-                                      }}
-                                  >
-                                      {/* <Grid item xs={12} md={3}>
+
+                <MultipleDatesPicker
+                    id="bookingWhen"
+                    name="bookingWhen"
+                    open={true}
+                    selectedDates={bookingWhen}
+                    value={bookingWhen}
+                    onCancel={() => setOpen(false)}
+                    //onSubmit={dates => console.log('selected dates', dates)}
+                    onChange={(target) => onCalendarChange(target)}
+                />,
+            ],
+        ],
+        bookingWhere: [
+            <FormLabel component="legend">
+                Please select roughly where you’d like to try to play a concert
+                on {prettifyDate(bookingWhen)}:
+            </FormLabel>,
+            bookingWhere && (
+                <Grid
+                    className="whenBooking"
+                    container
+                    direction="row"
+                    justifyContent="space-around"
+                    alignItems="start"
+                    spacing={2}
+                    sx={{
+                        // borderColor: 'primary.dark',
+                        // borderWidth: '2px',
+                        // borderStyle: 'solid',
+                        backgroundColor: 'rgba(0,0,0,0.15)',
+                        '&:hover': {},
+                        border: `1px var(--light-color) solid`,
+                        padding: '0 10px 10px',
+                        margin: '0px auto',
+                        width: '100%',
+                    }}
+                >
+                    {/* <Grid item xs={12} md={3}>
 									<TextField
 										variant='standard'
 										name='bookingWhenWhere'
@@ -734,92 +748,67 @@ const EditArtistBookingForm = ({
 										sx={{ width: '100%' }}
 									/>
 								</Grid> */}
-                                      <Grid item xs={12} md={12}>
-                                          <Autocomplete
-                                              id="bookingWhenWhere"
-                                              //value={whenBooking && whenBooking.where || whenWhereOrig[idx-1] && whenWhereOrig[idx-1].where || null}
-                                              value={
-                                                  (whenBooking &&
-                                                      whenBooking.where) ||
-                                                  null
-                                              }
-                                              options={hosts}
-                                              disableClearable
-                                              groupBy={(option) =>
-                                                  option.fullState
-                                              }
-                                              getOptionLabel={(option) =>
-                                                  option.city +
-                                                      ', ' +
-                                                      option.state || ''
-                                              }
-                                              //getOptionSelected={(option, value) => option.city === value.city}
-                                              isOptionEqualToValue={(
-                                                  option,
-                                                  value
-                                              ) =>
-                                                  option.city === value.city &&
-                                                  option.state === value.state
-                                              }
-                                              onChange={(e, value) => {
-                                                  onMultiAutocompleteTagChange(
-                                                      'where',
-                                                      'bookingWhenWhere',
-                                                      bookingWhenWhere,
-                                                      idx,
-                                                      e,
-                                                      value
-                                                  );
-                                              }}
-                                              renderTags={(
-                                                  value,
-                                                  getTagProps
-                                              ) =>
-                                                  value.map((option, index) => (
-                                                      <Chip
-                                                          variant="outlined"
-                                                          name="bookingWhenWhere"
-                                                          label={
-                                                              option.city +
-                                                              ', ' +
-                                                              option.state
-                                                          }
-                                                          {...getTagProps({
-                                                              index,
-                                                          })}
-                                                      />
-                                                  ))
-                                              }
-                                              renderInput={(params) => (
-                                                  <TextField
-                                                      {...params}
-                                                      sx={{ width: '100%' }}
-                                                      variant="standard"
-                                                      label={`On ${moment(
-                                                          whenBooking.when
-                                                      ).format(
-                                                          'll'
-                                                      )}, I’d love to play in or around`}
-                                                      name="bookingWhenWhere"
-                                                  />
-                                              )}
-                                          />
-                                      </Grid>
-                                  </Grid>
-                              )
-                          )
-                    : '',
-                <MultipleDatesPicker
-                    id="bookingWhen"
-                    name="bookingWhen"
-                    open={true}
-                    selectedDates={bookingWhen}
-                    value={bookingWhen}
-                    onCancel={() => setOpen(false)}
-                    //onSubmit={dates => console.log('selected dates', dates)}
-                    onChange={(target) => onCalendarChange(target)}
-                />,
-            ],
+                    <Grid item xs={12} md={12}>
+                        <Autocomplete
+                            id="bookingWhere"
+                            //value={whenBooking && whenBooking.where || whenWhereOrig[idx-1] && whenWhereOrig[idx-1].where || null}
+                            value={(bookingWhere.city && bookingWhere) || null}
+                            options={hosts}
+                            disableClearable
+                            groupBy={(option) => option.fullState}
+                            getOptionLabel={(option) =>
+                                option.city + ', ' + option.state || ''
+                            }
+                            //getOptionSelected={(option, value) => option.city === value.city}
+                            isOptionEqualToValue={(option, value) =>
+                                option.city === value.city &&
+                                option.state === value.state
+                            }
+                            onChange={(e, value) => {
+                                onAutocompleteTagChange(
+                                    e,
+                                    'bookingWhere',
+                                    value
+                                );
+
+                                // onMultiAutocompleteTagChange(
+                                //     'where',
+                                //     'bookingWhere',
+                                //     bookingWhere,
+                                //     idx,
+                                //     e,
+                                //     value
+                                // );
+                            }}
+                            renderTags={(value, getTagProps) =>
+                                value.map((option, index) => (
+                                    <Chip
+                                        variant="outlined"
+                                        name="bookingWhere"
+                                        label={
+                                            option.city + ', ' + option.state
+                                        }
+                                        {...getTagProps({
+                                            index,
+                                        })}
+                                    />
+                                ))
+                            }
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    sx={{ width: '100%' }}
+                                    variant="standard"
+                                    label={`On ${moment(bookingWhen).format(
+                                        'll'
+                                    )}, I’d love to play in or around`}
+                                    name="bookingWhere"
+                                />
+                            )}
+                        />
+                    </Grid>
+                </Grid>
+            ),
         ],
         tourVibe: [
             <FormLabel component="legend">
@@ -1954,7 +1943,7 @@ const EditArtistBookingForm = ({
 EditArtistBookingForm.propTypes = {
     getHostsLocations: PropTypes.func.isRequired,
     hosts: PropTypes.array.isRequired,
-    createMyArtist: PropTypes.func.isRequired,
+    editArtistEvent: PropTypes.func.isRequired,
     theArtist: PropTypes.object,
     auth: PropTypes.object.isRequired,
 };
@@ -1966,5 +1955,5 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
     getHostsLocations,
-    createMyArtist,
+    editArtistEvent,
 })(withRouter(EditArtistBookingForm)); //withRouter allows us to pass history objects

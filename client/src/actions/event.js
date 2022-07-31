@@ -2,6 +2,7 @@ import axios from 'axios';
 import { setAlert } from './alert';
 
 import {
+    EDIT_ARTIST_EVENT,
     HOST_RAISE_HAND,
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
@@ -14,6 +15,58 @@ import {
     EVENTS_ERROR,
     AUTH_ERROR,
 } from './types';
+
+//Create an artist event by bookingWhen and bookingWhere
+export const editArtistEvent = (formData, history) => async (dispatch) => {
+    try {
+        //console.log('hostRaiseHand formData', formData);
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        const res = await axios.post(
+            '/api/events/artistEvent',
+            formData,
+            config
+        );
+        //console.log('hostRaiseHand res.data', res.data);
+        dispatch({
+            type: EDIT_ARTIST_EVENT,
+            payload: res.data,
+        });
+        // dispatch(
+        //     setAlert(
+        //         'Your offer to host the show on ' +
+        //             new Date(formData.bookingWhen).toLocaleDateString(
+        //                 undefined,
+        //                 {
+        //                     weekday: 'long',
+        //                     year: 'numeric',
+        //                     month: 'long',
+        //                     day: 'numeric',
+        //                 }
+        //             ) +
+        //             ' was submitted.',
+        //         'success'
+        //     )
+        // ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+    } catch (err) {
+        console.log('error: ' + err);
+        const errors = err.response.data.errors;
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+        }
+        dispatch({
+            type: UPDATE_EVENT_ERROR,
+            payload: {
+                msg: err.response.statusText,
+                status: err.response.status,
+            },
+        });
+        dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+    }
+};
 
 // Get the events that I've offered to host
 export const getMyEventsOfferedToHost = () => async (dispatch) => {

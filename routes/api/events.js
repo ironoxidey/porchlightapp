@@ -264,6 +264,171 @@ router.post('/', [auth], async (req, res) => {
     //res.json(eventCount + " event(s) submitted to the database."); //eventually remove this
 });
 
+// @route    POST api/events/artistEvent
+// @desc     Create or Update an artist event based on bookingWhen
+// @access   Private
+router.post(
+    '/artistEvent',
+    [auth, [check('bookingWhen', 'Must provide a date.').exists()]],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        let eventFields = req.body;
+        console.log('eventFields', eventFields);
+
+        let userRole = req.user.role;
+
+        if (
+            userRole &&
+            userRole.indexOf('ARTIST') > -1 &&
+            eventFields.bookingWhen &&
+            eventFields.bookingWhere &&
+            eventFields.bookingWhere.zip
+        ) {
+            try {
+                //console.log('eventFields', eventFields);
+                let artist = await Artist.findOne({
+                    email: req.user.email.toLowerCase(),
+                }).select('-hadMeeting -sentFollowUp -notes');
+
+                if (artist.active || userRole.indexOf('ADMIN') > -1) {
+                    //only active artists OR ADMINs (mostly for development testing)
+                    let event = await Event.findOneAndUpdate(
+                        {
+                            artistEmail: req.user.email.toLowerCase(),
+                            bookingWhen: eventFields.bookingWhen,
+                            createdBy: 'ARTIST',
+                        },
+                        {
+                            $set: eventFields,
+                            artist: artist.id,
+                            artistSlug: artist.slug,
+                            artistUser: req.user._id,
+                            artistEmail: req.user.email.toLowerCase(),
+                            bookingWhen: eventFields.bookingWhen,
+                            bookingWhere: eventFields.bookingWhere,
+                            createdBy: 'ARTIST',
+                        },
+                        { new: true, upsert: true }
+                    );
+
+                    //Geocode the event
+                    if (
+                        ((event.latLong &&
+                            event.latLong.coordinates &&
+                            event.latLong.coordinates.length == 0) || //if there is no latLong OR
+                            !event.geocodedBookingWhere || //if there is no geocodedBookingWhere OR
+                            (event.geocodedBookingWhere && //if there IS a geocodedBookingWhere AND
+                                event.bookingWhere.zip !==
+                                    event.geocodedBookingWhere.zip)) && // the zip doesn't match the bookingWhere.zip, then the location has changed since last geocoded
+                        event.bookingWhere &&
+                        event.bookingWhere.city &&
+                        event.bookingWhere.state &&
+                        event.bookingWhere.zip
+                    ) {
+                        //if the event doesn't yet have a latLong attached to it, make one based on just the city, state zip they selected
+                        const address =
+                            event.bookingWhere.city +
+                            ', ' +
+                            event.bookingWhere.state +
+                            ' ' +
+                            event.bookingWhere.zip;
+                        const geocodedAddress = await addressGeocode(address);
+                        // console.log(
+                        //     updatedEvents +
+                        //         ') ' +
+                        //         event.artist.stageName +
+                        //         ' wants to play a concert near ' +
+                        //         address +
+                        //         ': ',
+                        //     geocodedAddress
+                        // );
+
+                        let hostsInReach = await Host.find({
+                            latLong: {
+                                $near: {
+                                    $maxDistance:
+                                        event.hostReachRadius * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
+                                    $geometry: {
+                                        type: 'Point',
+                                        coordinates: geocodedAddress,
+                                    },
+                                },
+                            },
+                        });
+                        //console.log(await hostsInReach);
+                        const hostsIDInReach = hostsInReach.map(
+                            (hostInReach) => {
+                                //console.log('hostInReach._id', hostInReach._id);
+                                return {
+                                    host: hostInReach._id,
+                                };
+                            }
+                        );
+
+                        let savedDetails = await event.updateOne(
+                            {
+                                hostsInReach: hostsIDInReach,
+                                'latLong.coordinates': geocodedAddress,
+                                geocodedBookingWhere: event.bookingWhere,
+                            },
+                            { new: true }
+                        );
+                        // if (savedDetails) {
+                        //     console.log(
+                        //         'savedDetails:',
+                        //         savedDetails
+                        //     );
+                        // }
+                    }
+                    //end geocoding
+
+                    //console.log('event', event);
+                    //res.json(event);
+
+                    const myArtistEvents = await Event.find({
+                        artistEmail: req.user.email,
+                        //'offersFromHosts.0': { $exists: true }, //checks to see if the first index of hostsOfferingToBook exists //https://www.mongodb.com/community/forums/t/is-there-a-way-to-query-array-fields-with-size-greater-than-some-specified-value/54597
+                    })
+                        .select(
+                            '-artistEmail -hostsOfferingToBook -latLong -hostsInReach'
+                        )
+                        .populate(
+                            'offersFromHosts.host',
+                            '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin'
+                        )
+                        .sort({ bookingWhen: 1 }); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
+                    if (!myArtistEvents) {
+                        return res.json({
+                            email: req.user.email,
+                            msg:
+                                'There are no events associated with ' +
+                                req.user.email,
+                        });
+                    }
+
+                    res.json(myArtistEvents);
+                }
+            } catch (err) {
+                console.error(err.message);
+                res.status(500).send('Server Error: ' + err.message);
+            }
+        } else {
+            console.error(
+                req.user.email + ' cannot create or update this event.'
+            );
+            res.status(500).send(
+                'User does not have authority to make these changes.'
+            );
+        }
+
+        //res.json(eventCount + " event(s) submitted to the database."); //eventually remove this
+    }
+);
+
 // @route    POST api/events/setupEventbrite
 // @desc     Setup Eventbrite event from eventID
 // @access   Private
@@ -722,7 +887,7 @@ router.get('/myArtistEvents', auth, async (req, res) => {
             .select('-artistEmail -hostsOfferingToBook -latLong -hostsInReach')
             .populate(
                 'offersFromHosts.host',
-                '-user -streetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin'
+                '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin'
             )
             .sort({ bookingWhen: 1 }); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
         if (!myArtistEvents) {
