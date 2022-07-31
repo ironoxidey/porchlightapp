@@ -4,7 +4,14 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { Grid, Typography, Box, Avatar, Tooltip } from '@mui/material';
+import {
+    Grid,
+    Typography,
+    Box,
+    Avatar,
+    Tooltip,
+    IconButton,
+} from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -14,7 +21,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 
 import { StackDateforDisplay } from '../../actions/app';
-import { artistViewedHostOffer } from '../../actions/event';
+import { artistViewedHostOffer, deleteArtistEvent } from '../../actions/event';
 
 import EventDetails from '../events/EventDetails';
 
@@ -23,7 +30,13 @@ import HostProfile from '../hosts/HostProfile';
 import { relativeTimeRounding } from 'moment';
 import ArtistDashboardBookingOffers from './ArtistDashboardBookingOffers';
 
-const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
+import DeleteIcon from '@mui/icons-material/Delete';
+
+const ArtistDashboardEventCard = ({
+    thisEvent,
+    artistViewedHostOffer,
+    deleteArtistEvent,
+}) => {
     //console.log('ArtistDashboardEventCard thisEvent:', thisEvent);
 
     //Booking Details Dialog Functions
@@ -127,6 +140,13 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
                         )}
                     </Grid>
                 </Grid>
+                <Grid item className="deleteBtn">
+                    <IconButton
+                        onClick={(e) => deleteArtistEvent(thisEvent._id)}
+                    >
+                        <DeleteIcon></DeleteIcon>
+                    </IconButton>
+                </Grid>
             </Grid>
         </>
     );
@@ -135,6 +155,7 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
 ArtistDashboardEventCard.propTypes = {
     thisEvent: PropTypes.object.isRequired,
     artistViewedHostOffer: PropTypes.func.isRequired,
+    deleteArtistEvent: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({});
@@ -142,4 +163,5 @@ const mapStateToProps = (state) => ({});
 //export default ArtistDashboardEventCard;
 export default connect(mapStateToProps, {
     artistViewedHostOffer,
+    deleteArtistEvent,
 })(withRouter(ArtistDashboardEventCard)); //withRouter allows us to pass history objects

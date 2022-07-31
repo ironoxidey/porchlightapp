@@ -3,6 +3,7 @@ import { setAlert } from './alert';
 
 import {
     EDIT_ARTIST_EVENT,
+    DELETE_ARTIST_EVENT,
     HOST_RAISE_HAND,
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
@@ -51,6 +52,33 @@ export const editArtistEvent = (formData, history) => async (dispatch) => {
         //         'success'
         //     )
         // ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+    } catch (err) {
+        console.log('error: ' + err);
+        const errors = err.response.data.errors;
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+        }
+        dispatch({
+            type: UPDATE_EVENT_ERROR,
+            payload: {
+                msg: err.response.statusText,
+                status: err.response.status,
+            },
+        });
+        dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+    }
+};
+
+//Delete an artist event by id
+export const deleteArtistEvent = (id) => async (dispatch) => {
+    console.log('deleteArtistEvent id', id);
+    try {
+        const res = await axios.delete(`/api/events/artistEvent/${id}`);
+        //console.log('hostRaiseHand res.data', res.data);
+        dispatch({
+            type: DELETE_ARTIST_EVENT,
+            payload: res.data,
+        });
     } catch (err) {
         console.log('error: ' + err);
         const errors = err.response.data.errors;

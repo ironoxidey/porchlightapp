@@ -11,6 +11,7 @@ import {
     ARTIST_ACCEPTED_HOST_OFFER,
     EVENTS_ERROR,
     LOGOUT,
+    DELETE_ARTIST_EVENT,
 } from '../actions/types';
 
 const initialState = {
@@ -65,6 +66,15 @@ export default function (state = initialState, action) {
                         myArtistEvent._id === payload._id
                             ? payload
                             : myArtistEvent //updates an event in the state
+                ),
+                loading: false,
+            };
+        case DELETE_ARTIST_EVENT:
+            return {
+                ...state,
+                myArtistEvents: state.myArtistEvents.filter(
+                    (myArtistEvent) =>
+                        myArtistEvent._id !== payload && myArtistEvent //deletes an event from the state
                 ),
                 loading: false,
             };

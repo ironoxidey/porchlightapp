@@ -429,6 +429,24 @@ router.post(
     }
 );
 
+// @route    DELETE api/events/artistEvent/:id
+// @desc     Delete artist event
+// @access   Private
+router.delete('/artistEvent/:id', auth, async (req, res) => {
+    try {
+        // Remove event
+        await Event.findOneAndRemove({
+            _id: req.params.id,
+            artistEmail: req.user.email, //this should ensure that someone can only delete their own events
+        });
+
+        res.json(req.params.id);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 // @route    POST api/events/setupEventbrite
 // @desc     Setup Eventbrite event from eventID
 // @access   Private
@@ -1262,24 +1280,5 @@ router.get('/edit', [auth], async (req, res) => {
         );
     }
 });
-
-// @route    DELETE api/events
-// @desc     Delete event, user & posts
-// @access   Private
-// router.delete('/', auth, async (req, res) => {
-//   try {
-//     // Remove user posts
-//     await Post.deleteMany({ user: req.user.id });
-//     // Remove event
-//     await event.findOneAndRemove({ user: req.user.id });
-//     // Remove user
-//     await User.findOneAndRemove({ _id: req.user.id });
-
-//     res.json({ msg: 'User deleted' });
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send('Server Error');
-//   }
-// });
 
 module.exports = router;

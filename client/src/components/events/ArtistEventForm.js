@@ -799,8 +799,8 @@ const EditArtistBookingForm = ({
                                     {...params}
                                     sx={{ width: '100%' }}
                                     variant="standard"
-                                    label={`On ${moment(bookingWhen).format(
-                                        'll'
+                                    label={`On ${prettifyDate(
+                                        bookingWhen
                                     )}, I’d love to play in or around`}
                                     name="bookingWhere"
                                 />
