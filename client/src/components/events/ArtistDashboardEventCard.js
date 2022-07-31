@@ -107,18 +107,24 @@ const ArtistDashboardEventCard = ({ thisEvent, artistViewedHostOffer }) => {
                                 thisEvent.bookingWhere.state}
                         </Grid>
                         {thisEvent.offersFromHosts &&
-                            thisEvent.offersFromHosts.length > 0 && (
-                                <Grid item container>
-                                    {thisEvent.offersFromHosts
-                                        .filter((e) => e) //.filter(e => e) to remove any null values
-                                        .map((thisOffer, idx) => (
-                                            <ArtistDashboardBookingOffers
-                                                thisOffer={thisOffer}
-                                                thisEvent={thisEvent}
-                                            ></ArtistDashboardBookingOffers>
-                                        ))}
-                                </Grid>
-                            )}
+                        thisEvent.offersFromHosts.length > 0 ? (
+                            <Grid item container>
+                                {thisEvent.offersFromHosts
+                                    .filter((e) => e) //.filter(e => e) to remove any null values
+                                    .map((thisOffer, idx) => (
+                                        <ArtistDashboardBookingOffers
+                                            thisOffer={thisOffer}
+                                            thisEvent={thisEvent}
+                                        ></ArtistDashboardBookingOffers>
+                                    ))}
+                            </Grid>
+                        ) : (
+                            <Grid item container>
+                                <Button btnwidth="250">
+                                    Edit Concert Details
+                                </Button>
+                            </Grid>
+                        )}
                     </Grid>
                 </Grid>
             </Grid>

@@ -23,7 +23,7 @@ const AddArtistEvent = (props) => {
                 disableBackdropTransition={!iOS}
                 disableDiscovery={iOS}
             >
-                <Grid item sx={{ minHeight: '80vh' }}>
+                <Grid item sx={{ minHeight: '85vh' }}>
                     <ArtistEventForm></ArtistEventForm>
                 </Grid>
             </SwipeableDrawer>

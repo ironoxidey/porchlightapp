@@ -547,7 +547,13 @@ const Dashboard = ({
                                             event.offersFromHosts &&
                                             event.offersFromHosts.length === 0
                                     ).length > 0 && (
-                                        <Grid container direction="column">
+                                        <Grid
+                                            container
+                                            direction="column"
+                                            sx={{
+                                                margin: '8px auto',
+                                            }}
+                                        >
                                             <Grid item>
                                                 <Typography component="h2">
                                                     {myArtistEvents.filter(
