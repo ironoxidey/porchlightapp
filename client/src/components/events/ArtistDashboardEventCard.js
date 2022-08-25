@@ -31,6 +31,7 @@ import { relativeTimeRounding } from 'moment';
 import ArtistDashboardBookingOffers from './ArtistDashboardBookingOffers';
 
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditArtistEvent from './EditArtistEvent';
 
 const ArtistDashboardEventCard = ({
     thisEvent,
@@ -133,9 +134,9 @@ const ArtistDashboardEventCard = ({
                             </Grid>
                         ) : (
                             <Grid item container>
-                                <Button btnwidth="250">
-                                    Edit Concert Details
-                                </Button>
+                                <EditArtistEvent
+                                    theEvent={thisEvent}
+                                ></EditArtistEvent>
                             </Grid>
                         )}
                     </Grid>

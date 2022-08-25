@@ -1,3 +1,4 @@
+//originally copied EditArtistBookingForm.js
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import { Link, withRouter, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -58,6 +59,8 @@ import { getHostsLocations } from '../../actions/host';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
+import EventDetails from '../events/EventDetails';
+
 function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
@@ -88,8 +91,10 @@ const prettifyDate = (date) => {
     });
 };
 
-const EditArtistBookingForm = ({
+const ArtistEventForm = ({
+    artistMe,
     theArtist,
+    theEvent,
     //theArtist: { loading },
     editArtistEvent,
     getHostsLocations,
@@ -115,30 +120,27 @@ const EditArtistBookingForm = ({
     }, []);
 
     const [formData, setFormData] = useState({
-        slug: '',
-        email: '',
-        firstName: '',
-        lastName: '',
-        stageName: '',
-        genres: [],
-        soundsLike: [],
-        medium: '',
-        repLinks: [],
-        repLink: '',
-        socialLinks: [],
-        helpKind: '',
+        artistSlug: '',
+        // email: '',
+        // genres: [],
+        // soundsLike: [],
+        // medium: '',
+        // repLinks: [],
+        // repLink: '',
+        // socialLinks: [],
+        // helpKind: '',
         // typeformDate: '',
         // active: '',
-        phone: '',
-        hometown: '',
-        streetAddress: '',
-        city: '',
-        state: '',
-        zip: '',
+        // phone: '',
+        // hometown: '',
+        // streetAddress: '',
+        // city: '',
+        // state: '',
+        // zip: '',
         promotionApproval: '',
-        artistWebsite: '',
-        artistStatementVideo: '',
-        livePerformanceVideo: '',
+        // artistWebsite: '',
+        // artistStatementVideo: '',
+        // livePerformanceVideo: '',
         costStructure: '',
         namedPrice: '',
         payoutPlatform: 'PayPal',
@@ -146,8 +148,8 @@ const EditArtistBookingForm = ({
         tourVibe: [],
         bookingWhen: '',
         bookingWhere: {},
-        setLength: '',
-        schedule: '',
+        // setLength: '',
+        // schedule: '',
         showSchedule: {
             setupTime: '17:45',
             startTime: '19:00',
@@ -167,103 +169,98 @@ const EditArtistBookingForm = ({
         soundSystem: '',
         agreeToPayAdminFee: true,
         agreeToPromote: false,
-        wideImg: '',
-        squareImg: '',
+        // wideImg: '',
+        // squareImg: '',
         covidPrefs: [],
         artistNotes: '',
         financialHopes: '',
         fanActions: [],
         // onboardDate: '',
-        bio: '',
+        // bio: '',
         artistUpdated: new Date(),
     });
 
     useEffect(() => {
-        if (theArtist) {
+        if (theEvent) {
+            console.log('theEvent', theEvent);
             setFormData({
-                slug: loading || !theArtist.slug ? '' : theArtist.slug,
-                email: loading || !theArtist.email ? '' : theArtist.email,
-                firstName:
-                    loading || !theArtist.firstName ? '' : theArtist.firstName,
-                lastName:
-                    loading || !theArtist.lastName ? '' : theArtist.lastName,
-                stageName:
-                    loading || !theArtist.stageName ? '' : theArtist.stageName,
-                medium: loading || !theArtist.medium ? '' : theArtist.medium,
-                genres: loading || !theArtist.genres ? [] : theArtist.genres,
-                soundsLike:
-                    loading || !theArtist.soundsLike
-                        ? []
-                        : theArtist.soundsLike,
-                repLinks:
-                    loading || !theArtist.repLinks ? [] : theArtist.repLinks,
-                repLink: loading || !theArtist.repLink ? '' : theArtist.repLink,
-                socialLinks:
-                    loading || !theArtist.socialLinks
-                        ? []
-                        : theArtist.socialLinks,
-                helpKind:
-                    loading || !theArtist.helpKind ? '' : theArtist.helpKind,
-                // typeformDate: loading || !theArtist.typeformDate ? '' : theArtist.typeformDate,
-                // active: loading || (theArtist.active == null) ? false : theArtist.active,
-                phone: loading || !theArtist.phone ? '' : theArtist.phone,
-                hometown:
-                    loading || !theArtist.hometown ? '' : theArtist.hometown,
-                streetAddress:
-                    loading || !theArtist.streetAddress
-                        ? ''
-                        : theArtist.streetAddress,
-                city: loading || !theArtist.city ? '' : theArtist.city,
-                state: loading || !theArtist.state ? '' : theArtist.state,
-                zip: loading || !theArtist.zip ? '' : theArtist.zip,
+                artistSlug:
+                    loading || !theEvent.artistSlug ? '' : theEvent.artistSlug,
+                // email:
+                //     loading || !theEvent.artistEmail
+                //         ? ''
+                //         : theEvent.artistEmail,
+                // medium: loading || !theEvent.medium ? '' : theEvent.medium,
+                // genres: loading || !theEvent.genres ? [] : theEvent.genres,
+                // soundsLike:
+                //     loading || !theEvent.soundsLike ? [] : theEvent.soundsLike,
+                // repLinks:
+                //     loading || !theEvent.repLinks ? [] : theEvent.repLinks,
+                // repLink: loading || !theEvent.repLink ? '' : theEvent.repLink,
+                // socialLinks:
+                //     loading || !theEvent.socialLinks
+                //         ? []
+                //         : theEvent.socialLinks,
+                // helpKind:
+                //     loading || !theEvent.helpKind ? '' : theEvent.helpKind,
+                // typeformDate: loading || !theEvent.typeformDate ? '' : theEvent.typeformDate,
+                // active: loading || (theEvent.active == null) ? false : theEvent.active,
+                // phone: loading || !theEvent.phone ? '' : theEvent.phone,
+                // hometown:
+                //     loading || !theEvent.hometown ? '' : theEvent.hometown,
+                // streetAddress:
+                //     loading || !theEvent.streetAddress
+                //         ? ''
+                //         : theEvent.streetAddress,
+                // city: loading || !theEvent.city ? '' : theEvent.city,
+                // state: loading || !theEvent.state ? '' : theEvent.state,
+                // zip: loading || !theEvent.zip ? '' : theEvent.zip,
                 promotionApproval:
-                    loading || !theArtist.promotionApproval
+                    loading || !theEvent.promotionApproval
                         ? ''
-                        : theArtist.promotionApproval,
-                artistWebsite:
-                    loading || !theArtist.artistWebsite
-                        ? ''
-                        : theArtist.artistWebsite,
-                artistStatementVideo:
-                    loading || !theArtist.artistStatementVideo
-                        ? ''
-                        : theArtist.artistStatementVideo,
-                livePerformanceVideo:
-                    loading || !theArtist.livePerformanceVideo
-                        ? ''
-                        : theArtist.livePerformanceVideo,
+                        : theEvent.promotionApproval,
+                // artistWebsite:
+                //     loading || !theEvent.artistWebsite
+                //         ? ''
+                //         : theEvent.artistWebsite,
+                // artistStatementVideo:
+                //     loading || !theEvent.artistStatementVideo
+                //         ? ''
+                //         : theEvent.artistStatementVideo,
+                // livePerformanceVideo:
+                //     loading || !theEvent.livePerformanceVideo
+                //         ? ''
+                //         : theEvent.livePerformanceVideo,
                 costStructure:
-                    loading || !theArtist.costStructure
+                    loading || !theEvent.costStructure
                         ? ''
-                        : theArtist.costStructure,
+                        : theEvent.costStructure,
                 namedPrice:
-                    loading || !theArtist.namedPrice
-                        ? ''
-                        : theArtist.namedPrice,
+                    loading || !theEvent.namedPrice ? '' : theEvent.namedPrice,
                 payoutPlatform:
-                    loading || !theArtist.payoutPlatform
+                    loading || !theEvent.payoutPlatform
                         ? 'PayPal'
-                        : theArtist.payoutPlatform,
+                        : theEvent.payoutPlatform,
                 payoutHandle:
-                    loading || !theArtist.payoutHandle
+                    loading || !theEvent.payoutHandle
                         ? ''
-                        : theArtist.payoutHandle,
+                        : theEvent.payoutHandle,
                 tourVibe:
-                    loading || !theArtist.tourVibe ? [] : theArtist.tourVibe,
+                    loading || !theEvent.tourVibe ? [] : theEvent.tourVibe,
                 bookingWhen:
-                    loading || !theArtist.bookingWhen
+                    loading || !theEvent.bookingWhen
                         ? ''
-                        : theArtist.bookingWhen,
+                        : theEvent.bookingWhen,
                 bookingWhere:
-                    loading || !theArtist.bookingWhere
+                    loading || !theEvent.bookingWhere
                         ? {}
-                        : theArtist.bookingWhere,
-                setLength:
-                    loading || !theArtist.setLength ? '' : theArtist.setLength,
-                schedule:
-                    loading || !theArtist.schedule ? '' : theArtist.schedule,
+                        : theEvent.bookingWhere,
+                // setLength:
+                //     loading || !theEvent.setLength ? '' : theEvent.setLength,
+                // schedule:
+                //     loading || !theEvent.schedule ? '' : theEvent.schedule,
                 showSchedule:
-                    loading || !theArtist.showSchedule
+                    loading || !theEvent.showSchedule
                         ? {
                               setupTime: '17:45',
                               startTime: '19:00',
@@ -271,103 +268,94 @@ const EditArtistBookingForm = ({
                               hardWrap: '21:00',
                               flexible: true,
                           }
-                        : theArtist.showSchedule,
+                        : theEvent.showSchedule,
                 overnight:
-                    loading || !theArtist.overnight ? '' : theArtist.overnight,
-                openers: loading || !theArtist.openers ? '' : theArtist.openers,
+                    loading || !theEvent.overnight ? '' : theEvent.overnight,
+                openers: loading || !theEvent.openers ? '' : theEvent.openers,
                 travelingCompanions:
-                    loading || theArtist.travelingCompanions == null
+                    loading || theEvent.travelingCompanions == null
                         ? []
-                        : theArtist.travelingCompanions,
+                        : theEvent.travelingCompanions,
                 // companionTravelers:
-                //     loading || theArtist.companionTravelers == null
+                //     loading || theEvent.companionTravelers == null
                 //         ? false
-                //         : theArtist.companionTravelers,
+                //         : theEvent.companionTravelers,
                 hangout:
-                    loading || theArtist.hangout == null
+                    loading || theEvent.hangout == null
                         ? false
-                        : theArtist.hangout,
+                        : theEvent.hangout,
                 merchTable:
-                    loading || theArtist.merchTable == null
+                    loading || theEvent.merchTable == null
                         ? false
-                        : theArtist.merchTable,
+                        : theEvent.merchTable,
                 allergies:
-                    loading || !theArtist.allergies ? [] : theArtist.allergies,
+                    loading || !theEvent.allergies ? [] : theEvent.allergies,
                 familyFriendly:
-                    loading || theArtist.familyFriendly == null
+                    loading || theEvent.familyFriendly == null
                         ? false
-                        : theArtist.familyFriendly,
+                        : theEvent.familyFriendly,
                 alcohol:
-                    loading || theArtist.alcohol == null
+                    loading || theEvent.alcohol == null
                         ? false
-                        : theArtist.alcohol,
+                        : theEvent.alcohol,
                 soundSystem:
-                    loading || !theArtist.soundSystem
+                    loading || !theEvent.soundSystem
                         ? ''
-                        : theArtist.soundSystem,
+                        : theEvent.soundSystem,
                 agreeToPayAdminFee:
-                    loading || theArtist.agreeToPayAdminFee == null
+                    loading || theEvent.agreeToPayAdminFee == null
                         ? true
-                        : theArtist.agreeToPayAdminFee,
+                        : theEvent.agreeToPayAdminFee,
                 agreeToPromote:
-                    loading || theArtist.agreeToPromote == null
+                    loading || theEvent.agreeToPromote == null
                         ? false
-                        : theArtist.agreeToPromote,
-                wideImg: loading || !theArtist.wideImg ? '' : theArtist.wideImg,
-                squareImg:
-                    loading || !theArtist.squareImg ? '' : theArtist.squareImg,
+                        : theEvent.agreeToPromote,
+                // wideImg: loading || !theEvent.wideImg ? '' : theEvent.wideImg,
+                // squareImg:
+                //     loading || !theEvent.squareImg ? '' : theEvent.squareImg,
                 covidPrefs:
-                    loading || !theArtist.covidPrefs
-                        ? []
-                        : theArtist.covidPrefs,
+                    loading || !theEvent.covidPrefs ? [] : theEvent.covidPrefs,
                 artistNotes:
-                    loading || !theArtist.artistNotes
+                    loading || !theEvent.artistNotes
                         ? ''
-                        : theArtist.artistNotes,
+                        : theEvent.artistNotes,
                 financialHopes:
-                    loading || !theArtist.financialHopes
+                    loading || !theEvent.financialHopes
                         ? ''
-                        : theArtist.financialHopes,
+                        : theEvent.financialHopes,
                 fanActions:
-                    loading || !theArtist.fanActions
-                        ? []
-                        : theArtist.fanActions,
-                // onboardDate: loading || !theArtist.onboardDate ? '' : theArtist.onboardDate,
-                bio: loading || !theArtist.bio ? '' : theArtist.bio,
+                    loading || !theEvent.fanActions ? [] : theEvent.fanActions,
+                // onboardDate: loading || !theEvent.onboardDate ? '' : theEvent.onboardDate,
+                // bio: loading || !theEvent.bio ? '' : theEvent.bio,
                 artistUpdated: new Date(),
             });
         } else {
             if (!auth.loading) {
                 console.log(
-                    'An artist profile couldn’t be found for: ' +
-                        auth.user.email +
-                        '. No worries! We’ll make one!'
+                    'Create a new event with email: ' + auth.user.email
                 );
                 setFormData({
                     email: auth.user.email,
-                    slug: '',
-                    firstName: auth.user.name.split(' ')[0],
-                    lastName: auth.user.name.split(' ')[1],
-                    stageName: '',
-                    genres: [],
-                    soundsLike: [],
-                    medium: '',
-                    repLinks: [],
-                    repLink: '',
-                    socialLinks: [],
-                    helpKind: '',
+                    artistSlug: '',
+                    // genres: [],
+                    // soundsLike: [],
+                    // medium: '',
+                    // repLinks: [],
+                    // repLink: '',
+                    // socialLinks: [],
+                    // helpKind: '',
                     // typeformDate: '',
                     // active: '',
-                    phone: '',
-                    hometown: '',
-                    streetAddress: '',
-                    city: '',
-                    state: '',
-                    zip: '',
+                    // phone: '',
+                    // hometown: '',
+                    // streetAddress: '',
+                    // city: '',
+                    // state: '',
+                    // zip: '',
                     promotionApproval: '',
-                    artistWebsite: '',
-                    artistStatementVideo: '',
-                    livePerformanceVideo: '',
+                    // artistWebsite: '',
+                    // artistStatementVideo: '',
+                    // livePerformanceVideo: '',
                     costStructure: '',
                     namedPrice: '',
                     payoutPlatform: 'PayPal',
@@ -375,8 +363,8 @@ const EditArtistBookingForm = ({
                     tourVibe: [],
                     bookingWhen: '',
                     bookingWhere: {},
-                    setLength: '',
-                    schedule: '',
+                    // setLength: '',
+                    // schedule: '',
                     showSchedule: {
                         setupTime: '17:45',
                         startTime: '19:00',
@@ -396,44 +384,41 @@ const EditArtistBookingForm = ({
                     soundSystem: '',
                     agreeToPayAdminFee: true,
                     agreeToPromote: false,
-                    wideImg: '',
-                    squareImg: '',
+                    // wideImg: '',
+                    // squareImg: '',
                     covidPrefs: [],
                     artistNotes: '',
                     financialHopes: '',
                     fanActions: [],
                     // onboardDate: '',
-                    bio: '',
+                    // bio: '',
                 });
             }
         }
     }, [auth.loading, editArtistEvent, theArtist]);
 
     const {
-        slug,
-        email,
-        firstName,
-        lastName,
-        stageName,
-        medium,
-        genres,
-        soundsLike,
-        repLinks,
-        repLink,
-        socialLinks,
-        helpKind,
+        artistSlug,
+        // email,
+        // medium,
+        // genres,
+        // soundsLike,
+        // repLinks,
+        // repLink,
+        // socialLinks,
+        // helpKind,
         // typeformDate,
         // active,
-        phone,
-        hometown,
-        streetAddress,
-        city,
-        state,
-        zip,
+        // phone,
+        // hometown,
+        // streetAddress,
+        // city,
+        // state,
+        // zip,
         promotionApproval,
-        artistWebsite,
-        artistStatementVideo,
-        livePerformanceVideo,
+        // artistWebsite,
+        // artistStatementVideo,
+        // livePerformanceVideo,
         costStructure,
         payoutPlatform,
         payoutHandle,
@@ -441,8 +426,8 @@ const EditArtistBookingForm = ({
         namedPrice,
         bookingWhen,
         bookingWhere,
-        setLength,
-        schedule,
+        // setLength,
+        // schedule,
         showSchedule,
         overnight,
         openers,
@@ -456,15 +441,17 @@ const EditArtistBookingForm = ({
         soundSystem,
         agreeToPayAdminFee,
         agreeToPromote,
-        wideImg,
-        squareImg,
+        // wideImg,
+        // squareImg,
         covidPrefs,
         artistNotes,
         financialHopes,
         fanActions,
         // onboardDate,
-        bio,
+        // bio,
     } = formData;
+
+    const stageName = artistMe.stageName;
 
     const onChange = (e) => {
         //console.log(e);
@@ -551,86 +538,6 @@ const EditArtistBookingForm = ({
             }
         }
     }, [bookingWhere]);
-
-    // useEffect(() => {
-    //     if (bookingWhen && bookingWhen.length > 0) {
-    //         let writeToState = false;
-    //         let updatedField = [];
-    //         let whenWhereFiltered = [];
-    //         let bookingWhenDated = bookingWhen.map((messyDate) => {
-    //             return new Date(messyDate).toISOString();
-    //         });
-    //         bookingWhenDated.forEach((whenBooking, idx) => {
-    //             //return an object trim out of bookingWhenWhere any whens that aren't in bookingWhen
-    //             whenWhereFiltered = Object.filter(
-    //                 bookingWhenWhere,
-    //                 (whenWhere) => {
-    //                     //https://stackoverflow.com/a/37616104/3338608
-    //                     if (whenWhere) {
-    //                         //occasionally I get null values out of the database (not sure how they're getting in there)
-    //                         let datedWhen = new Date(
-    //                             whenWhere.when
-    //                         ).toISOString();
-    //                         return bookingWhenDated.includes(datedWhen);
-    //                     }
-    //                 }
-    //             );
-    //             // whenWhereFiltered = whenWhereFiltered.sort((a, b) =>
-    //             //     sortDates(a, b)
-    //             // );
-    //             let existsInWhere =
-    //                 whenWhereFiltered
-    //                     .map((item) => {
-    //                         return new Date(item.when).toISOString();
-    //                     })
-    //                     .indexOf(whenBooking) > -1
-    //                     ? true
-    //                     : false;
-
-    //             //whenWhereFiltered.filter(e => e);
-    //             //filter out null or empty values -- I think they must be coming from deleting booking dates
-    //             let temp = [];
-    //             for (let i of whenWhereFiltered) i && temp.push(i); // copy each non-empty value to the 'temp' array
-    //             whenWhereFiltered = temp;
-
-    //             if (existsInWhere) {
-    //                 //console.log("bookingWhenWhere already has " + whenBooking);
-    //             } else {
-    //                 //if new, add when and last where to the updatedField object
-    //                 writeToState = true;
-    //                 updatedField = updatedField.concat(
-    //                     whenWhereFiltered
-    //                         .concat([
-    //                             //{ when: whenBooking, where: null },
-    //                             {
-    //                                 when: whenBooking,
-    //                                 where:
-    //                                     whenWhereFiltered.length > 0
-    //                                         ? whenWhereFiltered[
-    //                                               whenWhereFiltered.length - 1
-    //                                           ].where
-    //                                         : '',
-    //                                 updated: new Date(),
-    //                             },
-    //                         ])
-    //                         .sort((a, b) => sortDates(a, b))
-    //                 );
-    //             }
-    //         });
-    //         if (bookingWhenWhere.length > bookingWhen.length) {
-    //             writeToState = true;
-    //             updatedField = whenWhereFiltered;
-    //         }
-    //         if (writeToState) {
-    //             setFormData({
-    //                 ...formData,
-    //                 ['bookingWhenWhere']: updatedField,
-    //             });
-    //         }
-    //     } else {
-    //         setFormData({ ...formData, ['bookingWhenWhere']: [] });
-    //     }
-    // }, [bookingWhen]);
 
     const onCalendarChange = (target) => {
         changesMade.current = true;
@@ -1762,20 +1669,22 @@ const EditArtistBookingForm = ({
                 </Typography>,
             ],
             [
-                slug && (
+                artistSlug && (
                     <Grid
                         item
                         sx={{
                             margin: '8px auto',
                         }}
                     >
-                        <Link to={'/artists/' + slug}>
+                        <Link to={'/artists/' + artistSlug}>
                             <Button btnwidth="300" className="">
                                 <AccountBoxTwoToneIcon /> View My Profile
                             </Button>
                         </Link>
                     </Grid>
                 ),
+                //Event Details as a host will see it
+                <EventDetails theEvent={theEvent} />,
             ],
         ],
     };
@@ -1940,20 +1849,23 @@ const EditArtistBookingForm = ({
     );
 };
 
-EditArtistBookingForm.propTypes = {
+ArtistEventForm.propTypes = {
     getHostsLocations: PropTypes.func.isRequired,
     hosts: PropTypes.array.isRequired,
     editArtistEvent: PropTypes.func.isRequired,
     theArtist: PropTypes.object,
+    theEvent: PropTypes.object,
     auth: PropTypes.object.isRequired,
+    artistMe: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
     hosts: state.host.hosts,
+    artistMe: state.artist.me,
 });
 
 export default connect(mapStateToProps, {
     getHostsLocations,
     editArtistEvent,
-})(withRouter(EditArtistBookingForm)); //withRouter allows us to pass history objects
+})(withRouter(ArtistEventForm)); //withRouter allows us to pass history objects

@@ -106,7 +106,7 @@ const EditArtistProfileForm = ({
             });
             console.log('artistsGenre', artistsGenre);
 
-            artistsGenresFiltered = [...new Set([...artistsGenre])];
+            artistsGenresFiltered = [...new Set([...artistsGenre])]; //The Set constructor lets you create Set objects that store unique values of any type, whether primitive values or object references.
             artistsGenresFiltered.sort();
             //console.log(artistsGenresFiltered);
 

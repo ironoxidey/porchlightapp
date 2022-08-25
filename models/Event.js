@@ -198,8 +198,15 @@ const EventSchema = new mongoose.Schema(
         hangout: {
             type: String,
         },
+
+        allergies: {
+            type: Object,
+        },
         merchTable: {
             type: Boolean,
+        },
+        promotionApproval: {
+            type: String,
         },
         familyFriendly: {
             type: Boolean,
@@ -228,9 +235,15 @@ const EventSchema = new mongoose.Schema(
         financialHopes: {
             type: String,
         },
+        fanActions: {
+            type: Object,
+        },
         status: {
             type: String,
             default: 'PENDING',
+        },
+        artistUpdated: {
+            type: Date,
         },
     },
     { timestamps: true }

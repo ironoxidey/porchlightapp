@@ -25,6 +25,7 @@ import { StackDateforDisplay, changeHats } from '../../actions/app';
 import ArtistDashboardEventCard from '../events/ArtistDashboardEventCard';
 import NearMeToHostEventCard from './NearMeToHostEventCard';
 import AddArtistEvent from '../events/AddArtistEvent';
+import EditArtistEvent from '../events/EditArtistEvent';
 
 const Dashboard = ({
     //getCurrentProfile,
@@ -377,7 +378,8 @@ const Dashboard = ({
                     (artist.me.active ||
                         (Array.isArray(user.role) &&
                             user.role.indexOf('ARTIST') != -1 &&
-                            user.role.indexOf('ADMIN') != -1)) && (
+                            (user.role.indexOf('ADMIN') != -1 ||
+                                user.role.indexOf('TESTING') != -1))) && (
                         <Grid
                             item
                             container
