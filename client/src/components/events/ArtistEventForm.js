@@ -101,6 +101,7 @@ const ArtistEventForm = ({
     hosts,
     history,
     auth,
+    myArtistEvents, //for disabling dates in the multipledate picker calendar
 }) => {
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     const dispatch = useDispatch();
@@ -182,7 +183,7 @@ const ArtistEventForm = ({
 
     useEffect(() => {
         if (theEvent) {
-            console.log('theEvent', theEvent);
+            //console.log('theEvent', theEvent);
             setFormData({
                 artistSlug:
                     loading || !theEvent.artistSlug ? '' : theEvent.artistSlug,
@@ -607,8 +608,24 @@ const ArtistEventForm = ({
                     id="bookingWhen"
                     name="bookingWhen"
                     open={true}
-                    selectedDates={bookingWhen}
-                    value={bookingWhen}
+                    //trying to figure out how to disable dates you've already picked ~Aug 26, 2022
+                    disabledDates={
+                        myArtistEvents &&
+                        myArtistEvents
+                            .filter((event) => {
+                                if (event.bookingWhen !== bookingWhen) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            })
+                            .map((event) => {
+                                return event.bookingWhen;
+                            })
+                    }
+                    //readOnly={bookingWhen ? true : false} //if there's a bookingWhen date, don't let people change it
+                    selectedDates={bookingWhen ? [bookingWhen] : []}
+                    //value={bookingWhen}
                     onCancel={() => setOpen(false)}
                     //onSubmit={dates => console.log('selected dates', dates)}
                     onChange={(target) => onCalendarChange(target)}
@@ -1657,34 +1674,32 @@ const ArtistEventForm = ({
         endSlide: [
             [
                 <Typography component="h2" sx={{ textAlign: 'center' }}>
-                    That's everything we need to get you started booking shows!
+                    That's everything we need for this event!
                 </Typography>,
                 <Typography
                     component="p"
                     sx={{ textAlign: 'center', marginTop: '20px' }}
                 >
-                    Thank you for taking the time to fill out all of this
-                    information! Please check your profile to be sure everything
-                    is correct.
+                    This is how it will look to hosts:
                 </Typography>,
             ],
             [
-                artistSlug && (
-                    <Grid
-                        item
-                        sx={{
-                            margin: '8px auto',
-                        }}
-                    >
-                        <Link to={'/artists/' + artistSlug}>
-                            <Button btnwidth="300" className="">
-                                <AccountBoxTwoToneIcon /> View My Profile
-                            </Button>
-                        </Link>
-                    </Grid>
-                ),
+                // artistSlug && (
+                //     <Grid
+                //         item
+                //         sx={{
+                //             margin: '8px auto',
+                //         }}
+                //     >
+                //         <Link to={'/artists/' + artistSlug}>
+                //             <Button btnwidth="300" className="">
+                //                 <AccountBoxTwoToneIcon /> View My Profile
+                //             </Button>
+                //         </Link>
+                //     </Grid>
+                // ),
                 //Event Details as a host will see it
-                <EventDetails theEvent={theEvent} />,
+                <EventDetails theEvent={{ ...theEvent, artist: artistMe }} />,
             ],
         ],
     };
@@ -1857,12 +1872,14 @@ ArtistEventForm.propTypes = {
     theEvent: PropTypes.object,
     auth: PropTypes.object.isRequired,
     artistMe: PropTypes.object,
+    myArtistEvents: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
     hosts: state.host.hosts,
     artistMe: state.artist.me,
+    myArtistEvents: state.event.myArtistEvents,
 });
 
 export default connect(mapStateToProps, {

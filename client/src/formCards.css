@@ -43,6 +43,12 @@ legend.MuiFormLabel-root::before {
     padding-bottom: 80px;
 }
 
+.MuiButtonBase-root.Mui-disabled { 
+    /* trying to style disable calendar dates */
+    background-color: #7a949229;
+    border: 1px dotted var(--primary-color);
+}
+
 .animatedFormGroup .MuiGrid-root.MuiGrid-item {
     /*I don't know what I was doing with this ~April 15, 2022*/
     /* padding-right: 0; */
