@@ -1772,10 +1772,12 @@ const ArtistEventForm = ({
                     <Grid
                         container
                         item
-                        sx={{ width: '100%' }}
+                        sx={{ width: '100%', marginTop: '20px' }}
                         direction="row"
                         justifyContent="center"
                         alignItems="center"
+                        zIndex="100"
+                        position="relative"
                     >
                         <Grid item>
                             {/* { cardIndex > 0 ? (  */}

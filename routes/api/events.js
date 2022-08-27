@@ -169,7 +169,7 @@ router.post('/', [auth], async (req, res) => {
                         $set: eventFields,
                         artist: artist.id,
                         artistSlug: artist.slug,
-                        artistUser: req.user._id,
+                        artistUser: req.user.id,
                         artistEmail: req.user.email.toLowerCase(),
                         bookingWhen: eventFields.bookingWhen,
                         bookingWhere: eventFields.bookingWhere,
@@ -306,7 +306,7 @@ router.post(
                             $set: eventFields,
                             artist: artist.id,
                             artistSlug: artist.slug,
-                            artistUser: req.user._id,
+                            artistUser: req.user.id,
                             artistEmail: req.user.email.toLowerCase(),
                             bookingWhen: eventFields.bookingWhen,
                             bookingWhere: eventFields.bookingWhere,
@@ -438,6 +438,7 @@ router.delete('/artistEvent/:id', auth, async (req, res) => {
         await Event.findOneAndRemove({
             _id: req.params.id,
             artistEmail: req.user.email, //this should ensure that someone can only delete their own events
+            status: 'PENDING', //don't let people delete confirmed shows
         });
 
         res.json(req.params.id);

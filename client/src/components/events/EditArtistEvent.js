@@ -5,7 +5,9 @@ import Button from '../layout/SvgButton';
 
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import ArtistEventForm from './ArtistEventForm';
-import { Grid } from '@mui/material';
+import { Grid, Box } from '@mui/material';
+
+import { StackDateforDisplay } from '../../actions/app';
 
 const EditArtistEvent = ({ theEvent }) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -23,6 +25,27 @@ const EditArtistEvent = ({ theEvent }) => {
                 disableBackdropTransition={!iOS}
                 disableDiscovery={iOS}
             >
+                <Box sx={{ top: 0, left: 0, position: 'absolute' }}>
+                    <Grid container>
+                        <StackDateforDisplay
+                            date={theEvent.bookingWhen}
+                        ></StackDateforDisplay>
+                        <Grid
+                            item
+                            sx={{
+                                fontSize: '1.5em',
+                                marginLeft: '8px',
+                                lineHeight: '1.5',
+                                marginTop: '8px',
+                            }}
+                        >
+                            {theEvent.bookingWhere.city +
+                                ', ' +
+                                theEvent.bookingWhere.state}
+                        </Grid>
+                    </Grid>
+                </Box>
+
                 <Grid item sx={{ minHeight: '85vh' }}>
                     <ArtistEventForm theEvent={theEvent}></ArtistEventForm>
                 </Grid>
