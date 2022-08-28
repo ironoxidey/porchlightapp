@@ -72,6 +72,7 @@ const EditArtistForm = ({
     history,
     auth,
     updateUserAvatar,
+    app: { jumpTo },
 }) => {
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     const dispatch = useDispatch();
@@ -2372,6 +2373,16 @@ const EditArtistForm = ({
     //// CARD INDEX ///////
     const [formCardIndex, setIndex] = useState(0);
 
+    useEffect(() => {
+        //console.log('jumpTo useEffect', jumpTo);
+        const formGroupKeys = Object.keys(formGroups);
+        let jumpToIndex =
+            formGroupKeys.indexOf(jumpTo) > -1
+                ? formGroupKeys.indexOf(jumpTo)
+                : 0;
+        setIndex(jumpToIndex);
+    }, [jumpTo]);
+
     const cardIndex = formCardIndex;
 
     const [formCardDirection, setDirection] = useState(1);
@@ -2522,10 +2533,12 @@ EditArtistForm.propTypes = {
     theArtist: PropTypes.object,
     auth: PropTypes.object.isRequired,
     updateUserAvatar: PropTypes.func.isRequired,
+    app: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
+    app: state.app,
 });
 
 export default connect(mapStateToProps, { createMyArtist, updateUserAvatar })(

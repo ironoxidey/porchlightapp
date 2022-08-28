@@ -24,6 +24,7 @@ export const UPDATE_ARTIST = 'UPDATE_ARTIST';
 export const UPDATE_ARTISTS = 'UPDATE_ARTISTS';
 export const UPDATE_ARTIST_ME = 'UPDATE_ARTIST_ME';
 export const CLEAR_ARTIST = 'CLEAR_ARTIST';
+export const JUMP_TO = 'JUMP_TO';
 export const CHANGE_HATS = 'CHANGE_HATS';
 export const ARTIST_ERROR = 'ARTIST_ERROR';
 export const ARTIST_ME_ERROR = 'ARTIST_ME_ERROR';

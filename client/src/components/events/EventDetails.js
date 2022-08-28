@@ -56,6 +56,7 @@ import {
     pullDomainFrom,
     convert24HourTime,
     StackDateforDisplay,
+    jumpTo,
 } from '../../actions/app';
 
 const EventDetails = ({
@@ -66,15 +67,16 @@ const EventDetails = ({
     host,
     events,
     artist,
+    jumpTo,
 }) => {
     let history = useHistory();
 
     let isMe = false;
-    if (me && me._id === theEvent.artist) {
+    if (me && (me._id === theEvent.artist || me._id === theEvent.artist._id)) {
         isMe = true;
     }
 
-    console.log('theEvent', theEvent);
+    //console.log('theEvent', theEvent);
 
     return (
         <Fragment>
@@ -85,7 +87,7 @@ const EventDetails = ({
                         item
                         container
                         justifyContent="start"
-                        direction="row"
+                        // direction="row"
                         sx={{
                             height: '100%',
                             padding: '0 20px!important',
@@ -99,7 +101,8 @@ const EventDetails = ({
                     >
                         <Grid
                             container
-                            direction="row"
+                            item
+                            // direction="row"
                             xs={12}
                             md={8}
                             spacing={2}
@@ -129,9 +132,18 @@ const EventDetails = ({
                                         disableFocusListener={!isMe}
                                         disableTouchListener={!isMe}
                                         title={
-                                            <Link to="/edit-artist-booking?field=costStructure">
-                                                Edit
-                                            </Link>
+                                            <>
+                                                {/* <Link to="/edit-artist-booking?field=costStructure">
+                                                 Edit
+                                            </Link> */}
+                                                <Button
+                                                    onClick={() =>
+                                                        jumpTo('costStructure')
+                                                    }
+                                                >
+                                                    Edit
+                                                </Button>
+                                            </>
                                         }
                                     >
                                         {theEvent.costStructure ===
@@ -171,9 +183,18 @@ const EventDetails = ({
                                         disableFocusListener={!isMe}
                                         disableTouchListener={!isMe}
                                         title={
-                                            <Link to="/edit-artist-booking?field=tourVibe">
-                                                Edit
-                                            </Link>
+                                            <>
+                                                {/* <Link to="/edit-artist-booking?field=tourVibe">
+                                                    Edit
+                                                </Link> */}
+                                                <Button
+                                                    onClick={() => {
+                                                        jumpTo('tourVibe');
+                                                    }}
+                                                >
+                                                    Edit
+                                                </Button>
+                                            </>
                                         }
                                     >
                                         <GroupsTwoToneIcon></GroupsTwoToneIcon>
@@ -203,9 +224,20 @@ const EventDetails = ({
                                             disableFocusListener={!isMe}
                                             disableTouchListener={!isMe}
                                             title={
-                                                <Link to="/edit-artist-booking?field=showSchedule">
+                                                <>
+                                                    {/* <Link to="/edit-artist-booking?field=showSchedule">
                                                     Edit
-                                                </Link>
+                                                </Link> */}
+                                                    <Button
+                                                        onClick={() => {
+                                                            jumpTo(
+                                                                'showSchedule'
+                                                            );
+                                                        }}
+                                                    >
+                                                        Edit
+                                                    </Button>
+                                                </>
                                             }
                                         >
                                             <AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
@@ -827,8 +859,9 @@ EventDetails.propTypes = {
     user: PropTypes.object,
     isAuthenticated: PropTypes.bool,
     host: PropTypes.object,
-    events: PropTypes.object,
+    events: PropTypes.array,
     theEvent: PropTypes.object.isRequired,
+    jumpTo: PropTypes.func,
 };
 
 const mapStateToProps = (state) => ({
@@ -840,4 +873,4 @@ const mapStateToProps = (state) => ({
     events: state.event.events,
 });
 
-export default connect(mapStateToProps, {})(withRouter(EventDetails)); //withRouter allows us to pass history objects
+export default connect(mapStateToProps, { jumpTo })(withRouter(EventDetails)); //withRouter allows us to pass history objects

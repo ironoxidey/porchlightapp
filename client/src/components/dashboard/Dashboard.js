@@ -637,7 +637,13 @@ const Dashboard = ({
                             sx={{ padding: '0 20px' }}
                         >
                             {myHostEvents && myHostEvents.length > 0 && (
-                                <Grid item direction="column" xs={12} md={12}>
+                                <Grid
+                                    item
+                                    container
+                                    direction="column"
+                                    xs={12}
+                                    md={12}
+                                >
                                     <Grid item xs={12}>
                                         <Typography component="h2">
                                             You have offered to host{' '}
@@ -889,6 +895,7 @@ const Dashboard = ({
                                 nearMeToHost && nearMeToHost.length > 0 && (
                                     <Grid
                                         item
+                                        container
                                         direction="column"
                                         xs={12}
                                         md={12}

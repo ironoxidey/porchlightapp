@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link, withRouter, useHistory } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import Button from '../layout/SvgButton';
 
@@ -7,9 +9,9 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import ArtistEventForm from './ArtistEventForm';
 import { Grid, Box } from '@mui/material';
 
-import { StackDateforDisplay } from '../../actions/app';
+import { StackDateforDisplay, jumpTo } from '../../actions/app';
 
-const EditArtistEvent = ({ theEvent }) => {
+const EditArtistEvent = ({ theEvent, jumpTo }) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     const iOS =
@@ -20,7 +22,10 @@ const EditArtistEvent = ({ theEvent }) => {
             <SwipeableDrawer
                 anchor={'bottom'}
                 open={drawerOpen}
-                onClose={() => setDrawerOpen(false)}
+                onClose={() => {
+                    jumpTo('');
+                    setDrawerOpen(false);
+                }}
                 onOpen={() => setDrawerOpen(true)}
                 disableBackdropTransition={!iOS}
                 disableDiscovery={iOS}
@@ -60,6 +65,12 @@ const EditArtistEvent = ({ theEvent }) => {
 
 EditArtistEvent.propTypes = {
     theEvent: PropTypes.object,
+    jumpTo: PropTypes.func,
 };
 
-export default EditArtistEvent;
+const mapStateToProps = (state) => ({});
+
+//export default EditArtistEvent;
+export default connect(mapStateToProps, { jumpTo })(
+    withRouter(EditArtistEvent)
+); //withRouter allows us to pass history objects

@@ -7,6 +7,7 @@ import {
     // CLOSE_USER_DRAWER,
     FLIP_ARTIST_CARD,
     CHANGE_HATS,
+    JUMP_TO,
 } from './types';
 import { setAlert } from './alert';
 import { updateUserAvatar } from './auth';
@@ -30,6 +31,13 @@ export const changeHats = (toRole) => (dispatch) => {
     dispatch({
         payload: toRole,
         type: CHANGE_HATS,
+    });
+};
+export const jumpTo = (anchor) => (dispatch) => {
+    //console.log('jumpTo', anchor);
+    dispatch({
+        payload: anchor,
+        type: JUMP_TO,
     });
 };
 // export const openUserDrawer = () => (dispatch) => {

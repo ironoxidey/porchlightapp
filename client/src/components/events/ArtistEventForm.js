@@ -102,6 +102,7 @@ const ArtistEventForm = ({
     history,
     auth,
     myArtistEvents, //for disabling dates in the multipledate picker calendar
+    jumpTo, //user can click Edit Tooltip in EventDetails and jumpTo formField here
 }) => {
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     const dispatch = useDispatch();
@@ -1722,6 +1723,21 @@ const ArtistEventForm = ({
     const cardIndex = formCardIndex;
 
     const [formCardDirection, setDirection] = useState(1);
+
+    //jumpTo (app state set in EventDetails.js)
+    useEffect(() => {
+        //console.log('jumpTo ArtistEventForm', jumpTo);
+        if (jumpTo !== '') {
+            const formGroupKeys = Object.keys(formGroups);
+            let jumpToIndex =
+                formGroupKeys.indexOf(jumpTo) > -1
+                    ? formGroupKeys.indexOf(jumpTo)
+                    : 0;
+            setDirection(-1);
+            setIndex(jumpToIndex);
+        }
+    }, [jumpTo]);
+
     const transitions = useTransition(formCardIndex, {
         key: formCardIndex,
         initial: null,
@@ -1875,6 +1891,7 @@ ArtistEventForm.propTypes = {
     auth: PropTypes.object.isRequired,
     artistMe: PropTypes.object,
     myArtistEvents: PropTypes.array,
+    jumpTo: PropTypes.string,
 };
 
 const mapStateToProps = (state) => ({
@@ -1882,6 +1899,7 @@ const mapStateToProps = (state) => ({
     hosts: state.host.hosts,
     artistMe: state.artist.me,
     myArtistEvents: state.event.myArtistEvents,
+    jumpTo: state.app.jumpTo,
 });
 
 export default connect(mapStateToProps, {

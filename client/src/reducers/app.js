@@ -7,6 +7,7 @@ import {
     PAGE_LOAD,
     FLIP_ARTIST_CARD,
     CLEAR_ARTIST,
+    JUMP_TO,
     CHANGE_HATS,
     LOGOUT,
     ACCOUNT_DELETED,
@@ -20,11 +21,17 @@ const intialState = {
     doneFlipped: true,
     msg: '',
     profileHat: '',
+    jumpTo: '',
 };
 
 export default function (state = intialState, action) {
     const { type, payload } = action;
     switch (type) {
+        case JUMP_TO:
+            return {
+                ...state,
+                jumpTo: payload,
+            };
         case CHANGE_HATS:
             return {
                 ...state,

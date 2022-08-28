@@ -79,6 +79,8 @@ const ArtistDashboardEventCard = ({
                     padding: '16px',
                     margin: '4px',
                     color: 'var(--light-color)',
+                    justifyContent: 'space-between',
+                    flexWrap: 'nowrap',
                 }}
             >
                 <Grid
@@ -87,16 +89,15 @@ const ArtistDashboardEventCard = ({
                     direction="row"
                     alignItems="center"
                     className="dateLocationForBooking"
-                    md={8}
-                    xs={12}
+                    xs={11}
                 >
-                    <Grid item container>
+                    {/* <Grid item container>
                         <Link to={'/artists/' + thisEvent.artist.slug}>
                             <Typography component="h2">
                                 {thisEvent.artist.stageName}
                             </Typography>
                         </Link>
-                    </Grid>
+                    </Grid> */}
                     <Grid
                         item
                         sx={{
@@ -107,7 +108,7 @@ const ArtistDashboardEventCard = ({
                             date={thisEvent.bookingWhen}
                         ></StackDateforDisplay>
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid item xs={9}>
                         <Grid
                             item
                             sx={{
@@ -141,13 +142,15 @@ const ArtistDashboardEventCard = ({
                         )}
                     </Grid>
                 </Grid>
-                <Grid item className="deleteBtn">
-                    <IconButton
-                        onClick={(e) => deleteArtistEvent(thisEvent._id)}
-                    >
-                        <DeleteIcon></DeleteIcon>
-                    </IconButton>
-                </Grid>
+                {thisEvent.status !== 'CONFIRMED' && (
+                    <Grid item className="deleteBtn" xs={1}>
+                        <IconButton
+                            onClick={(e) => deleteArtistEvent(thisEvent._id)}
+                        >
+                            <DeleteIcon></DeleteIcon>
+                        </IconButton>
+                    </Grid>
+                )}
             </Grid>
         </>
     );
