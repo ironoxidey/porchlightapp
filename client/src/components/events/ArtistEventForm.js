@@ -54,6 +54,7 @@ import {
     getFontAwesomeIcon,
     getHostLocations,
     sortDates,
+    jumpTo,
 } from '../../actions/app';
 import { getHostsLocations } from '../../actions/host';
 import moment from 'moment';
@@ -102,10 +103,22 @@ const ArtistEventForm = ({
     history,
     auth,
     myArtistEvents, //for disabling dates in the multipledate picker calendar
-    jumpTo, //user can click Edit Tooltip in EventDetails and jumpTo formField here
+    jumpTo,
+    jumpToState, //user can click Edit Tooltip in EventDetails and jumpToState formField here
 }) => {
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     const dispatch = useDispatch();
+
+    let isMe = false;
+    if (
+        artistMe &&
+        theEvent &&
+        theEvent.artist &&
+        (artistMe._id === theEvent.artist ||
+            artistMe._id === theEvent.artist._id)
+    ) {
+        isMe = true;
+    }
 
     //let hostLocations = [];
     //const [hostLocations, setHostLocations] = useState([]);
@@ -1681,7 +1694,8 @@ const ArtistEventForm = ({
                     component="p"
                     sx={{ textAlign: 'center', marginTop: '20px' }}
                 >
-                    This is how it will look to hosts:
+                    This is how it will look to hosts: <br />
+                    (click to edit)
                 </Typography>,
             ],
             [
@@ -1724,19 +1738,19 @@ const ArtistEventForm = ({
 
     const [formCardDirection, setDirection] = useState(1);
 
-    //jumpTo (app state set in EventDetails.js)
+    //jumpToState (app state set in EventDetails.js)
     useEffect(() => {
-        //console.log('jumpTo ArtistEventForm', jumpTo);
-        if (jumpTo !== '') {
+        //console.log('jumpToState ArtistEventForm', jumpToState);
+        if (jumpToState !== '') {
             const formGroupKeys = Object.keys(formGroups);
             let jumpToIndex =
-                formGroupKeys.indexOf(jumpTo) > -1
-                    ? formGroupKeys.indexOf(jumpTo)
+                formGroupKeys.indexOf(jumpToState) > -1
+                    ? formGroupKeys.indexOf(jumpToState)
                     : 0;
-            setDirection(-1);
+            jumpToState === 'endSlide' ? setDirection(1) : setDirection(-1);
             setIndex(jumpToIndex);
         }
-    }, [jumpTo]);
+    }, [jumpToState]);
 
     const transitions = useTransition(formCardIndex, {
         key: formCardIndex,
@@ -1759,6 +1773,7 @@ const ArtistEventForm = ({
         exitBeforeEnter: false,
     });
     const nextCard = (e) => {
+        jumpTo('');
         setDirection(1);
         setIndex(
             (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length
@@ -1768,6 +1783,7 @@ const ArtistEventForm = ({
         }
     };
     const previousCard = (e) => {
+        jumpTo('');
         setDirection(-1);
         setIndex((cardIndex) => {
             if (cardIndex == 0) {
@@ -1826,6 +1842,20 @@ const ArtistEventForm = ({
                                 onClick={(e) => nextCard(e)}
                             >
                                 Next<ArrowForwardIcon></ArrowForwardIcon>
+                            </Button>
+                            {/* ) : ''} */}
+                        </Grid>
+                        <Grid item>
+                            {/* { cardIndex < formGroups.length - 1 ? ( */}
+                            <Button
+                                variant="contained"
+                                component="span"
+                                onClick={() => {
+                                    jumpTo('endSlide');
+                                }}
+                            >
+                                To Summary
+                                <ArrowForwardIcon></ArrowForwardIcon>
                             </Button>
                             {/* ) : ''} */}
                         </Grid>
@@ -1891,7 +1921,8 @@ ArtistEventForm.propTypes = {
     auth: PropTypes.object.isRequired,
     artistMe: PropTypes.object,
     myArtistEvents: PropTypes.array,
-    jumpTo: PropTypes.string,
+    jumpToState: PropTypes.string,
+    jumpTo: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -1899,10 +1930,11 @@ const mapStateToProps = (state) => ({
     hosts: state.host.hosts,
     artistMe: state.artist.me,
     myArtistEvents: state.event.myArtistEvents,
-    jumpTo: state.app.jumpTo,
+    jumpToState: state.app.jumpTo,
 });
 
 export default connect(mapStateToProps, {
+    jumpTo,
     getHostsLocations,
     editArtistEvent,
 })(withRouter(ArtistEventForm)); //withRouter allows us to pass history objects

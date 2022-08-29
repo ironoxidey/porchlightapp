@@ -121,21 +121,26 @@ const EventDetails = ({
                             {theEvent.costStructure && theEvent.namedPrice && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('costStructure');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="costStructure"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
                                         disableTouchListener={!isMe}
                                         title={
                                             <>
-                                                {/* <Link to="/edit-artist-booking?field=costStructure">
-                                                 Edit
-                                            </Link> */}
                                                 <Button
                                                     onClick={() =>
                                                         jumpTo('costStructure')
@@ -145,14 +150,13 @@ const EventDetails = ({
                                                 </Button>
                                             </>
                                         }
-                                    >
-                                        {theEvent.costStructure ===
-                                        'donation' ? (
-                                            <VolunteerActivismTwoToneIcon></VolunteerActivismTwoToneIcon>
-                                        ) : (
-                                            <ConfirmationNumberTwoToneIcon></ConfirmationNumberTwoToneIcon>
-                                        )}
-                                    </Tooltip>{' '}
+                                    > */}
+                                    {theEvent.costStructure === 'donation' ? (
+                                        <VolunteerActivismTwoToneIcon></VolunteerActivismTwoToneIcon>
+                                    ) : (
+                                        <ConfirmationNumberTwoToneIcon></ConfirmationNumberTwoToneIcon>
+                                    )}
+                                    {/* </Tooltip>{' '} */}
                                     {'Wants the concert to be '}
                                     <strong>
                                         {theEvent.costStructure == 'ticket'
@@ -172,21 +176,26 @@ const EventDetails = ({
                             {theEvent.tourVibe && theEvent.tourVibe.length > 0 && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('tourVibe');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="tourVibe"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
                                         disableTouchListener={!isMe}
                                         title={
                                             <>
-                                                {/* <Link to="/edit-artist-booking?field=tourVibe">
-                                                    Edit
-                                                </Link> */}
                                                 <Button
                                                     onClick={() => {
                                                         jumpTo('tourVibe');
@@ -196,9 +205,9 @@ const EventDetails = ({
                                                 </Button>
                                             </>
                                         }
-                                    >
-                                        <GroupsTwoToneIcon></GroupsTwoToneIcon>
-                                    </Tooltip>
+                                    > */}
+                                    <GroupsTwoToneIcon></GroupsTwoToneIcon>
+                                    {/* </Tooltip> */}
                                     {
                                         ' Feels most comfortable performing for an audience who is: '
                                     }
@@ -213,21 +222,28 @@ const EventDetails = ({
                                 <Fragment>
                                     <Grid
                                         item
-                                        sx={{ marginTop: '0' }}
+                                        sx={{
+                                            marginTop: '0',
+                                            cursor: isMe
+                                                ? 'pointer'
+                                                : 'default',
+                                        }}
+                                        onClick={() => {
+                                            if (isMe) {
+                                                jumpTo('showSchedule');
+                                            }
+                                        }}
                                         xs={12}
                                         md={6}
                                         className="showSchedule"
                                     >
-                                        <Tooltip
+                                        {/* <Tooltip
                                             arrow={true}
                                             disableHoverListener={!isMe}
                                             disableFocusListener={!isMe}
                                             disableTouchListener={!isMe}
                                             title={
                                                 <>
-                                                    {/* <Link to="/edit-artist-booking?field=showSchedule">
-                                                    Edit
-                                                </Link> */}
                                                     <Button
                                                         onClick={() => {
                                                             jumpTo(
@@ -239,9 +255,9 @@ const EventDetails = ({
                                                     </Button>
                                                 </>
                                             }
-                                        >
-                                            <AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
-                                        </Tooltip>
+                                        > */}
+                                        <AccessTimeTwoToneIcon></AccessTimeTwoToneIcon>
+                                        {/*</Tooltip> */}
                                         {' Setup at '}
                                         <strong>
                                             {convert24HourTime(
@@ -274,12 +290,20 @@ const EventDetails = ({
                             {theEvent.openers && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('openers');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="openers"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -289,9 +313,9 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <InterpreterModeTwoToneIcon></InterpreterModeTwoToneIcon>
-                                    </Tooltip>
+                                    > */}
+                                    <InterpreterModeTwoToneIcon></InterpreterModeTwoToneIcon>
+                                    {/* </Tooltip> */}
                                     {` When asked about openers, ${
                                         theEvent.artist.stageName ||
                                         artist.artist.stageName
@@ -303,12 +327,20 @@ const EventDetails = ({
                             {theEvent.overnight && theEvent.overnight > 0 && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('overnight');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="overnight"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -318,9 +350,9 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <HotelTwoToneIcon></HotelTwoToneIcon>
-                                    </Tooltip>
+                                    > */}
+                                    <HotelTwoToneIcon></HotelTwoToneIcon>
+                                    {/* </Tooltip> */}
                                     {
                                         ' If possible, overnight accommodation appreciated for '
                                     }
@@ -337,12 +369,20 @@ const EventDetails = ({
                             {theEvent.overnight && theEvent.overnight == 0 && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('overnight');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="overnight"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -352,9 +392,9 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <BedtimeOffTwoToneIcon></BedtimeOffTwoToneIcon>
-                                    </Tooltip>
+                                    > */}
+                                    <BedtimeOffTwoToneIcon></BedtimeOffTwoToneIcon>
+                                    {/* </Tooltip> */}
                                     {' Does not need overnight accommodations.'}
 
                                     <Divider />
@@ -363,7 +403,15 @@ const EventDetails = ({
                             {theEvent.merchTable && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('merchTable');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="merchTable"
@@ -400,12 +448,22 @@ const EventDetails = ({
                                 theEvent.artist.allergies.length > 0 && (
                                     <Grid
                                         item
-                                        sx={{ marginTop: '0' }}
+                                        sx={{
+                                            marginTop: '0',
+                                            cursor: isMe
+                                                ? 'pointer'
+                                                : 'default',
+                                        }}
+                                        onClick={() => {
+                                            if (isMe) {
+                                                jumpTo('allergies');
+                                            }
+                                        }}
                                         xs={12}
                                         md={6}
                                         className="allergies"
                                     >
-                                        <Tooltip
+                                        {/* <Tooltip
                                             arrow={true}
                                             disableHoverListener={!isMe}
                                             disableFocusListener={!isMe}
@@ -415,16 +473,16 @@ const EventDetails = ({
                                                     Edit
                                                 </Link>
                                             }
+                                        > */}
+                                        <SvgIcon
+                                            style={{
+                                                width: '26px',
+                                                verticalAlign: 'baseline',
+                                            }}
                                         >
-                                            <SvgIcon
-                                                style={{
-                                                    width: '26px',
-                                                    verticalAlign: 'baseline',
-                                                }}
-                                            >
-                                                <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
-                                            </SvgIcon>
-                                        </Tooltip>
+                                            <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
+                                        </SvgIcon>
+                                        {/* </Tooltip> */}
                                         {' Has these allergies: '}
                                         <strong>
                                             {theEvent.artist.allergies
@@ -454,12 +512,20 @@ const EventDetails = ({
                             {theEvent.familyFriendly && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('familyFriendly');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="familyFriendly"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -469,9 +535,9 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <FamilyRestroomTwoToneIcon></FamilyRestroomTwoToneIcon>
-                                    </Tooltip>{' '}
+                                    > */}
+                                    <FamilyRestroomTwoToneIcon></FamilyRestroomTwoToneIcon>
+                                    {/* </Tooltip>*/}{' '}
                                     <strong>{'Family-friendly'}</strong>
                                     <Divider />
                                 </Grid>
@@ -479,12 +545,20 @@ const EventDetails = ({
                             {!theEvent.familyFriendly && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('familyFriendly');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="familyFriendly"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -494,10 +568,9 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <WcTwoToneIcon></WcTwoToneIcon>
-                                    </Tooltip>{' '}
-                                    Would prefer to have an{' '}
+                                    > */}
+                                    <WcTwoToneIcon></WcTwoToneIcon>
+                                    {/* </Tooltip>*/} Would prefer to have an{' '}
                                     <strong>adults-only</strong> show
                                     <Divider />
                                 </Grid>
@@ -505,12 +578,20 @@ const EventDetails = ({
                             {theEvent.alcohol && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('alcohol');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="alcohol"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -520,9 +601,9 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <LiquorTwoToneIcon></LiquorTwoToneIcon>
-                                    </Tooltip>
+                                    > */}
+                                    <LiquorTwoToneIcon></LiquorTwoToneIcon>
+                                    {/* </Tooltip> */}
                                     Comfortable with having
                                     <strong>{' alcohol '}</strong>at the show
                                     <Divider />
@@ -531,12 +612,20 @@ const EventDetails = ({
                             {!theEvent.alcohol && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('alcohol');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="alcohol"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -546,9 +635,9 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <NoDrinksTwoToneIcon></NoDrinksTwoToneIcon>
-                                    </Tooltip>{' '}
+                                    > */}
+                                    <NoDrinksTwoToneIcon></NoDrinksTwoToneIcon>
+                                    {/* </Tooltip>{' '} */}
                                     Would prefer having{' '}
                                     <strong> no alcohol </strong> at the show
                                     <Divider />
@@ -557,12 +646,20 @@ const EventDetails = ({
                             {theEvent.soundSystem == 'yes' && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('soundSystem');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="soundSystem"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -572,9 +669,9 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <SpeakerTwoToneIcon></SpeakerTwoToneIcon>
-                                    </Tooltip>{' '}
+                                    > */}
+                                    <SpeakerTwoToneIcon></SpeakerTwoToneIcon>
+                                    {/* </Tooltip>{' '} */}
                                     <strong>
                                         {'Able to bring their own sound system'}
                                     </strong>{' '}
@@ -584,7 +681,15 @@ const EventDetails = ({
                             {theEvent.soundSystem == 'noButNeed' && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('soundSystem');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="soundSystem"
@@ -609,7 +714,15 @@ const EventDetails = ({
                             {theEvent.soundSystem == 'no' && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('soundSystem');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="soundSystem"
@@ -640,12 +753,22 @@ const EventDetails = ({
                                 theEvent.covidPrefs.length > 0 && (
                                     <Grid
                                         item
-                                        sx={{ marginTop: '0' }}
+                                        sx={{
+                                            marginTop: '0',
+                                            cursor: isMe
+                                                ? 'pointer'
+                                                : 'default',
+                                        }}
+                                        onClick={() => {
+                                            if (isMe) {
+                                                jumpTo('covidPrefs');
+                                            }
+                                        }}
                                         xs={12}
                                         md={6}
                                         className="covidPrefs"
                                     >
-                                        <Tooltip
+                                        {/* <Tooltip
                                             arrow={true}
                                             disableHoverListener={!isMe}
                                             disableFocusListener={!isMe}
@@ -655,9 +778,9 @@ const EventDetails = ({
                                                     Edit
                                                 </Link>
                                             }
-                                        >
-                                            <CoronavirusTwoToneIcon></CoronavirusTwoToneIcon>
-                                        </Tooltip>
+                                        > */}
+                                        <CoronavirusTwoToneIcon></CoronavirusTwoToneIcon>
+                                        {/* </Tooltip> */}
                                         {' Considering Covid, would prefer: '}
                                         <strong>
                                             {theEvent.covidPrefs &&
@@ -687,12 +810,20 @@ const EventDetails = ({
                             {theEvent.financialHopes && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('financialHopes');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="financialHopes"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -702,9 +833,9 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <SavingsTwoToneIcon></SavingsTwoToneIcon>
-                                    </Tooltip>
+                                    > */}
+                                    <SavingsTwoToneIcon></SavingsTwoToneIcon>
+                                    {/* </Tooltip> */}
                                     {' It would be hard to make less than '}
                                     <strong>${theEvent.financialHopes}</strong>
                                     {' per show'}
@@ -718,12 +849,22 @@ const EventDetails = ({
                                 theEvent.artist.fanActions.length > 0 && (
                                     <Grid
                                         item
-                                        sx={{ marginTop: '0' }}
+                                        sx={{
+                                            marginTop: '0',
+                                            cursor: isMe
+                                                ? 'pointer'
+                                                : 'default',
+                                        }}
+                                        onClick={() => {
+                                            if (isMe) {
+                                                jumpTo('fanActions');
+                                            }
+                                        }}
                                         xs={12}
                                         md={6}
                                         className="fanActions"
                                     >
-                                        <Tooltip
+                                        {/* <Tooltip
                                             arrow={true}
                                             disableHoverListener={!isMe}
                                             disableFocusListener={!isMe}
@@ -733,9 +874,9 @@ const EventDetails = ({
                                                     Edit
                                                 </Link>
                                             }
-                                        >
-                                            <ThumbUpTwoToneIcon></ThumbUpTwoToneIcon>
-                                        </Tooltip>
+                                        > */}
+                                        <ThumbUpTwoToneIcon></ThumbUpTwoToneIcon>
+                                        {/* </Tooltip> */}
                                         {' How new fans can show support: '}
                                         <strong>
                                             {theEvent.artist.fanActions.map(
@@ -760,12 +901,20 @@ const EventDetails = ({
                             {theEvent.artistNotes && (
                                 <Grid
                                     item
-                                    sx={{ marginTop: '0' }}
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('artistNotes');
+                                        }
+                                    }}
                                     xs={12}
                                     md={6}
                                     className="artistNotes"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -775,9 +924,9 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <SpeakerNotesTwoToneIcon></SpeakerNotesTwoToneIcon>
-                                    </Tooltip>
+                                    > */}
+                                    <SpeakerNotesTwoToneIcon></SpeakerNotesTwoToneIcon>
+                                    {/* </Tooltip> */}
                                     {' Artist Notes: '}
                                     <strong>{theEvent.artistNotes}</strong>
 
