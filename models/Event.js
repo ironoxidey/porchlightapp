@@ -198,7 +198,6 @@ const EventSchema = new mongoose.Schema(
         hangout: {
             type: String,
         },
-
         allergies: {
             type: Object,
         },

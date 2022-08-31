@@ -47,6 +47,7 @@ import MoneyOffTwoToneIcon from '@mui/icons-material/MoneyOffTwoTone';
 import BedtimeOffTwoToneIcon from '@mui/icons-material/BedtimeOffTwoTone';
 import InterpreterModeTwoToneIcon from '@mui/icons-material/InterpreterModeTwoTone';
 import SpeakerNotesTwoToneIcon from '@mui/icons-material/SpeakerNotesTwoTone';
+// import Diversity1TwoToneIcon from '@mui/icons-material/Diversity1TwoTone';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -82,7 +83,7 @@ const EventDetails = ({
         <Fragment>
             {theEvent &&
                 theEvent.bookingWhen &&
-                theEvent.bookingWhere != '' && ( //check to be sure there's a valid first entry
+                theEvent.bookingWhere != '' && ( //check to be sure there's a valid bookingWhen and Where
                     <Grid
                         item
                         container
@@ -118,53 +119,149 @@ const EventDetails = ({
                             }}
                             className="bookingSpecifics"
                         >
+                            {isMe &&
+                                (!theEvent.costStructure ||
+                                    !theEvent.namedPrice) && (
+                                    <Grid
+                                        item
+                                        sx={{
+                                            marginTop: '0',
+                                        }}
+                                        xs={12}
+                                        md={6}
+                                        className="costStructure"
+                                    >
+                                        {
+                                            <VolunteerActivismTwoToneIcon
+                                                style={{
+                                                    cursor: isMe
+                                                        ? 'pointer'
+                                                        : 'auto',
+                                                    color: 'var(--link-color)',
+                                                }}
+                                                onClick={() => {
+                                                    if (
+                                                        isMe &&
+                                                        !theEvent.costStructure
+                                                    ) {
+                                                        jumpTo('costStructure');
+                                                    } else if (
+                                                        isMe &&
+                                                        !theEvent.namedPrice
+                                                    ) {
+                                                        jumpTo('namedPrice');
+                                                    }
+                                                }}
+                                            ></VolunteerActivismTwoToneIcon>
+                                        }
+                                        {!theEvent.costStructure && (
+                                            <Typography
+                                                style={{
+                                                    cursor: isMe
+                                                        ? 'pointer'
+                                                        : 'auto',
+                                                    color: 'var(--link-color)',
+                                                }}
+                                                onClick={() => {
+                                                    if (
+                                                        isMe &&
+                                                        !theEvent.costStructure
+                                                    ) {
+                                                        jumpTo('costStructure');
+                                                    }
+                                                }}
+                                            >
+                                                You haven’t filled in the cost
+                                                structure you’d prefer.
+                                            </Typography>
+                                        )}
+                                        {!theEvent.namedPrice && (
+                                            <Typography
+                                                style={{
+                                                    cursor: isMe
+                                                        ? 'pointer'
+                                                        : 'auto',
+                                                    color: 'var(--link-color)',
+                                                }}
+                                                onClick={() => {
+                                                    if (
+                                                        isMe &&
+                                                        !theEvent.namedPrice
+                                                    ) {
+                                                        jumpTo('namedPrice');
+                                                    }
+                                                }}
+                                            >
+                                                You haven’t named your price.
+                                            </Typography>
+                                        )}
+
+                                        <Divider />
+                                    </Grid>
+                                )}
                             {theEvent.costStructure && theEvent.namedPrice && (
                                 <Grid
                                     item
                                     sx={{
                                         marginTop: '0',
-                                        cursor: isMe ? 'pointer' : 'auto',
-                                    }}
-                                    onClick={() => {
-                                        if (isMe) {
-                                            jumpTo('costStructure');
-                                        }
                                     }}
                                     xs={12}
                                     md={6}
                                     className="costStructure"
                                 >
-                                    {/* <Tooltip
-                                        arrow={true}
-                                        disableHoverListener={!isMe}
-                                        disableFocusListener={!isMe}
-                                        disableTouchListener={!isMe}
-                                        title={
-                                            <>
-                                                <Button
-                                                    onClick={() =>
-                                                        jumpTo('costStructure')
-                                                    }
-                                                >
-                                                    Edit
-                                                </Button>
-                                            </>
-                                        }
-                                    > */}
                                     {theEvent.costStructure === 'donation' ? (
-                                        <VolunteerActivismTwoToneIcon></VolunteerActivismTwoToneIcon>
+                                        <VolunteerActivismTwoToneIcon
+                                            style={{
+                                                cursor: isMe
+                                                    ? 'pointer'
+                                                    : 'auto',
+                                            }}
+                                            onClick={() => {
+                                                if (isMe) {
+                                                    jumpTo('costStructure');
+                                                }
+                                            }}
+                                        ></VolunteerActivismTwoToneIcon>
                                     ) : (
-                                        <ConfirmationNumberTwoToneIcon></ConfirmationNumberTwoToneIcon>
+                                        <ConfirmationNumberTwoToneIcon
+                                            style={{
+                                                cursor: isMe
+                                                    ? 'pointer'
+                                                    : 'auto',
+                                            }}
+                                            onClick={() => {
+                                                if (isMe) {
+                                                    jumpTo('costStructure');
+                                                }
+                                            }}
+                                        ></ConfirmationNumberTwoToneIcon>
                                     )}
-                                    {/* </Tooltip>{' '} */}
                                     {'Wants the concert to be '}
-                                    <strong>
+                                    <strong
+                                        style={{
+                                            cursor: isMe ? 'pointer' : 'auto',
+                                        }}
+                                        onClick={() => {
+                                            if (isMe) {
+                                                jumpTo('costStructure');
+                                            }
+                                        }}
+                                    >
                                         {theEvent.costStructure == 'ticket'
                                             ? 'ticketed'
                                             : 'donation-based'}
                                     </strong>
                                     {', at '}
-                                    <strong>
+                                    <strong
+                                        style={{
+                                            cursor: isMe ? 'pointer' : 'auto',
+                                        }}
+                                        onClick={() => {
+                                            if (isMe) {
+                                                jumpTo('namedPrice');
+                                            }
+                                        }}
+                                    >
                                         {' $'}
                                         {theEvent.namedPrice}
                                     </strong>
@@ -173,6 +270,37 @@ const EventDetails = ({
                                     <Divider />
                                 </Grid>
                             )}
+                            {isMe &&
+                                (!theEvent.tourVibe ||
+                                    theEvent.tourVibe.length === 0) && (
+                                    <Grid
+                                        item
+                                        sx={{
+                                            marginTop: '0',
+                                            cursor: isMe ? 'pointer' : 'auto',
+                                            color: 'var(--link-color)',
+                                        }}
+                                        onClick={() => {
+                                            if (isMe) {
+                                                jumpTo('tourVibe');
+                                            }
+                                        }}
+                                        xs={12}
+                                        md={6}
+                                        className="tourVibe"
+                                    >
+                                        <GroupsTwoToneIcon
+                                            style={{
+                                                color: 'var(--link-color)',
+                                            }}
+                                        ></GroupsTwoToneIcon>
+                                        {
+                                            'You haven’t told us about the audience you feel most comfortable performing for.'
+                                        }
+
+                                        <Divider />
+                                    </Grid>
+                                )}
                             {theEvent.tourVibe && theEvent.tourVibe.length > 0 && (
                                 <Grid
                                     item
@@ -287,6 +415,30 @@ const EventDetails = ({
                                     </Grid>
                                 </Fragment>
                             )}
+                            {isMe && !theEvent.openers && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                        color: 'var(--link-color)',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('openers');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="openers"
+                                >
+                                    <InterpreterModeTwoToneIcon
+                                        style={{ color: 'var(--link-color)' }}
+                                    ></InterpreterModeTwoToneIcon>
+                                    {` You haven’t said anything about an opener.`}
+                                    <Divider />
+                                </Grid>
+                            )}
                             {theEvent.openers && (
                                 <Grid
                                     item
@@ -321,6 +473,33 @@ const EventDetails = ({
                                         artist.artist.stageName
                                     } said, `}
                                     <strong>“{theEvent.openers}”</strong>
+                                    <Divider />
+                                </Grid>
+                            )}
+                            {!theEvent.overnight && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                        color: 'var(--link-color)',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('overnight');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="overnight"
+                                >
+                                    <HotelTwoToneIcon
+                                        style={{ color: 'var(--link-color)' }}
+                                    ></HotelTwoToneIcon>
+                                    {
+                                        ' You haven’t said if you’ll need to stay overnight. '
+                                    }
+
                                     <Divider />
                                 </Grid>
                             )}
@@ -400,7 +579,33 @@ const EventDetails = ({
                                     <Divider />
                                 </Grid>
                             )}
-                            {theEvent.merchTable && (
+
+                            {!theEvent.hangout && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                        color: 'var(--link-color)',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('hangout');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="hangout"
+                                >
+                                    {/* <Diversity1TwoToneIcon></Diversity1TwoToneIcon> */}
+                                    <strong>
+                                        You didn’t say when or if you’d like to
+                                        hang out with your hosts.
+                                    </strong>
+                                    <Divider />
+                                </Grid>
+                            )}
+                            {theEvent.merchTable == true ? (
                                 <Grid
                                     item
                                     sx={{
@@ -416,7 +621,7 @@ const EventDetails = ({
                                     md={6}
                                     className="merchTable"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -426,26 +631,69 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>
-                                    </Tooltip>{' '}
-                                    Would like a <strong>merch table</strong>{' '}
+                                    > */}
+                                    <TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>
+                                    {/* </Tooltip>{' '} */}
+                                    Would like a <strong>
+                                        merch table
+                                    </strong>{' '}
                                     (for CDs, t-shirts, etc.) <Divider />
                                 </Grid>
+                            ) : (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('merchTable');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="merchTable"
+                                >
+                                    <TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>{' '}
+                                    Does <strong> NOT </strong> need a merch
+                                    table <Divider />
+                                </Grid>
                             )}
-                            {/* {!artist.merchTable ?
-					<Grid
-						item
-						sx={{ marginTop: '0' }}
-						xs={6}
-					>
-					<TableRestaurantTwoToneIcon></TableRestaurantTwoToneIcon>
-					{' '}<strong>{'Does NOT need a merch table'}</strong>{' '}
-					</Grid>
-				: ''} */}
-                            {theEvent.artist &&
-                                theEvent.artist.allergies &&
-                                theEvent.artist.allergies.length > 0 && (
+                            {(!theEvent.allergies ||
+                                theEvent.allergies.length === 0) && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'default',
+                                        color: 'var(--link-color)',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('allergies');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="allergies"
+                                >
+                                    <SvgIcon
+                                        style={{
+                                            width: '26px',
+                                            verticalAlign: 'baseline',
+                                            color: 'var(--link-color)',
+                                        }}
+                                    >
+                                        <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
+                                    </SvgIcon>
+                                    {' You haven’t listed any allergies.'}
+
+                                    <Divider />
+                                </Grid>
+                            )}
+                            {theEvent.allergies &&
+                                theEvent.allergies.length > 0 && (
                                     <Grid
                                         item
                                         sx={{
@@ -485,14 +733,13 @@ const EventDetails = ({
                                         {/* </Tooltip> */}
                                         {' Has these allergies: '}
                                         <strong>
-                                            {theEvent.artist.allergies
-                                                .constructor.name === 'Array' &&
-                                                theEvent.artist.allergies.map(
+                                            {theEvent.allergies.constructor
+                                                .name === 'Array' &&
+                                                theEvent.allergies.map(
                                                     (allergy, ind) => {
                                                         if (
                                                             ind !==
-                                                            theEvent.artist
-                                                                .allergies
+                                                            theEvent.allergies
                                                                 .length -
                                                                 1
                                                         ) {
@@ -643,6 +890,36 @@ const EventDetails = ({
                                     <Divider />
                                 </Grid>
                             )}
+                            {!theEvent.soundSystem && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                        color: 'var(--link-color)',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('soundSystem');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="soundSystem"
+                                >
+                                    <SpeakerTwoToneIcon
+                                        style={{ color: 'var(--link-color)' }}
+                                    ></SpeakerTwoToneIcon>
+                                    <strong
+                                        style={{ color: 'var(--link-color)' }}
+                                    >
+                                        {
+                                            'You haven’t told us if you need a sound system.'
+                                        }
+                                    </strong>{' '}
+                                    <Divider />
+                                </Grid>
+                            )}
                             {theEvent.soundSystem == 'yes' && (
                                 <Grid
                                     item
@@ -673,7 +950,7 @@ const EventDetails = ({
                                     <SpeakerTwoToneIcon></SpeakerTwoToneIcon>
                                     {/* </Tooltip>{' '} */}
                                     <strong>
-                                        {'Able to bring their own sound system'}
+                                        {'Able to bring a sound system'}
                                     </strong>{' '}
                                     <Divider />
                                 </Grid>
@@ -694,7 +971,7 @@ const EventDetails = ({
                                     md={6}
                                     className="soundSystem"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -704,10 +981,12 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <SpeakerTwoToneIcon></SpeakerTwoToneIcon>
-                                    </Tooltip>{' '}
-                                    <strong>{'Needs a sound system'}</strong>{' '}
+                                    > */}
+                                    <SpeakerTwoToneIcon></SpeakerTwoToneIcon>
+                                    {/* </Tooltip>{' '} */}
+                                    <strong>
+                                        {'Needs a sound system'}
+                                    </strong>{' '}
                                     <Divider />
                                 </Grid>
                             )}
@@ -727,7 +1006,7 @@ const EventDetails = ({
                                     md={6}
                                     className="soundSystem"
                                 >
-                                    <Tooltip
+                                    {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -737,13 +1016,43 @@ const EventDetails = ({
                                                 Edit
                                             </Link>
                                         }
-                                    >
-                                        <SpeakerTwoToneIcon></SpeakerTwoToneIcon>
-                                    </Tooltip>{' '}
+                                    > */}
+                                    <SpeakerTwoToneIcon></SpeakerTwoToneIcon>
+                                    {/* </Tooltip>{' '} */}
                                     <strong>
                                         Able to play an acoustic show
                                     </strong>{' '}
                                     if it makes sense for the size of the space.{' '}
+                                    <Divider />
+                                </Grid>
+                            )}
+                            {(!theEvent.covidPrefs ||
+                                theEvent.covidPrefs.length === 0) && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'default',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('covidPrefs');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="covidPrefs"
+                                >
+                                    <CoronavirusTwoToneIcon
+                                        style={{ color: 'var(--link-color)' }}
+                                    ></CoronavirusTwoToneIcon>
+                                    <strong
+                                        style={{ color: 'var(--link-color)' }}
+                                    >
+                                        You haven’t specified any Covid
+                                        preferences.
+                                    </strong>
+
                                     <Divider />
                                 </Grid>
                             )}
@@ -807,6 +1116,37 @@ const EventDetails = ({
                                         <Divider />
                                     </Grid>
                                 )}
+                            {!theEvent.financialHopes && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('financialHopes');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="financialHopes"
+                                >
+                                    <SavingsTwoToneIcon
+                                        style={{ color: 'var(--link-color)' }}
+                                    ></SavingsTwoToneIcon>
+
+                                    <strong
+                                        style={{ color: 'var(--link-color)' }}
+                                    >
+                                        {' '}
+                                        You haven’t explained your financial
+                                        expectations/hopes for this concert.
+                                    </strong>
+
+                                    <Divider />
+                                </Grid>
+                            )}
                             {theEvent.financialHopes && (
                                 <Grid
                                     item
@@ -843,10 +1183,41 @@ const EventDetails = ({
                                     <Divider />
                                 </Grid>
                             )}
-                            {theEvent.artist.fanActions &&
-                                theEvent.artist.fanActions.constructor.name ===
+                            {(!theEvent.fanActions ||
+                                theEvent.fanActions.length === 0) && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'default',
+                                        color: 'var(--link-color)',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('fanActions');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="fanActions"
+                                >
+                                    <ThumbUpTwoToneIcon
+                                        style={{ color: 'var(--link-color)' }}
+                                    ></ThumbUpTwoToneIcon>
+                                    <strong
+                                        style={{ color: 'var(--link-color)' }}
+                                    >
+                                        You haven’t told us how you’d like new
+                                        fans to show support.
+                                    </strong>
+
+                                    <Divider />
+                                </Grid>
+                            )}
+                            {theEvent.fanActions &&
+                                theEvent.fanActions.constructor.name ===
                                     'Array' &&
-                                theEvent.artist.fanActions.length > 0 && (
+                                theEvent.fanActions.length > 0 && (
                                     <Grid
                                         item
                                         sx={{
@@ -879,25 +1250,74 @@ const EventDetails = ({
                                         {/* </Tooltip> */}
                                         {' How new fans can show support: '}
                                         <strong>
-                                            {theEvent.artist.fanActions.map(
-                                                (fanAction, ind) => {
-                                                    if (
-                                                        ind !==
-                                                        theEvent.artist
-                                                            .fanActions.length -
-                                                            1
-                                                    ) {
-                                                        return fanAction + ', ';
-                                                    } else {
-                                                        return fanAction;
+                                            {(theEvent.fanActions &&
+                                                theEvent.fanActions.map(
+                                                    (fanAction, ind) => {
+                                                        if (
+                                                            ind !==
+                                                            theEvent.fanActions
+                                                                .length -
+                                                                1
+                                                        ) {
+                                                            return (
+                                                                fanAction + ', '
+                                                            );
+                                                        } else {
+                                                            return fanAction;
+                                                        }
                                                     }
-                                                }
-                                            )}{' '}
+                                                )) ||
+                                                theEvent.artist.fanActions.map(
+                                                    (fanAction, ind) => {
+                                                        if (
+                                                            ind !==
+                                                            theEvent.artist
+                                                                .fanActions
+                                                                .length -
+                                                                1
+                                                        ) {
+                                                            return (
+                                                                fanAction + ', '
+                                                            );
+                                                        } else {
+                                                            return fanAction;
+                                                        }
+                                                    }
+                                                )}{' '}
                                         </strong>
 
                                         <Divider />
                                     </Grid>
                                 )}
+                            {!theEvent.artistNotes && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('artistNotes');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="artistNotes"
+                                >
+                                    <SpeakerNotesTwoToneIcon
+                                        style={{ color: 'var(--link-color)' }}
+                                    ></SpeakerNotesTwoToneIcon>
+
+                                    <strong
+                                        style={{ color: 'var(--link-color)' }}
+                                    >
+                                        You haven’t added any extra notes.
+                                    </strong>
+
+                                    <Divider />
+                                </Grid>
+                            )}
                             {theEvent.artistNotes && (
                                 <Grid
                                     item

@@ -608,9 +608,9 @@ const ArtistEventForm = ({
 
     const formGroups = {
         bookingWhen: [
-            <FormLabel component="legend">
+            <Typography component="h2">
                 Please select a date you’d like to try to play a concert:
-            </FormLabel>,
+            </Typography>,
             [
                 // bookingWhen && bookingWhen.length > 0
                 // 	? bookingWhen.map((whenBooking, idx) => (
@@ -723,6 +723,7 @@ const ArtistEventForm = ({
                                     <Chip
                                         variant="outlined"
                                         name="bookingWhere"
+                                        key={`bookingWhere${index}`}
                                         label={
                                             option.city + ', ' + option.state
                                         }
@@ -772,6 +773,7 @@ const ArtistEventForm = ({
                                     variant="outlined"
                                     name="tourVibe"
                                     label={option}
+                                    key={`tourVibe${index}`}
                                     {...getTagProps({ index })}
                                 />
                             ))
@@ -1086,8 +1088,8 @@ const ArtistEventForm = ({
         ],
         financialHopes: [
             <FormLabel component="legend">
-                What are your financial expectations and/or hopes for this show
-                or tour?
+                What are your financial expectations and/or hopes for this
+                concert?
             </FormLabel>,
             [
                 // <Grid item>
@@ -1149,6 +1151,7 @@ const ArtistEventForm = ({
                                     variant="outlined"
                                     name="fanActions"
                                     label={option}
+                                    key={`fanAction${index}`}
                                     {...getTagProps({ index })}
                                 />
                             ))
@@ -1401,7 +1404,7 @@ const ArtistEventForm = ({
                                 ? travelingCompanions.map(
                                       (travelingCompanion, idx) => (
                                           <FormControlLabel
-                                              key={idx}
+                                              key={`travelingCompanion${idx}`}
                                               value={idx + 2}
                                               control={<Radio />}
                                               label={
@@ -1525,6 +1528,7 @@ const ArtistEventForm = ({
                                     variant="outlined"
                                     name="allergies"
                                     label={option}
+                                    key={`allergy${index}`}
                                     {...getTagProps({ index })}
                                 />
                             ))
@@ -1642,6 +1646,7 @@ const ArtistEventForm = ({
                                 variant="outlined"
                                 name="covidPrefs"
                                 label={option}
+                                key={`covidPref${index}`}
                                 {...getTagProps({ index })}
                             />
                         ))
@@ -1688,13 +1693,12 @@ const ArtistEventForm = ({
         endSlide: [
             [
                 <Typography component="h2" sx={{ textAlign: 'center' }}>
-                    That's everything we need for this event!
+                    This is how your concert will look to hosts:
                 </Typography>,
                 <Typography
                     component="p"
-                    sx={{ textAlign: 'center', marginTop: '20px' }}
+                    sx={{ textAlign: 'center', marginTop: '0px' }}
                 >
-                    This is how it will look to hosts: <br />
                     (click to edit)
                 </Typography>,
             ],
@@ -1752,6 +1756,16 @@ const ArtistEventForm = ({
         }
     }, [jumpToState]);
 
+    useEffect(() => {
+        //console.log('jumpToState ArtistEventForm', jumpToState);
+        if (bookingWhen) {
+            setDirection(1);
+            setIndex(
+                (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length
+            );
+        }
+    }, [bookingWhen]);
+
     const transitions = useTransition(formCardIndex, {
         key: formCardIndex,
         initial: null,
@@ -1800,7 +1814,11 @@ const ArtistEventForm = ({
     return (
         <Fragment>
             <form className="form" onSubmit={(e) => onSubmit(e)}>
-                <Grid container sx={{ padding: '20px!important' }}>
+                <Grid
+                    container
+                    sx={{ padding: '20px!important' }}
+                    display={bookingWhen ? 'flex' : 'none'}
+                >
                     <Grid
                         container
                         item
@@ -1810,6 +1828,7 @@ const ArtistEventForm = ({
                         alignItems="center"
                         zIndex="100"
                         position="relative"
+                        className="formNav"
                     >
                         <Grid item>
                             {/* { cardIndex > 0 ? (  */}
@@ -1845,20 +1864,25 @@ const ArtistEventForm = ({
                             </Button>
                             {/* ) : ''} */}
                         </Grid>
-                        <Grid item>
-                            {/* { cardIndex < formGroups.length - 1 ? ( */}
-                            <Button
-                                variant="contained"
-                                component="span"
-                                onClick={() => {
-                                    jumpTo('endSlide');
-                                }}
-                            >
-                                To Summary
-                                <ArrowForwardIcon></ArrowForwardIcon>
-                            </Button>
-                            {/* ) : ''} */}
-                        </Grid>
+                        {jumpToState !== '' && jumpToState !== 'endSlide' && (
+                            <Grid item>
+                                {/* { cardIndex < formGroups.length - 1 ? ( */}
+                                <Button
+                                    variant="contained"
+                                    component="span"
+                                    onClick={(e) => {
+                                        if (changesMade.current) {
+                                            onSubmit(e);
+                                        }
+                                        jumpTo('endSlide');
+                                    }}
+                                >
+                                    To Summary
+                                    <ArrowForwardIcon></ArrowForwardIcon>
+                                </Button>
+                                {/* ) : ''} */}
+                            </Grid>
+                        )}
                     </Grid>
                 </Grid>
                 {transitions((style, i) => (
@@ -1867,6 +1891,7 @@ const ArtistEventForm = ({
                         key={'animatedFormGroup' + i}
                         style={{
                             ...style,
+                            top: bookingWhen ? '100px' : '0px',
                         }}
                     >
                         <div className="form-group" key={'form-group' + i}>
@@ -1887,8 +1912,10 @@ const ArtistEventForm = ({
                                 <Grid
                                     item
                                     xs={12}
-                                    sx={{ '--form-num': `'${i + 1}'` }}
-                                    data-form-num={i + 1}
+                                    //sx={{ '--form-num': `'${i + 1}'` }}
+                                    sx={{ '--form-num': `'${i}'` }}
+                                    data-form-num={i}
+                                    //data-form-num={i + 1}
                                     className="formInquiry"
                                 >
                                     {formGroups[Object.keys(formGroups)[i]][0]}
