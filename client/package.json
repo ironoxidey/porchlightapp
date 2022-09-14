@@ -1,66 +1,66 @@
 {
-	"name": "client",
-	"version": "0.1.0",
-	"private": true,
-	"dependencies": {
-		"@emotion/react": "^11.7.0",
-		"@emotion/styled": "^11.6.0",
-		"@fortawesome/fontawesome-svg-core": "^1.2.36",
-		"@fortawesome/free-brands-svg-icons": "^5.15.4",
-		"@fortawesome/free-solid-svg-icons": "^5.15.4",
-		"@fortawesome/react-fontawesome": "^0.1.16",
-		"@mui/icons-material": "^5.2.1",
-		"@mui/lab": "^5.0.0-alpha.73",
-		"@mui/material": "^5.2.3",
-		"@mui/styles": "^5.2.3",
-		"@mui/x-data-grid": "^5.6.0",
-		"@randex/material-ui-multiple-dates-picker": "^0.4.0",
-		"@testing-library/jest-dom": "^4.2.4",
-		"@testing-library/react": "^9.5.0",
-		"@testing-library/user-event": "^7.2.1",
-		"axios": "^0.25.0",
-		"cloudinary-react": "^1.7.1",
-		"moment": "^2.29.0",
-		"prepend-http": "^4.0.0",
-		"react": "^17.0.2",
-		"react-dom": "^17.0.2",
-		"react-moment": "^1.0.0",
-		"react-phone-input-mui": "^2.9.4",
-		"react-player": "^2.9.0",
-		"react-redux": "^7.2.1",
-		"react-router-dom": "^5.2.0",
-		"react-scripts": "^5.0.0",
-		"react-spring": "^9.3.2",
-		"react-use": "^17.3.2",
-		"redux": "^4.0.5",
-		"redux-devtools-extension": "^2.13.8",
-		"redux-thunk": "^2.3.0",
-		"spinners-react": "^1.0.6",
-		"us-state-converter": "^1.0.6",
-		"uuid": "^8.3.0"
-	},
-	"scripts": {
-		"start": "react-scripts start",
-		"build": "react-scripts build",
-		"test": "react-scripts test",
-		"eject": "react-scripts eject"
-	},
-	"resolutions": {
-		"react-error-overlay": "6.0.9"
-	},
-	"eslintConfig": {
-		"extends": "react-app"
-	},
-	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
-		"development": [
-			"last 1 chrome version",
-			"last 1 firefox version",
-			"last 1 safari version"
-		]
-	}
+    "name": "client",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@emotion/react": "^11.7.0",
+        "@emotion/styled": "^11.6.0",
+        "@fortawesome/fontawesome-svg-core": "^1.2.36",
+        "@fortawesome/free-brands-svg-icons": "^5.15.4",
+        "@fortawesome/free-solid-svg-icons": "^5.15.4",
+        "@fortawesome/react-fontawesome": "^0.1.16",
+        "@mui/icons-material": "^5.2.1",
+        "@mui/lab": "^5.0.0-alpha.73",
+        "@mui/material": "^5.2.3",
+        "@mui/styles": "^5.2.3",
+        "@mui/x-data-grid": "^5.6.0",
+        "@randex/material-ui-multiple-dates-picker": "^0.4.0",
+        "@testing-library/jest-dom": "^4.2.4",
+        "@testing-library/react": "^9.5.0",
+        "@testing-library/user-event": "^7.2.1",
+        "axios": "^0.25.0",
+        "cloudinary-react": "^1.7.1",
+        "moment": "^2.29.0",
+        "prepend-http": "^4.0.0",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-moment": "^1.0.0",
+        "react-phone-input-mui": "^2.9.4",
+        "react-player": "^2.9.0",
+        "react-redux": "^7.2.1",
+        "react-router-dom": "^5.2.0",
+        "react-scripts": "^5.0.0",
+        "react-spring": "^9.3.2",
+        "react-use": "^17.3.2",
+        "redux": "^4.0.5",
+        "redux-devtools-extension": "^2.13.8",
+        "redux-thunk": "^2.3.0",
+        "spinners-react": "^1.0.6",
+        "us-state-converter": "^1.0.6",
+        "uuid": "^8.3.0"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "resolutions": {
+        "react-error-overlay": "6.0.9"
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
 }

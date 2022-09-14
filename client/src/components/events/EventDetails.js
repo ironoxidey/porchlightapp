@@ -47,7 +47,8 @@ import MoneyOffTwoToneIcon from '@mui/icons-material/MoneyOffTwoTone';
 import BedtimeOffTwoToneIcon from '@mui/icons-material/BedtimeOffTwoTone';
 import InterpreterModeTwoToneIcon from '@mui/icons-material/InterpreterModeTwoTone';
 import SpeakerNotesTwoToneIcon from '@mui/icons-material/SpeakerNotesTwoTone';
-// import Diversity1TwoToneIcon from '@mui/icons-material/Diversity1TwoTone';
+import Diversity1TwoToneIcon from '@mui/icons-material/Diversity1TwoTone';
+// import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -476,7 +477,7 @@ const EventDetails = ({
                                     <Divider />
                                 </Grid>
                             )}
-                            {!theEvent.overnight && (
+                            {isMe && !theEvent.overnight && (
                                 <Grid
                                     item
                                     sx={{
@@ -580,7 +581,7 @@ const EventDetails = ({
                                 </Grid>
                             )}
 
-                            {!theEvent.hangout && (
+                            {isMe && !theEvent.hangout && (
                                 <Grid
                                     item
                                     sx={{
@@ -597,11 +598,11 @@ const EventDetails = ({
                                     md={6}
                                     className="hangout"
                                 >
-                                    {/* <Diversity1TwoToneIcon></Diversity1TwoToneIcon> */}
-                                    <strong>
-                                        You didn’t say when or if you’d like to
-                                        hang out with your hosts.
-                                    </strong>
+                                    <Diversity1TwoToneIcon
+                                        style={{ color: 'var(--link-color)' }}
+                                    ></Diversity1TwoToneIcon>
+                                    You didn’t say when or if you’d like to hang
+                                    out with your hosts.
                                     <Divider />
                                 </Grid>
                             )}
@@ -660,38 +661,41 @@ const EventDetails = ({
                                     table <Divider />
                                 </Grid>
                             )}
-                            {(!theEvent.allergies ||
-                                theEvent.allergies.length === 0) && (
-                                <Grid
-                                    item
-                                    sx={{
-                                        marginTop: '0',
-                                        cursor: isMe ? 'pointer' : 'default',
-                                        color: 'var(--link-color)',
-                                    }}
-                                    onClick={() => {
-                                        if (isMe) {
-                                            jumpTo('allergies');
-                                        }
-                                    }}
-                                    xs={12}
-                                    md={6}
-                                    className="allergies"
-                                >
-                                    <SvgIcon
-                                        style={{
-                                            width: '26px',
-                                            verticalAlign: 'baseline',
+                            {isMe &&
+                                (!theEvent.allergies ||
+                                    theEvent.allergies.length === 0) && (
+                                    <Grid
+                                        item
+                                        sx={{
+                                            marginTop: '0',
+                                            cursor: isMe
+                                                ? 'pointer'
+                                                : 'default',
                                             color: 'var(--link-color)',
                                         }}
+                                        onClick={() => {
+                                            if (isMe) {
+                                                jumpTo('allergies');
+                                            }
+                                        }}
+                                        xs={12}
+                                        md={6}
+                                        className="allergies"
                                     >
-                                        <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
-                                    </SvgIcon>
-                                    {' You haven’t listed any allergies.'}
+                                        <SvgIcon
+                                            style={{
+                                                width: '26px',
+                                                verticalAlign: 'baseline',
+                                                color: 'var(--link-color)',
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
+                                        </SvgIcon>
+                                        {' You haven’t listed any allergies.'}
 
-                                    <Divider />
-                                </Grid>
-                            )}
+                                        <Divider />
+                                    </Grid>
+                                )}
                             {theEvent.allergies &&
                                 theEvent.allergies.length > 0 && (
                                     <Grid
@@ -890,7 +894,7 @@ const EventDetails = ({
                                     <Divider />
                                 </Grid>
                             )}
-                            {!theEvent.soundSystem && (
+                            {isMe && !theEvent.soundSystem && (
                                 <Grid
                                     item
                                     sx={{
@@ -1026,36 +1030,43 @@ const EventDetails = ({
                                     <Divider />
                                 </Grid>
                             )}
-                            {(!theEvent.covidPrefs ||
-                                theEvent.covidPrefs.length === 0) && (
-                                <Grid
-                                    item
-                                    sx={{
-                                        marginTop: '0',
-                                        cursor: isMe ? 'pointer' : 'default',
-                                    }}
-                                    onClick={() => {
-                                        if (isMe) {
-                                            jumpTo('covidPrefs');
-                                        }
-                                    }}
-                                    xs={12}
-                                    md={6}
-                                    className="covidPrefs"
-                                >
-                                    <CoronavirusTwoToneIcon
-                                        style={{ color: 'var(--link-color)' }}
-                                    ></CoronavirusTwoToneIcon>
-                                    <strong
-                                        style={{ color: 'var(--link-color)' }}
+                            {isMe &&
+                                (!theEvent.covidPrefs ||
+                                    theEvent.covidPrefs.length === 0) && (
+                                    <Grid
+                                        item
+                                        sx={{
+                                            marginTop: '0',
+                                            cursor: isMe
+                                                ? 'pointer'
+                                                : 'default',
+                                        }}
+                                        onClick={() => {
+                                            if (isMe) {
+                                                jumpTo('covidPrefs');
+                                            }
+                                        }}
+                                        xs={12}
+                                        md={6}
+                                        className="covidPrefs"
                                     >
-                                        You haven’t specified any Covid
-                                        preferences.
-                                    </strong>
+                                        <CoronavirusTwoToneIcon
+                                            style={{
+                                                color: 'var(--link-color)',
+                                            }}
+                                        ></CoronavirusTwoToneIcon>
+                                        <strong
+                                            style={{
+                                                color: 'var(--link-color)',
+                                            }}
+                                        >
+                                            You haven’t specified any Covid
+                                            preferences.
+                                        </strong>
 
-                                    <Divider />
-                                </Grid>
-                            )}
+                                        <Divider />
+                                    </Grid>
+                                )}
                             {theEvent.covidPrefs &&
                                 theEvent.covidPrefs.constructor.name ===
                                     'Array' &&
@@ -1116,7 +1127,7 @@ const EventDetails = ({
                                         <Divider />
                                     </Grid>
                                 )}
-                            {!theEvent.financialHopes && (
+                            {isMe && !theEvent.financialHopes && (
                                 <Grid
                                     item
                                     sx={{
@@ -1183,37 +1194,44 @@ const EventDetails = ({
                                     <Divider />
                                 </Grid>
                             )}
-                            {(!theEvent.fanActions ||
-                                theEvent.fanActions.length === 0) && (
-                                <Grid
-                                    item
-                                    sx={{
-                                        marginTop: '0',
-                                        cursor: isMe ? 'pointer' : 'default',
-                                        color: 'var(--link-color)',
-                                    }}
-                                    onClick={() => {
-                                        if (isMe) {
-                                            jumpTo('fanActions');
-                                        }
-                                    }}
-                                    xs={12}
-                                    md={6}
-                                    className="fanActions"
-                                >
-                                    <ThumbUpTwoToneIcon
-                                        style={{ color: 'var(--link-color)' }}
-                                    ></ThumbUpTwoToneIcon>
-                                    <strong
-                                        style={{ color: 'var(--link-color)' }}
+                            {isMe &&
+                                (!theEvent.fanActions ||
+                                    theEvent.fanActions.length === 0) && (
+                                    <Grid
+                                        item
+                                        sx={{
+                                            marginTop: '0',
+                                            cursor: isMe
+                                                ? 'pointer'
+                                                : 'default',
+                                            color: 'var(--link-color)',
+                                        }}
+                                        onClick={() => {
+                                            if (isMe) {
+                                                jumpTo('fanActions');
+                                            }
+                                        }}
+                                        xs={12}
+                                        md={6}
+                                        className="fanActions"
                                     >
-                                        You haven’t told us how you’d like new
-                                        fans to show support.
-                                    </strong>
+                                        <ThumbUpTwoToneIcon
+                                            style={{
+                                                color: 'var(--link-color)',
+                                            }}
+                                        ></ThumbUpTwoToneIcon>
+                                        <strong
+                                            style={{
+                                                color: 'var(--link-color)',
+                                            }}
+                                        >
+                                            You haven’t told us how you’d like
+                                            new fans to show support.
+                                        </strong>
 
-                                    <Divider />
-                                </Grid>
-                            )}
+                                        <Divider />
+                                    </Grid>
+                                )}
                             {theEvent.fanActions &&
                                 theEvent.fanActions.constructor.name ===
                                     'Array' &&
@@ -1289,7 +1307,7 @@ const EventDetails = ({
                                         <Divider />
                                     </Grid>
                                 )}
-                            {!theEvent.artistNotes && (
+                            {isMe && !theEvent.artistNotes && (
                                 <Grid
                                     item
                                     sx={{
