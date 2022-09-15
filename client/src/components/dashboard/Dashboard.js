@@ -262,7 +262,7 @@ const Dashboard = ({
                                     </Grid>
                                 </Fragment>
                             )}
-                            {(artist.me &&
+                            {/* {(artist.me &&
                                 artist.me._id &&
                                 artist.me.active &&
                                 artist.me.bookingWhen.length > 0) ||
@@ -302,7 +302,7 @@ const Dashboard = ({
                                 </Grid>
                             ) : (
                                 ''
-                            )}
+                            )} */}
                         </Grid>
                     ) : (
                         <></>

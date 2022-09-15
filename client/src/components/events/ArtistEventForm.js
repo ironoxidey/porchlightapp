@@ -52,7 +52,7 @@ import { textAlign } from '@mui/system';
 
 import {
     getFontAwesomeIcon,
-    getHostLocations,
+    //getHostLocations,
     sortDates,
     jumpTo,
 } from '../../actions/app';
@@ -1693,7 +1693,8 @@ const ArtistEventForm = ({
         endSlide: [
             [
                 <Typography component="h2" sx={{ textAlign: 'center' }}>
-                    This is how your concert will look to hosts:
+                    Hosts will see the fields you’ve filled out (nothing
+                    orange):
                 </Typography>,
                 <Typography
                     component="p"
@@ -1734,6 +1735,13 @@ const ArtistEventForm = ({
                 ? formGroupKeys.indexOf(queryEditField)
                 : 0;
     }
+    if (jumpToState !== '') {
+        const formGroupKeys = Object.keys(formGroups);
+        formStartIndex =
+            formGroupKeys.indexOf(jumpToState) > -1
+                ? formGroupKeys.indexOf(jumpToState)
+                : 0;
+    }
 
     //// CARD INDEX ///////
     const [formCardIndex, setIndex] = useState(formStartIndex);
@@ -1756,13 +1764,37 @@ const ArtistEventForm = ({
         }
     }, [jumpToState]);
 
+    // useEffect(() => {
+    //     //console.log('jumpToState ArtistEventForm', jumpToState);
+    //     if (bookingWhen) {
+    //         setDirection(1);
+    //         setIndex(Object.keys(formGroups).length - 1);
+    //     }
+    // }, [bookingWhen]);
+
     useEffect(() => {
         //console.log('jumpToState ArtistEventForm', jumpToState);
-        if (bookingWhen) {
+        if (bookingWhen && jumpToState === '') {
+            //triggers the form to go to the next slide when a bookingWhen is selected and pulls in the most recently created event's details, but doesn't affect the "Edit Concert Details"
             setDirection(1);
             setIndex(
                 (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length
             );
+            if (Array.isArray(myArtistEvents) && myArtistEvents.length > 0) {
+                const mostRecentlyCreatedEvent = myArtistEvents.reduce((a, b) =>
+                    a.createdAt > b.createdAt ? a : b
+                );
+                // console.log(
+                //     'mostRecentlyCreatedEvent',
+                //     mostRecentlyCreatedEvent
+                // );
+                delete mostRecentlyCreatedEvent._id;
+                delete mostRecentlyCreatedEvent.createdAt;
+                delete mostRecentlyCreatedEvent.bookingWhen;
+                delete mostRecentlyCreatedEvent.updatedAt;
+
+                setFormData({ ...formData, ...mostRecentlyCreatedEvent });
+            }
         }
     }, [bookingWhen]);
 
@@ -1789,9 +1821,16 @@ const ArtistEventForm = ({
     const nextCard = (e) => {
         jumpTo('');
         setDirection(1);
-        setIndex(
-            (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length
-        );
+        setIndex((cardIndex) => {
+            if (
+                bookingWhen &&
+                cardIndex === Object.keys(formGroups).length - 1
+            ) {
+                //skips the first slide if a bookingWhen exists, so that a user can't select more dates in the multidate picker
+                cardIndex = (cardIndex + 1) % Object.keys(formGroups).length;
+            }
+            return (cardIndex + 1) % Object.keys(formGroups).length;
+        });
         if (changesMade.current) {
             onSubmit(e);
         }
@@ -1800,7 +1839,7 @@ const ArtistEventForm = ({
         jumpTo('');
         setDirection(-1);
         setIndex((cardIndex) => {
-            if (cardIndex == 0) {
+            if (bookingWhen && cardIndex === 1) {
                 cardIndex = Object.keys(formGroups).length;
             }
             //console.log(cardIndex);

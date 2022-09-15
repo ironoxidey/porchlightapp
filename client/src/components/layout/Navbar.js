@@ -187,35 +187,35 @@ const Navbar = ({
             </ListItemIcon>
             Edit My Artist Profile
         </Link>,
-        (artist.me &&
-            artist.me._id &&
-            artist.me.active &&
-            artist.me.bookingWhen.length > 0) ||
-        (isAuthenticated &&
-            Array.isArray(user.role) &&
-            user.role.indexOf('ADMIN') != -1 &&
-            artist.me &&
-            artist.me._id &&
-            artist.me.bookingWhen.length > 0) ? ( //if ADMIN
-            <Link to="/edit-artist-booking">
-                <ListItemIcon>
-                    <DateRangeTwoToneIcon></DateRangeTwoToneIcon>
-                </ListItemIcon>
-                Edit My Booking Info
-            </Link>
-        ) : (artist.me && artist.me._id && artist.me.active) ||
-          (isAuthenticated &&
-              Array.isArray(user.role) &&
-              user.role.indexOf('ADMIN') != -1) ? (
-            <Link to="/edit-artist-booking">
-                <ListItemIcon>
-                    <DateRangeTwoToneIcon></DateRangeTwoToneIcon>
-                </ListItemIcon>
-                Start Booking Shows
-            </Link>
-        ) : (
-            ''
-        ),
+        // (artist.me &&
+        //     artist.me._id &&
+        //     artist.me.active &&
+        //     artist.me.bookingWhen.length > 0) ||
+        // (isAuthenticated &&
+        //     Array.isArray(user.role) &&
+        //     user.role.indexOf('ADMIN') != -1 &&
+        //     artist.me &&
+        //     artist.me._id &&
+        //     artist.me.bookingWhen.length > 0) ? ( //if ADMIN
+        //     <Link to="/edit-artist-booking">
+        //         <ListItemIcon>
+        //             <DateRangeTwoToneIcon></DateRangeTwoToneIcon>
+        //         </ListItemIcon>
+        //         Edit My Booking Info
+        //     </Link>
+        // ) : (artist.me && artist.me._id && artist.me.active) ||
+        //   (isAuthenticated &&
+        //       Array.isArray(user.role) &&
+        //       user.role.indexOf('ADMIN') != -1) ? (
+        //     <Link to="/edit-artist-booking">
+        //         <ListItemIcon>
+        //             <DateRangeTwoToneIcon></DateRangeTwoToneIcon>
+        //         </ListItemIcon>
+        //         Start Booking Shows
+        //     </Link>
+        // ) : (
+        //     ''
+        // ),
     ];
 
     const adminLinks = [];

@@ -1684,34 +1684,34 @@ const EditArtistProfileForm = ({
                         </Link>
                     </Grid>
                 ),
-                theArtist.bookingWhen && theArtist.bookingWhen.length > 0 ? (
-                    <Grid
-                        item
-                        sx={{
-                            margin: '8px auto',
-                        }}
-                    >
-                        <Link to="/edit-artist-booking">
-                            <Button btnwidth="300" className="">
-                                <DateRangeTwoToneIcon /> Edit My Booking Info
-                            </Button>
-                        </Link>
-                    </Grid>
-                ) : theArtist.active ? (
-                    <Grid
-                        item
-                        sx={{
-                            margin: '8px auto',
-                        }}
-                    >
-                        <p> </p>
-                        <Link to="/edit-artist-booking">
-                            <Button className="">Start Booking Shows</Button>
-                        </Link>
-                    </Grid>
-                ) : (
-                    ''
-                ),
+                // theArtist.bookingWhen && theArtist.bookingWhen.length > 0 ? (
+                //     <Grid
+                //         item
+                //         sx={{
+                //             margin: '8px auto',
+                //         }}
+                //     >
+                //         <Link to="/edit-artist-booking">
+                //             <Button btnwidth="300" className="">
+                //                 <DateRangeTwoToneIcon /> Edit My Booking Info
+                //             </Button>
+                //         </Link>
+                //     </Grid>
+                // ) : theArtist.active ? (
+                //     <Grid
+                //         item
+                //         sx={{
+                //             margin: '8px auto',
+                //         }}
+                //     >
+                //         <p> </p>
+                //         <Link to="/edit-artist-booking">
+                //             <Button className="">Start Booking Shows</Button>
+                //         </Link>
+                //     </Grid>
+                // ) : (
+                //     ''
+                // ),
             ],
         ],
     };

@@ -56,7 +56,13 @@ const EditArtistEvent = ({ theEvent, jumpTo }) => {
                 </Grid>
             </SwipeableDrawer>
 
-            <Button btnwidth="250" onClick={() => setDrawerOpen(true)}>
+            <Button
+                btnwidth="250"
+                onClick={() => {
+                    jumpTo('endSlide');
+                    setDrawerOpen(true);
+                }}
+            >
                 Edit Concert Details
             </Button>
         </>

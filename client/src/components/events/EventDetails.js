@@ -48,7 +48,7 @@ import BedtimeOffTwoToneIcon from '@mui/icons-material/BedtimeOffTwoTone';
 import InterpreterModeTwoToneIcon from '@mui/icons-material/InterpreterModeTwoTone';
 import SpeakerNotesTwoToneIcon from '@mui/icons-material/SpeakerNotesTwoTone';
 import Diversity1TwoToneIcon from '@mui/icons-material/Diversity1TwoTone';
-// import HandshakeTwoToneIcon from '@mui/icons-material/HandshakeTwoTone';
+import CampaignTwoToneIcon from '@mui/icons-material/CampaignTwoTone';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -416,6 +416,60 @@ const EventDetails = ({
                                     </Grid>
                                 </Fragment>
                             )}
+                            {!theEvent.agreeToPromote && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('agreeToPromote');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="agreeToPromote"
+                                >
+                                    <CampaignTwoToneIcon></CampaignTwoToneIcon>
+                                    {` When asked “Do you agree to promote each show to your audience, including email sends and social media?” ${
+                                        theEvent.artist.stageName ||
+                                        artist.artist.stageName
+                                    } answered, `}
+                                    <strong>
+                                        “No, I'm not willing to commit to that.”
+                                    </strong>
+                                    <Divider />
+                                </Grid>
+                            )}
+                            {theEvent.agreeToPromote && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('agreeToPromote');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="agreeToPromote"
+                                >
+                                    <CampaignTwoToneIcon></CampaignTwoToneIcon>
+                                    {` When asked “Do you agree to promote each show to your audience, including email sends and social media?” ${
+                                        theEvent.artist.stageName ||
+                                        artist.artist.stageName
+                                    } answered, `}
+                                    <strong>
+                                        “Yes, to the best of my ability.”
+                                    </strong>
+                                    <Divider />
+                                </Grid>
+                            )}
                             {isMe && !theEvent.openers && (
                                 <Grid
                                     item
@@ -603,6 +657,31 @@ const EventDetails = ({
                                     ></Diversity1TwoToneIcon>
                                     You didn’t say when or if you’d like to hang
                                     out with your hosts.
+                                    <Divider />
+                                </Grid>
+                            )}
+                            {theEvent.hangout && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('hangout');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="hangout"
+                                >
+                                    <Diversity1TwoToneIcon></Diversity1TwoToneIcon>
+                                    {`  When asked about spending some informal time with the hosts, ${
+                                        theEvent.artist.stageName ||
+                                        artist.artist.stageName
+                                    } said, `}
+                                    <strong>“{theEvent.hangout}”</strong>
                                     <Divider />
                                 </Grid>
                             )}
