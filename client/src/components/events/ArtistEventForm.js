@@ -1719,7 +1719,21 @@ const ArtistEventForm = ({
                 //     </Grid>
                 // ),
                 //Event Details as a host will see it
-                <EventDetails theEvent={{ ...theEvent, artist: artistMe }} />,
+                <EventDetails
+                    theEvent={{
+                        ...(theEvent ||
+                            myArtistEvents.find((event) => {
+                                if (
+                                    bookingWhen &&
+                                    bookingWhen.length > 0 &&
+                                    bookingWhen[0]
+                                ) {
+                                    return event.bookingWhen === bookingWhen[0];
+                                }
+                            })),
+                        artist: artistMe,
+                    }}
+                />,
             ],
         ],
     };
@@ -1781,19 +1795,20 @@ const ArtistEventForm = ({
                 (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length
             );
             if (Array.isArray(myArtistEvents) && myArtistEvents.length > 0) {
-                const mostRecentlyCreatedEvent = myArtistEvents.reduce((a, b) =>
-                    a.createdAt > b.createdAt ? a : b
+                const mostRecentlyUpdatedEvent = myArtistEvents.reduce((a, b) =>
+                    a.updatedAt > b.updatedAt ? a : b
                 );
                 // console.log(
-                //     'mostRecentlyCreatedEvent',
-                //     mostRecentlyCreatedEvent
+                //     'mostRecentlyUpdatedEvent',
+                //     mostRecentlyUpdatedEvent
                 // );
-                delete mostRecentlyCreatedEvent._id;
-                delete mostRecentlyCreatedEvent.createdAt;
-                delete mostRecentlyCreatedEvent.bookingWhen;
-                delete mostRecentlyCreatedEvent.updatedAt;
+                //remove the fields we don't want to copy from mostRecentlyUpdatedEvent
+                delete mostRecentlyUpdatedEvent._id;
+                delete mostRecentlyUpdatedEvent.createdAt;
+                delete mostRecentlyUpdatedEvent.bookingWhen;
+                delete mostRecentlyUpdatedEvent.updatedAt;
 
-                setFormData({ ...formData, ...mostRecentlyCreatedEvent });
+                setFormData({ ...formData, ...mostRecentlyUpdatedEvent });
             }
         }
     }, [bookingWhen]);
