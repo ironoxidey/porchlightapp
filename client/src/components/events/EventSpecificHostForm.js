@@ -162,7 +162,7 @@ const EventSpecificHostForm = ({
                         : host.me.guaranteeHonorarium,
                 honorariumAmount:
                     loading || !host.me.honorariumAmount
-                        ? artist.financialHopes
+                        ? theEvent.financialHopes
                         : host.me.honorariumAmount,
                 extraClarification:
                     loading || !host.me.extraClarification
@@ -595,7 +595,7 @@ const EventSpecificHostForm = ({
                     justifyContent="center"
                     className="bookingDetails"
                 >
-                    {artist.allergies && artist.allergies.length > 0 && (
+                    {theEvent.allergies && theEvent.allergies.length > 0 && (
                         <Grid
                             item
                             sx={{
@@ -617,14 +617,15 @@ const EventSpecificHostForm = ({
                             >
                                 <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
                             </SvgIcon>
-                            {artist.stageName + ' has these allergies: '}
+                            {artist.stageName +
+                                ' has these allergies/sensitivities: '}
                             <strong>
-                                {artist.allergies.constructor.name ===
+                                {theEvent.allergies.constructor.name ===
                                     'Array' &&
-                                    artist.allergies.map((allergy, ind) => {
+                                    theEvent.allergies.map((allergy, ind) => {
                                         if (
                                             ind !==
-                                            artist.allergies.length - 1
+                                            theEvent.allergies.length - 1
                                         ) {
                                             return allergy + ', ';
                                         } else {
@@ -635,7 +636,7 @@ const EventSpecificHostForm = ({
                             .
                         </Grid>
                     )}
-                    {artist.alcohol && (
+                    {theEvent.alcohol && (
                         <Grid
                             item
                             sx={{
@@ -654,7 +655,7 @@ const EventSpecificHostForm = ({
                             <strong>alcohol</strong> at the show.
                         </Grid>
                     )}
-                    {!artist.alcohol && (
+                    {!theEvent.alcohol && (
                         <Grid
                             item
                             sx={{
@@ -886,8 +887,8 @@ const EventSpecificHostForm = ({
                 </FormLabel>,
                 <FormLabel component="legend">
                     If the band comes up short of their hoped-for $
-                    {artist.financialHopes} minimum, we’d like to encourage you
-                    to consider offering a{' '}
+                    {theEvent.financialHopes} minimum, we’d like to encourage
+                    you to consider offering a{' '}
                     <Tooltip
                         arrow={true}
                         placement="bottom"

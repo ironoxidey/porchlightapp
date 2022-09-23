@@ -1508,7 +1508,7 @@ const ArtistEventForm = ({
         ],
         allergies: [
             <FormLabel component="legend">
-                Please list any food allergies, pet allergies, or special needs
+                Please list any food allergies, pet allergies, or sensitivities
                 you have.
             </FormLabel>,
             [
@@ -1719,6 +1719,7 @@ const ArtistEventForm = ({
                 //     </Grid>
                 // ),
                 //Event Details as a host will see it
+                //theEvent usually comes from EditArtistEvent.js, but if the user is proposing this event we'll hit up the Redux store for the myArtistEvents that has a matching bookingWhen
                 <EventDetails
                     theEvent={{
                         ...(theEvent ||

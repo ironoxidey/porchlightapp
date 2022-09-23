@@ -770,7 +770,9 @@ const EventDetails = ({
                                         >
                                             <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
                                         </SvgIcon>
-                                        {' You haven’t listed any allergies.'}
+                                        {
+                                            ' You haven’t listed any allergies/sensitivities.'
+                                        }
 
                                         <Divider />
                                     </Grid>
@@ -814,7 +816,7 @@ const EventDetails = ({
                                             <FontAwesomeIcon icon="allergies"></FontAwesomeIcon>
                                         </SvgIcon>
                                         {/* </Tooltip> */}
-                                        {' Has these allergies: '}
+                                        {' Has these allergies/sensitivities: '}
                                         <strong>
                                             {theEvent.allergies.constructor
                                                 .name === 'Array' &&
