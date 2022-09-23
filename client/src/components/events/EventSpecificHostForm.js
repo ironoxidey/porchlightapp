@@ -631,7 +631,7 @@ const EventSpecificHostForm = ({
                                         } else {
                                             return allergy;
                                         }
-                                    })}{' '}
+                                    })}
                             </strong>
                             .
                         </Grid>
