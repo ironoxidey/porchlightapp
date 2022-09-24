@@ -37,6 +37,7 @@ const ArtistDashboardEventCard = ({
     thisEvent,
     artistViewedHostOffer,
     deleteArtistEvent,
+    eventEditDrawer,
 }) => {
     //console.log('ArtistDashboardEventCard thisEvent:', thisEvent);
 
@@ -57,6 +58,12 @@ const ArtistDashboardEventCard = ({
         //console.log('eventDialogDetails', eventDialogDetails);
         setEventDetailsDialogOpen(true);
     }, [eventDialogDetails]);
+
+    useEffect(() => {
+        if (thisEvent._id === eventEditDrawer) {
+            console.log('eventEditDrawer', eventEditDrawer);
+        }
+    }, [eventEditDrawer]);
 
     const handleEventBtnClick = (theOffer) => {
         setDialogDetailsState(theOffer);
@@ -81,6 +88,11 @@ const ArtistDashboardEventCard = ({
                     color: 'var(--light-color)',
                     justifyContent: 'space-between',
                     flexWrap: 'nowrap',
+                    border:
+                        thisEvent._id === eventEditDrawer
+                            ? '1px solid var(--dark-color)'
+                            : '1px solid transparent',
+                    transition: 'border .5s ease',
                 }}
             >
                 <Grid
@@ -160,9 +172,12 @@ ArtistDashboardEventCard.propTypes = {
     thisEvent: PropTypes.object.isRequired,
     artistViewedHostOffer: PropTypes.func.isRequired,
     deleteArtistEvent: PropTypes.func.isRequired,
+    eventEditDrawer: PropTypes.string,
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+    eventEditDrawer: state.app.eventEditDrawer,
+});
 
 //export default ArtistDashboardEventCard;
 export default connect(mapStateToProps, {

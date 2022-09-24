@@ -45,6 +45,7 @@ export const GET_CALENDLY_EVENT_INVITEE = 'GET_CALENDLY_EVENT_INVITEE';
 export const REFRESH_CALENDLY = 'REFRESH_CALENDLY';
 export const OPEN_NAV_DRAWER = 'OPEN_NAV_DRAWER';
 export const CLOSE_NAV_DRAWER = 'CLOSE_NAV_DRAWER';
+export const CLOSE_EVENT_EDIT_DRAWER = 'CLOSE_EVENT_EDIT_DRAWER';
 // export const OPEN_USER_DRAWER = 'OPEN_USER_DRAWER';
 // export const CLOSE_USER_DRAWER = 'CLOSE_USER_DRAWER';
 export const setSelectedDates = 'setSelectedDates';

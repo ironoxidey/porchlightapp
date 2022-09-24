@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link, withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -9,14 +9,34 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import ArtistEventForm from './ArtistEventForm';
 import { Grid, Box } from '@mui/material';
 
-import { StackDateforDisplay, jumpTo } from '../../actions/app';
+import {
+    StackDateforDisplay,
+    jumpTo,
+    closeEventEditDrawer,
+} from '../../actions/app';
 
-const EditArtistEvent = ({ theEvent, jumpTo }) => {
+const EditArtistEvent = ({
+    theEvent,
+    jumpTo,
+    closeEventEditDrawer,
+    myArtistEvents, //for determining the most recently updated event and passing it to the closeEventEditDrawer()
+}) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     const iOS =
         typeof navigator !== 'undefined' &&
         /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+    let mostRecentlyUpdatedEvent = '';
+
+    useEffect(() => {
+        if (Array.isArray(myArtistEvents) && myArtistEvents.length > 0) {
+            mostRecentlyUpdatedEvent = myArtistEvents.reduce((a, b) =>
+                a.updatedAt > b.updatedAt ? a : b
+            )._id;
+            console.log('mostRecentlyUpdatedEvent', mostRecentlyUpdatedEvent);
+        }
+    }, [myArtistEvents]);
     return (
         <>
             <SwipeableDrawer
@@ -24,6 +44,7 @@ const EditArtistEvent = ({ theEvent, jumpTo }) => {
                 open={drawerOpen}
                 onClose={() => {
                     jumpTo('');
+                    closeEventEditDrawer(mostRecentlyUpdatedEvent);
                     setDrawerOpen(false);
                 }}
                 onOpen={() => setDrawerOpen(true)}
@@ -72,11 +93,15 @@ const EditArtistEvent = ({ theEvent, jumpTo }) => {
 EditArtistEvent.propTypes = {
     theEvent: PropTypes.object,
     jumpTo: PropTypes.func,
+    closeEventEditDrawer: PropTypes.func,
+    myArtistEvents: PropTypes.array,
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+    myArtistEvents: state.event.myArtistEvents,
+});
 
 //export default EditArtistEvent;
-export default connect(mapStateToProps, { jumpTo })(
+export default connect(mapStateToProps, { jumpTo, closeEventEditDrawer })(
     withRouter(EditArtistEvent)
 ); //withRouter allows us to pass history objects

@@ -1,6 +1,7 @@
 import {
     OPEN_NAV_DRAWER,
     CLOSE_NAV_DRAWER,
+    CLOSE_EVENT_EDIT_DRAWER,
     // OPEN_USER_DRAWER,
     // CLOSE_USER_DRAWER,
     IMAGE_UPLOAD,
@@ -22,6 +23,7 @@ const intialState = {
     msg: '',
     profileHat: '',
     jumpTo: '',
+    eventEditDrawer: '',
 };
 
 export default function (state = intialState, action) {
@@ -58,6 +60,11 @@ export default function (state = intialState, action) {
             return {
                 ...state,
                 navDrawer: false,
+            };
+        case CLOSE_EVENT_EDIT_DRAWER:
+            return {
+                ...state,
+                eventEditDrawer: payload,
             };
         // case OPEN_USER_DRAWER:
         //     return {

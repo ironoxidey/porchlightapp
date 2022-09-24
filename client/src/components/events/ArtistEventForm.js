@@ -594,6 +594,7 @@ const ArtistEventForm = ({
     //const [changesMade, setChangesMade] = useState(false);
     const changesMade = useRef(false);
     const firstLoad = useRef(true);
+    const formNavRef = useRef(null);
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -1774,7 +1775,12 @@ const ArtistEventForm = ({
                 formGroupKeys.indexOf(jumpToState) > -1
                     ? formGroupKeys.indexOf(jumpToState)
                     : 0;
-            jumpToState === 'endSlide' ? setDirection(1) : setDirection(-1);
+            if (jumpToState === 'endSlide') {
+                setDirection(1);
+            } else {
+                formNavRef.current?.scrollIntoView({ behavior: 'smooth' });
+                setDirection(-1);
+            }
             setIndex(jumpToIndex);
         }
     }, [jumpToState]);
@@ -1884,6 +1890,7 @@ const ArtistEventForm = ({
                         zIndex="100"
                         position="relative"
                         className="formNav"
+                        ref={formNavRef}
                     >
                         <Grid item>
                             {/* { cardIndex > 0 ? (  */}

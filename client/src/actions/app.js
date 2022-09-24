@@ -5,6 +5,7 @@ import {
     CLOSE_NAV_DRAWER,
     // OPEN_USER_DRAWER,
     // CLOSE_USER_DRAWER,
+    CLOSE_EVENT_EDIT_DRAWER,
     FLIP_ARTIST_CARD,
     CHANGE_HATS,
     JUMP_TO,
@@ -25,6 +26,12 @@ export const openNavDrawer = () => (dispatch) => {
 export const closeNavDrawer = () => (dispatch) => {
     dispatch({
         type: CLOSE_NAV_DRAWER,
+    });
+};
+export const closeEventEditDrawer = (eventID) => (dispatch) => {
+    dispatch({
+        payload: eventID,
+        type: CLOSE_EVENT_EDIT_DRAWER,
     });
 };
 export const changeHats = (toRole) => (dispatch) => {
