@@ -160,6 +160,26 @@ img {
     width: 100%;
 }
 
+/* Event Card  */
+.eventCardSvgBorder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.eventCardSvgBorder polygon {
+    fill: transparent;
+    transition: all 1s ease;
+    pointer-events: none;
+    transition-delay: 0.3s;
+}
+.eventCardSvgBorder .borderEffect {
+    stroke: var(--light-color);
+    stroke-width: 2;
+    fill: transparent;
+}
+
 /* Utilities */
 .container {
     /* max-width: 1100px; */

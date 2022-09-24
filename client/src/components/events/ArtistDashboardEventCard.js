@@ -59,16 +59,29 @@ const ArtistDashboardEventCard = ({
         setEventDetailsDialogOpen(true);
     }, [eventDialogDetails]);
 
-    useEffect(() => {
-        if (thisEvent._id === eventEditDrawer) {
-            console.log('eventEditDrawer', eventEditDrawer);
-        }
-    }, [eventEditDrawer]);
-
     const handleEventBtnClick = (theOffer) => {
         setDialogDetailsState(theOffer);
     };
     //End of Dialog Functions
+
+    //for animated border
+    const dashboardEventCardRef = useRef(null);
+    const [eventCardHeight, setHeight] = useState(0);
+    const [eventCardWidth, setWidth] = useState(0);
+    useEffect(() => {
+        setHeight(dashboardEventCardRef.current.offsetHeight);
+        setWidth(dashboardEventCardRef.current.offsetWidth);
+    }, []);
+
+    useEffect(() => {
+        if (thisEvent._id === eventEditDrawer) {
+            dashboardEventCardRef.current?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+            });
+            //console.log('eventEditDrawer', eventEditDrawer);
+        }
+    }, [eventEditDrawer]);
 
     return (
         <>
@@ -80,6 +93,7 @@ const ArtistDashboardEventCard = ({
                 direction="row"
                 sm={5.5}
                 xs={12}
+                ref={dashboardEventCardRef}
                 sx={{
                     backgroundColor: 'rgba(0,0,0,0.35)',
                     '&:hover': {},
@@ -93,8 +107,46 @@ const ArtistDashboardEventCard = ({
                             ? '1px solid var(--dark-color)'
                             : '1px solid transparent',
                     transition: 'border .5s ease',
+                    position: 'relative',
                 }}
             >
+                <svg
+                    width={eventCardWidth}
+                    height={eventCardHeight}
+                    className="eventCardSvgBorder"
+                >
+                    <polygon
+                        points={
+                            '0,' +
+                            eventCardHeight +
+                            ' 0,0 ' +
+                            eventCardWidth +
+                            ',0 ' +
+                            eventCardWidth +
+                            ',' +
+                            eventCardHeight +
+                            ''
+                        }
+                        className={
+                            thisEvent._id === eventEditDrawer
+                                ? 'borderEffect'
+                                : ''
+                        }
+                        style={{
+                            strokeDasharray: `${eventCardWidth * 0.75} ${
+                                eventCardWidth * 3
+                            }`,
+                            strokeDashoffset:
+                                thisEvent._id === eventEditDrawer
+                                    ? `${
+                                          (eventCardWidth * 2 +
+                                              eventCardHeight * 2) *
+                                          2
+                                      }`
+                                    : `${eventCardWidth * 0.75}`,
+                        }}
+                    />
+                </svg>
                 <Grid
                     container
                     item
