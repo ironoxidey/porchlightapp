@@ -33,7 +33,7 @@ const AddArtistEvent = ({
             mostRecentlyUpdatedEvent = myArtistEvents.reduce((a, b) =>
                 a.updatedAt > b.updatedAt ? a : b
             )._id;
-            console.log('mostRecentlyUpdatedEvent', mostRecentlyUpdatedEvent);
+            // console.log('mostRecentlyUpdatedEvent', mostRecentlyUpdatedEvent);
         }
     }, [myArtistEvents]);
     return (

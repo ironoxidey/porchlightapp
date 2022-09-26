@@ -71,7 +71,7 @@ export const editArtistEvent = (formData, history) => async (dispatch) => {
 
 //Delete an artist event by id
 export const deleteArtistEvent = (id) => async (dispatch) => {
-    console.log('deleteArtistEvent id', id);
+    //console.log('deleteArtistEvent id', id);
     try {
         const res = await axios.delete(`/api/events/artistEvent/${id}`);
         //console.log('hostRaiseHand res.data', res.data);

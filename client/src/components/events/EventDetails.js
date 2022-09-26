@@ -49,6 +49,7 @@ import InterpreterModeTwoToneIcon from '@mui/icons-material/InterpreterModeTwoTo
 import SpeakerNotesTwoToneIcon from '@mui/icons-material/SpeakerNotesTwoTone';
 import Diversity1TwoToneIcon from '@mui/icons-material/Diversity1TwoTone';
 import CampaignTwoToneIcon from '@mui/icons-material/CampaignTwoTone';
+import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -60,6 +61,7 @@ import {
     StackDateforDisplay,
     jumpTo,
 } from '../../actions/app';
+import ThumbDownAltOutlined from '@mui/icons-material/ThumbDownAltOutlined';
 
 const EventDetails = ({
     theEvent,
@@ -415,6 +417,31 @@ const EventDetails = ({
                                         <Divider />
                                     </Grid>
                                 </Fragment>
+                            )}
+                            {isMe && !theEvent.agreeToPayAdminFee && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                        color: 'var(--link-color)',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('agreeToPayAdminFee');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="agreeToPayAdminFee"
+                                >
+                                    <ThumbDownAltOutlinedIcon
+                                        style={{ color: 'var(--link-color)' }}
+                                    ></ThumbDownAltOutlinedIcon>
+                                    {` You have not agreed to share 20% of gross ticket sales, tips, and merch
+                sales upon completion of this show/tour.`}
+                                    <Divider />
+                                </Grid>
                             )}
                             {!theEvent.agreeToPromote && (
                                 <Grid

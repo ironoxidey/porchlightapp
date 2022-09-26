@@ -182,7 +182,7 @@ const ArtistEventForm = ({
         familyFriendly: false,
         alcohol: false,
         soundSystem: '',
-        agreeToPayAdminFee: true,
+        agreeToPayAdminFee: false,
         agreeToPromote: false,
         // wideImg: '',
         // squareImg: '',
@@ -319,7 +319,7 @@ const ArtistEventForm = ({
                         : theEvent.soundSystem,
                 agreeToPayAdminFee:
                     loading || theEvent.agreeToPayAdminFee == null
-                        ? true
+                        ? false
                         : theEvent.agreeToPayAdminFee,
                 agreeToPromote:
                     loading || theEvent.agreeToPromote == null
@@ -346,9 +346,9 @@ const ArtistEventForm = ({
             });
         } else {
             if (!auth.loading) {
-                console.log(
-                    'Create a new event with email: ' + auth.user.email
-                );
+                // console.log(
+                //     'Create a new event with email: ' + auth.user.email
+                // );
                 setFormData({
                     email: auth.user.email,
                     artistSlug: '',
@@ -397,7 +397,7 @@ const ArtistEventForm = ({
                     familyFriendly: false,
                     alcohol: false,
                     soundSystem: '',
-                    agreeToPayAdminFee: true,
+                    agreeToPayAdminFee: false,
                     agreeToPromote: false,
                     // wideImg: '',
                     // squareImg: '',
@@ -1823,6 +1823,11 @@ const ArtistEventForm = ({
                 delete mostRecentlyUpdatedEvent.createdAt;
                 delete mostRecentlyUpdatedEvent.bookingWhen;
                 delete mostRecentlyUpdatedEvent.updatedAt;
+                delete mostRecentlyUpdatedEvent.hostsOfferingToBook;
+                delete mostRecentlyUpdatedEvent.offersFromHosts;
+                delete mostRecentlyUpdatedEvent.confirmedHost;
+                delete mostRecentlyUpdatedEvent.confirmedHostUser;
+                delete mostRecentlyUpdatedEvent.confirmedDate;
 
                 setFormData({ ...formData, ...mostRecentlyUpdatedEvent });
             }

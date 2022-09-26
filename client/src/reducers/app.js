@@ -94,6 +94,7 @@ export default function (state = intialState, action) {
             return {
                 ...state,
                 profileHat: '',
+                eventEditDrawer: '',
             };
 
         default:
