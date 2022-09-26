@@ -88,7 +88,11 @@ const ArtistDashboardEventCard = ({
             <Grid
                 container
                 item
-                className="bookingWhen"
+                className={
+                    thisEvent._id === eventEditDrawer
+                        ? 'bookingWhen mostRecent'
+                        : 'bookingWhen'
+                }
                 key={thisEvent._id}
                 direction="row"
                 sm={5.5}
@@ -102,11 +106,16 @@ const ArtistDashboardEventCard = ({
                     color: 'var(--light-color)',
                     justifyContent: 'space-between',
                     flexWrap: 'nowrap',
-                    border:
-                        thisEvent._id === eventEditDrawer
-                            ? '1px solid var(--dark-color)'
-                            : '1px solid transparent',
-                    transition: 'border .5s ease',
+                    // border:
+                    //     thisEvent._id === eventEditDrawer
+                    //         ? '1px solid var(--dark-color)'
+                    //         : '1px solid transparent',
+                    // transition: 'all .8s cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+                    // transitionDelay: '.8s',
+                    // boxShadow:
+                    //     thisEvent._id === eventEditDrawer
+                    //         ? '0 0 5px 0px var(--dark-color)'
+                    //         : ' 0 0 0 0 transparent',
                     position: 'relative',
                 }}
             >
@@ -133,17 +142,16 @@ const ArtistDashboardEventCard = ({
                                 : ''
                         }
                         style={{
-                            strokeDasharray: `${eventCardWidth * 0.75} ${
-                                eventCardWidth * 3
+                            strokeDasharray: `${eventCardHeight * 2} ${
+                                eventCardHeight * 2 + eventCardWidth * 2
                             }`,
                             strokeDashoffset:
                                 thisEvent._id === eventEditDrawer
-                                    ? `${
-                                          (eventCardWidth * 2 +
-                                              eventCardHeight * 2) *
-                                          2
-                                      }`
-                                    : `${eventCardWidth * 0.75}`,
+                                    ? `${eventCardHeight * 2}`
+                                    : `${
+                                          eventCardHeight * 2 +
+                                          eventCardWidth * 3
+                                      }`,
                         }}
                     />
                 </svg>

@@ -1111,7 +1111,7 @@ const EventDetails = ({
                                     <Divider />
                                 </Grid>
                             )}
-                            {isMe &&
+                            {/* {isMe &&
                                 (!theEvent.covidPrefs ||
                                     theEvent.covidPrefs.length === 0) && (
                                     <Grid
@@ -1169,19 +1169,6 @@ const EventDetails = ({
                                         md={6}
                                         className="covidPrefs"
                                     >
-                                        {/* <Tooltip
-                                            arrow={true}
-                                            disableHoverListener={!isMe}
-                                            disableFocusListener={!isMe}
-                                            disableTouchListener={!isMe}
-                                            title={
-                                                <Link to="/edit-artist-booking?field=covidPrefs">
-                                                    Edit
-                                                </Link>
-                                            }
-                                        > */}
-                                        <CoronavirusTwoToneIcon></CoronavirusTwoToneIcon>
-                                        {/* </Tooltip> */}
                                         {' Considering Covid, would prefer: '}
                                         <strong>
                                             {theEvent.covidPrefs &&
@@ -1207,7 +1194,7 @@ const EventDetails = ({
 
                                         <Divider />
                                     </Grid>
-                                )}
+                                )} */}
                             {isMe && !theEvent.financialHopes && (
                                 <Grid
                                     item

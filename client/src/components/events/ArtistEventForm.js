@@ -186,7 +186,7 @@ const ArtistEventForm = ({
         agreeToPromote: false,
         // wideImg: '',
         // squareImg: '',
-        covidPrefs: [],
+        // covidPrefs: [],
         artistNotes: '',
         financialHopes: '',
         fanActions: [],
@@ -328,8 +328,8 @@ const ArtistEventForm = ({
                 // wideImg: loading || !theEvent.wideImg ? '' : theEvent.wideImg,
                 // squareImg:
                 //     loading || !theEvent.squareImg ? '' : theEvent.squareImg,
-                covidPrefs:
-                    loading || !theEvent.covidPrefs ? [] : theEvent.covidPrefs,
+                // covidPrefs:
+                //     loading || !theEvent.covidPrefs ? [] : theEvent.covidPrefs,
                 artistNotes:
                     loading || !theEvent.artistNotes
                         ? ''
@@ -401,7 +401,7 @@ const ArtistEventForm = ({
                     agreeToPromote: false,
                     // wideImg: '',
                     // squareImg: '',
-                    covidPrefs: [],
+                    // covidPrefs: [],
                     artistNotes: '',
                     financialHopes: '',
                     fanActions: [],
@@ -458,7 +458,7 @@ const ArtistEventForm = ({
         agreeToPromote,
         // wideImg,
         // squareImg,
-        covidPrefs,
+        // covidPrefs,
         artistNotes,
         financialHopes,
         fanActions,
@@ -1618,61 +1618,61 @@ const ArtistEventForm = ({
                 </Grid>,
             ],
         ],
-        covidPrefs: [
-            <FormLabel component="legend">
-                Beyond host preferences and local guidelines, do you have
-                particular Covid concerns you’d like these events to adhere to?
-            </FormLabel>,
-            <Grid item xs={12} sx={{ width: '100%' }}>
-                <Autocomplete
-                    id="covidPrefs"
-                    multiple
-                    disableCloseOnSelect
-                    value={covidPrefs}
-                    options={[
-                        'the host determining what is best',
-                        'everyone passing a fever check',
-                        'everyone presenting a negative Covid test',
-                        'everyone presenting a vaccination passport',
-                        'everyone social distancing',
-                        'everyone wearing masks',
-                        'everything being outdoors',
-                    ]}
-                    onChange={(event, value) =>
-                        onAutocompleteTagChange(event, 'covidPrefs', value)
-                    }
-                    renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                            <Chip
-                                variant="outlined"
-                                name="covidPrefs"
-                                label={option}
-                                key={`covidPref${index}`}
-                                {...getTagProps({ index })}
-                            />
-                        ))
-                    }
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            sx={{ width: '100%' }}
-                            variant="standard"
-                            label={`I would feel most comfortable with`}
-                            name="covidPrefs"
-                        />
-                    )}
-                />
-            </Grid>,
-            {
-                /* <TextField
-				name='covidPrefs'
-				id='covidPrefs'
-				label='Do you have Covid guidelines you’d like these events to adhere to, beyond local guidelines and host preferences?'
-				value={covidPrefs}
-				onChange={(e) => onChange(e)}
-			/>, */
-            },
-        ],
+        // covidPrefs: [
+        //     <FormLabel component="legend">
+        //         Beyond host preferences and local guidelines, do you have
+        //         particular Covid concerns you’d like these events to adhere to?
+        //     </FormLabel>,
+        //     <Grid item xs={12} sx={{ width: '100%' }}>
+        //         <Autocomplete
+        //             id="covidPrefs"
+        //             multiple
+        //             disableCloseOnSelect
+        //             value={covidPrefs}
+        //             options={[
+        //                 'the host determining what is best',
+        //                 'everyone passing a fever check',
+        //                 'everyone presenting a negative Covid test',
+        //                 'everyone presenting a vaccination passport',
+        //                 'everyone social distancing',
+        //                 'everyone wearing masks',
+        //                 'everything being outdoors',
+        //             ]}
+        //             onChange={(event, value) =>
+        //                 onAutocompleteTagChange(event, 'covidPrefs', value)
+        //             }
+        //             renderTags={(value, getTagProps) =>
+        //                 value.map((option, index) => (
+        //                     <Chip
+        //                         variant="outlined"
+        //                         name="covidPrefs"
+        //                         label={option}
+        //                         key={`covidPref${index}`}
+        //                         {...getTagProps({ index })}
+        //                     />
+        //                 ))
+        //             }
+        //             renderInput={(params) => (
+        //                 <TextField
+        //                     {...params}
+        //                     sx={{ width: '100%' }}
+        //                     variant="standard"
+        //                     label={`I would feel most comfortable with`}
+        //                     name="covidPrefs"
+        //                 />
+        //             )}
+        //         />
+        //     </Grid>,
+        //     {
+        //         /* <TextField
+        // 		name='covidPrefs'
+        // 		id='covidPrefs'
+        // 		label='Do you have Covid guidelines you’d like these events to adhere to, beyond local guidelines and host preferences?'
+        // 		value={covidPrefs}
+        // 		onChange={(e) => onChange(e)}
+        // 	/>, */
+        //     },
+        // ],
         artistNotes: [
             <FormLabel component="legend">
                 Do you have any final thoughts, questions, notes, or
@@ -1895,7 +1895,7 @@ const ArtistEventForm = ({
                             ? 'translate(0px, 0)'
                             : 'translate(0,-100px)',
                         transition: 'all 1s cubic-bezier(0.23, 1, 0.32, 1) 0ms',
-                        transitionDelay: bookingWhen ? '.15s' : '.2s',
+                        transitionDelay: bookingWhen ? '.10s' : '.2s',
                         overflow: 'hidden',
                         position: 'relative',
                     }}
@@ -1976,7 +1976,7 @@ const ArtistEventForm = ({
                         key={'animatedFormGroup' + i}
                         style={{
                             ...style,
-                            top: bookingWhen ? '100px' : '0px',
+                            top: bookingWhen ? formNavHeight + 'px' : '0px',
                             transition:
                                 'top 750ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
                             transitionDelay:

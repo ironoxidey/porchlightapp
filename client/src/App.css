@@ -179,6 +179,18 @@ img {
     stroke-width: 2;
     fill: transparent;
 }
+.bookingWhen {
+    border: 1px solid transparent;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+    transition-delay: 0s;
+    box-shadow: 0 0 0 0 transparent;
+}
+
+.bookingWhen.mostRecent {
+    /* border: 1px solid var(--dark-color); */
+    transition-delay: 0.3s;
+    box-shadow: 0 0 5px 0px var(--dark-color);
+}
 
 /* Utilities */
 .container {

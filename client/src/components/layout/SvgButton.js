@@ -5,22 +5,50 @@ import ButtonUnstyled, {
     buttonUnstyledClasses,
 } from '@mui/base/ButtonUnstyled';
 import { styled } from '@mui/system';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const ButtonRoot = React.forwardRef(function ButtonRoot(props, ref) {
     const { children, ...other } = props;
-    const btnwidth = props.btnwidth || '200';
+
+    const theme = useTheme();
+    const smallMediaBreakpoint = useMediaQuery(theme.breakpoints.down('sm')); //boolean
+    //const btnWidth = props.btnwidth || '200'; //I don't know why I did this, but the 'w' in Width is supposed to be lowercase, unless I go around and fix it everywhere
+    const btnWidth =
+        props.btnwidth && smallMediaBreakpoint
+            ? props.btnwidth - 50
+            : props.btnwidth || '200'; //I don't know why I did this, but the 'w' in Width is supposed to be lowercase, unless I go around and fix it everywhere
+    const btnHeight = '50';
     return (
         <ButtonBase style={{ color: 'var(--light-color)' }}>
-            <svg width={btnwidth} height="50" {...other} ref={ref}>
+            <svg width={btnWidth} height={btnHeight} {...other} ref={ref}>
                 <polygon
-                    points={'0,50 0,0 ' + btnwidth + ',0 ' + btnwidth + ',50'}
+                    points={
+                        '0,' +
+                        btnHeight +
+                        ' 0,0 ' +
+                        btnWidth +
+                        ',0 ' +
+                        btnWidth +
+                        ',' +
+                        btnHeight
+                    }
                     className="bg"
                 />
                 <polygon
-                    points={'0,50 0,0 ' + btnwidth + ',0 ' + btnwidth + ',50'}
+                    points={
+                        '0,' +
+                        btnHeight +
+                        ' 0,0 ' +
+                        btnWidth +
+                        ',0 ' +
+                        btnWidth +
+                        ',' +
+                        btnHeight
+                    }
                     className="borderEffect"
                 />
-                <foreignObject x="0" y="0" width={btnwidth} height="50">
+                <foreignObject x="0" y="0" width={btnWidth} height={btnHeight}>
                     <div className="content">{children}</div>
                 </foreignObject>
             </svg>
@@ -64,10 +92,10 @@ const CustomButtonRoot = styled(ButtonRoot)(
   & .borderEffect {
     stroke: var(--main-color);
     stroke-width: 2;
-    stroke-dasharray: ${(props.btnwidth || 200) * 0.75} ${
-        (props.btnwidth || 200) * 3
+    stroke-dasharray: ${(props.btnWidth || 200) * 0.75} ${
+        (props.btnWidth || 200) * 4
     };
-    stroke-dashoffset: ${(props.btnwidth || 200) * 0.75};
+    stroke-dashoffset: ${(props.btnWidth || 200) * 0.75};
     fill: transparent;
   }
 
@@ -75,7 +103,7 @@ const CustomButtonRoot = styled(ButtonRoot)(
   &.${buttonUnstyledClasses.focusVisible} {
     box-shadow: 0 0 5px var(--main-color);
     .borderEffect {
-      stroke-dashoffset: -${(props.btnwidth || 200) * 3};
+      stroke-dashoffset: -${(props.btnWidth || 200) * 4};
     }
 
     .bg {
@@ -100,7 +128,12 @@ const CustomButtonRoot = styled(ButtonRoot)(
     pointer-events: none;
 
     & .content {
-      font-size: 0.875rem;
+      @media screen and (min-width: 600px) {
+        font-size: 0.875rem;
+      }
+      @media screen and (max-width: 600px) {
+        font-size: 0.75rem;
+      }
       font-family: Merriweather Sans;
       letter-spacing: 1px;
       font-weight: 500;
