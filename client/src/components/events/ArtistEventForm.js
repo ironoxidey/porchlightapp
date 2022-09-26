@@ -1796,6 +1796,12 @@ const ArtistEventForm = ({
     //     }
     // }, [bookingWhen]);
 
+    const formNavContainerRef = useRef(null);
+    const [formNavHeight, setHeight] = useState(0);
+    useEffect(() => {
+        setHeight(formNavContainerRef.current.scrollHeight);
+    }, []);
+
     useEffect(() => {
         //console.log('jumpToState ArtistEventForm', jumpToState);
         if (bookingWhen && jumpToState === '') {
@@ -1880,8 +1886,22 @@ const ArtistEventForm = ({
             <form className="form" onSubmit={(e) => onSubmit(e)}>
                 <Grid
                     container
-                    sx={{ padding: '20px!important' }}
-                    display={bookingWhen ? 'flex' : 'none'}
+                    sx={{
+                        padding: '20px!important',
+                        //height: bookingWhen ? formNavHeight + 'px' : '0px',
+                        opacity: bookingWhen ? '1' : '0',
+                        zIndex: bookingWhen ? '100' : '-99999',
+                        transform: bookingWhen
+                            ? 'translate(0px, 0)'
+                            : 'translate(0,-100px)',
+                        transition: 'all 1s cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+                        transitionDelay: bookingWhen ? '.15s' : '.2s',
+                        overflow: 'hidden',
+                        position: 'relative',
+                    }}
+                    //display={bookingWhen ? 'flex' : 'none'}
+                    className="formNavContainer"
+                    ref={formNavContainerRef}
                 >
                     <Grid
                         container
@@ -1957,6 +1977,10 @@ const ArtistEventForm = ({
                         style={{
                             ...style,
                             top: bookingWhen ? '100px' : '0px',
+                            transition:
+                                'top 750ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+                            transitionDelay:
+                                bookingWhen && i > 0 ? '.05s' : '2s',
                         }}
                     >
                         <div className="form-group" key={'form-group' + i}>

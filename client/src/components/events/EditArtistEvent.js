@@ -43,8 +43,8 @@ const EditArtistEvent = ({
                 anchor={'bottom'}
                 open={drawerOpen}
                 onClose={() => {
-                    jumpTo('');
                     closeEventEditDrawer(mostRecentlyUpdatedEvent);
+                    jumpTo('');
                     setDrawerOpen(false);
                 }}
                 onOpen={() => setDrawerOpen(true)}
