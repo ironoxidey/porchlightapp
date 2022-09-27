@@ -50,6 +50,8 @@ import SpeakerNotesTwoToneIcon from '@mui/icons-material/SpeakerNotesTwoTone';
 import Diversity1TwoToneIcon from '@mui/icons-material/Diversity1TwoTone';
 import CampaignTwoToneIcon from '@mui/icons-material/CampaignTwoTone';
 import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
+import NoPhotographyTwoToneIcon from '@mui/icons-material/NoPhotographyTwoTone';
+import PhotoCameraTwoToneIcon from '@mui/icons-material/PhotoCameraTwoTone';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -494,6 +496,31 @@ const EventDetails = ({
                                     <strong>
                                         “Yes, to the best of my ability.”
                                     </strong>
+                                    <Divider />
+                                </Grid>
+                            )}
+                            {isMe && !theEvent.promotionApproval && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginTop: '0',
+                                        cursor: isMe ? 'pointer' : 'auto',
+                                        color: 'var(--link-color)',
+                                    }}
+                                    onClick={() => {
+                                        if (isMe) {
+                                            jumpTo('promotionApproval');
+                                        }
+                                    }}
+                                    xs={12}
+                                    md={6}
+                                    className="promotionApproval"
+                                >
+                                    <NoPhotographyTwoToneIcon
+                                        style={{ color: 'var(--link-color)' }}
+                                    ></NoPhotographyTwoToneIcon>
+                                    {` You haven’t said whether you approve Porchlight to use video, photo, and audio
+                captured, for promotional purposes.`}
                                     <Divider />
                                 </Grid>
                             )}
