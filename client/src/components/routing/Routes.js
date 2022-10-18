@@ -8,9 +8,9 @@ import Register from '../auth/Register';
 import Login from '../auth/Login';
 import Dashboard from '../dashboard/Dashboard';
 import CreateProfile from '../profile-forms/CreateProfile';
-import EditProfile from '../profile-forms/EditProfile';
-import AddExperience from '../profile-forms/AddExperience';
-import AddEducation from '../profile-forms/AddEducation';
+// import EditProfile from '../profile-forms/EditProfile';
+// import AddExperience from '../profile-forms/AddExperience';
+// import AddEducation from '../profile-forms/AddEducation';
 import Profiles from '../profiles/Profiles';
 import Profile from '../profile/Profile';
 import Artists from '../artists/Artists';
@@ -18,10 +18,10 @@ import Artist from '../artists/Artist';
 import EditArtists from '../artists/EditArtists';
 import EditUsers from '../users/EditUsers';
 import EditMyArtistProfile from '../artists/EditMyArtistProfile';
-import EditMyArtistBooking from '../artists/EditMyArtistBooking';
+// import EditMyArtistBooking from '../artists/EditMyArtistBooking';
 import EditMyHostProfile from '../hosts/EditMyHostProfile';
-import Posts from '../posts/Posts';
-import Post from '../post/Post';
+// import Posts from '../posts/Posts';
+// import Post from '../post/Post';
 import NotFound from '../layout/NotFound';
 import PrivateRoute from '../routing/PrivateRoute';
 import AdminPrivateRoute from '../routing/AdminPrivateRoute';
@@ -164,12 +164,12 @@ const Routes = ({ app }) => {
                                 component={EditMyArtistProfile}
                                 title="Edit Your Artist Profile"
                             />
-                            <ArtistPrivateRoute
+                            {/* <ArtistPrivateRoute
                                 exact
                                 path="/edit-artist-booking"
                                 component={EditMyArtistBooking}
                                 title="Edit Your Artist Booking Info"
-                            />
+                            /> */}
                             <PrivateRoute
                                 exact
                                 path="/edit-host-profile"

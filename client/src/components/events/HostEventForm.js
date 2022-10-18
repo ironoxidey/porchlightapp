@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
 import { setAlert } from '../../actions/alert';
-import { editArtistEvent } from '../../actions/event';
+import { editHostEvent } from '../../actions/event';
 import {
     TextField,
     //Button,
@@ -60,7 +60,7 @@ import { getHostsLocations } from '../../actions/host';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
-import EventDetails from '../events/EventDetails';
+import EventDetails from './EventDetails';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -92,17 +92,15 @@ const prettifyDate = (date) => {
     });
 };
 
-const ArtistEventForm = ({
-    artistMe,
-    theArtist,
+const HostEventForm = ({
+    hostMe,
     theEvent,
-    //theArtist: { loading },
-    editArtistEvent,
+    editHostEvent,
     getHostsLocations,
     hosts,
     history,
     auth,
-    myArtistEvents, //for disabling dates in the multipledate picker calendar
+    myHostEvents, //for disabling dates in the multipledate picker calendar
     jumpTo,
     jumpToState, //user can click Edit Tooltip in EventDetails and jumpToState formField here
 }) => {
@@ -111,11 +109,10 @@ const ArtistEventForm = ({
 
     let isMe = false;
     if (
-        artistMe &&
+        hostMe &&
         theEvent &&
         theEvent.artist &&
-        (artistMe._id === theEvent.artist ||
-            artistMe._id === theEvent.artist._id)
+        hostMe._id === theEvent.confirmedHost
     ) {
         isMe = true;
     }
@@ -135,16 +132,9 @@ const ArtistEventForm = ({
     }, []);
 
     const [formData, setFormData] = useState({
-        artistSlug: '',
         // email: '',
-        // genres: [],
-        // soundsLike: [],
+        genres: [],
         // medium: '',
-        // repLinks: [],
-        // repLink: '',
-        // socialLinks: [],
-        // helpKind: '',
-        // typeformDate: '',
         // active: '',
         // phone: '',
         // hometown: '',
@@ -199,8 +189,6 @@ const ArtistEventForm = ({
         if (theEvent) {
             //console.log('theEvent', theEvent);
             setFormData({
-                artistSlug:
-                    loading || !theEvent.artistSlug ? '' : theEvent.artistSlug,
                 // email:
                 //     loading || !theEvent.artistEmail
                 //         ? ''
@@ -351,7 +339,6 @@ const ArtistEventForm = ({
                 // );
                 setFormData({
                     email: auth.user.email,
-                    artistSlug: '',
                     // genres: [],
                     // soundsLike: [],
                     // medium: '',
@@ -410,10 +397,9 @@ const ArtistEventForm = ({
                 });
             }
         }
-    }, [auth.loading, editArtistEvent, theArtist]);
+    }, [auth.loading, editHostEvent]);
 
     const {
-        artistSlug,
         // email,
         // medium,
         // genres,
@@ -466,7 +452,7 @@ const ArtistEventForm = ({
         // bio,
     } = formData;
 
-    const stageName = artistMe.stageName;
+    const stageName = hostMe.stageName;
 
     const onChange = (e) => {
         //console.log(e);
@@ -548,7 +534,7 @@ const ArtistEventForm = ({
     useEffect(() => {
         if (changesMade.current) {
             if (bookingWhen && bookingWhere && bookingWhere.city) {
-                editArtistEvent(formData, history, true);
+                editHostEvent(formData, history, true);
                 changesMade.current = false;
             }
         }
@@ -600,7 +586,7 @@ const ArtistEventForm = ({
         e.preventDefault();
         //console.log('Submitting...');
         if (bookingWhen && bookingWhere && bookingWhere.city) {
-            editArtistEvent(formData, history, true);
+            editHostEvent(formData, history, true);
             changesMade.current = false;
         }
     };
@@ -625,8 +611,8 @@ const ArtistEventForm = ({
                     open={true}
                     //trying to figure out how to disable dates you've already picked ~Aug 26, 2022
                     disabledDates={
-                        myArtistEvents &&
-                        myArtistEvents
+                        myHostEvents &&
+                        myHostEvents
                             .filter((event) => {
                                 if (event.bookingWhen !== bookingWhen) {
                                     return true;
@@ -1705,26 +1691,12 @@ const ArtistEventForm = ({
                 </Typography>,
             ],
             [
-                // artistSlug && (
-                //     <Grid
-                //         item
-                //         sx={{
-                //             margin: '8px auto',
-                //         }}
-                //     >
-                //         <Link to={'/artists/' + artistSlug}>
-                //             <Button btnwidth="300" className="">
-                //                 <AccountBoxTwoToneIcon /> View My Profile
-                //             </Button>
-                //         </Link>
-                //     </Grid>
-                // ),
                 //Event Details as a host will see it
-                //theEvent usually comes from EditArtistEvent.js, but if the user is proposing this event we'll hit up the Redux store for the myArtistEvents that has a matching bookingWhen
+                //theEvent usually comes from EditHostEvent.js, but if the user is proposing this event we'll hit up the Redux store for the myHostEvents that has a matching bookingWhen
                 <EventDetails
                     theEvent={{
                         ...(theEvent ||
-                            myArtistEvents.find((event) => {
+                            myHostEvents.find((event) => {
                                 if (
                                     bookingWhen &&
                                     bookingWhen.length > 0 &&
@@ -1733,7 +1705,7 @@ const ArtistEventForm = ({
                                     return event.bookingWhen === bookingWhen[0];
                                 }
                             })),
-                        artist: artistMe,
+                        artist: hostMe,
                     }}
                 />,
             ],
@@ -1768,7 +1740,7 @@ const ArtistEventForm = ({
 
     //jumpToState (app state set in EventDetails.js)
     useEffect(() => {
-        //console.log('jumpToState ArtistEventForm', jumpToState);
+        //console.log('jumpToState HostEventForm', jumpToState);
         if (jumpToState !== '') {
             const formGroupKeys = Object.keys(formGroups);
             let jumpToIndex =
@@ -1789,7 +1761,7 @@ const ArtistEventForm = ({
     }, [jumpToState]);
 
     // useEffect(() => {
-    //     //console.log('jumpToState ArtistEventForm', jumpToState);
+    //     //console.log('jumpToState HostEventForm', jumpToState);
     //     if (bookingWhen) {
     //         setDirection(1);
     //         setIndex(Object.keys(formGroups).length - 1);
@@ -1803,15 +1775,15 @@ const ArtistEventForm = ({
     }, []);
 
     useEffect(() => {
-        //console.log('jumpToState ArtistEventForm', jumpToState);
+        //console.log('jumpToState HostEventForm', jumpToState);
         if (bookingWhen && jumpToState === '') {
             //triggers the form to go to the next slide when a bookingWhen is selected and pulls in the most recently created event's details, but doesn't affect the "Edit Concert Details"
             setDirection(1);
             setIndex(
                 (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length
             );
-            if (Array.isArray(myArtistEvents) && myArtistEvents.length > 0) {
-                const mostRecentlyUpdatedEvent = myArtistEvents.reduce((a, b) =>
+            if (Array.isArray(myHostEvents) && myHostEvents.length > 0) {
+                const mostRecentlyUpdatedEvent = myHostEvents.reduce((a, b) =>
                     a.updatedAt > b.updatedAt ? a : b
                 );
                 // console.log(
@@ -2034,15 +2006,14 @@ const ArtistEventForm = ({
     );
 };
 
-ArtistEventForm.propTypes = {
+HostEventForm.propTypes = {
     getHostsLocations: PropTypes.func.isRequired,
     hosts: PropTypes.array.isRequired,
-    editArtistEvent: PropTypes.func.isRequired,
-    theArtist: PropTypes.object,
+    editHostEvent: PropTypes.func.isRequired,
     theEvent: PropTypes.object,
     auth: PropTypes.object.isRequired,
-    artistMe: PropTypes.object,
-    myArtistEvents: PropTypes.array,
+    hostMe: PropTypes.object,
+    myHostEvents: PropTypes.array,
     jumpToState: PropTypes.string,
     jumpTo: PropTypes.func.isRequired,
 };
@@ -2050,13 +2021,13 @@ ArtistEventForm.propTypes = {
 const mapStateToProps = (state) => ({
     auth: state.auth,
     hosts: state.host.hosts,
-    artistMe: state.artist.me,
-    myArtistEvents: state.event.myArtistEvents,
+    hostMe: state.host.me,
+    myHostEvents: state.event.myHostEvents,
     jumpToState: state.app.jumpTo,
 });
 
 export default connect(mapStateToProps, {
     jumpTo,
     getHostsLocations,
-    editArtistEvent,
-})(withRouter(ArtistEventForm)); //withRouter allows us to pass history objects
+    editHostEvent,
+})(withRouter(HostEventForm)); //withRouter allows us to pass history objects

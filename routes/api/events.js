@@ -264,6 +264,136 @@ router.post('/', [auth], async (req, res) => {
     //res.json(eventCount + " event(s) submitted to the database."); //eventually remove this
 });
 
+// @route    POST api/events/hostEvent
+// @desc     Create or Update a host event based on bookingWhen
+// @access   Private
+router.post(
+    '/hostEvent',
+    [auth, [check('bookingWhen', 'Must provide a date.').exists()]],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        let eventFields = req.body;
+
+        let userRole = req.user.role;
+
+        if (userRole && userRole.indexOf('HOST') === -1) {
+            //if the requesting user doesn't have the HOST role, check the database for the requesting user and see if they have the HOST user role there (this can happen if they just filled out the "Sign Up to Host" form but haven't relogged-in to update their auth token with the new HOST role)
+            let user = await User.findOne({ email: req.user.email }).select(
+                'role'
+            );
+            //console.log('User has these roles: ', user);
+            userRole = user.role;
+        }
+        //if (req.user.role === 'ADMIN' && eventFields.email !== '') {
+        if (
+            userRole &&
+            userRole.indexOf('HOST') > -1 &&
+            eventFields.createdBy === 'HOST' &&
+            eventFields.bookingWhen &&
+            eventFields.bookingWhere
+        ) {
+            //console.log("User is HOST and can raise their hand to book shows.");
+            try {
+                //console.log('eventFields', eventFields);
+
+                let host = await Host.findOne({
+                    email: req.user.email.toLowerCase(),
+                });
+
+                let event = await Event.findOneAndUpdate(
+                    {
+                        confirmedHost: host._id,
+                        bookingWhen: eventFields.bookingWhen,
+                        createdBy: 'HOST',
+                    },
+                    {
+                        bookingWhen: eventFields.bookingWhen,
+                        bookingWhere: eventFields.bookingWhere,
+                        createdBy: 'HOST',
+                        confirmedHost: host._id,
+                        $addToSet: {
+                            hostsOfferingToBook: req.user.email,
+                            offersFromHosts: {
+                                ...eventFields.theOffer,
+                                host: host._id,
+                            },
+                        },
+                    },
+                    { new: true, upsert: true }
+                );
+
+                //Geocode the event
+                if (
+                    ((event.latLong &&
+                        event.latLong.coordinates &&
+                        event.latLong.coordinates.length == 0) || //if there is no latLong OR
+                        !event.geocodedBookingWhere || //if there is no geocodedBookingWhere OR
+                        (event.geocodedBookingWhere && //if there IS a geocodedBookingWhere AND
+                            event.bookingWhere.zip !==
+                                event.geocodedBookingWhere.zip)) && // the zip doesn't match the bookingWhere.zip, then the location has changed since last geocoded
+                    event.bookingWhere &&
+                    event.bookingWhere.city &&
+                    event.bookingWhere.state &&
+                    event.bookingWhere.zip
+                ) {
+                    //if the event doesn't yet have a latLong attached to it, make one based on just the city, state zip they selected
+                    const address =
+                        event.bookingWhere.city +
+                        ', ' +
+                        event.bookingWhere.state +
+                        ' ' +
+                        event.bookingWhere.zip;
+                    const geocodedAddress = await addressGeocode(address);
+                    // console.log(
+                    //     updatedEvents +
+                    //         ') ' +
+                    //         event.artist.stageName +
+                    //         ' wants to play a concert near ' +
+                    //         address +
+                    //         ': ',
+                    //     geocodedAddress
+                    // );
+
+                    let savedDetails = await event.updateOne(
+                        {
+                            'latLong.coordinates': geocodedAddress,
+                            geocodedBookingWhere: event.bookingWhere,
+                        },
+                        { new: true }
+                    );
+                    // if (savedDetails) {
+                    //     console.log(
+                    //         'savedDetails:',
+                    //         savedDetails
+                    //     );
+                    // }
+                }
+                //end geocoding
+
+                //res.json(event);
+                //console.log('event', event);
+                res.json(event);
+            } catch (err) {
+                console.error(err.message);
+                res.status(500).send('Server Error: ' + err.message);
+            }
+        } else {
+            console.error(
+                req.user.email + ' cannot create or update this event.'
+            );
+            res.status(500).send(
+                'User does not have authority to make these changes.'
+            );
+        }
+
+        //res.json(eventCount + " event(s) submitted to the database."); //eventually remove this
+    }
+);
+
 // @route    POST api/events/artistEvent
 // @desc     Create or Update an artist event based on bookingWhen
 // @access   Private
