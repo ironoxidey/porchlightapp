@@ -12,6 +12,7 @@ import {
     EVENTS_ERROR,
     LOGOUT,
     DELETE_ARTIST_EVENT,
+    DELETE_HOST_EVENT,
 } from '../actions/types';
 
 const initialState = {
@@ -75,6 +76,14 @@ export default function (state = initialState, action) {
                 myArtistEvents: state.myArtistEvents.filter(
                     (myArtistEvent) =>
                         myArtistEvent._id !== payload && myArtistEvent //deletes an event from the state
+                ),
+                loading: false,
+            };
+        case DELETE_HOST_EVENT:
+            return {
+                ...state,
+                myHostEvents: state.myHostEvents.filter(
+                    (myHostEvent) => myHostEvent._id !== payload && myHostEvent //deletes an event from the state
                 ),
                 loading: false,
             };

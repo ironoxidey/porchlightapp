@@ -277,6 +277,7 @@ router.post(
         }
 
         let eventFields = req.body;
+        // console.log('eventFields', eventFields);
 
         let userRole = req.user.role;
 
@@ -393,6 +394,28 @@ router.post(
         //res.json(eventCount + " event(s) submitted to the database."); //eventually remove this
     }
 );
+
+// @route    DELETE api/events/hostEvent/:id
+// @desc     Delete artist event
+// @access   Private
+router.delete('/hostEvent/:id', auth, async (req, res) => {
+    try {
+        // Remove event
+        let host = await Host.findOne({
+            email: req.user.email.toLowerCase(),
+        });
+        await Event.findOneAndRemove({
+            _id: req.params.id,
+            confirmedHost: host._id, //the requesting user must be the confirmedHost
+            createdBy: 'HOST', //only if the host created the event
+            status: 'PENDING', //don't let people delete confirmed shows
+        });
+        res.json(req.params.id);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
 
 // @route    POST api/events/artistEvent
 // @desc     Create or Update an artist event based on bookingWhen
@@ -568,6 +591,7 @@ router.delete('/artistEvent/:id', auth, async (req, res) => {
         await Event.findOneAndRemove({
             _id: req.params.id,
             artistEmail: req.user.email, //this should ensure that someone can only delete their own events
+            createdBy: 'ARTIST', //only if the artist created it
             status: 'PENDING', //don't let people delete confirmed shows
         });
 

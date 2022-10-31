@@ -55,7 +55,11 @@ const AddHostEvent = ({
                 </Grid>
             </SwipeableDrawer>
 
-            <Button btnwidth="250" onClick={() => setDrawerOpen(true)}>
+            <Button
+                btnwidth="250"
+                onClick={() => setDrawerOpen(true)}
+                style={{ margin: '8px auto' }}
+            >
                 Propose a New Concert
             </Button>
         </>
