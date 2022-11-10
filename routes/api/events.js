@@ -1017,7 +1017,8 @@ router.get('/nearMeToHost', auth, async (req, res) => {
             },
             offersFromHosts: { $not: { $elemMatch: { host: thisHost._id } } },
             status: 'PENDING',
-            bookingWhen: { $gt: new Date() },
+            createdBy: { $ne: 'HOST' }, // $ne means "Not Equal" — don't show events created by HOSTs to other HOSTs as nearMeToHost events — I would've singled out events that are created by ARTISTs, but not all the events had a "createdBy" field, because I added it WAY later on
+            bookingWhen: { $gt: new Date() }, // $gt means "Greater Than"
         })
             .select(
                 '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'

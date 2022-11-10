@@ -301,8 +301,8 @@ const HostDashboardEventCard = ({
                             </Grid>
                         )
                     )}
-                    <Grid item xs={9}>
-                        <Grid
+                    <Grid item xs={9} sx={{ margin: '8px 0 0' }}>
+                        {/* <Grid
                             item
                             sx={{
                                 fontSize: '1.5em',
@@ -313,7 +313,7 @@ const HostDashboardEventCard = ({
                             {thisEvent.bookingWhere.city +
                                 ', ' +
                                 thisEvent.bookingWhere.state}
-                        </Grid>
+                        </Grid> */}
                         {thisEvent.offersFromHosts &&
                         thisEvent.offersFromHosts.length > 0 ? (
                             <Grid item container>
