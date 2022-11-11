@@ -3,6 +3,7 @@ import { setAlert } from './alert';
 
 import {
     EDIT_ARTIST_EVENT,
+    EDIT_HOST_EVENT,
     DELETE_ARTIST_EVENT,
     DELETE_HOST_EVENT,
     HOST_RAISE_HAND,
@@ -30,7 +31,7 @@ export const editHostEvent = (formData, history) => async (dispatch) => {
         const res = await axios.post('/api/events/hostEvent', formData, config);
         //console.log('hostRaiseHand res.data', res.data);
         dispatch({
-            type: EDIT_ARTIST_EVENT,
+            type: EDIT_HOST_EVENT,
             payload: res.data,
         });
         // dispatch(

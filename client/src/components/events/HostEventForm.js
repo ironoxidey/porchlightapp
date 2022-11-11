@@ -120,7 +120,7 @@ const HostEventForm = ({
     if (
         hostMe &&
         theEvent &&
-        theEvent.artist &&
+        theEvent.confirmedHost &&
         hostMe._id === theEvent.confirmedHost
     ) {
         isMe = true;
@@ -192,12 +192,12 @@ const HostEventForm = ({
         // wideImg: '',
         // squareImg: '',
         // covidPrefs: [],
-        artistNotes: '',
+        hostNotes: '',
         financialHopes: '',
         fanActions: [],
         // onboardDate: '',
         // bio: '',
-        artistUpdated: new Date(),
+        hostUpdated: new Date(),
     });
 
     useEffect(() => {
@@ -343,10 +343,8 @@ const HostEventForm = ({
                 //     loading || !theEvent.squareImg ? '' : theEvent.squareImg,
                 // covidPrefs:
                 //     loading || !theEvent.covidPrefs ? [] : theEvent.covidPrefs,
-                artistNotes:
-                    loading || !theEvent.artistNotes
-                        ? ''
-                        : theEvent.artistNotes,
+                hostNotes:
+                    loading || !theEvent.hostNotes ? '' : theEvent.hostNotes,
                 financialHopes:
                     loading || !theEvent.financialHopes
                         ? ''
@@ -355,7 +353,7 @@ const HostEventForm = ({
                     loading || !theEvent.fanActions ? [] : theEvent.fanActions,
                 // onboardDate: loading || !theEvent.onboardDate ? '' : theEvent.onboardDate,
                 // bio: loading || !theEvent.bio ? '' : theEvent.bio,
-                artistUpdated: new Date(),
+                hostUpdated: new Date(),
             });
         } else {
             if (!auth.loading) {
@@ -425,7 +423,7 @@ const HostEventForm = ({
                     // wideImg: '',
                     // squareImg: '',
                     // covidPrefs: [],
-                    artistNotes: '',
+                    hostNotes: '',
                     financialHopes: '',
                     fanActions: [],
                     // onboardDate: '',
@@ -482,7 +480,7 @@ const HostEventForm = ({
         // wideImg,
         // squareImg,
         // covidPrefs,
-        artistNotes,
+        hostNotes,
         financialHopes,
         fanActions,
         // onboardDate,
@@ -568,14 +566,14 @@ const HostEventForm = ({
     // 	setFormData({ ...formData, [targetName]: updatedField });
     // };
 
-    useEffect(() => {
-        if (changesMade.current) {
-            if (bookingWhen && bookingWhere && bookingWhere.city) {
-                editHostEvent(formData, history, true);
-                changesMade.current = false;
-            }
-        }
-    }, [bookingWhere]);
+    // useEffect(() => {
+    //     if (changesMade.current) {
+    //         if (bookingWhen && bookingWhere && bookingWhere.city) {
+    //             editHostEvent(formData, history, true);
+    //             changesMade.current = false;
+    //         }
+    //     }
+    // }, [bookingWhere]);
 
     const onCalendarChange = (target) => {
         changesMade.current = true;
@@ -1803,7 +1801,7 @@ const HostEventForm = ({
         // 	/>, */
         //     },
         // ],
-        artistNotes: [
+        hostNotes: [
             <FormLabel component="legend">
                 Do you have any final thoughts, questions, notes, or
                 clarifications for us? Feel free to list them below.
@@ -1811,11 +1809,11 @@ const HostEventForm = ({
             <Grid item xs={12} sx={{ width: '100%' }}>
                 <TextField
                     variant="standard"
-                    name="artistNotes"
+                    name="hostNotes"
                     multiline
-                    id="artistNotes"
+                    id="hostNotes"
                     label="Artist Notes"
-                    value={artistNotes}
+                    value={hostNotes}
                     onChange={(e) => onChange(e)}
                     sx={{ width: '100%' }}
                 />
@@ -1837,21 +1835,22 @@ const HostEventForm = ({
             [
                 //Event Details as a host will see it
                 //theEvent usually comes from EditHostEvent.js, but if the user is proposing this event we'll hit up the Redux store for the myHostEvents that has a matching bookingWhen
-                <EventDetails
-                    theEvent={{
-                        ...(theEvent ||
-                            myHostEvents.find((event) => {
-                                if (
-                                    bookingWhen &&
-                                    bookingWhen.length > 0 &&
-                                    bookingWhen[0]
-                                ) {
-                                    return event.bookingWhen === bookingWhen[0];
-                                }
-                            })),
-                        artist: hostMe,
-                    }}
-                />,
+                //
+                // <EventDetails
+                //     theEvent={{
+                //         ...(theEvent ||
+                //             myHostEvents.find((event) => {
+                //                 if (
+                //                     bookingWhen &&
+                //                     bookingWhen.length > 0 &&
+                //                     bookingWhen[0]
+                //                 ) {
+                //                     return event.bookingWhen === bookingWhen[0];
+                //                 }
+                //             })),
+                //         artist: hostMe,
+                //     }}
+                // />,
             ],
         ],
     };
@@ -1935,6 +1934,9 @@ const HostEventForm = ({
                 //     mostRecentlyUpdatedEvent
                 // );
                 //remove the fields we don't want to copy from mostRecentlyUpdatedEvent
+                delete mostRecentlyUpdatedEvent.createdBy;
+                delete mostRecentlyUpdatedEvent.artist;
+
                 delete mostRecentlyUpdatedEvent._id;
                 delete mostRecentlyUpdatedEvent.createdAt;
                 delete mostRecentlyUpdatedEvent.bookingWhen;

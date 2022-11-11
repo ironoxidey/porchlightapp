@@ -33,7 +33,7 @@ import { relativeTimeRounding } from 'moment';
 import ArtistDashboardBookingOffers from './ArtistDashboardBookingOffers';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditArtistEvent from './EditArtistEvent';
+import EditHostEvent from './EditHostEvent';
 
 const HostDashboardEventCard = ({
     thisEvent,
@@ -174,44 +174,56 @@ const HostDashboardEventCard = ({
                     className="dateLocationForBooking"
                     xs={11}
                 >
-                    <Grid item>
-                        <Tooltip
-                            title={
-                                thisEvent.artist &&
-                                thisEvent.artist.stageName +
-                                    ' accepted your offer.'
-                            }
-                            arrow={true}
-                            placement="bottom"
-                            disableHoverListener={!confirmedMy(thisEvent)}
-                            disableFocusListener={!confirmedMy(thisEvent)}
-                            disableTouchListener={!confirmedMy(thisEvent)}
-                        >
-                            <Box
-                                className="squareImgInACircle"
-                                sx={{
-                                    height: '130px',
-                                    width: '130px',
-                                    maxHeight: '130px',
-                                    maxWidth: '130px',
-                                    borderRadius: '50%',
-                                    overflow: 'hidden',
-                                    backgroundImage: `url("${
-                                        thisEvent.artist &&
-                                        thisEvent.artist.squareImg
-                                    }")`,
-                                    backgroundPosition: '50% 25%',
-                                    backgroundSize: 'cover',
-                                    padding: '4px',
-                                    backgroundClip: 'content-box',
-                                    border: confirmedMy(thisEvent)
-                                        ? '1px solid var(--link-color)'
-                                        : '1px solid var(--primary-color)',
-                                    margin: '0 8px 0 0',
-                                }}
-                            ></Box>
-                        </Tooltip>
-                    </Grid>
+                    {thisEvent.artist &&
+                        thisEvent.artist.squareImg &&
+                        thisEvent.artist.slug && (
+                            <Link to={'/artists/' + thisEvent.artist.slug}>
+                                <Grid item>
+                                    <Tooltip
+                                        title={
+                                            thisEvent.artist &&
+                                            thisEvent.artist.stageName +
+                                                ' accepted your offer.'
+                                        }
+                                        arrow={true}
+                                        placement="bottom"
+                                        disableHoverListener={
+                                            !confirmedMy(thisEvent)
+                                        }
+                                        disableFocusListener={
+                                            !confirmedMy(thisEvent)
+                                        }
+                                        disableTouchListener={
+                                            !confirmedMy(thisEvent)
+                                        }
+                                    >
+                                        <Box
+                                            className="squareImgInACircle"
+                                            sx={{
+                                                height: '130px',
+                                                width: '130px',
+                                                maxHeight: '130px',
+                                                maxWidth: '130px',
+                                                borderRadius: '50%',
+                                                overflow: 'hidden',
+                                                backgroundImage: `url("${
+                                                    thisEvent.artist &&
+                                                    thisEvent.artist.squareImg
+                                                }")`,
+                                                backgroundPosition: '50% 25%',
+                                                backgroundSize: 'cover',
+                                                padding: '4px',
+                                                backgroundClip: 'content-box',
+                                                border: confirmedMy(thisEvent)
+                                                    ? '1px solid var(--link-color)'
+                                                    : '1px solid var(--primary-color)',
+                                                margin: '0 8px 0 0',
+                                            }}
+                                        ></Box>
+                                    </Tooltip>
+                                </Grid>
+                            </Link>
+                        )}
 
                     <Grid
                         container
@@ -219,7 +231,11 @@ const HostDashboardEventCard = ({
                         direction="row"
                         alignItems="center"
                         className="dateLocationForBooking"
-                        xs={8}
+                        xs={
+                            thisEvent.artist && thisEvent.artist.squareImg
+                                ? 8
+                                : 11
+                        }
                     >
                         <Grid item container>
                             <Link
@@ -238,7 +254,11 @@ const HostDashboardEventCard = ({
                             item
                             sx={
                                 {
-                                    // width: '55px',
+                                    // width:
+                                    //     thisEvent.artist &&
+                                    //     thisEvent.artist.squareImg
+                                    //         ? 'auto'
+                                    //         : '55px',
                                 }
                             }
                         >
@@ -246,12 +266,22 @@ const HostDashboardEventCard = ({
                                 date={thisEvent.bookingWhen}
                             ></StackDateforDisplay>
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid
+                            item
+                            xs={
+                                thisEvent.artist && thisEvent.artist.squareImg
+                                    ? 8
+                                    : 9
+                            }
+                            sx={{
+                                marginLeft: '8px',
+                            }}
+                        >
                             <Grid
                                 item
                                 sx={{
                                     fontSize: '1.5em',
-                                    marginLeft: '8px',
+                                    // marginLeft: '8px',
                                     lineHeight: '1.5',
                                 }}
                             >
@@ -259,6 +289,13 @@ const HostDashboardEventCard = ({
                                     ', ' +
                                     thisEvent.bookingWhere.state}
                             </Grid>
+                            {thisEvent.createdBy != 'ARTIST' && (
+                                <Grid item container>
+                                    <EditHostEvent
+                                        theEvent={thisEvent}
+                                    ></EditHostEvent>
+                                </Grid>
+                            )}
                         </Grid>
                     </Grid>
                     {confirmedMy(thisEvent) ? (
@@ -301,8 +338,8 @@ const HostDashboardEventCard = ({
                             </Grid>
                         )
                     )}
-                    <Grid item xs={9} sx={{ margin: '8px 0 0' }}>
-                        {/* <Grid
+                    {/* <Grid item xs={9} sx={{ margin: '8px 0 0' }}>
+                        <Grid
                             item
                             sx={{
                                 fontSize: '1.5em',
@@ -313,29 +350,13 @@ const HostDashboardEventCard = ({
                             {thisEvent.bookingWhere.city +
                                 ', ' +
                                 thisEvent.bookingWhere.state}
-                        </Grid> */}
-                        {thisEvent.offersFromHosts &&
-                        thisEvent.offersFromHosts.length > 0 ? (
-                            <Grid item container>
-                                {thisEvent.offersFromHosts
-                                    .filter((e) => e) //.filter(e => e) to remove any null values
-                                    .map((thisOffer, idx) => (
-                                        <ArtistDashboardBookingOffers
-                                            thisOffer={thisOffer}
-                                            thisEvent={thisEvent}
-                                        ></ArtistDashboardBookingOffers>
-                                    ))}
-                            </Grid>
-                        ) : (
-                            <Grid item container>
-                                <EditArtistEvent
-                                    theEvent={thisEvent}
-                                ></EditArtistEvent>
-                            </Grid>
-                        )}
-                    </Grid>
+                        </Grid> 
+                        {
+                            
+                        }
+                    </Grid>*/}
                 </Grid>
-                {thisEvent.status !== 'CONFIRMED' && (
+                {thisEvent.status !== 'CONFIRMED' && !thisEvent.artist && (
                     <Grid item className="deleteBtn" xs={1}>
                         <IconButton
                             onClick={(e) => deleteHostEvent(thisEvent._id)}

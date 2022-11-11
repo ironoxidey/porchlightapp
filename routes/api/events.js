@@ -277,7 +277,7 @@ router.post(
         }
 
         let eventFields = req.body;
-        // console.log('eventFields', eventFields);
+        console.log('eventFields', eventFields);
 
         let userRole = req.user.role;
 
@@ -312,8 +312,9 @@ router.post(
                         createdBy: 'HOST',
                     },
                     {
-                        bookingWhen: eventFields.bookingWhen,
-                        bookingWhere: eventFields.bookingWhere,
+                        ...eventFields,
+                        // bookingWhen: eventFields.bookingWhen,
+                        // bookingWhere: eventFields.bookingWhere,
                         createdBy: 'HOST',
                         confirmedHost: host._id,
                         $addToSet: {
@@ -377,7 +378,28 @@ router.post(
 
                 //res.json(event);
                 //console.log('event', event);
-                res.json(event);
+
+                const myHostEvents = await Event.find({
+                    hostsOfferingToBook: req.user.email,
+                })
+                    .select(
+                        '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'
+                    )
+                    .populate(
+                        'artist',
+                        '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
+                    )
+                    .sort({ bookingWhen: 1 }); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
+                if (!myHostEvents) {
+                    return res.json({
+                        email: req.user.email,
+                        msg:
+                            'There are no events associated with ' +
+                            req.user.email,
+                    });
+                }
+
+                res.json(myHostEvents);
             } catch (err) {
                 console.error(err.message);
                 res.status(500).send('Server Error: ' + err.message);

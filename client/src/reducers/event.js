@@ -1,5 +1,6 @@
 import {
     EDIT_ARTIST_EVENT,
+    EDIT_HOST_EVENT,
     HOST_RAISE_HAND,
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
@@ -34,6 +35,7 @@ export default function (state = initialState, action) {
                 loading: false,
             };
         case GET_EVENTS_OFFERED_TO_HOST:
+        case EDIT_HOST_EVENT:
             return {
                 ...state,
                 myHostEvents: payload,

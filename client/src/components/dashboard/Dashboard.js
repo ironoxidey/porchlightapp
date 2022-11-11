@@ -477,6 +477,7 @@ const Dashboard = ({
                                                         thisEvent.bookingWhen &&
                                                         thisEvent.bookingWhere && (
                                                             <ArtistDashboardEventCard
+                                                                key={idx}
                                                                 thisEvent={
                                                                     thisEvent
                                                                 }
@@ -679,6 +680,7 @@ const Dashboard = ({
                                                 thisEvent.bookingWhen &&
                                                 thisEvent.bookingWhere && (
                                                     <HostDashboardEventCard
+                                                        key={idx}
                                                         thisEvent={thisEvent}
                                                     ></HostDashboardEventCard>
                                                     // <Grid

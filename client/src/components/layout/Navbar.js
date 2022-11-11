@@ -452,7 +452,7 @@ const Navbar = ({
                             onClose={handleCloseUserMenu}
                             onClick={handleCloseUserMenu}
                         >
-                            {user && user.name && user.avatar !== null ? (
+                            {user && user.name && user.avatar !== null && (
                                 <Box
                                     sx={{
                                         width: '100%',
@@ -483,12 +483,10 @@ const Navbar = ({
                                         ({user && user.email})
                                     </Typography>
                                 </Box>
-                            ) : (
-                                ''
                             )}
                             {myNavLinks().map((userLink, index) => (
                                 <MenuItem
-                                    key={index}
+                                    key={userLink + index}
                                     onClick={handleCloseNavMenu}
                                     sx={{ padding: 0 }}
                                     className="drawerListItems"

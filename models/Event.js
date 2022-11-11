@@ -141,6 +141,9 @@ const EventSchema = new mongoose.Schema(
         tourVibe: {
             type: [String],
         },
+        preferredArtists: {
+            type: Object,
+        },
         bookingWhen: {
             type: Date,
             required: true,
@@ -231,6 +234,9 @@ const EventSchema = new mongoose.Schema(
         artistNotes: {
             type: String,
         },
+        hostNotes: {
+            type: String,
+        },
         financialHopes: {
             type: String,
         },
@@ -242,6 +248,9 @@ const EventSchema = new mongoose.Schema(
             default: 'PENDING',
         },
         artistUpdated: {
+            type: Date,
+        },
+        hostUpdated: {
             type: Date,
         },
     },
