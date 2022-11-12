@@ -289,7 +289,7 @@ const HostDashboardEventCard = ({
                                     ', ' +
                                     thisEvent.bookingWhere.state}
                             </Grid>
-                            {thisEvent.createdBy != 'ARTIST' && (
+                            {thisEvent.createdBy === 'HOST' && (
                                 <Grid item container>
                                     <EditHostEvent
                                         theEvent={thisEvent}

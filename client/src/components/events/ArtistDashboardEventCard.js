@@ -172,20 +172,28 @@ const ArtistDashboardEventCard = ({
                     </Grid> */}
                     <Grid
                         item
-                        sx={{
-                            width: '55px',
-                        }}
+                        sx={
+                            {
+                                // width: '55px',
+                            }
+                        }
                     >
                         <StackDateforDisplay
                             date={thisEvent.bookingWhen}
                         ></StackDateforDisplay>
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid
+                        item
+                        xs={9}
+                        sx={{
+                            marginLeft: '8px',
+                        }}
+                    >
                         <Grid
                             item
                             sx={{
                                 fontSize: '1.5em',
-                                marginLeft: '8px',
+                                // marginLeft: '8px',
                                 lineHeight: '1.5',
                             }}
                         >

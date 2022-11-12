@@ -160,10 +160,10 @@ const HostEventForm = ({
         // artistWebsite: '',
         // artistStatementVideo: '',
         // livePerformanceVideo: '',
-        costStructure: '',
-        namedPrice: '',
-        payoutPlatform: 'PayPal',
-        payoutHandle: '',
+        // costStructure: '',
+        // namedPrice: '',
+        // payoutPlatform: 'PayPal',
+        // payoutHandle: '',
         tourVibe: [],
         preferredArtists: [],
         bookingWhen: '',
@@ -179,11 +179,11 @@ const HostEventForm = ({
         },
         overnight: '',
         openers: '',
-        travelingCompanions: [],
+        // travelingCompanions: [],
         //companionTravelers: '',
         hangout: '',
         merchTable: false,
-        allergies: [],
+        // allergies: [],
         familyFriendly: false,
         alcohol: false,
         soundSystem: '',
@@ -193,8 +193,8 @@ const HostEventForm = ({
         // squareImg: '',
         // covidPrefs: [],
         hostNotes: '',
-        financialHopes: '',
-        fanActions: [],
+        // financialHopes: '',
+        // fanActions: [],
         // onboardDate: '',
         // bio: '',
         hostUpdated: new Date(),
@@ -250,20 +250,20 @@ const HostEventForm = ({
                 //     loading || !theEvent.livePerformanceVideo
                 //         ? ''
                 //         : theEvent.livePerformanceVideo,
-                costStructure:
-                    loading || !theEvent.costStructure
-                        ? ''
-                        : theEvent.costStructure,
-                namedPrice:
-                    loading || !theEvent.namedPrice ? '' : theEvent.namedPrice,
-                payoutPlatform:
-                    loading || !theEvent.payoutPlatform
-                        ? 'PayPal'
-                        : theEvent.payoutPlatform,
-                payoutHandle:
-                    loading || !theEvent.payoutHandle
-                        ? ''
-                        : theEvent.payoutHandle,
+                // costStructure:
+                //     loading || !theEvent.costStructure
+                //         ? ''
+                //         : theEvent.costStructure,
+                // namedPrice:
+                //     loading || !theEvent.namedPrice ? '' : theEvent.namedPrice,
+                // payoutPlatform:
+                //     loading || !theEvent.payoutPlatform
+                //         ? 'PayPal'
+                //         : theEvent.payoutPlatform,
+                // payoutHandle:
+                //     loading || !theEvent.payoutHandle
+                //         ? ''
+                //         : theEvent.payoutHandle,
                 tourVibe:
                     loading || !theEvent.tourVibe ? [] : theEvent.tourVibe,
                 preferredArtists:
@@ -300,10 +300,10 @@ const HostEventForm = ({
                 overnight:
                     loading || !theEvent.overnight ? '' : theEvent.overnight,
                 openers: loading || !theEvent.openers ? '' : theEvent.openers,
-                travelingCompanions:
-                    loading || theEvent.travelingCompanions == null
-                        ? []
-                        : theEvent.travelingCompanions,
+                // travelingCompanions:
+                //     loading || theEvent.travelingCompanions == null
+                //         ? []
+                //         : theEvent.travelingCompanions,
                 // companionTravelers:
                 //     loading || theEvent.companionTravelers == null
                 //         ? false
@@ -316,8 +316,8 @@ const HostEventForm = ({
                     loading || theEvent.merchTable == null
                         ? false
                         : theEvent.merchTable,
-                allergies:
-                    loading || !theEvent.allergies ? [] : theEvent.allergies,
+                // allergies:
+                //     loading || !theEvent.allergies ? [] : theEvent.allergies,
                 familyFriendly:
                     loading || theEvent.familyFriendly == null
                         ? false
@@ -330,10 +330,10 @@ const HostEventForm = ({
                     loading || !theEvent.soundSystem
                         ? ''
                         : theEvent.soundSystem,
-                agreeToPayAdminFee:
-                    loading || theEvent.agreeToPayAdminFee == null
-                        ? false
-                        : theEvent.agreeToPayAdminFee,
+                // agreeToPayAdminFee:
+                //     loading || theEvent.agreeToPayAdminFee == null
+                //         ? false
+                //         : theEvent.agreeToPayAdminFee,
                 agreeToPromote:
                     loading || theEvent.agreeToPromote == null
                         ? false
@@ -345,12 +345,12 @@ const HostEventForm = ({
                 //     loading || !theEvent.covidPrefs ? [] : theEvent.covidPrefs,
                 hostNotes:
                     loading || !theEvent.hostNotes ? '' : theEvent.hostNotes,
-                financialHopes:
-                    loading || !theEvent.financialHopes
-                        ? ''
-                        : theEvent.financialHopes,
-                fanActions:
-                    loading || !theEvent.fanActions ? [] : theEvent.fanActions,
+                // financialHopes:
+                //     loading || !theEvent.financialHopes
+                //         ? ''
+                //         : theEvent.financialHopes,
+                // fanActions:
+                //     loading || !theEvent.fanActions ? [] : theEvent.fanActions,
                 // onboardDate: loading || !theEvent.onboardDate ? '' : theEvent.onboardDate,
                 // bio: loading || !theEvent.bio ? '' : theEvent.bio,
                 hostUpdated: new Date(),
@@ -383,10 +383,10 @@ const HostEventForm = ({
                     // artistWebsite: '',
                     // artistStatementVideo: '',
                     // livePerformanceVideo: '',
-                    costStructure: '',
-                    namedPrice: '',
-                    payoutPlatform: 'PayPal',
-                    payoutHandle: '',
+                    // costStructure: '',
+                    // namedPrice: '',
+                    // payoutPlatform: 'PayPal',
+                    // payoutHandle: '',
                     preferredArtists: [],
                     tourVibe: [],
                     bookingWhen: '',
@@ -410,22 +410,22 @@ const HostEventForm = ({
                     },
                     overnight: '',
                     openers: '',
-                    travelingCompanions: [],
+                    // travelingCompanions: [],
                     //companionTravelers: '',
                     hangout: '',
                     merchTable: false,
-                    allergies: [],
+                    // allergies: [],
                     familyFriendly: false,
                     alcohol: false,
                     soundSystem: '',
-                    agreeToPayAdminFee: false,
+                    // agreeToPayAdminFee: false,
                     agreeToPromote: false,
                     // wideImg: '',
                     // squareImg: '',
                     // covidPrefs: [],
                     hostNotes: '',
-                    financialHopes: '',
-                    fanActions: [],
+                    // financialHopes: '',
+                    // fanActions: [],
                     // onboardDate: '',
                     // bio: '',
                 });
@@ -454,35 +454,35 @@ const HostEventForm = ({
         // artistWebsite,
         // artistStatementVideo,
         // livePerformanceVideo,
-        costStructure,
-        payoutPlatform,
-        payoutHandle,
+        // costStructure,
+        // payoutPlatform,
+        // payoutHandle,
         preferredArtists,
         tourVibe,
-        namedPrice,
+        // namedPrice,
         bookingWhen,
         bookingWhere,
         // setLength,
         // schedule,
         showSchedule,
         overnight,
-        openers,
-        travelingCompanions,
+        // openers,
+        // travelingCompanions,
         //companionTravelers,
         hangout,
         merchTable,
-        allergies,
+        // allergies,
         familyFriendly,
         alcohol,
         soundSystem,
-        agreeToPayAdminFee,
+        // agreeToPayAdminFee,
         agreeToPromote,
         // wideImg,
         // squareImg,
         // covidPrefs,
         hostNotes,
-        financialHopes,
-        fanActions,
+        // financialHopes,
+        // fanActions,
         // onboardDate,
         // bio,
     } = formData;
@@ -1930,25 +1930,37 @@ const HostEventForm = ({
                     a.updatedAt > b.updatedAt ? a : b
                 );
                 // console.log(
-                //     'mostRecentlyUpdatedEvent',
+                //     'mostRecentlyUpdatedEvent before:',
                 //     mostRecentlyUpdatedEvent
                 // );
+
+                const mostRecentlyUpdatedEventTrimmed = {
+                    //this solved the issue where, if a HOST picked a date and then closed the drawer without saving, it would make a random event, they'd offered to host, disappear from their dashboard
+                    ...mostRecentlyUpdatedEvent,
+                };
+
                 //remove the fields we don't want to copy from mostRecentlyUpdatedEvent
-                delete mostRecentlyUpdatedEvent.createdBy;
-                delete mostRecentlyUpdatedEvent.artist;
+                delete mostRecentlyUpdatedEventTrimmed.createdBy;
+                delete mostRecentlyUpdatedEventTrimmed.artist;
 
-                delete mostRecentlyUpdatedEvent._id;
-                delete mostRecentlyUpdatedEvent.createdAt;
-                delete mostRecentlyUpdatedEvent.bookingWhen;
-                delete mostRecentlyUpdatedEvent.updatedAt;
-                delete mostRecentlyUpdatedEvent.hostsOfferingToBook;
-                delete mostRecentlyUpdatedEvent.offersFromHosts;
-                delete mostRecentlyUpdatedEvent.confirmedHost;
-                delete mostRecentlyUpdatedEvent.confirmedHostUser;
-                delete mostRecentlyUpdatedEvent.confirmedDate;
-                delete mostRecentlyUpdatedEvent.status;
+                delete mostRecentlyUpdatedEventTrimmed._id;
+                delete mostRecentlyUpdatedEventTrimmed.createdAt;
+                delete mostRecentlyUpdatedEventTrimmed.bookingWhen;
+                delete mostRecentlyUpdatedEventTrimmed.updatedAt;
+                delete mostRecentlyUpdatedEventTrimmed.hostsOfferingToBook;
+                delete mostRecentlyUpdatedEventTrimmed.offersFromHosts;
+                delete mostRecentlyUpdatedEventTrimmed.confirmedHost;
+                delete mostRecentlyUpdatedEventTrimmed.confirmedHostUser;
+                delete mostRecentlyUpdatedEventTrimmed.confirmedDate;
+                delete mostRecentlyUpdatedEventTrimmed.status;
+                delete mostRecentlyUpdatedEventTrimmed.updatedAt;
+                delete mostRecentlyUpdatedEventTrimmed.hostUpdated;
+                delete mostRecentlyUpdatedEventTrimmed.geocodedBookingWhere;
 
-                setFormData({ ...formData, ...mostRecentlyUpdatedEvent });
+                setFormData({
+                    ...formData,
+                    ...mostRecentlyUpdatedEventTrimmed,
+                });
             }
         }
     }, [bookingWhen]);

@@ -324,6 +324,11 @@ router.post(
                                 host: host._id,
                             },
                         },
+                        preferredArtists: eventFields.preferredArtists.map(
+                            (preferredArtist) => {
+                                return preferredArtist._id;
+                            }
+                        ),
                     },
                     { new: true, upsert: true }
                 );
@@ -388,6 +393,10 @@ router.post(
                     .populate(
                         'artist',
                         '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
+                    )
+                    .populate(
+                        'preferredArtists',
+                        '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp '
                     )
                     .sort({ bookingWhen: 1 }); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
                 if (!myHostEvents) {

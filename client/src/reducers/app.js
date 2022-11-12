@@ -38,6 +38,7 @@ export default function (state = intialState, action) {
             return {
                 ...state,
                 profileHat: payload,
+                eventEditDrawer: '',
             };
 
         case FLIP_ARTIST_CARD:

@@ -19,7 +19,7 @@ const EditHostEvent = ({
     theEvent,
     jumpTo,
     closeEventEditDrawer,
-    myArtistEvents, //for determining the most recently updated event and passing it to the closeEventEditDrawer()
+    myHostEvents, //for determining the most recently updated event and passing it to the closeEventEditDrawer()
 }) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -30,13 +30,13 @@ const EditHostEvent = ({
     let mostRecentlyUpdatedEvent = '';
 
     useEffect(() => {
-        if (Array.isArray(myArtistEvents) && myArtistEvents.length > 0) {
-            mostRecentlyUpdatedEvent = myArtistEvents.reduce((a, b) =>
+        if (Array.isArray(myHostEvents) && myHostEvents.length > 0) {
+            mostRecentlyUpdatedEvent = myHostEvents.reduce((a, b) =>
                 a.updatedAt > b.updatedAt ? a : b
             )._id;
             //console.log('mostRecentlyUpdatedEvent', mostRecentlyUpdatedEvent);
         }
-    }, [myArtistEvents]);
+    }, [myHostEvents]);
     return (
         <>
             <SwipeableDrawer
@@ -94,11 +94,11 @@ EditHostEvent.propTypes = {
     theEvent: PropTypes.object,
     jumpTo: PropTypes.func,
     closeEventEditDrawer: PropTypes.func,
-    myArtistEvents: PropTypes.array,
+    myHostEvents: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({
-    myArtistEvents: state.event.myArtistEvents,
+    myHostEvents: state.event.myHostEvents,
 });
 
 //export default EditHostEvent;
