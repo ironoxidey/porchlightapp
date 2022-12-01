@@ -1009,6 +1009,10 @@ router.get('/myEventsOfferedToHost', auth, async (req, res) => {
                 'artist',
                 '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
             )
+            .populate(
+                'preferredArtists',
+                '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp '
+            )
             .sort({ bookingWhen: 1 });
         if (!offeredToBookEvents) {
             return res.json({
