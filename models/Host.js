@@ -2,6 +2,14 @@ const mongoose = require('mongoose');
 
 const HostSchema = new mongoose.Schema(
     {
+        lastEmailed: {
+            type: Date,
+        },
+        notificationFrequency: {
+            //in number of days — 0 means never
+            type: Number,
+            default: 7,
+        },
         completedProfileForm: {
             type: Boolean,
             default: false,

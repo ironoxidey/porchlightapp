@@ -56,8 +56,9 @@ export default function (state = intialState, action) {
                 ...state,
                 users: updatedUsers,
             };
+
         case UPDATE_AVATAR:
-        case UPDATE_ERROR:
+            //case UPDATE_ERROR:
             return {
                 ...state,
                 user: {

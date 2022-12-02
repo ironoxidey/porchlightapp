@@ -379,7 +379,6 @@ router.put(
         }
     }
 );
-
 // @route   PUT api/users/update-role
 // @desc    Update Role
 // @access  Private

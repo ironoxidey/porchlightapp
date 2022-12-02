@@ -45,6 +45,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 import Alert from '../layout/Alert';
 import ArtistTop from '../artists/ArtistTop';
+import EditHostSettings from '../hosts/EditHostSettings';
 
 const Navbar = ({
     auth: { isAuthenticated, loading, user },
@@ -162,6 +163,7 @@ const Navbar = ({
     ];
 
     const hostLinks = [
+        <EditHostSettings />,
         <Link to="/edit-host-profile">
             <ListItemIcon>
                 <EditTwoToneIcon></EditTwoToneIcon>
