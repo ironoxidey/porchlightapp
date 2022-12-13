@@ -4,7 +4,7 @@ const config = !process.env.NODE_ENV ? require('config') : process.env;
 // const { CourierClient } = require('@trycourier/courier');
 
 // const courier = CourierClient({
-//     authorizationToken: 'dk_prod_GK12EN67ST45AYHV2XV9ZEN0YN2R',
+//     authorizationToken: config['courierApiKey'],
 // });
 
 // Dependencies to install:
@@ -18,7 +18,7 @@ const sendEmail = async (email, payload) => {
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: 'Bearer dk_prod_GK12EN67ST45AYHV2XV9ZEN0YN2R',
+            Authorization: `Bearer ${config['courierApiKey']}`,
         },
         body: JSON.stringify({
             message: {

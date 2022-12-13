@@ -20,6 +20,7 @@ import EditUsers from '../users/EditUsers';
 import EditMyArtistProfile from '../artists/EditMyArtistProfile';
 // import EditMyArtistBooking from '../artists/EditMyArtistBooking';
 import EditMyHostProfile from '../hosts/EditMyHostProfile';
+import UnsubscribeHostDigest from '../hosts/UnsubscribeHostDigest';
 // import Posts from '../posts/Posts';
 // import Post from '../post/Post';
 import NotFound from '../layout/NotFound';
@@ -96,6 +97,15 @@ const Routes = ({ app }) => {
                                 render={(props) => (
                                     <Page title="Forgot Password">
                                         <ForgotPassword {...props} />
+                                    </Page>
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/unsubscribe/:id"
+                                render={(props) => (
+                                    <Page title="Unsubscribe">
+                                        <UnsubscribeHostDigest {...props} />
                                     </Page>
                                 )}
                             />

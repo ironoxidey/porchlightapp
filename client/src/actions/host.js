@@ -158,3 +158,45 @@ export const createMyHost =
             dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
         }
     };
+
+// Create or update host
+export const unsubscribeHostDigest = (hostID, getTime) => async (dispatch) => {
+    try {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        const formDataArray = { getTime: getTime };
+        const res = await axios.post(
+            '/api/hosts/unsubscribe/' + hostID,
+            formDataArray,
+            config
+        );
+
+        console.log('DISPATCH:', res);
+        // dispatch({
+        //     type: UPDATE_HOST_ME,
+        //     payload: res.data.host,
+        // });
+        // dispatch({
+        //     type: USER_LOADED,
+        //     payload: res.data.user,
+        // });
+        //dispatch(setAlert(edit ? 'Artist Updated' : 'Artist Created', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+    } catch (err) {
+        const errors = err.response.data.errors;
+        console.log('error: ' + err);
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+        }
+        dispatch({
+            type: UPDATE_HOST_ERROR,
+            payload: {
+                msg: err.response.statusText,
+                status: err.response.status,
+            },
+        });
+        dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+    }
+};

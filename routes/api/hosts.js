@@ -420,6 +420,42 @@ router.get('/', async (req, res) => {
     }
 });
 
+// @route    POST api/hosts/unsubscribe
+// @desc     Unsubscribe Host from email using their id and date (when their host profile was created) — assuming that the exact date and time that a host created their profile is never going to be perfectly known unless we send it in their emails (.getTime)
+// @access   Public
+router.post('/unsubscribe/:id', async (req, res) => {
+    try {
+        const hostToUnsubscribe = await Host.findOne({
+            _id: req.params.id,
+        });
+        // console.log(
+        //     'new Date(hostToUnsubscribe.date).getTime()',
+        //     new Date(hostToUnsubscribe.date).getTime()
+        // );
+        if (
+            new Date(hostToUnsubscribe.date).getTime() ===
+            Number(req.body.getTime)
+        ) {
+            //if the dates match, we'll assume the request is valid
+            hostToUnsubscribe.notificationFrequency = 0;
+            hostToUnsubscribe.markModified('notificationFrequency');
+            hostToUnsubscribe.save();
+            res.json(
+                'That seemed to work! notificationFrequency = ' +
+                    hostToUnsubscribe.notificationFrequency
+            );
+        } else {
+            res.json(
+                "That didn't seem to work. notificationFrequency = " +
+                    hostToUnsubscribe.notificationFrequency
+            );
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 // @route    GET api/hosts/edit
 // @desc     [ADMIN] Get all hosts for editing (everything)
 // @access   Private

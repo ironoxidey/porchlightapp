@@ -47,6 +47,7 @@ jobs:
                   export cloudinary_api_secret=${{secrets.CLOUDINARY_API_SECRET}}
                   export mailChimpApiKey=${{secrets.MAILCHIMP_API_KEY}}
                   export eventbritePrivateToken=${{secrets.EVENTBRITEPRIVATETOKEN}}
+                  export courierApiKey=${{secrets.COURIER_API_KEY}}
                   pm2 restart server --update-env
                   pm2 save
                   sudo service nginx restart
