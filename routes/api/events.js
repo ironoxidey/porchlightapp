@@ -1599,8 +1599,18 @@ router.get('/triggerHostEmailDigest', [auth], async (req, res) => {
                         eventDetails.latLong.coordinates[1] !== 0 &&
                         eventDetails.hostReachRadius
                     ) {
+                        console.log(
+                            'new Date(eventDetails.createdAt)',
+                            new Date(eventDetails.createdAt)
+                        );
                         let hostsInReach = await Host.find({
                             notificationFrequency: { $ne: 0 }, //don't email hosts who've opted out
+                            lastLogin: {
+                                $lte: new Date(eventDetails.createdAt),
+                            }, //if the host logged in before this event was created, they might not have seen it yet
+                            lastEmailed: {
+                                $lte: new Date(eventDetails.createdAt),
+                            }, //if we emailed the host before this event was created, they might not have seen it yet
                             latLong: {
                                 $near: {
                                     $maxDistance:
@@ -1729,11 +1739,11 @@ router.get('/triggerHostEmailDigest', [auth], async (req, res) => {
                     emailHostsCollection.forEach(
                         (hostToEmail, index, array) => {
                             console.log('hostToEmail', hostToEmail);
-                            sendEmail(hostToEmail.email, {
-                                event: 'HOST_EMAIL_DIGEST',
-                                template: '5VAZYQK9RAM506GYRGYMMJ8X3D55',
-                                ...hostToEmail,
-                            });
+                            // sendEmail(hostToEmail.email, {
+                            //     event: 'HOST_EMAIL_DIGEST',
+                            //     template: '5VAZYQK9RAM506GYRGYMMJ8X3D55',
+                            //     ...hostToEmail,
+                            // });
                             if (index === array.length - 1) resolve(); //so that we can return the results
                         }
                     );

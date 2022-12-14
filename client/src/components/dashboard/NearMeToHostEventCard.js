@@ -249,6 +249,7 @@ const NearMeToHostEventCard = ({
                 item
                 className="bookingWhen"
                 key={`bookingWhen${idx}`}
+                id={thisEvent._id}
                 direction="row"
                 sm={5.5}
                 xs={12}

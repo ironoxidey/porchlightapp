@@ -410,7 +410,7 @@ const ArtistEventForm = ({
                 });
             }
         }
-    }, [auth.loading, editArtistEvent, theArtist]);
+    }, [auth.loading, editArtistEvent, theArtist, theEvent]); //added "theEvent" on Dec 14, 2022 -- not sure if it's the right thing, but I'm trying to fix a problem where if you're editing an event the value for the bookingWhere field is different than theEvent's bookingWhere value
 
     const {
         artistSlug,
@@ -1815,22 +1815,35 @@ const ArtistEventForm = ({
                     a.updatedAt > b.updatedAt ? a : b
                 );
                 // console.log(
-                //     'mostRecentlyUpdatedEvent',
+                //     'host mostRecentlyUpdatedEvent',
                 //     mostRecentlyUpdatedEvent
                 // );
-                //remove the fields we don't want to copy from mostRecentlyUpdatedEvent
-                delete mostRecentlyUpdatedEvent._id;
-                delete mostRecentlyUpdatedEvent.createdAt;
-                delete mostRecentlyUpdatedEvent.bookingWhen;
-                delete mostRecentlyUpdatedEvent.updatedAt;
-                delete mostRecentlyUpdatedEvent.hostsOfferingToBook;
-                delete mostRecentlyUpdatedEvent.offersFromHosts;
-                delete mostRecentlyUpdatedEvent.confirmedHost;
-                delete mostRecentlyUpdatedEvent.confirmedHostUser;
-                delete mostRecentlyUpdatedEvent.confirmedDate;
-                delete mostRecentlyUpdatedEvent.status;
 
-                setFormData({ ...formData, ...mostRecentlyUpdatedEvent });
+                const mostRecentlyUpdatedEventTrimmed = {
+                    //this solved the issue where, if a HOST picked a date and then closed the drawer without saving, it would make a random event, they'd offered to host, disappear from their dashboard
+                    ...mostRecentlyUpdatedEvent,
+                };
+
+                //remove the fields we don't want to copy from mostRecentlyUpdatedEvent
+                delete mostRecentlyUpdatedEventTrimmed.createdBy;
+                delete mostRecentlyUpdatedEventTrimmed._id;
+                delete mostRecentlyUpdatedEventTrimmed.createdAt;
+                delete mostRecentlyUpdatedEventTrimmed.bookingWhen;
+                delete mostRecentlyUpdatedEventTrimmed.updatedAt;
+                delete mostRecentlyUpdatedEventTrimmed.hostsOfferingToBook;
+                delete mostRecentlyUpdatedEventTrimmed.offersFromHosts;
+                delete mostRecentlyUpdatedEventTrimmed.confirmedHost;
+                delete mostRecentlyUpdatedEventTrimmed.confirmedHostUser;
+                delete mostRecentlyUpdatedEventTrimmed.confirmedDate;
+                delete mostRecentlyUpdatedEventTrimmed.status;
+
+                delete mostRecentlyUpdatedEventTrimmed.updatedAt;
+                delete mostRecentlyUpdatedEventTrimmed.geocodedBookingWhere;
+
+                setFormData({
+                    ...formData,
+                    ...mostRecentlyUpdatedEventTrimmed,
+                });
             }
         }
     }, [bookingWhen]);

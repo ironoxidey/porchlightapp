@@ -51,7 +51,9 @@ const AddHostEvent = ({
                 disableDiscovery={iOS}
             >
                 <Grid item sx={{ minHeight: '85vh' }}>
-                    <HostEventForm></HostEventForm>
+                    {drawerOpen && ( //so that the ArtistEventForm doesn't setSelectedDates a bajillion times until it's necessary
+                        <HostEventForm></HostEventForm>
+                    )}
                 </Grid>
             </SwipeableDrawer>
 

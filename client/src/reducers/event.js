@@ -18,7 +18,7 @@ import {
 
 const initialState = {
     //myHostEvents: [],
-    //myArtistEvents: [],
+    // myArtistEvents: [],
     events: [],
     loading: true,
     msg: {},

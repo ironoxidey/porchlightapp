@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
@@ -29,6 +29,11 @@ import AddArtistEvent from '../events/AddArtistEvent';
 import EditArtistEvent from '../events/EditArtistEvent';
 import HostDashboardEventCard from '../events/HostDashboardEventCard';
 
+// A custom hook that builds on useLocation to parse the query string for you.
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
 const Dashboard = ({
     //getCurrentProfile,
     changeHats,
@@ -45,6 +50,22 @@ const Dashboard = ({
     // useEffect(() => {
     //     getCurrentProfile();
     // }, [getCurrentProfile]);
+
+    let query = useQuery();
+    const eventID = query.get('eventID');
+    let elementToScrollTo = document.getElementById(eventID);
+    useEffect(() => {
+        elementToScrollTo = document.getElementById(eventID);
+    }, [eventID]);
+    useEffect(() => {
+        if (eventID && elementToScrollTo) {
+            elementToScrollTo.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+            });
+        }
+    }, [elementToScrollTo]);
+
     const confirmedMy = (thisEvent) =>
         thisEvent.createdBy !== 'HOST' &&
         thisEvent.confirmedHost &&
@@ -309,28 +330,30 @@ const Dashboard = ({
                     ) : (
                         <></>
                     )}
-                    {user && user.role && user.role.indexOf('ATTENDER') != -1 && (
-                        <Grid item container className="attenderStuff">
-                            {user.role.indexOf('HOST') === -1 ? (
-                                <Grid
-                                    item
-                                    sx={{
-                                        margin: '8px auto',
-                                    }}
-                                >
-                                    <p> </p>
-                                    <Link to="/edit-host-profile">
-                                        <Button btnwidth="250" className="">
-                                            <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
-                                            Sign Up to Host
-                                        </Button>
-                                    </Link>
-                                </Grid>
-                            ) : (
-                                ''
-                            )}
-                        </Grid>
-                    )}
+                    {user &&
+                        user.role &&
+                        user.role.indexOf('ATTENDER') != -1 && (
+                            <Grid item container className="attenderStuff">
+                                {user.role.indexOf('HOST') === -1 ? (
+                                    <Grid
+                                        item
+                                        sx={{
+                                            margin: '8px auto',
+                                        }}
+                                    >
+                                        <p> </p>
+                                        <Link to="/edit-host-profile">
+                                            <Button btnwidth="250" className="">
+                                                <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
+                                                Sign Up to Host
+                                            </Button>
+                                        </Link>
+                                    </Grid>
+                                ) : (
+                                    ''
+                                )}
+                            </Grid>
+                        )}
                     {app.profileHat === 'HOST' &&
                         user &&
                         user.role &&

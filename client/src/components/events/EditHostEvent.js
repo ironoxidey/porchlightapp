@@ -73,7 +73,9 @@ const EditHostEvent = ({
                 </Box>
 
                 <Grid item sx={{ minHeight: '85vh' }}>
-                    <HostEventForm theEvent={theEvent}></HostEventForm>
+                    {drawerOpen && ( //so that the ArtistEventForm doesn't setSelectedDates a bajillion times until it's necessary
+                        <HostEventForm theEvent={theEvent}></HostEventForm>
+                    )}
                 </Grid>
             </SwipeableDrawer>
 

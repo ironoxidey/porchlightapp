@@ -1930,7 +1930,7 @@ const HostEventForm = ({
                     a.updatedAt > b.updatedAt ? a : b
                 );
                 // console.log(
-                //     'mostRecentlyUpdatedEvent before:',
+                //     'host mostRecentlyUpdatedEvent before:',
                 //     mostRecentlyUpdatedEvent
                 // );
 
@@ -1946,6 +1946,7 @@ const HostEventForm = ({
                 delete mostRecentlyUpdatedEventTrimmed._id;
                 delete mostRecentlyUpdatedEventTrimmed.createdAt;
                 delete mostRecentlyUpdatedEventTrimmed.bookingWhen;
+                delete mostRecentlyUpdatedEventTrimmed.bookingWhere;
                 delete mostRecentlyUpdatedEventTrimmed.updatedAt;
                 delete mostRecentlyUpdatedEventTrimmed.hostsOfferingToBook;
                 delete mostRecentlyUpdatedEventTrimmed.offersFromHosts;
@@ -1953,7 +1954,6 @@ const HostEventForm = ({
                 delete mostRecentlyUpdatedEventTrimmed.confirmedHostUser;
                 delete mostRecentlyUpdatedEventTrimmed.confirmedDate;
                 delete mostRecentlyUpdatedEventTrimmed.status;
-                delete mostRecentlyUpdatedEventTrimmed.updatedAt;
                 delete mostRecentlyUpdatedEventTrimmed.hostUpdated;
                 delete mostRecentlyUpdatedEventTrimmed.geocodedBookingWhere;
 
