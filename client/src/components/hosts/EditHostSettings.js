@@ -82,27 +82,25 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
                     Notification Settings
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        <FormGroup
-                            sx={{
-                                alignItems: 'center',
-                            }}
-                        >
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={notificationFrequency != 0}
-                                        onChange={handleOnChange}
-                                    />
-                                }
-                                label={
-                                    notificationFrequency != 0
-                                        ? 'Send me emails'
-                                        : "Don't send me emails"
-                                }
-                            />
-                        </FormGroup>
-                    </DialogContentText>
+                    <FormGroup
+                        sx={{
+                            alignItems: 'center',
+                        }}
+                    >
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={notificationFrequency != 0}
+                                    onChange={handleOnChange}
+                                />
+                            }
+                            label={
+                                notificationFrequency != 0
+                                    ? 'Send me emails'
+                                    : "Don't send me emails"
+                            }
+                        />
+                    </FormGroup>
                 </DialogContent>
             </Dialog>
 
@@ -130,7 +128,7 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
 EditHostSettings.propTypes = {
     getCurrentHost: PropTypes.func.isRequired,
     createMyHost: PropTypes.func.isRequired,
-    hostMe: PropTypes.object.isRequired,
+    hostMe: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({

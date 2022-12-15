@@ -400,7 +400,7 @@ const Navbar = ({
                     </Typography>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Account settings">
+                        <Tooltip title="Account Menu">
                             <IconButton
                                 onClick={handleOpenUserMenu}
                                 sx={{ p: 0 }}
@@ -456,6 +456,7 @@ const Navbar = ({
                         >
                             {user && user.name && user.avatar !== null && (
                                 <Box
+                                    key="nameEmail"
                                     sx={{
                                         width: '100%',
                                         padding: '20px 20px 0px 20px',

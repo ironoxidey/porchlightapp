@@ -1630,6 +1630,7 @@ router.get('/triggerHostEmailDigest', [auth], async (req, res) => {
                                     hostInReach.notificationFrequency &&
                                     hostInReach.lastEmailed
                                 ) {
+                                    //this limits who we reach out to, until everyone has a "lastEmailed" ---- "notificationFrequency" defaults to 7
                                     //hostInReach.notificationFrequency is never going to be 0, because we filtered that out in the database request
                                     let today = new Date().getTime();
                                     let hostLastEmailed = new Date(
