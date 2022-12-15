@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/auth';
@@ -20,11 +20,19 @@ import Button from '../layout/SvgButton';
 
 //import axios from 'axios';
 
+// A custom hook that builds on useLocation to parse the query string for you.
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
 const Login = ({ login, isAuthenticated, bookingDialog }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
+
+    let query = useQuery();
+    const eventID = query.get('eventID');
 
     const { email, password } = formData;
 
@@ -38,7 +46,11 @@ const Login = ({ login, isAuthenticated, bookingDialog }) => {
 
     //Redirect if logged in
     if (isAuthenticated && !bookingDialog) {
-        return <Redirect to="/dashboard" />;
+        if (eventID) {
+            return <Redirect to={`/dashboard?eventID=` + eventID} />;
+        } else {
+            return <Redirect to="/dashboard" />;
+        }
     }
 
     return (

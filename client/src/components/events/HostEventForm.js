@@ -1,4 +1,6 @@
-//originally copied EditArtistBookingForm.js
+//copied from ArtistEventForm.js from EditArtistBookingForm.js
+import states from 'us-state-converter';
+
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import { Link, withRouter, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -28,6 +30,8 @@ import {
     Chip,
     withStyles,
     Typography,
+    Tooltip,
+    Avatar,
 } from '@mui/material';
 //import ReactPhoneInput from 'react-phone-input-mui';
 import { styled } from '@mui/material/styles';
@@ -55,8 +59,11 @@ import {
     //getHostLocations,
     sortDates,
     jumpTo,
+    toTitleCase,
 } from '../../actions/app';
+//import { ProfileAvatar } from '../../common/components';
 import { getHostsLocations } from '../../actions/host';
+import { getArtists } from '../../actions/artist';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
@@ -97,6 +104,8 @@ const HostEventForm = ({
     theEvent,
     editHostEvent,
     getHostsLocations,
+    getArtists,
+    artists,
     hosts,
     history,
     auth,
@@ -111,7 +120,7 @@ const HostEventForm = ({
     if (
         hostMe &&
         theEvent &&
-        theEvent.artist &&
+        theEvent.confirmedHost &&
         hostMe._id === theEvent.confirmedHost
     ) {
         isMe = true;
@@ -119,6 +128,10 @@ const HostEventForm = ({
 
     //let hostLocations = [];
     //const [hostLocations, setHostLocations] = useState([]);
+
+    useEffect(() => {
+        getArtists();
+    }, []);
 
     useEffect(() => {
         getHostsLocations();
@@ -132,8 +145,9 @@ const HostEventForm = ({
     }, []);
 
     const [formData, setFormData] = useState({
+        createdBy: 'HOST',
         // email: '',
-        genres: [],
+        // genres: [],
         // medium: '',
         // active: '',
         // phone: '',
@@ -146,11 +160,12 @@ const HostEventForm = ({
         // artistWebsite: '',
         // artistStatementVideo: '',
         // livePerformanceVideo: '',
-        costStructure: '',
-        namedPrice: '',
-        payoutPlatform: 'PayPal',
-        payoutHandle: '',
+        // costStructure: '',
+        // namedPrice: '',
+        // payoutPlatform: 'PayPal',
+        // payoutHandle: '',
         tourVibe: [],
+        preferredArtists: [],
         bookingWhen: '',
         bookingWhere: {},
         // setLength: '',
@@ -164,11 +179,11 @@ const HostEventForm = ({
         },
         overnight: '',
         openers: '',
-        travelingCompanions: [],
+        // travelingCompanions: [],
         //companionTravelers: '',
         hangout: '',
         merchTable: false,
-        allergies: [],
+        // allergies: [],
         familyFriendly: false,
         alcohol: false,
         soundSystem: '',
@@ -177,18 +192,19 @@ const HostEventForm = ({
         // wideImg: '',
         // squareImg: '',
         // covidPrefs: [],
-        artistNotes: '',
-        financialHopes: '',
-        fanActions: [],
+        hostNotes: '',
+        // financialHopes: '',
+        // fanActions: [],
         // onboardDate: '',
         // bio: '',
-        artistUpdated: new Date(),
+        hostUpdated: new Date(),
     });
 
     useEffect(() => {
         if (theEvent) {
             //console.log('theEvent', theEvent);
             setFormData({
+                createdBy: 'HOST',
                 // email:
                 //     loading || !theEvent.artistEmail
                 //         ? ''
@@ -234,30 +250,39 @@ const HostEventForm = ({
                 //     loading || !theEvent.livePerformanceVideo
                 //         ? ''
                 //         : theEvent.livePerformanceVideo,
-                costStructure:
-                    loading || !theEvent.costStructure
-                        ? ''
-                        : theEvent.costStructure,
-                namedPrice:
-                    loading || !theEvent.namedPrice ? '' : theEvent.namedPrice,
-                payoutPlatform:
-                    loading || !theEvent.payoutPlatform
-                        ? 'PayPal'
-                        : theEvent.payoutPlatform,
-                payoutHandle:
-                    loading || !theEvent.payoutHandle
-                        ? ''
-                        : theEvent.payoutHandle,
+                // costStructure:
+                //     loading || !theEvent.costStructure
+                //         ? ''
+                //         : theEvent.costStructure,
+                // namedPrice:
+                //     loading || !theEvent.namedPrice ? '' : theEvent.namedPrice,
+                // payoutPlatform:
+                //     loading || !theEvent.payoutPlatform
+                //         ? 'PayPal'
+                //         : theEvent.payoutPlatform,
+                // payoutHandle:
+                //     loading || !theEvent.payoutHandle
+                //         ? ''
+                //         : theEvent.payoutHandle,
                 tourVibe:
                     loading || !theEvent.tourVibe ? [] : theEvent.tourVibe,
+                preferredArtists:
+                    loading || !theEvent.preferredArtists
+                        ? []
+                        : theEvent.preferredArtists,
                 bookingWhen:
                     loading || !theEvent.bookingWhen
                         ? ''
                         : theEvent.bookingWhen,
                 bookingWhere:
-                    loading || !theEvent.bookingWhere
+                    loading || !hostMe.city || !hostMe.state
                         ? {}
-                        : theEvent.bookingWhere,
+                        : {
+                              city: toTitleCase(hostMe.city),
+                              state: states(hostMe.state).usps,
+                              fullState: states(hostMe.state).name,
+                              zip: hostMe.zipCode,
+                          },
                 // setLength:
                 //     loading || !theEvent.setLength ? '' : theEvent.setLength,
                 // schedule:
@@ -275,10 +300,10 @@ const HostEventForm = ({
                 overnight:
                     loading || !theEvent.overnight ? '' : theEvent.overnight,
                 openers: loading || !theEvent.openers ? '' : theEvent.openers,
-                travelingCompanions:
-                    loading || theEvent.travelingCompanions == null
-                        ? []
-                        : theEvent.travelingCompanions,
+                // travelingCompanions:
+                //     loading || theEvent.travelingCompanions == null
+                //         ? []
+                //         : theEvent.travelingCompanions,
                 // companionTravelers:
                 //     loading || theEvent.companionTravelers == null
                 //         ? false
@@ -291,8 +316,8 @@ const HostEventForm = ({
                     loading || theEvent.merchTable == null
                         ? false
                         : theEvent.merchTable,
-                allergies:
-                    loading || !theEvent.allergies ? [] : theEvent.allergies,
+                // allergies:
+                //     loading || !theEvent.allergies ? [] : theEvent.allergies,
                 familyFriendly:
                     loading || theEvent.familyFriendly == null
                         ? false
@@ -305,10 +330,10 @@ const HostEventForm = ({
                     loading || !theEvent.soundSystem
                         ? ''
                         : theEvent.soundSystem,
-                agreeToPayAdminFee:
-                    loading || theEvent.agreeToPayAdminFee == null
-                        ? false
-                        : theEvent.agreeToPayAdminFee,
+                // agreeToPayAdminFee:
+                //     loading || theEvent.agreeToPayAdminFee == null
+                //         ? false
+                //         : theEvent.agreeToPayAdminFee,
                 agreeToPromote:
                     loading || theEvent.agreeToPromote == null
                         ? false
@@ -318,19 +343,17 @@ const HostEventForm = ({
                 //     loading || !theEvent.squareImg ? '' : theEvent.squareImg,
                 // covidPrefs:
                 //     loading || !theEvent.covidPrefs ? [] : theEvent.covidPrefs,
-                artistNotes:
-                    loading || !theEvent.artistNotes
-                        ? ''
-                        : theEvent.artistNotes,
-                financialHopes:
-                    loading || !theEvent.financialHopes
-                        ? ''
-                        : theEvent.financialHopes,
-                fanActions:
-                    loading || !theEvent.fanActions ? [] : theEvent.fanActions,
+                hostNotes:
+                    loading || !theEvent.hostNotes ? '' : theEvent.hostNotes,
+                // financialHopes:
+                //     loading || !theEvent.financialHopes
+                //         ? ''
+                //         : theEvent.financialHopes,
+                // fanActions:
+                //     loading || !theEvent.fanActions ? [] : theEvent.fanActions,
                 // onboardDate: loading || !theEvent.onboardDate ? '' : theEvent.onboardDate,
                 // bio: loading || !theEvent.bio ? '' : theEvent.bio,
-                artistUpdated: new Date(),
+                hostUpdated: new Date(),
             });
         } else {
             if (!auth.loading) {
@@ -339,6 +362,8 @@ const HostEventForm = ({
                 // );
                 setFormData({
                     email: auth.user.email,
+
+                    createdBy: 'HOST',
                     // genres: [],
                     // soundsLike: [],
                     // medium: '',
@@ -358,13 +383,22 @@ const HostEventForm = ({
                     // artistWebsite: '',
                     // artistStatementVideo: '',
                     // livePerformanceVideo: '',
-                    costStructure: '',
-                    namedPrice: '',
-                    payoutPlatform: 'PayPal',
-                    payoutHandle: '',
+                    // costStructure: '',
+                    // namedPrice: '',
+                    // payoutPlatform: 'PayPal',
+                    // payoutHandle: '',
+                    preferredArtists: [],
                     tourVibe: [],
                     bookingWhen: '',
-                    bookingWhere: {},
+                    bookingWhere:
+                        !hostMe.city || !hostMe.state
+                            ? {}
+                            : {
+                                  city: toTitleCase(hostMe.city),
+                                  state: states(hostMe.state).usps,
+                                  fullState: states(hostMe.state).name,
+                                  zip: hostMe.zipCode,
+                              },
                     // setLength: '',
                     // schedule: '',
                     showSchedule: {
@@ -376,22 +410,22 @@ const HostEventForm = ({
                     },
                     overnight: '',
                     openers: '',
-                    travelingCompanions: [],
+                    // travelingCompanions: [],
                     //companionTravelers: '',
                     hangout: '',
                     merchTable: false,
-                    allergies: [],
+                    // allergies: [],
                     familyFriendly: false,
                     alcohol: false,
                     soundSystem: '',
-                    agreeToPayAdminFee: false,
+                    // agreeToPayAdminFee: false,
                     agreeToPromote: false,
                     // wideImg: '',
                     // squareImg: '',
                     // covidPrefs: [],
-                    artistNotes: '',
-                    financialHopes: '',
-                    fanActions: [],
+                    hostNotes: '',
+                    // financialHopes: '',
+                    // fanActions: [],
                     // onboardDate: '',
                     // bio: '',
                 });
@@ -420,34 +454,35 @@ const HostEventForm = ({
         // artistWebsite,
         // artistStatementVideo,
         // livePerformanceVideo,
-        costStructure,
-        payoutPlatform,
-        payoutHandle,
+        // costStructure,
+        // payoutPlatform,
+        // payoutHandle,
+        preferredArtists,
         tourVibe,
-        namedPrice,
+        // namedPrice,
         bookingWhen,
         bookingWhere,
         // setLength,
         // schedule,
         showSchedule,
         overnight,
-        openers,
-        travelingCompanions,
+        // openers,
+        // travelingCompanions,
         //companionTravelers,
         hangout,
         merchTable,
-        allergies,
+        // allergies,
         familyFriendly,
         alcohol,
         soundSystem,
-        agreeToPayAdminFee,
+        // agreeToPayAdminFee,
         agreeToPromote,
         // wideImg,
         // squareImg,
         // covidPrefs,
-        artistNotes,
-        financialHopes,
-        fanActions,
+        hostNotes,
+        // financialHopes,
+        // fanActions,
         // onboardDate,
         // bio,
     } = formData;
@@ -531,14 +566,14 @@ const HostEventForm = ({
     // 	setFormData({ ...formData, [targetName]: updatedField });
     // };
 
-    useEffect(() => {
-        if (changesMade.current) {
-            if (bookingWhen && bookingWhere && bookingWhere.city) {
-                editHostEvent(formData, history, true);
-                changesMade.current = false;
-            }
-        }
-    }, [bookingWhere]);
+    // useEffect(() => {
+    //     if (changesMade.current) {
+    //         if (bookingWhen && bookingWhere && bookingWhere.city) {
+    //             editHostEvent(formData, history, true);
+    //             changesMade.current = false;
+    //         }
+    //     }
+    // }, [bookingWhere]);
 
     const onCalendarChange = (target) => {
         changesMade.current = true;
@@ -596,7 +631,9 @@ const HostEventForm = ({
     const formGroups = {
         bookingWhen: [
             <Typography component="h2">
-                Please select a date you’d like to try to play a concert:
+                It’s so exciting you’re interested in proposing a concert!
+                Please select the date you’d like to try to host this event in{' '}
+                {bookingWhere.city}, {bookingWhere.state}:
             </Typography>,
             [
                 // bookingWhen && bookingWhen.length > 0
@@ -633,114 +670,223 @@ const HostEventForm = ({
                 />,
             ],
         ],
-        bookingWhere: [
-            <FormLabel component="legend">
-                Please select roughly where you’d like to try to play a concert
-                on {prettifyDate(bookingWhen)}:
-            </FormLabel>,
-            bookingWhere && (
-                <Grid
-                    className="whenBooking"
-                    container
-                    direction="row"
-                    justifyContent="space-around"
-                    alignItems="start"
-                    spacing={2}
-                    sx={{
-                        // borderColor: 'primary.dark',
-                        // borderWidth: '2px',
-                        // borderStyle: 'solid',
-                        backgroundColor: 'rgba(0,0,0,0.15)',
-                        '&:hover': {},
-                        border: `1px var(--light-color) solid`,
-                        padding: '0 10px 10px',
-                        margin: '0px auto',
-                        width: '100%',
-                    }}
-                >
-                    {/* <Grid item xs={12} md={3}>
-									<TextField
-										variant='standard'
-										name='bookingWhenWhere'
-										id={`bookingWhenWhere${idx}`}
-										label={
-											"On "+bookingWhen[idx]+" I’d like to play in "
-										}
-										value={bookingWhenWhere[idx].when || ''}
-										onChange={(e) =>
-											onMultiTextChange('when', bookingWhenWhere, idx, e)
-										}
-										sx={{ width: '100%' }}
-									/>
-								</Grid> */}
-                    <Grid item xs={12} md={12}>
-                        <Autocomplete
-                            id="bookingWhere"
-                            //value={whenBooking && whenBooking.where || whenWhereOrig[idx-1] && whenWhereOrig[idx-1].where || null}
-                            value={(bookingWhere.city && bookingWhere) || null}
-                            options={hosts}
-                            disableClearable
-                            groupBy={(option) => option.fullState}
-                            getOptionLabel={(option) =>
-                                option.city + ', ' + option.state || ''
-                            }
-                            //getOptionSelected={(option, value) => option.city === value.city}
-                            isOptionEqualToValue={(option, value) =>
-                                option.city === value.city &&
-                                option.state === value.state
-                            }
-                            onChange={(e, value) => {
-                                onAutocompleteTagChange(
-                                    e,
-                                    'bookingWhere',
-                                    value
-                                );
+        // bookingWhere: [
+        //     <FormLabel component="legend">
+        //         Please select roughly where you’d like to try to play a concert
+        //         on {prettifyDate(bookingWhen)}:
+        //     </FormLabel>,
+        //     bookingWhere && (
+        //         <Grid
+        //             className="whenBooking"
+        //             container
+        //             direction="row"
+        //             justifyContent="space-around"
+        //             alignItems="start"
+        //             spacing={2}
+        //             sx={{
+        //                 // borderColor: 'primary.dark',
+        //                 // borderWidth: '2px',
+        //                 // borderStyle: 'solid',
+        //                 backgroundColor: 'rgba(0,0,0,0.15)',
+        //                 '&:hover': {},
+        //                 border: `1px var(--light-color) solid`,
+        //                 padding: '0 10px 10px',
+        //                 margin: '0px auto',
+        //                 width: '100%',
+        //             }}
+        //         >
+        //             {/* <Grid item xs={12} md={3}>
+        // 							<TextField
+        // 								variant='standard'
+        // 								name='bookingWhenWhere'
+        // 								id={`bookingWhenWhere${idx}`}
+        // 								label={
+        // 									"On "+bookingWhen[idx]+" I’d like to play in "
+        // 								}
+        // 								value={bookingWhenWhere[idx].when || ''}
+        // 								onChange={(e) =>
+        // 									onMultiTextChange('when', bookingWhenWhere, idx, e)
+        // 								}
+        // 								sx={{ width: '100%' }}
+        // 							/>
+        // 						</Grid> */}
+        //             <Grid item xs={12} md={12}>
+        //                 <Autocomplete
+        //                     id="bookingWhere"
+        //                     //value={whenBooking && whenBooking.where || whenWhereOrig[idx-1] && whenWhereOrig[idx-1].where || null}
+        //                     value={(bookingWhere.city && bookingWhere) || null}
+        //                     options={hosts}
+        //                     disableClearable
+        //                     groupBy={(option) => option.fullState}
+        //                     getOptionLabel={(option) =>
+        //                         option.city + ', ' + option.state || ''
+        //                     }
+        //                     //getOptionSelected={(option, value) => option.city === value.city}
+        //                     isOptionEqualToValue={(option, value) =>
+        //                         option.city === value.city &&
+        //                         option.state === value.state
+        //                     }
+        //                     onChange={(e, value) => {
+        //                         onAutocompleteTagChange(
+        //                             e,
+        //                             'bookingWhere',
+        //                             value
+        //                         );
 
-                                // onMultiAutocompleteTagChange(
-                                //     'where',
-                                //     'bookingWhere',
-                                //     bookingWhere,
-                                //     idx,
-                                //     e,
-                                //     value
-                                // );
-                            }}
-                            renderTags={(value, getTagProps) =>
-                                value.map((option, index) => (
-                                    <Chip
-                                        variant="outlined"
-                                        name="bookingWhere"
-                                        key={`bookingWhere${index}`}
-                                        label={
-                                            option.city + ', ' + option.state
-                                        }
-                                        {...getTagProps({
-                                            index,
-                                        })}
-                                    />
-                                ))
-                            }
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    sx={{ width: '100%' }}
-                                    variant="standard"
-                                    label={`On ${prettifyDate(
-                                        bookingWhen
-                                    )}, I’d love to play in or around`}
-                                    name="bookingWhere"
+        //                         // onMultiAutocompleteTagChange(
+        //                         //     'where',
+        //                         //     'bookingWhere',
+        //                         //     bookingWhere,
+        //                         //     idx,
+        //                         //     e,
+        //                         //     value
+        //                         // );
+        //                     }}
+        //                     renderTags={(value, getTagProps) =>
+        //                         value.map((option, index) => (
+        //                             <Chip
+        //                                 variant="outlined"
+        //                                 name="bookingWhere"
+        //                                 key={`bookingWhere${index}`}
+        //                                 label={
+        //                                     option.city + ', ' + option.state
+        //                                 }
+        //                                 {...getTagProps({
+        //                                     index,
+        //                                 })}
+        //                             />
+        //                         ))
+        //                     }
+        //                     renderInput={(params) => (
+        //                         <TextField
+        //                             {...params}
+        //                             sx={{ width: '100%' }}
+        //                             variant="standard"
+        //                             label={`On ${prettifyDate(
+        //                                 bookingWhen
+        //                             )}, I’d love to play in or around`}
+        //                             name="bookingWhere"
+        //                         />
+        //                     )}
+        //                 />
+        //             </Grid>
+        //         </Grid>
+        //     ),
+        // ],
+        preferredArtists: [
+            <FormLabel component="legend">
+                Who would you like to invite to perform?
+            </FormLabel>,
+            [
+                <Grid item xs={12} sx={{ width: '100%' }}>
+                    <Autocomplete
+                        multiple
+                        id="preferredArtists"
+                        value={preferredArtists}
+                        options={artists}
+                        getOptionLabel={(option) =>
+                            option.stageName + ' ' + option.genres
+                        }
+                        isOptionEqualToValue={(option, value) =>
+                            option._id === value._id
+                        }
+                        renderOption={(props, option, { selected }) => (
+                            <li {...props}>
+                                <Tooltip
+                                    arrow={true}
+                                    placement="bottom-start"
+                                    title={
+                                        <>
+                                            <div>
+                                                {option.genres.map(
+                                                    (genre, index) => (
+                                                        <Chip
+                                                            sx={{
+                                                                margin: '4px',
+                                                                borderColor:
+                                                                    'rgba(255,255,255,.3)',
+                                                                background:
+                                                                    'rgba(255,255,255,.2)',
+                                                            }}
+                                                            size="small"
+                                                            variant="outlined"
+                                                            name="genre"
+                                                            label={genre}
+                                                            key={`genre${index}`}
+                                                        />
+                                                    )
+                                                )}
+                                            </div>
+                                        </>
+                                    }
+                                >
+                                    <Grid container alignItems="center">
+                                        <Avatar
+                                            src={option.squareImg}
+                                            sx={{ marginRight: '4px' }}
+                                        />
+                                        <Typography
+                                            sx={{
+                                                margin: '0 4px',
+                                            }}
+                                        >
+                                            {option.stageName}
+                                        </Typography>
+                                    </Grid>
+                                </Tooltip>
+                            </li>
+                        )}
+                        disableCloseOnSelect={true}
+                        clearOnBlur={true}
+                        onChange={(event, value) =>
+                            onAutocompleteTagChange(
+                                event,
+                                'preferredArtists',
+                                value
+                            )
+                        }
+                        renderTags={(value, getTagProps) =>
+                            value.map((option, index) => (
+                                <Chip
+                                    variant="outlined"
+                                    name="preferredArtists"
+                                    label={option.stageName}
+                                    key={`preferredArtists${index}`}
+                                    {...getTagProps({ index })}
                                 />
-                            )}
-                        />
-                    </Grid>
-                </Grid>
-            ),
+                            ))
+                        }
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                sx={{ width: '100%' }}
+                                variant="standard"
+                                label={'I’d like to invite'}
+                                name="preferredArtists"
+                                helperText="(Select the artists you’d like to invite from the list)"
+                            />
+                        )}
+                    />
+                    {/* <TextField
+						variant='standard'
+						name='tourVibe'
+						multiline
+						id='tourVibe'
+						label='I’m most comfortable performing for an audience who is '
+						placeholder='[plural noun]'
+						value={tourVibe}
+						onChange={(e) => onChange(e)}
+						helperText='are my audience.'
+						InputLabelProps={{ shrink: true }}
+					/> */}
+                </Grid>,
+            ],
         ],
         tourVibe: [
             <FormLabel component="legend">
-                We want to make sure you and the host are on the same page about
-                what to expect concerning who the audience is. How would you
-                describe your ideal audience?
+                We want to make sure you and the artist are on the same page
+                about what to expect concerning who the audience is. How would
+                you describe the folks you’re going to invite?
             </FormLabel>,
             [
                 <Grid item xs={12} sx={{ width: '100%' }}>
@@ -770,9 +916,7 @@ const HostEventForm = ({
                                 {...params}
                                 sx={{ width: '100%' }}
                                 variant="standard"
-                                label={
-                                    'I’m most comfortable performing for an audience who is '
-                                }
+                                label={'The folks I’m going to invite are '}
                                 name="tourVibe"
                                 helperText="Type and press [enter] to add adjectives to the list"
                             />
@@ -795,7 +939,8 @@ const HostEventForm = ({
         ],
         merchTable: [
             <FormLabel component="legend">
-                Will you need the host to provide a merch table?
+                Will you be able to provide a merch table in the event that an
+                artist needs one?
             </FormLabel>,
             [
                 <FormControl component="fieldset">
@@ -846,153 +991,153 @@ const HostEventForm = ({
                 </FormControl>,
             ],
         ],
-        openers: [
-            <FormLabel component="legend">
-                Let’s talk openers. What’s your preference?
-            </FormLabel>,
-            [
-                <RadioGroup
-                    id="openers"
-                    value={openers}
-                    name="openers"
-                    onChange={(e) => onChange(e)}
-                >
-                    <FormControlLabel
-                        value="I plan on travelling with an opener."
-                        control={<Radio />}
-                        label="I plan on travelling with an opener."
-                    />
-                    <FormControlLabel
-                        value="I'd like Porchlight Hosts to invite local openers."
-                        control={<Radio />}
-                        label="I'd like Porchlight Hosts to invite local openers."
-                    />
-                    <FormControlLabel
-                        value="I'd prefer a solo set."
-                        control={<Radio />}
-                        label="I'd prefer a solo set."
-                    />
-                    <FormControlLabel
-                        value="I have no preference."
-                        control={<Radio />}
-                        label="I have no preference."
-                    />
-                </RadioGroup>,
-            ],
-        ],
-        costStructure: [
-            <FormLabel component="legend">
-                What cost structure would you prefer?
-                <br />
-                <small>
-                    *We currently offer very few guaranteed shows, for bands
-                    selected at our discretion.
-                </small>
-            </FormLabel>,
-            [
-                <Grid item>
-                    <RadioGroup
-                        id="costStructure"
-                        value={costStructure}
-                        name="costStructure"
-                        onChange={(e) => onChange(e)}
-                    >
-                        <FormControlLabel
-                            value="ticket"
-                            control={<Radio />}
-                            label="Ticketed"
-                        />
-                        <FormControlLabel
-                            value="donation"
-                            control={<Radio />}
-                            label="Free RSVP, with a suggested donation"
-                        />
-                    </RadioGroup>
-                </Grid>,
-            ],
-        ],
-        namedPrice: [
-            <FormLabel component="legend">Name your price.</FormLabel>,
-            [
-                <Grid item>
-                    <TextField
-                        variant="standard"
-                        name="namedPrice"
-                        id="namedPrice"
-                        label={
-                            costStructure == 'donation'
-                                ? "I'd suggest a donation of"
-                                : 'Tickets should cost'
-                        }
-                        value={namedPrice}
-                        onChange={(e) => onChange(e)}
-                        type="number"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    $
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                </Grid>,
-            ],
-        ],
-        payoutPlatform: [
-            <FormLabel component="legend">
-                For show payout, what is the email address associated with your
-                Paypal account?
-            </FormLabel>,
-            <Grid
-                container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-                spacing={2}
-            >
-                {/* <Grid item>
-					<FormControl
-						variant='outlined'
-						sx={{ minWidth: 160, m: '8px 8px 8px 0' }}
-					>
-						<InputLabel id='payoutPlatformLabel'>I prefer using</InputLabel>
-						<Select
-							//variant="standard"
-							labelId='payoutPlatformLabel'
-							id='payoutPlatform'
-							name='payoutPlatform'
-							value={payoutPlatform}
-							onChange={(e) => onChange(e)}
-							label='I prefer using'
-						>
-							<MenuItem value='PayPal'>PayPal</MenuItem>
-							<MenuItem value='Venmo'>Venmo</MenuItem>
-							<MenuItem value='Zelle'>Zelle</MenuItem>
-							<MenuItem value='Cash App'>Cash App</MenuItem>
-						</Select>
-					</FormControl>
-				</Grid> */}
-                <Grid item>
-                    <TextField
-                        variant="standard"
-                        sx={{ width: 420, maxWidth: '90vw', m: '0 0 0 0' }}
-                        name="payoutHandle"
-                        id="payoutHandle"
-                        label={
-                            'The handle for my ' +
-                            payoutPlatform +
-                            ' account is'
-                        }
-                        value={payoutHandle}
-                        onChange={(e) => onChange(e)}
-                        helperText=""
-                    />
-                </Grid>
-            </Grid>,
-        ],
+        // openers: [
+        //     <FormLabel component="legend">
+        //         Let’s talk openers. What’s your preference?
+        //     </FormLabel>,
+        //     [
+        //         <RadioGroup
+        //             id="openers"
+        //             value={openers}
+        //             name="openers"
+        //             onChange={(e) => onChange(e)}
+        //         >
+        //             <FormControlLabel
+        //                 value="I plan on travelling with an opener."
+        //                 control={<Radio />}
+        //                 label="I plan on travelling with an opener."
+        //             />
+        //             <FormControlLabel
+        //                 value="I'd like Porchlight Hosts to invite local openers."
+        //                 control={<Radio />}
+        //                 label="I'd like Porchlight Hosts to invite local openers."
+        //             />
+        //             <FormControlLabel
+        //                 value="I'd prefer a solo set."
+        //                 control={<Radio />}
+        //                 label="I'd prefer a solo set."
+        //             />
+        //             <FormControlLabel
+        //                 value="I have no preference."
+        //                 control={<Radio />}
+        //                 label="I have no preference."
+        //             />
+        //         </RadioGroup>,
+        //     ],
+        // ],
+        // costStructure: [
+        //     <FormLabel component="legend">
+        //         What cost structure would you prefer?
+        //         <br />
+        //         <small>
+        //             *We currently offer very few guaranteed shows, for bands
+        //             selected at our discretion.
+        //         </small>
+        //     </FormLabel>,
+        //     [
+        //         <Grid item>
+        //             <RadioGroup
+        //                 id="costStructure"
+        //                 value={costStructure}
+        //                 name="costStructure"
+        //                 onChange={(e) => onChange(e)}
+        //             >
+        //                 <FormControlLabel
+        //                     value="ticket"
+        //                     control={<Radio />}
+        //                     label="Ticketed"
+        //                 />
+        //                 <FormControlLabel
+        //                     value="donation"
+        //                     control={<Radio />}
+        //                     label="Free RSVP, with a suggested donation"
+        //                 />
+        //             </RadioGroup>
+        //         </Grid>,
+        //     ],
+        // ],
+        // namedPrice: [
+        //     <FormLabel component="legend">Name your price.</FormLabel>,
+        //     [
+        //         <Grid item>
+        //             <TextField
+        //                 variant="standard"
+        //                 name="namedPrice"
+        //                 id="namedPrice"
+        //                 label={
+        //                     costStructure == 'donation'
+        //                         ? "I'd suggest a donation of"
+        //                         : 'Tickets should cost'
+        //                 }
+        //                 value={namedPrice}
+        //                 onChange={(e) => onChange(e)}
+        //                 type="number"
+        //                 InputProps={{
+        //                     startAdornment: (
+        //                         <InputAdornment position="start">
+        //                             $
+        //                         </InputAdornment>
+        //                     ),
+        //                 }}
+        //             />
+        //         </Grid>,
+        //     ],
+        // ],
+        // payoutPlatform: [
+        //     <FormLabel component="legend">
+        //         For show payout, what is the email address associated with your
+        //         Paypal account?
+        //     </FormLabel>,
+        //     <Grid
+        //         container
+        //         direction="row"
+        //         justifyContent="center"
+        //         alignItems="center"
+        //         spacing={2}
+        //     >
+        //         {/* <Grid item>
+        // 			<FormControl
+        // 				variant='outlined'
+        // 				sx={{ minWidth: 160, m: '8px 8px 8px 0' }}
+        // 			>
+        // 				<InputLabel id='payoutPlatformLabel'>I prefer using</InputLabel>
+        // 				<Select
+        // 					//variant="standard"
+        // 					labelId='payoutPlatformLabel'
+        // 					id='payoutPlatform'
+        // 					name='payoutPlatform'
+        // 					value={payoutPlatform}
+        // 					onChange={(e) => onChange(e)}
+        // 					label='I prefer using'
+        // 				>
+        // 					<MenuItem value='PayPal'>PayPal</MenuItem>
+        // 					<MenuItem value='Venmo'>Venmo</MenuItem>
+        // 					<MenuItem value='Zelle'>Zelle</MenuItem>
+        // 					<MenuItem value='Cash App'>Cash App</MenuItem>
+        // 				</Select>
+        // 			</FormControl>
+        // 		</Grid> */}
+        //         <Grid item>
+        //             <TextField
+        //                 variant="standard"
+        //                 sx={{ width: 420, maxWidth: '90vw', m: '0 0 0 0' }}
+        //                 name="payoutHandle"
+        //                 id="payoutHandle"
+        //                 label={
+        //                     'The handle for my ' +
+        //                     payoutPlatform +
+        //                     ' account is'
+        //                 }
+        //                 value={payoutHandle}
+        //                 onChange={(e) => onChange(e)}
+        //                 helperText=""
+        //             />
+        //         </Grid>
+        //     </Grid>,
+        // ],
         familyFriendly: [
             <FormLabel component="legend">
-                Would these shows be family-friendly?
+                Are you looking to host a particularly family-friendly concert?
             </FormLabel>,
             [
                 <FormControl component="fieldset">
@@ -1010,7 +1155,7 @@ const HostEventForm = ({
                         <FormControlLabel
                             value="false"
                             control={<Radio />}
-                            label="No"
+                            label="Not Necessarily"
                         />
                     </RadioGroup>
                 </FormControl>,
@@ -1044,7 +1189,7 @@ const HostEventForm = ({
         ],
         soundSystem: [
             <FormLabel component="legend">
-                Are you bringing your own sound system for these shows?
+                Are you able to provide a sound system for this show?
             </FormLabel>,
             [
                 <FormControl component="fieldset">
@@ -1073,130 +1218,130 @@ const HostEventForm = ({
                 </FormControl>,
             ],
         ],
-        financialHopes: [
-            <FormLabel component="legend">
-                What are your financial expectations and/or hopes for this
-                concert?
-            </FormLabel>,
-            [
-                // <Grid item>
-                // 	<TextField
-                // 		variant='standard'
-                // 		name='financialHopes'
-                // 		multiline
-                // 		id='financialHopes'
-                // 		label='What are your financial expectations and/or hopes for this show or tour?'
-                // 		value={financialHopes}
-                // 		onChange={(e) => onChange(e)}
-                // 	/>
-                // </Grid>,
-                <Grid item>
-                    <TextField
-                        variant="standard"
-                        name="financialHopes"
-                        id="financialHopes"
-                        label={`It would be hard for me to make less than`}
-                        value={financialHopes}
-                        onChange={(e) => onChange(e)}
-                        type="number"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    $
-                                </InputAdornment>
-                            ),
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    {' '}
-                                    per show
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                </Grid>,
-            ],
-        ],
-        fanActions: [
-            <FormLabel component="legend">
-                What are the top ONE or TWO actions you’d like to see new fans
-                make?
-            </FormLabel>,
-            [
-                <Grid item xs={12} sx={{ width: '100%' }}>
-                    <Autocomplete
-                        multiple
-                        id="fanActions"
-                        value={fanActions}
-                        options={[]}
-                        freeSolo
-                        onChange={(event, value) =>
-                            onAutocompleteTagChange(event, 'fanActions', value)
-                        }
-                        renderTags={(value, getTagProps) =>
-                            value.map((option, index) => (
-                                <Chip
-                                    variant="outlined"
-                                    name="fanActions"
-                                    label={option}
-                                    key={`fanAction${index}`}
-                                    {...getTagProps({ index })}
-                                />
-                            ))
-                        }
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                sx={{ width: '100%' }}
-                                variant="standard"
-                                label={`New fans of ${stageName} should `}
-                                name="fanActions"
-                            />
-                        )}
-                    />
-                </Grid>,
-            ],
-        ],
-        agreeToPayAdminFee: [
-            <FormLabel component="legend">
-                Porchlight requests 20% of gross ticket sales, tips, and merch
-                sales (unless other terms have been agreed to in writing). Do
-                you agree to pay this fee upon completion of the show/tour?
-            </FormLabel>,
-            [
-                <FormControl component="fieldset">
-                    <RadioGroup
-                        id="agreeToPayAdminFee"
-                        value={agreeToPayAdminFee}
-                        name="agreeToPayAdminFee"
-                        onChange={(e) => onChange(e)}
-                    >
-                        <FormControlLabel
-                            value="true"
-                            control={<Radio />}
-                            label="Yes"
-                        />
-                        <FormControlLabel
-                            value="false"
-                            control={<Radio />}
-                            label="I'd like to discuss this further."
-                        />
-                    </RadioGroup>
-                </FormControl>,
-                <FormLabel component="small">
-                    *We collect this fee so that we can cover our costs of
-                    managing and growing the Porchlight network. If we
-                    experience a surplus at the end of the year, we are
-                    committed (and personally gratified) to invest it back into
-                    the Porchlight network in the form of an artist fund which
-                    we will use for sponsored recording projects, micro
-                    songwriter retreats, artist grants, and other artist
-                    support.
-                </FormLabel>,
-            ],
-        ],
+        // financialHopes: [
+        //     <FormLabel component="legend">
+        //         What are your financial expectations and/or hopes for this
+        //         concert?
+        //     </FormLabel>,
+        //     [
+        //         // <Grid item>
+        //         // 	<TextField
+        //         // 		variant='standard'
+        //         // 		name='financialHopes'
+        //         // 		multiline
+        //         // 		id='financialHopes'
+        //         // 		label='What are your financial expectations and/or hopes for this show or tour?'
+        //         // 		value={financialHopes}
+        //         // 		onChange={(e) => onChange(e)}
+        //         // 	/>
+        //         // </Grid>,
+        //         <Grid item>
+        //             <TextField
+        //                 variant="standard"
+        //                 name="financialHopes"
+        //                 id="financialHopes"
+        //                 label={`It would be hard for me to make less than`}
+        //                 value={financialHopes}
+        //                 onChange={(e) => onChange(e)}
+        //                 type="number"
+        //                 InputProps={{
+        //                     startAdornment: (
+        //                         <InputAdornment position="start">
+        //                             $
+        //                         </InputAdornment>
+        //                     ),
+        //                     endAdornment: (
+        //                         <InputAdornment position="end">
+        //                             {' '}
+        //                             per show
+        //                         </InputAdornment>
+        //                     ),
+        //                 }}
+        //             />
+        //         </Grid>,
+        //     ],
+        // ],
+        // fanActions: [
+        //     <FormLabel component="legend">
+        //         What are the top ONE or TWO actions you’d like to see new fans
+        //         make?
+        //     </FormLabel>,
+        //     [
+        //         <Grid item xs={12} sx={{ width: '100%' }}>
+        //             <Autocomplete
+        //                 multiple
+        //                 id="fanActions"
+        //                 value={fanActions}
+        //                 options={[]}
+        //                 freeSolo
+        //                 onChange={(event, value) =>
+        //                     onAutocompleteTagChange(event, 'fanActions', value)
+        //                 }
+        //                 renderTags={(value, getTagProps) =>
+        //                     value.map((option, index) => (
+        //                         <Chip
+        //                             variant="outlined"
+        //                             name="fanActions"
+        //                             label={option}
+        //                             key={`fanAction${index}`}
+        //                             {...getTagProps({ index })}
+        //                         />
+        //                     ))
+        //                 }
+        //                 renderInput={(params) => (
+        //                     <TextField
+        //                         {...params}
+        //                         sx={{ width: '100%' }}
+        //                         variant="standard"
+        //                         label={`New fans of ${stageName} should `}
+        //                         name="fanActions"
+        //                     />
+        //                 )}
+        //             />
+        //         </Grid>,
+        //     ],
+        // ],
+        // agreeToPayAdminFee: [
+        //     <FormLabel component="legend">
+        //         Porchlight requests 20% of gross ticket sales, tips, and merch
+        //         sales (unless other terms have been agreed to in writing). Do
+        //         you agree to pay this fee upon completion of the show/tour?
+        //     </FormLabel>,
+        //     [
+        //         <FormControl component="fieldset">
+        //             <RadioGroup
+        //                 id="agreeToPayAdminFee"
+        //                 value={agreeToPayAdminFee}
+        //                 name="agreeToPayAdminFee"
+        //                 onChange={(e) => onChange(e)}
+        //             >
+        //                 <FormControlLabel
+        //                     value="true"
+        //                     control={<Radio />}
+        //                     label="Yes"
+        //                 />
+        //                 <FormControlLabel
+        //                     value="false"
+        //                     control={<Radio />}
+        //                     label="I'd like to discuss this further."
+        //                 />
+        //             </RadioGroup>
+        //         </FormControl>,
+        //         <FormLabel component="small">
+        //             *We collect this fee so that we can cover our costs of
+        //             managing and growing the Porchlight network. If we
+        //             experience a surplus at the end of the year, we are
+        //             committed (and personally gratified) to invest it back into
+        //             the Porchlight network in the form of an artist fund which
+        //             we will use for sponsored recording projects, micro
+        //             songwriter retreats, artist grants, and other artist
+        //             support.
+        //         </FormLabel>,
+        //     ],
+        // ],
         agreeToPromote: [
             <FormLabel component="legend">
-                Do you agree to promote each show to your audience, including
+                Do you agree to promote this concert to your audience, including
                 email sends and social media?
             </FormLabel>,
             [
@@ -1221,160 +1366,174 @@ const HostEventForm = ({
                 </FormControl>,
             ],
         ],
-        travelingCompanions: [
-            <FormLabel component="legend">
-                Will anybody be travelling with you?
-            </FormLabel>,
-            [
-                travelingCompanions && travelingCompanions.length > 0
-                    ? travelingCompanions.map((travelingCompanion, idx) => (
-                          <Grid
-                              className="travelingCompanion"
-                              key={`travelingCompanion${idx}`}
-                              container
-                              direction="row"
-                              justifyContent="space-around"
-                              alignItems="start"
-                              spacing={2}
-                              sx={{
-                                  // borderColor: 'primary.dark',
-                                  // borderWidth: '2px',
-                                  // borderStyle: 'solid',
-                                  backgroundColor: 'rgba(0,0,0,0.15)',
-                                  '&:hover': {},
-                                  padding: '0 10px 10px',
-                                  margin: '0px auto',
-                                  width: '100%',
-                              }}
-                          >
-                              <Grid item xs={12} md={3}>
-                                  <TextField
-                                      variant="standard"
-                                      name="travelingCompanions"
-                                      id={`travelingCompanionName${idx}`}
-                                      label={
-                                          travelingCompanions.length > 1
-                                              ? `One of their names is`
-                                              : `The person's name is`
-                                      }
-                                      value={travelingCompanion.name}
-                                      onChange={(e) =>
-                                          onMultiTextChange(
-                                              'name',
-                                              travelingCompanions,
-                                              idx,
-                                              e
-                                          )
-                                      }
-                                      sx={{ width: '100%' }}
-                                  />
-                              </Grid>
-                              <Grid item xs={12} md={2}>
-                                  <TextField
-                                      variant="standard"
-                                      name="travelingCompanions"
-                                      id={`travelingCompanionRole${idx}`}
-                                      label={
-                                          travelingCompanion.name
-                                              ? `${
-                                                    travelingCompanion.name.split(
-                                                        ' '
-                                                    )[0]
-                                                }'s role is`
-                                              : `Their role is`
-                                      }
-                                      value={travelingCompanion.role}
-                                      onChange={(e) =>
-                                          onMultiTextChange(
-                                              'role',
-                                              travelingCompanions,
-                                              idx,
-                                              e
-                                          )
-                                      }
-                                      sx={{ width: '100%' }}
-                                  />
-                              </Grid>
-                              <Grid item xs={10} md={true}>
-                                  <TextField
-                                      variant="standard"
-                                      name="travelingCompanions"
-                                      id={`travelingCompanionEmail${idx}`}
-                                      label={
-                                          travelingCompanion.name
-                                              ? `${
-                                                    travelingCompanion.name.split(
-                                                        ' '
-                                                    )[0]
-                                                }'s email is`
-                                              : `Their email is`
-                                      }
-                                      value={travelingCompanion.email}
-                                      onChange={(e) =>
-                                          onMultiTextChange(
-                                              'email',
-                                              travelingCompanions,
-                                              idx,
-                                              e
-                                          )
-                                      }
-                                      sx={{ width: '100%' }}
-                                  />
-                              </Grid>
-                              <Grid item xs={2} md={0.65}>
-                                  <IconButton
-                                      onClick={(e) =>
-                                          handleRemoveMultiTextField(
-                                              'travelingCompanions',
-                                              travelingCompanions,
-                                              idx
-                                          )
-                                      }
-                                  >
-                                      <DeleteIcon />
-                                  </IconButton>
-                              </Grid>
-                          </Grid>
-                      ))
-                    : '',
-                <Grid
-                    container
-                    item
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    xs={12}
-                >
-                    <Button
-                        onClick={(e) =>
-                            handleAddMultiTextField(
-                                'travelingCompanions',
-                                travelingCompanions
-                            )
-                        }
-                    >
-                        <PersonAddIcon />
-                        Add person
-                    </Button>
-                </Grid>,
-            ],
-        ],
+        // travelingCompanions: [
+        //     <FormLabel component="legend">
+        //         Will anybody be travelling with you?
+        //     </FormLabel>,
+        //     [
+        //         travelingCompanions && travelingCompanions.length > 0
+        //             ? travelingCompanions.map((travelingCompanion, idx) => (
+        //                   <Grid
+        //                       className="travelingCompanion"
+        //                       key={`travelingCompanion${idx}`}
+        //                       container
+        //                       direction="row"
+        //                       justifyContent="space-around"
+        //                       alignItems="start"
+        //                       spacing={2}
+        //                       sx={{
+        //                           // borderColor: 'primary.dark',
+        //                           // borderWidth: '2px',
+        //                           // borderStyle: 'solid',
+        //                           backgroundColor: 'rgba(0,0,0,0.15)',
+        //                           '&:hover': {},
+        //                           padding: '0 10px 10px',
+        //                           margin: '0px auto',
+        //                           width: '100%',
+        //                       }}
+        //                   >
+        //                       <Grid item xs={12} md={3}>
+        //                           <TextField
+        //                               variant="standard"
+        //                               name="travelingCompanions"
+        //                               id={`travelingCompanionName${idx}`}
+        //                               label={
+        //                                   travelingCompanions.length > 1
+        //                                       ? `One of their names is`
+        //                                       : `The person's name is`
+        //                               }
+        //                               value={travelingCompanion.name}
+        //                               onChange={(e) =>
+        //                                   onMultiTextChange(
+        //                                       'name',
+        //                                       travelingCompanions,
+        //                                       idx,
+        //                                       e
+        //                                   )
+        //                               }
+        //                               sx={{ width: '100%' }}
+        //                           />
+        //                       </Grid>
+        //                       <Grid item xs={12} md={2}>
+        //                           <TextField
+        //                               variant="standard"
+        //                               name="travelingCompanions"
+        //                               id={`travelingCompanionRole${idx}`}
+        //                               label={
+        //                                   travelingCompanion.name
+        //                                       ? `${
+        //                                             travelingCompanion.name.split(
+        //                                                 ' '
+        //                                             )[0]
+        //                                         }'s role is`
+        //                                       : `Their role is`
+        //                               }
+        //                               value={travelingCompanion.role}
+        //                               onChange={(e) =>
+        //                                   onMultiTextChange(
+        //                                       'role',
+        //                                       travelingCompanions,
+        //                                       idx,
+        //                                       e
+        //                                   )
+        //                               }
+        //                               sx={{ width: '100%' }}
+        //                           />
+        //                       </Grid>
+        //                       <Grid item xs={10} md={true}>
+        //                           <TextField
+        //                               variant="standard"
+        //                               name="travelingCompanions"
+        //                               id={`travelingCompanionEmail${idx}`}
+        //                               label={
+        //                                   travelingCompanion.name
+        //                                       ? `${
+        //                                             travelingCompanion.name.split(
+        //                                                 ' '
+        //                                             )[0]
+        //                                         }'s email is`
+        //                                       : `Their email is`
+        //                               }
+        //                               value={travelingCompanion.email}
+        //                               onChange={(e) =>
+        //                                   onMultiTextChange(
+        //                                       'email',
+        //                                       travelingCompanions,
+        //                                       idx,
+        //                                       e
+        //                                   )
+        //                               }
+        //                               sx={{ width: '100%' }}
+        //                           />
+        //                       </Grid>
+        //                       <Grid item xs={2} md={0.65}>
+        //                           <IconButton
+        //                               onClick={(e) =>
+        //                                   handleRemoveMultiTextField(
+        //                                       'travelingCompanions',
+        //                                       travelingCompanions,
+        //                                       idx
+        //                                   )
+        //                               }
+        //                           >
+        //                               <DeleteIcon />
+        //                           </IconButton>
+        //                       </Grid>
+        //                   </Grid>
+        //               ))
+        //             : '',
+        //         <Grid
+        //             container
+        //             item
+        //             direction="row"
+        //             justifyContent="center"
+        //             alignItems="center"
+        //             xs={12}
+        //         >
+        //             <Button
+        //                 onClick={(e) =>
+        //                     handleAddMultiTextField(
+        //                         'travelingCompanions',
+        //                         travelingCompanions
+        //                     )
+        //                 }
+        //             >
+        //                 <PersonAddIcon />
+        //                 Add person
+        //             </Button>
+        //         </Grid>,
+        //     ],
+        // ],
         overnight: [
             <FormLabel component="legend">
-                Would you like for your host to arrange for you{' '}
-                {travelingCompanions.length > 0
-                    ? ' and your traveling companions '
-                    : ''}{' '}
-                to stay overnight?
+                How many people are you able and willing to accommodate
+                overnight?
                 <br />
                 <small>
-                    (60% of Porchlight Hosts are interested in putting up
-                    musicians overnight!)
+                    (obviously you’ll need to coordinate with the artist to find
+                    out if people are able/willing to share rooms or even beds,
+                    but what’s your ballpark?)
                 </small>
             </FormLabel>,
             [
                 <Grid item>
-                    <FormControl component="fieldset">
+                    <TextField
+                        variant="standard"
+                        name="overnight"
+                        id="overnight"
+                        label="I can accommodate"
+                        value={overnight}
+                        onChange={(e) => onChange(e)}
+                        type="number"
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    {overnight == 1 ? 'person.' : 'people.'}
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                    {/* <FormControl component="fieldset">
                         <RadioGroup
                             id="overnight"
                             value={overnight}
@@ -1409,7 +1568,7 @@ const HostEventForm = ({
                                 label="No, thank you."
                             />
                         </RadioGroup>
-                    </FormControl>
+                    </FormControl> */}
                 </Grid>,
             ],
         ],
@@ -1493,47 +1652,6 @@ const HostEventForm = ({
                 </Grid>,
             ],
         ],
-        allergies: [
-            <FormLabel component="legend">
-                Please list any food allergies, pet allergies, or sensitivities
-                you have.
-            </FormLabel>,
-            [
-                <Grid item xs={12} sx={{ width: '100%' }}>
-                    <Autocomplete
-                        multiple
-                        id="allergies"
-                        value={allergies}
-                        options={[]}
-                        freeSolo
-                        onChange={(event, value) =>
-                            onAutocompleteTagChange(event, 'allergies', value)
-                        }
-                        renderTags={(value, getTagProps) =>
-                            value.map((option, index) => (
-                                <Chip
-                                    variant="outlined"
-                                    name="allergies"
-                                    label={option}
-                                    key={`allergy${index}`}
-                                    {...getTagProps({ index })}
-                                />
-                            ))
-                        }
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                sx={{ width: '100%' }}
-                                variant="standard"
-                                label="I'm allergic to "
-                                name="allergies"
-                            />
-                        )}
-                    />
-                </Grid>,
-            ],
-        ],
-
         showSchedule: [
             <FormLabel component="legend">
                 {/* Schedules often get shifted by hosts or artists, but it’s really helpful
@@ -1544,7 +1662,7 @@ const HostEventForm = ({
             </FormLabel>,
             [
                 <Grid item>
-                    {stageName} will need to start setting up at
+                    The artist will need to start setting up at
                     <TextField
                         variant="standard"
                         id="setupTime"
@@ -1556,7 +1674,13 @@ const HostEventForm = ({
                         inputProps={{
                             step: 900, // 15 min
                         }}
-                        sx={{ padding: '0 8px' }}
+                        sx={{
+                            padding: '0 8px',
+                            '& input[type="time"]::-webkit-calendar-picker-indicator':
+                                {
+                                    filter: 'invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)',
+                                },
+                        }}
                     />{' '}
                     to have “doors open” at
                     <TextField
@@ -1570,7 +1694,13 @@ const HostEventForm = ({
                         inputProps={{
                             step: 900, // 15 min
                         }}
-                        sx={{ padding: '0 8px' }}
+                        sx={{
+                            padding: '0 8px',
+                            '& input[type="time"]::-webkit-calendar-picker-indicator':
+                                {
+                                    filter: 'invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)',
+                                },
+                        }}
                     />
                     for the show starting at
                     <TextField
@@ -1584,7 +1714,13 @@ const HostEventForm = ({
                         inputProps={{
                             step: 900, // 15 min
                         }}
-                        sx={{ padding: '0 0 0 8px' }}
+                        sx={{
+                            padding: '0 0 0 8px',
+                            '& input[type="time"]::-webkit-calendar-picker-indicator':
+                                {
+                                    filter: 'invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)',
+                                },
+                        }}
                     />
                     with a hard wrap at about{' '}
                     <TextField
@@ -1598,7 +1734,13 @@ const HostEventForm = ({
                         inputProps={{
                             step: 900, // 15 min
                         }}
-                        sx={{ padding: '0 0 0 8px' }}
+                        sx={{
+                            padding: '0 0 0 8px',
+                            '& input[type="time"]::-webkit-calendar-picker-indicator':
+                                {
+                                    filter: 'invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)',
+                                },
+                        }}
                     />
                     .
                 </Grid>,
@@ -1659,7 +1801,7 @@ const HostEventForm = ({
         // 	/>, */
         //     },
         // ],
-        artistNotes: [
+        hostNotes: [
             <FormLabel component="legend">
                 Do you have any final thoughts, questions, notes, or
                 clarifications for us? Feel free to list them below.
@@ -1667,11 +1809,11 @@ const HostEventForm = ({
             <Grid item xs={12} sx={{ width: '100%' }}>
                 <TextField
                     variant="standard"
-                    name="artistNotes"
+                    name="hostNotes"
                     multiline
-                    id="artistNotes"
+                    id="hostNotes"
                     label="Artist Notes"
-                    value={artistNotes}
+                    value={hostNotes}
                     onChange={(e) => onChange(e)}
                     sx={{ width: '100%' }}
                 />
@@ -1680,7 +1822,7 @@ const HostEventForm = ({
         endSlide: [
             [
                 <Typography component="h2" sx={{ textAlign: 'center' }}>
-                    Hosts will see the fields you’ve filled out (nothing
+                    Artists will see the fields you’ve filled out (nothing
                     orange):
                 </Typography>,
                 <Typography
@@ -1693,21 +1835,22 @@ const HostEventForm = ({
             [
                 //Event Details as a host will see it
                 //theEvent usually comes from EditHostEvent.js, but if the user is proposing this event we'll hit up the Redux store for the myHostEvents that has a matching bookingWhen
-                <EventDetails
-                    theEvent={{
-                        ...(theEvent ||
-                            myHostEvents.find((event) => {
-                                if (
-                                    bookingWhen &&
-                                    bookingWhen.length > 0 &&
-                                    bookingWhen[0]
-                                ) {
-                                    return event.bookingWhen === bookingWhen[0];
-                                }
-                            })),
-                        artist: hostMe,
-                    }}
-                />,
+                //
+                // <EventDetails
+                //     theEvent={{
+                //         ...(theEvent ||
+                //             myHostEvents.find((event) => {
+                //                 if (
+                //                     bookingWhen &&
+                //                     bookingWhen.length > 0 &&
+                //                     bookingWhen[0]
+                //                 ) {
+                //                     return event.bookingWhen === bookingWhen[0];
+                //                 }
+                //             })),
+                //         artist: hostMe,
+                //     }}
+                // />,
             ],
         ],
     };
@@ -1787,22 +1930,37 @@ const HostEventForm = ({
                     a.updatedAt > b.updatedAt ? a : b
                 );
                 // console.log(
-                //     'mostRecentlyUpdatedEvent',
+                //     'host mostRecentlyUpdatedEvent before:',
                 //     mostRecentlyUpdatedEvent
                 // );
-                //remove the fields we don't want to copy from mostRecentlyUpdatedEvent
-                delete mostRecentlyUpdatedEvent._id;
-                delete mostRecentlyUpdatedEvent.createdAt;
-                delete mostRecentlyUpdatedEvent.bookingWhen;
-                delete mostRecentlyUpdatedEvent.updatedAt;
-                delete mostRecentlyUpdatedEvent.hostsOfferingToBook;
-                delete mostRecentlyUpdatedEvent.offersFromHosts;
-                delete mostRecentlyUpdatedEvent.confirmedHost;
-                delete mostRecentlyUpdatedEvent.confirmedHostUser;
-                delete mostRecentlyUpdatedEvent.confirmedDate;
-                delete mostRecentlyUpdatedEvent.status;
 
-                setFormData({ ...formData, ...mostRecentlyUpdatedEvent });
+                const mostRecentlyUpdatedEventTrimmed = {
+                    //this solved the issue where, if a HOST picked a date and then closed the drawer without saving, it would make a random event, they'd offered to host, disappear from their dashboard
+                    ...mostRecentlyUpdatedEvent,
+                };
+
+                //remove the fields we don't want to copy from mostRecentlyUpdatedEvent
+                delete mostRecentlyUpdatedEventTrimmed.createdBy;
+                delete mostRecentlyUpdatedEventTrimmed.artist;
+
+                delete mostRecentlyUpdatedEventTrimmed._id;
+                delete mostRecentlyUpdatedEventTrimmed.createdAt;
+                delete mostRecentlyUpdatedEventTrimmed.bookingWhen;
+                delete mostRecentlyUpdatedEventTrimmed.bookingWhere;
+                delete mostRecentlyUpdatedEventTrimmed.updatedAt;
+                delete mostRecentlyUpdatedEventTrimmed.hostsOfferingToBook;
+                delete mostRecentlyUpdatedEventTrimmed.offersFromHosts;
+                delete mostRecentlyUpdatedEventTrimmed.confirmedHost;
+                delete mostRecentlyUpdatedEventTrimmed.confirmedHostUser;
+                delete mostRecentlyUpdatedEventTrimmed.confirmedDate;
+                delete mostRecentlyUpdatedEventTrimmed.status;
+                delete mostRecentlyUpdatedEventTrimmed.hostUpdated;
+                delete mostRecentlyUpdatedEventTrimmed.geocodedBookingWhere;
+
+                setFormData({
+                    ...formData,
+                    ...mostRecentlyUpdatedEventTrimmed,
+                });
             }
         }
     }, [bookingWhen]);
@@ -2008,6 +2166,8 @@ const HostEventForm = ({
 
 HostEventForm.propTypes = {
     getHostsLocations: PropTypes.func.isRequired,
+    getArtists: PropTypes.func.isRequired,
+    artists: PropTypes.object.isRequired,
     hosts: PropTypes.array.isRequired,
     editHostEvent: PropTypes.func.isRequired,
     theEvent: PropTypes.object,
@@ -2020,6 +2180,7 @@ HostEventForm.propTypes = {
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
+    artists: state.artist.artists,
     hosts: state.host.hosts,
     hostMe: state.host.me,
     myHostEvents: state.event.myHostEvents,
@@ -2028,6 +2189,7 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
     jumpTo,
+    getArtists,
     getHostsLocations,
     editHostEvent,
 })(withRouter(HostEventForm)); //withRouter allows us to pass history objects

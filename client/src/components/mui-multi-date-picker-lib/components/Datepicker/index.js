@@ -164,11 +164,13 @@ const DatePicker = ({
     useEffect(() => {
         let outerSelectedDatesDated = [];
         if (open) {
-            //console.log("selectedDates: "+outerSelectedDates);
+            //console.log('outerSelectedDates: ' + outerSelectedDates);
             for (let date of outerSelectedDates) {
                 outerSelectedDatesDated.push(new Date(date));
             }
             //console.log(outerSelectedDatesDated);
+
+            //console.log('selectedDates', selectedDates);
             dispatch({
                 type: setSelectedDates,
                 payload:

@@ -45,6 +45,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 import Alert from '../layout/Alert';
 import ArtistTop from '../artists/ArtistTop';
+import EditHostSettings from '../hosts/EditHostSettings';
 
 const Navbar = ({
     auth: { isAuthenticated, loading, user },
@@ -162,6 +163,7 @@ const Navbar = ({
     ];
 
     const hostLinks = [
+        <EditHostSettings />,
         <Link to="/edit-host-profile">
             <ListItemIcon>
                 <EditTwoToneIcon></EditTwoToneIcon>
@@ -398,7 +400,7 @@ const Navbar = ({
                     </Typography>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Account settings">
+                        <Tooltip title="Account Menu">
                             <IconButton
                                 onClick={handleOpenUserMenu}
                                 sx={{ p: 0 }}
@@ -452,8 +454,9 @@ const Navbar = ({
                             onClose={handleCloseUserMenu}
                             onClick={handleCloseUserMenu}
                         >
-                            {user && user.name && user.avatar !== null ? (
+                            {user && user.name && user.avatar !== null && (
                                 <Box
+                                    key="nameEmail"
                                     sx={{
                                         width: '100%',
                                         padding: '20px 20px 0px 20px',
@@ -483,12 +486,10 @@ const Navbar = ({
                                         ({user && user.email})
                                     </Typography>
                                 </Box>
-                            ) : (
-                                ''
                             )}
                             {myNavLinks().map((userLink, index) => (
                                 <MenuItem
-                                    key={index}
+                                    key={userLink + index}
                                     onClick={handleCloseNavMenu}
                                     sx={{ padding: 0 }}
                                     className="drawerListItems"

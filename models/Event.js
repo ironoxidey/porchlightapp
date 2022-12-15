@@ -141,6 +141,13 @@ const EventSchema = new mongoose.Schema(
         tourVibe: {
             type: [String],
         },
+        preferredArtists: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'artist',
+                //required: true, //commented out June 27th, 2022 to make way for Host's to propose events
+            },
+        ],
         bookingWhen: {
             type: Date,
             required: true,
@@ -231,6 +238,9 @@ const EventSchema = new mongoose.Schema(
         artistNotes: {
             type: String,
         },
+        hostNotes: {
+            type: String,
+        },
         financialHopes: {
             type: String,
         },
@@ -242,6 +252,9 @@ const EventSchema = new mongoose.Schema(
             default: 'PENDING',
         },
         artistUpdated: {
+            type: Date,
+        },
+        hostUpdated: {
             type: Date,
         },
     },

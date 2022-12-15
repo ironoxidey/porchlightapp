@@ -2,6 +2,12 @@ const mongoose = require('mongoose');
 
 const ArtistSchema = new mongoose.Schema(
     {
+        lastEmailed: {
+            type: Date,
+        },
+        notificationFrequency: {
+            type: Number,
+        },
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'user',

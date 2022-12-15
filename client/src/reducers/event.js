@@ -1,5 +1,6 @@
 import {
     EDIT_ARTIST_EVENT,
+    EDIT_HOST_EVENT,
     HOST_RAISE_HAND,
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
@@ -12,11 +13,12 @@ import {
     EVENTS_ERROR,
     LOGOUT,
     DELETE_ARTIST_EVENT,
+    DELETE_HOST_EVENT,
 } from '../actions/types';
 
 const initialState = {
     //myHostEvents: [],
-    //myArtistEvents: [],
+    // myArtistEvents: [],
     events: [],
     loading: true,
     msg: {},
@@ -33,6 +35,7 @@ export default function (state = initialState, action) {
                 loading: false,
             };
         case GET_EVENTS_OFFERED_TO_HOST:
+        case EDIT_HOST_EVENT:
             return {
                 ...state,
                 myHostEvents: payload,
@@ -75,6 +78,14 @@ export default function (state = initialState, action) {
                 myArtistEvents: state.myArtistEvents.filter(
                     (myArtistEvent) =>
                         myArtistEvent._id !== payload && myArtistEvent //deletes an event from the state
+                ),
+                loading: false,
+            };
+        case DELETE_HOST_EVENT:
+            return {
+                ...state,
+                myHostEvents: state.myHostEvents.filter(
+                    (myHostEvent) => myHostEvent._id !== payload && myHostEvent //deletes an event from the state
                 ),
                 loading: false,
             };

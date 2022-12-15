@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
@@ -24,8 +24,15 @@ import ThumbDownAltTwoToneIcon from '@mui/icons-material/ThumbDownAltTwoTone';
 import { StackDateforDisplay, changeHats } from '../../actions/app';
 import ArtistDashboardEventCard from '../events/ArtistDashboardEventCard';
 import NearMeToHostEventCard from './NearMeToHostEventCard';
+import AddHostEvent from '../events/AddHostEvent';
 import AddArtistEvent from '../events/AddArtistEvent';
 import EditArtistEvent from '../events/EditArtistEvent';
+import HostDashboardEventCard from '../events/HostDashboardEventCard';
+
+// A custom hook that builds on useLocation to parse the query string for you.
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
 
 const Dashboard = ({
     //getCurrentProfile,
@@ -43,6 +50,22 @@ const Dashboard = ({
     // useEffect(() => {
     //     getCurrentProfile();
     // }, [getCurrentProfile]);
+
+    let query = useQuery();
+    const eventID = query.get('eventID');
+    let elementToScrollTo = document.getElementById(eventID);
+    useEffect(() => {
+        elementToScrollTo = document.getElementById(eventID);
+    }, [eventID]);
+    useEffect(() => {
+        if (eventID && elementToScrollTo) {
+            elementToScrollTo.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+            });
+        }
+    }, [elementToScrollTo]);
+
     const confirmedMy = (thisEvent) =>
         thisEvent.createdBy !== 'HOST' &&
         thisEvent.confirmedHost &&
@@ -307,28 +330,30 @@ const Dashboard = ({
                     ) : (
                         <></>
                     )}
-                    {user && user.role && user.role.indexOf('ATTENDER') != -1 && (
-                        <Grid item container className="attenderStuff">
-                            {user.role.indexOf('HOST') === -1 ? (
-                                <Grid
-                                    item
-                                    sx={{
-                                        margin: '8px auto',
-                                    }}
-                                >
-                                    <p> </p>
-                                    <Link to="/edit-host-profile">
-                                        <Button btnwidth="250" className="">
-                                            <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
-                                            Sign Up to Host
-                                        </Button>
-                                    </Link>
-                                </Grid>
-                            ) : (
-                                ''
-                            )}
-                        </Grid>
-                    )}
+                    {user &&
+                        user.role &&
+                        user.role.indexOf('ATTENDER') != -1 && (
+                            <Grid item container className="attenderStuff">
+                                {user.role.indexOf('HOST') === -1 ? (
+                                    <Grid
+                                        item
+                                        sx={{
+                                            margin: '8px auto',
+                                        }}
+                                    >
+                                        <p> </p>
+                                        <Link to="/edit-host-profile">
+                                            <Button btnwidth="250" className="">
+                                                <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
+                                                Sign Up to Host
+                                            </Button>
+                                        </Link>
+                                    </Grid>
+                                ) : (
+                                    ''
+                                )}
+                            </Grid>
+                        )}
                     {app.profileHat === 'HOST' &&
                         user &&
                         user.role &&
@@ -475,6 +500,7 @@ const Dashboard = ({
                                                         thisEvent.bookingWhen &&
                                                         thisEvent.bookingWhere && (
                                                             <ArtistDashboardEventCard
+                                                                key={idx}
                                                                 thisEvent={
                                                                     thisEvent
                                                                 }
@@ -676,218 +702,230 @@ const Dashboard = ({
                                             ) =>
                                                 thisEvent.bookingWhen &&
                                                 thisEvent.bookingWhere && (
-                                                    <Grid
-                                                        container
-                                                        item
-                                                        className="bookingWhen"
-                                                        key={`bookingWhen${idx}`}
-                                                        direction="row"
-                                                        sm={5.5}
-                                                        xs={12}
-                                                        sx={{
-                                                            backgroundColor:
-                                                                'rgba(0,0,0,0.35)',
-                                                            '&:hover': {},
-                                                            padding: '16px',
-                                                            margin: '4px',
-                                                            color: 'var(--light-color)',
-                                                        }}
-                                                    >
-                                                        <Grid item>
-                                                            <Tooltip
-                                                                title={
-                                                                    thisEvent.artist &&
-                                                                    thisEvent
-                                                                        .artist
-                                                                        .stageName +
-                                                                        ' accepted your offer.'
-                                                                }
-                                                                arrow={true}
-                                                                placement="bottom"
-                                                                disableHoverListener={
-                                                                    !confirmedMy(
-                                                                        thisEvent
-                                                                    )
-                                                                }
-                                                                disableFocusListener={
-                                                                    !confirmedMy(
-                                                                        thisEvent
-                                                                    )
-                                                                }
-                                                                disableTouchListener={
-                                                                    !confirmedMy(
-                                                                        thisEvent
-                                                                    )
-                                                                }
-                                                            >
-                                                                <Box
-                                                                    className="squareImgInACircle"
-                                                                    sx={{
-                                                                        height: '130px',
-                                                                        width: '130px',
-                                                                        maxHeight:
-                                                                            '130px',
-                                                                        maxWidth:
-                                                                            '130px',
-                                                                        borderRadius:
-                                                                            '50%',
-                                                                        overflow:
-                                                                            'hidden',
-                                                                        backgroundImage: `url("${
-                                                                            thisEvent.artist &&
-                                                                            thisEvent
-                                                                                .artist
-                                                                                .squareImg
-                                                                        }")`,
-                                                                        backgroundPosition:
-                                                                            '50% 25%',
-                                                                        backgroundSize:
-                                                                            'cover',
-                                                                        padding:
-                                                                            '4px',
-                                                                        backgroundClip:
-                                                                            'content-box',
-                                                                        border: confirmedMy(
-                                                                            thisEvent
-                                                                        )
-                                                                            ? '1px solid var(--link-color)'
-                                                                            : '1px solid var(--primary-color)',
-                                                                        margin: '0 8px 0 0',
-                                                                    }}
-                                                                ></Box>
-                                                            </Tooltip>
-                                                        </Grid>
+                                                    <HostDashboardEventCard
+                                                        key={idx}
+                                                        thisEvent={thisEvent}
+                                                    ></HostDashboardEventCard>
+                                                    // <Grid
+                                                    //     container
+                                                    //     item
+                                                    //     className="bookingWhen"
+                                                    //     key={`bookingWhen${idx}`}
+                                                    //     direction="row"
+                                                    //     sm={5.5}
+                                                    //     xs={12}
+                                                    //     sx={{
+                                                    //         backgroundColor:
+                                                    //             'rgba(0,0,0,0.35)',
+                                                    //         '&:hover': {},
+                                                    //         padding: '16px',
+                                                    //         margin: '4px',
+                                                    //         color: 'var(--light-color)',
+                                                    //     }}
+                                                    // >
+                                                    //     {/* <Grid item>
+                                                    //         <Tooltip
+                                                    //             title={
+                                                    //                 thisEvent.artist &&
+                                                    //                 thisEvent
+                                                    //                     .artist
+                                                    //                     .stageName +
+                                                    //                     ' accepted your offer.'
+                                                    //             }
+                                                    //             arrow={true}
+                                                    //             placement="bottom"
+                                                    //             disableHoverListener={
+                                                    //                 !confirmedMy(
+                                                    //                     thisEvent
+                                                    //                 )
+                                                    //             }
+                                                    //             disableFocusListener={
+                                                    //                 !confirmedMy(
+                                                    //                     thisEvent
+                                                    //                 )
+                                                    //             }
+                                                    //             disableTouchListener={
+                                                    //                 !confirmedMy(
+                                                    //                     thisEvent
+                                                    //                 )
+                                                    //             }
+                                                    //         >
+                                                    //             <Box
+                                                    //                 className="squareImgInACircle"
+                                                    //                 sx={{
+                                                    //                     height: '130px',
+                                                    //                     width: '130px',
+                                                    //                     maxHeight:
+                                                    //                         '130px',
+                                                    //                     maxWidth:
+                                                    //                         '130px',
+                                                    //                     borderRadius:
+                                                    //                         '50%',
+                                                    //                     overflow:
+                                                    //                         'hidden',
+                                                    //                     backgroundImage: `url("${
+                                                    //                         thisEvent.artist &&
+                                                    //                         thisEvent
+                                                    //                             .artist
+                                                    //                             .squareImg
+                                                    //                     }")`,
+                                                    //                     backgroundPosition:
+                                                    //                         '50% 25%',
+                                                    //                     backgroundSize:
+                                                    //                         'cover',
+                                                    //                     padding:
+                                                    //                         '4px',
+                                                    //                     backgroundClip:
+                                                    //                         'content-box',
+                                                    //                     border: confirmedMy(
+                                                    //                         thisEvent
+                                                    //                     )
+                                                    //                         ? '1px solid var(--link-color)'
+                                                    //                         : '1px solid var(--primary-color)',
+                                                    //                     margin: '0 8px 0 0',
+                                                    //                 }}
+                                                    //             ></Box>
+                                                    //         </Tooltip>
+                                                    //     </Grid>
 
-                                                        <Grid
-                                                            container
-                                                            item
-                                                            direction="row"
-                                                            alignItems="center"
-                                                            className="dateLocationForBooking"
-                                                            xs={8}
-                                                        >
-                                                            <Grid
-                                                                item
-                                                                container
-                                                            >
-                                                                <Link
-                                                                    to={
-                                                                        '/artists/' +
-                                                                        (thisEvent.artist &&
-                                                                            thisEvent
-                                                                                .artist
-                                                                                .slug)
-                                                                    }
-                                                                >
-                                                                    <Typography component="h2">
-                                                                        {thisEvent.artist &&
-                                                                            thisEvent
-                                                                                .artist
-                                                                                .stageName}
-                                                                    </Typography>
-                                                                </Link>
-                                                            </Grid>
-                                                            <Grid
-                                                                item
-                                                                sx={
-                                                                    {
-                                                                        // width: '55px',
-                                                                    }
-                                                                }
-                                                            >
-                                                                <StackDateforDisplay
-                                                                    date={
-                                                                        thisEvent.bookingWhen
-                                                                    }
-                                                                ></StackDateforDisplay>
-                                                            </Grid>
-                                                            <Grid item xs={8}>
-                                                                <Grid
-                                                                    item
-                                                                    sx={{
-                                                                        fontSize:
-                                                                            '1.5em',
-                                                                        marginLeft:
-                                                                            '8px',
-                                                                        lineHeight:
-                                                                            '1.5',
-                                                                    }}
-                                                                >
-                                                                    {thisEvent
-                                                                        .bookingWhere
-                                                                        .city +
-                                                                        ', ' +
-                                                                        thisEvent
-                                                                            .bookingWhere
-                                                                            .state}
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Grid>
-                                                        {confirmedMy(
-                                                            thisEvent
-                                                        ) ? (
-                                                            <Grid
-                                                                item
-                                                                alignContent="center"
-                                                                container
-                                                                xs={0.5}
-                                                            >
-                                                                <Tooltip
-                                                                    title={
-                                                                        thisEvent
-                                                                            .artist
-                                                                            .stageName +
-                                                                        ' accepted your offer.'
-                                                                    }
-                                                                    placement="bottom"
-                                                                    arrow
-                                                                >
-                                                                    <ThumbUpAltTwoToneIcon
-                                                                        sx={{
-                                                                            color: 'var(--link-color)',
-                                                                        }}
-                                                                    ></ThumbUpAltTwoToneIcon>
-                                                                </Tooltip>
-                                                            </Grid>
-                                                        ) : (
-                                                            thisEvent.createdBy !==
-                                                                'HOST' && //if this event is not created by a host
-                                                            thisEvent.confirmedHost && //and if the event has a confirmedHost
-                                                            !confirmedMy(
-                                                                thisEvent
-                                                            ) && ( //and it's not me
-                                                                <Grid
-                                                                    item
-                                                                    alignContent="center"
-                                                                    container
-                                                                    xs={0.5}
-                                                                >
-                                                                    <Tooltip
-                                                                        title={
-                                                                            (thisEvent.artist &&
-                                                                                thisEvent
-                                                                                    .artist
-                                                                                    .stageName) +
-                                                                            ' accepted a different host’s offer.'
-                                                                        }
-                                                                        placement="bottom"
-                                                                        arrow
-                                                                    >
-                                                                        <ThumbDownAltTwoToneIcon
-                                                                            sx={{
-                                                                                color: 'var(--primary-color)',
-                                                                            }}
-                                                                        ></ThumbDownAltTwoToneIcon>
-                                                                    </Tooltip>
-                                                                </Grid>
-                                                            )
-                                                        )}
-                                                    </Grid>
+                                                    //     <Grid
+                                                    //         container
+                                                    //         item
+                                                    //         direction="row"
+                                                    //         alignItems="center"
+                                                    //         className="dateLocationForBooking"
+                                                    //         xs={8}
+                                                    //     >
+                                                    //         <Grid
+                                                    //             item
+                                                    //             container
+                                                    //         >
+                                                    //             <Link
+                                                    //                 to={
+                                                    //                     '/artists/' +
+                                                    //                     (thisEvent.artist &&
+                                                    //                         thisEvent
+                                                    //                             .artist
+                                                    //                             .slug)
+                                                    //                 }
+                                                    //             >
+                                                    //                 <Typography component="h2">
+                                                    //                     {thisEvent.artist &&
+                                                    //                         thisEvent
+                                                    //                             .artist
+                                                    //                             .stageName}
+                                                    //                 </Typography>
+                                                    //             </Link>
+                                                    //         </Grid>
+                                                    //         <Grid
+                                                    //             item
+                                                    //             sx={
+                                                    //                 {
+                                                    //                     // width: '55px',
+                                                    //                 }
+                                                    //             }
+                                                    //         >
+                                                    //             <StackDateforDisplay
+                                                    //                 date={
+                                                    //                     thisEvent.bookingWhen
+                                                    //                 }
+                                                    //             ></StackDateforDisplay>
+                                                    //         </Grid>
+                                                    //         <Grid item xs={8}>
+                                                    //             <Grid
+                                                    //                 item
+                                                    //                 sx={{
+                                                    //                     fontSize:
+                                                    //                         '1.5em',
+                                                    //                     marginLeft:
+                                                    //                         '8px',
+                                                    //                     lineHeight:
+                                                    //                         '1.5',
+                                                    //                 }}
+                                                    //             >
+                                                    //                 {thisEvent
+                                                    //                     .bookingWhere
+                                                    //                     .city +
+                                                    //                     ', ' +
+                                                    //                     thisEvent
+                                                    //                         .bookingWhere
+                                                    //                         .state}
+                                                    //             </Grid>
+                                                    //         </Grid>
+                                                    //     </Grid>
+                                                    //     {confirmedMy(
+                                                    //         thisEvent
+                                                    //     ) ? (
+                                                    //         <Grid
+                                                    //             item
+                                                    //             alignContent="center"
+                                                    //             container
+                                                    //             xs={0.5}
+                                                    //         >
+                                                    //             <Tooltip
+                                                    //                 title={
+                                                    //                     thisEvent
+                                                    //                         .artist
+                                                    //                         .stageName +
+                                                    //                     ' accepted your offer.'
+                                                    //                 }
+                                                    //                 placement="bottom"
+                                                    //                 arrow
+                                                    //             >
+                                                    //                 <ThumbUpAltTwoToneIcon
+                                                    //                     sx={{
+                                                    //                         color: 'var(--link-color)',
+                                                    //                     }}
+                                                    //                 ></ThumbUpAltTwoToneIcon>
+                                                    //             </Tooltip>
+                                                    //         </Grid>
+                                                    //     ) : (
+                                                    //         thisEvent.createdBy !==
+                                                    //             'HOST' && //if this event is not created by a host
+                                                    //         thisEvent.confirmedHost && //and if the event has a confirmedHost
+                                                    //         !confirmedMy(
+                                                    //             thisEvent
+                                                    //         ) && ( //and it's not me
+                                                    //             <Grid
+                                                    //                 item
+                                                    //                 alignContent="center"
+                                                    //                 container
+                                                    //                 xs={0.5}
+                                                    //             >
+                                                    //                 <Tooltip
+                                                    //                     title={
+                                                    //                         (thisEvent.artist &&
+                                                    //                             thisEvent
+                                                    //                                 .artist
+                                                    //                                 .stageName) +
+                                                    //                         ' accepted a different host’s offer.'
+                                                    //                     }
+                                                    //                     placement="bottom"
+                                                    //                     arrow
+                                                    //                 >
+                                                    //                     <ThumbDownAltTwoToneIcon
+                                                    //                         sx={{
+                                                    //                             color: 'var(--primary-color)',
+                                                    //                         }}
+                                                    //                     ></ThumbDownAltTwoToneIcon>
+                                                    //                 </Tooltip>
+                                                    //             </Grid>
+                                                    //         )
+                                                    //     )} */}
+                                                    // </Grid>
                                                 )
                                         )}
                                 </Grid>
                             )}
                             {/* End myHostEvents */}
+                            {Array.isArray(user.role) &&
+                                user.role.indexOf('HOST') != -1 &&
+                                (user.role.indexOf('ADMIN') != -1 ||
+                                    user.role.indexOf('TESTING') != -1) && (
+                                    <Grid item sx={{ margin: '0 auto' }}>
+                                        <AddHostEvent></AddHostEvent>
+                                    </Grid>
+                                )}
                             {
                                 //(user.role.indexOf('ADMIN') > -1 ||
                                 //user.role.indexOf('BOOKING') > -1 ||
