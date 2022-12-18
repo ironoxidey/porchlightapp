@@ -1498,7 +1498,8 @@ router.get('/triggerHostEmailDigest', [auth], async (req, res) => {
                 .populate('artist')
                 .populate('hostsInReach.host')
                 .populate('offersFromHosts.host')
-                .populate('confirmedHost');
+                .populate('confirmedHost')
+                .sort({ bookingWhen: -1 }); //sort descending -- latest first, because hosts probably need more time to prepare, so show the most upcoming proposed concerts last
 
             let loopThruEvents = new Promise((resolve, reject) => {
                 events.forEach(async (eventDetails, index, array) => {
@@ -1738,26 +1739,42 @@ router.get('/triggerHostEmailDigest', [auth], async (req, res) => {
 
                 let loopThruHosts = new Promise((resolve, reject) => {
                     emailHostsCollection.forEach(
-                        (hostToEmail, index, array) => {
+                        async (hostToEmail, index, array) => {
                             console.log('hostToEmail', hostToEmail);
-                            // sendEmail(hostToEmail.email, {
-                            //     event: 'HOST_EMAIL_DIGEST',
-                            //     template: '5VAZYQK9RAM506GYRGYMMJ8X3D55',
-                            //     ...hostToEmail,
-                            // });
+                            sendEmail(hostToEmail.email, {
+                                event: 'HOST_EMAIL_DIGEST',
+                                template: '5VAZYQK9RAM506GYRGYMMJ8X3D55',
+                                ...hostToEmail,
+                            });
+                            let updatedHost = await Host.findOneAndUpdate(
+                                //Update the Host's lastEmailed field, so that we can check it when we trigger the host email digest next time, to know if the host is ready for their next one
+                                { _id: hostToEmail._id },
+                                { $set: { lastEmailed: new Date() } },
+                                {
+                                    new: true, //return the new document (after the update) . . . the default is to return the original document before the update
+                                    rawResult: true,
+                                } //https://mongoosejs.com/docs/tutorials/findoneandupdate.html#raw-result
+                            ); //.select('-hadMeeting -sentFollowUp -notes');
+
                             if (index === array.length - 1) resolve(); //so that we can return the results
                         }
                     );
                 });
 
                 loopThruHosts.then(() => {
-                    // res.json(
-                    //     'Sending ' +
-                    //         emailHostsCollection.length +
-                    //         ' emails to the hosts of the Porchlight Network.'
-                    // );
-                    res.json(emailHostsCollection);
+                    res.json(
+                        'Sending an email to ' +
+                            emailHostsCollection.length +
+                            (emailHostsCollection.length > 1
+                                ? ' hosts'
+                                : ' host') +
+                            ' of the Porchlight Network.'
+                    );
+                    //res.json(emailHostsCollection);
                 });
+                if (emailHostsCollection.length === 0) {
+                    res.json("There aren't any hosts to email at this time.");
+                }
             });
         } catch (err) {
             console.error(err.message);
