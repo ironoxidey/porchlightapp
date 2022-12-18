@@ -51,20 +51,21 @@ const Dashboard = ({
     //     getCurrentProfile();
     // }, [getCurrentProfile]);
 
-    let query = useQuery();
-    const eventID = query.get('eventID');
-    let elementToScrollTo = document.getElementById(eventID);
-    useEffect(() => {
-        elementToScrollTo = document.getElementById(eventID);
-    }, [eventID]);
-    useEffect(() => {
-        if (eventID && elementToScrollTo) {
-            elementToScrollTo.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-            });
-        }
-    }, [elementToScrollTo]);
+    // moved the following to NearMeToHostEventCard.js
+    // let query = useQuery();
+    // const eventID = query.get('eventID');
+    // let elementToScrollTo = document.getElementById(eventID);
+    // useEffect(() => {
+    //     elementToScrollTo = document.getElementById(eventID);
+    // }, [eventID]);
+    // useEffect(() => {
+    //     if (eventID && elementToScrollTo) {
+    //         elementToScrollTo.scrollIntoView({
+    //             behavior: 'smooth',
+    //             block: 'center',
+    //         });
+    //     }
+    // }, [elementToScrollTo]);
 
     const confirmedMy = (thisEvent) =>
         thisEvent.createdBy !== 'HOST' &&

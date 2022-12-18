@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import {
@@ -42,6 +42,11 @@ const prettifyDate = (date) => {
     });
 };
 
+// A custom hook that builds on useLocation to parse the query string for you.
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
 const NearMeToHostEventCard = ({
     thisEvent,
     idx,
@@ -69,6 +74,37 @@ const NearMeToHostEventCard = ({
         //console.log('bookingDialogDetails', bookingDialogDetails);
         setBookingDetailsDialogOpen(true);
     }, [bookingDialogDetails]);
+
+    let query = useQuery();
+    const queryEventID = query.get('eventID');
+    let elementToScrollTo = document.getElementById(queryEventID);
+    useEffect(() => {
+        console.log('queryEventID', queryEventID + ' vs. ' + thisEvent._id);
+        elementToScrollTo = document.getElementById(queryEventID);
+    }, [queryEventID]);
+
+    //for animated border
+    const dashboardEventCardRef = useRef(null);
+    // const [eventCardHeight, setHeight] = useState(0);
+    // const [eventCardWidth, setWidth] = useState(0);
+    // useEffect(() => {
+    //     setHeight(dashboardEventCardRef.current.offsetHeight);
+    //     setWidth(dashboardEventCardRef.current.offsetWidth);
+    // }, []);
+
+    useEffect(() => {
+        if (thisEvent._id === queryEventID) {
+            dashboardEventCardRef.current?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+            });
+            setTimeout(() => {
+                handleBookingDetailsBtnClick(thisEvent);
+            }, 800);
+
+            //console.log('eventEditDrawer', eventEditDrawer);
+        }
+    }, [elementToScrollTo]);
 
     const handleBookingDetailsBtnClick = (theEvent) => {
         if (user && user._id) {
@@ -253,6 +289,7 @@ const NearMeToHostEventCard = ({
                 direction="row"
                 sm={5.5}
                 xs={12}
+                ref={dashboardEventCardRef}
                 sx={{
                     backgroundColor: 'rgba(0,0,0,0.35)',
                     '&:hover': {},
