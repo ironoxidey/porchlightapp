@@ -68,6 +68,7 @@ import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
 import EventDetails from './EventDetails';
+import HostEventDetails from './HostEventDetails';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -959,6 +960,7 @@ const HostEventForm = ({
                             value="false"
                             control={<Radio />}
                             label="No"
+                            defaultChecked
                         />
                     </RadioGroup>
                 </FormControl>,
@@ -1151,6 +1153,7 @@ const HostEventForm = ({
                             value="true"
                             control={<Radio />}
                             label="Yes"
+                            defaultChecked
                         />
                         <FormControlLabel
                             value="false"
@@ -1182,6 +1185,7 @@ const HostEventForm = ({
                             value="false"
                             control={<Radio />}
                             label="No"
+                            defaultChecked
                         />
                     </RadioGroup>
                 </FormControl>,
@@ -1212,7 +1216,7 @@ const HostEventForm = ({
                         <FormControlLabel
                             value="no"
                             control={<Radio />}
-                            label={`No, ${stageName} can play an acoustic show if it makes sense for the size of the space.`}
+                            label={`No, I’d like the artist to do an acoustic show.`}
                         />
                     </RadioGroup>
                 </FormControl>,
@@ -1341,7 +1345,7 @@ const HostEventForm = ({
         // ],
         agreeToPromote: [
             <FormLabel component="legend">
-                Do you agree to promote this concert to your audience, including
+                Do you agree to promote this event to your community, including
                 email sends and social media?
             </FormLabel>,
             [
@@ -1614,7 +1618,7 @@ const HostEventForm = ({
                     <FormLabel component="legend" sx={{}}>
                         The heart of Porchlight is to cultivate relationships
                         between artists and hosts. Are you open to spending some
-                        informal time with your hosts?
+                        informal time with the artist(s)?
                     </FormLabel>
                 </Grid>,
             ],
@@ -1836,21 +1840,21 @@ const HostEventForm = ({
                 //Event Details as a host will see it
                 //theEvent usually comes from EditHostEvent.js, but if the user is proposing this event we'll hit up the Redux store for the myHostEvents that has a matching bookingWhen
                 //
-                // <EventDetails
-                //     theEvent={{
-                //         ...(theEvent ||
-                //             myHostEvents.find((event) => {
-                //                 if (
-                //                     bookingWhen &&
-                //                     bookingWhen.length > 0 &&
-                //                     bookingWhen[0]
-                //                 ) {
-                //                     return event.bookingWhen === bookingWhen[0];
-                //                 }
-                //             })),
-                //         artist: hostMe,
-                //     }}
-                // />,
+                <HostEventDetails
+                    theEvent={{
+                        ...(theEvent ||
+                            myHostEvents.find((event) => {
+                                if (
+                                    bookingWhen &&
+                                    bookingWhen.length > 0 &&
+                                    bookingWhen[0]
+                                ) {
+                                    return event.bookingWhen === bookingWhen[0];
+                                }
+                            })),
+                        artist: hostMe,
+                    }}
+                />,
             ],
         ],
     };

@@ -79,8 +79,10 @@ const NearMeToHostEventCard = ({
     const queryEventID = query.get('eventID');
     let elementToScrollTo = document.getElementById(queryEventID);
     useEffect(() => {
-        console.log('queryEventID', queryEventID + ' vs. ' + thisEvent._id);
-        elementToScrollTo = document.getElementById(queryEventID);
+        if (queryEventID) {
+            console.log('queryEventID', queryEventID + ' vs. ' + thisEvent._id);
+            elementToScrollTo = document.getElementById(queryEventID);
+        }
     }, [queryEventID]);
 
     //for animated border
