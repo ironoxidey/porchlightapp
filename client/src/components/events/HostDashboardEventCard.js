@@ -86,10 +86,12 @@ const HostDashboardEventCard = ({
 
     useEffect(() => {
         if (thisEvent._id === eventEditDrawer) {
-            dashboardEventCardRef.current?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-            });
+            if (dashboardEventCardRef.current) {
+                dashboardEventCardRef.current.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                });
+            }
             //console.log('eventEditDrawer', eventEditDrawer);
         }
     }, [eventEditDrawer]);
