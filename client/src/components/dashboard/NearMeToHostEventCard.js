@@ -96,10 +96,12 @@ const NearMeToHostEventCard = ({
 
     useEffect(() => {
         if (thisEvent._id === queryEventID) {
-            dashboardEventCardRef.current?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-            });
+            if (dashboardEventCardRef.current) {
+                dashboardEventCardRef.current.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                });
+            }
             setTimeout(() => {
                 handleBookingDetailsBtnClick(thisEvent);
             }, 800);

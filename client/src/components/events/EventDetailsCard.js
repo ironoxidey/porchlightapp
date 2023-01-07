@@ -17,7 +17,7 @@ const EventDetailsCard = ({
                     item
                     sx={{
                         marginTop: '0',
-                        cursor: isMe ? 'pointer' : 'auto',
+                        cursor: !isMe ? 'auto' : `pointer`,
                         color: isBlank ? 'var(--link-color)' : 'inherit',
                     }}
                     onClick={() => {

@@ -1897,10 +1897,12 @@ const HostEventForm = ({
             if (jumpToState === 'endSlide') {
                 setDirection(1);
             } else {
-                formNavRef.current?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'end',
-                });
+                if (formNavRef.current) {
+                    formNavRef.current.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'end',
+                    });
+                }
                 setDirection(-1);
             }
             setIndex(jumpToIndex);

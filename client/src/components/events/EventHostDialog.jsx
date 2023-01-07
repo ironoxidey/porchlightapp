@@ -28,7 +28,6 @@ const EventHostDialog = (props) => {
 
     useEffect(() => {
         //console.log('eventDialogDetails', eventDialogDetails);
-
         //console.log('EventHostDialog should open');
         setEventDetailsDialogOpen(true);
     }, [eventDialogDetails]);
@@ -40,62 +39,68 @@ const EventHostDialog = (props) => {
 
     return (
         <>
-            {props.theHost && eventDialogDetails && eventDialogDetails.host && (
-                <Dialog
-                    open={eventDetailsDialogOpen}
-                    onClose={eventDetailsDialogHandleClose}
-                    // aria-labelledby="alert-dialog-title"
-                    // aria-describedby="alert-dialog-description"
-                    scroll="body"
-                    fullWidth
-                    maxWidth="md"
-                >
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            <Box
-                                sx={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    right: 0,
-                                    backgroundColor: 'rgba(0 0 0 /.6)',
-                                    padding: '0',
-                                    zIndex: 100,
-                                }}
-                            >
-                                <StackDateforDisplay
-                                    date={props.theEvent.bookingWhen}
-                                ></StackDateforDisplay>
-                            </Box>
-                            <HostProfile
-                                theHost={props.theHost}
-                                theEvent={props.theEvent}
-                                theOffer={props.theOffer}
-                                eventDetailsDialogHandleClose={
-                                    eventDetailsDialogHandleClose
-                                }
-                            ></HostProfile>
-                            {props.theEvent && props.theEvent.artist && (
-                                <>
-                                    <Box sx={{ marginTop: '16px' }}>
-                                        <ArtistTop
-                                            artist={props.theEvent.artist}
-                                        ></ArtistTop>
-                                    </Box>
-                                    <Box sx={{ marginTop: '16px' }}>
-                                        <EventDetails
+            {props.theHost &&
+                eventDialogDetails &&
+                (eventDialogDetails.host || eventDialogDetails.artist) && (
+                    <Dialog
+                        open={eventDetailsDialogOpen}
+                        onClose={eventDetailsDialogHandleClose}
+                        // aria-labelledby="alert-dialog-title"
+                        // aria-describedby="alert-dialog-description"
+                        scroll="body"
+                        fullWidth
+                        maxWidth="md"
+                    >
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                <Box
+                                    sx={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        right: 0,
+                                        backgroundColor: 'rgba(0 0 0 /.6)',
+                                        padding: '0',
+                                        zIndex: 100,
+                                    }}
+                                >
+                                    <StackDateforDisplay
+                                        date={props.theEvent.bookingWhen}
+                                    ></StackDateforDisplay>
+                                </Box>
+                                {props.thoOffer &&
+                                    props.theHost &&
+                                    props.theEvent && (
+                                        <HostProfile
+                                            theHost={props.theHost}
                                             theEvent={props.theEvent}
-                                        />
-                                    </Box>
-                                </>
-                            )}
-                        </DialogContentText>
-                    </DialogContent>
-                </Dialog>
-            )}
+                                            theOffer={props.theOffer}
+                                            eventDetailsDialogHandleClose={
+                                                eventDetailsDialogHandleClose
+                                            }
+                                        ></HostProfile>
+                                    )}
+                                {props.theEvent && props.theEvent.artist && (
+                                    <>
+                                        <Box sx={{ marginTop: '16px' }}>
+                                            <ArtistTop
+                                                artist={props.theEvent.artist}
+                                            ></ArtistTop>
+                                        </Box>
+                                        <Box sx={{ marginTop: '16px' }}>
+                                            <EventDetails
+                                                theEvent={props.theEvent}
+                                            />
+                                        </Box>
+                                    </>
+                                )}
+                            </DialogContentText>
+                        </DialogContent>
+                    </Dialog>
+                )}
             <Box
                 sx={{ cursor: 'pointer' }}
                 onClick={() => {
-                    handleEventBtnClick(props.theOffer);
+                    handleEventBtnClick(props.theOffer || props.theEvent);
                 }}
             >
                 {props.children}
