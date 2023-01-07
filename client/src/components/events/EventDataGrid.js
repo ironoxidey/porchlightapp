@@ -416,7 +416,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
             renderCell: (params) => {
                 if (params.value && params.value.length > 0) {
                     let hostsOffering = params.value.map((hostOffer, i) => {
-                        console.log('hostOffer params', params);
+                        //console.log('hostOffer params', params);
                         return (
                             <EventHostDialog
                                 theHost={hostOffer.host}

@@ -12,11 +12,11 @@ import {
     Tooltip,
     IconButton,
 } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+// import Dialog from '@mui/material/Dialog';
+// import DialogActions from '@mui/material/DialogActions';
+// import DialogContent from '@mui/material/DialogContent';
+// import DialogContentText from '@mui/material/DialogContentText';
+// import DialogTitle from '@mui/material/DialogTitle';
 
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
@@ -25,15 +25,18 @@ import ThumbDownAltTwoToneIcon from '@mui/icons-material/ThumbDownAltTwoTone';
 import { StackDateforDisplay } from '../../actions/app';
 import { artistViewedHostOffer, deleteHostEvent } from '../../actions/event';
 
-import EventDetails from '../events/EventDetails';
+// import EventDetails from '../events/EventDetails';
 
 import Button from '../layout/SvgButton';
-import HostProfile from '../hosts/HostProfile';
-import { relativeTimeRounding } from 'moment';
-import ArtistDashboardBookingOffers from './ArtistDashboardBookingOffers';
+// import HostProfile from '../hosts/HostProfile';
+// import { relativeTimeRounding } from 'moment';
+// import ArtistDashboardBookingOffers from './ArtistDashboardBookingOffers';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditHostEvent from './EditHostEvent';
+
+import EventHostDialog from './EventHostDialog';
+import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 
 const HostDashboardEventCard = ({
     thisEvent,
@@ -53,26 +56,26 @@ const HostDashboardEventCard = ({
     //console.log('HostDashboardEventCard thisEvent:', thisEvent);
 
     //Booking Details Dialog Functions
-    const [eventDetailsDialogOpen, setEventDetailsDialogOpen] = useState(false);
+    // const [eventDetailsDialogOpen, setEventDetailsDialogOpen] = useState(false);
 
-    const [wantsToBook, setWantsToBook] = useState(false);
+    // const [wantsToBook, setWantsToBook] = useState(false);
 
-    const eventDetailsDialogHandleClose = () => {
-        setDialogDetailsState({});
-        setEventDetailsDialogOpen(false);
-        setWantsToBook(false);
-    };
+    // const eventDetailsDialogHandleClose = () => {
+    //     setDialogDetailsState({});
+    //     setEventDetailsDialogOpen(false);
+    //     setWantsToBook(false);
+    // };
 
-    const [eventDialogDetails, setDialogDetailsState] = useState({});
+    // const [eventDialogDetails, setDialogDetailsState] = useState({});
 
-    useEffect(() => {
-        //console.log('eventDialogDetails', eventDialogDetails);
-        setEventDetailsDialogOpen(true);
-    }, [eventDialogDetails]);
+    // useEffect(() => {
+    //     //console.log('eventDialogDetails', eventDialogDetails);
+    //     setEventDetailsDialogOpen(true);
+    // }, [eventDialogDetails]);
 
-    const handleEventBtnClick = (theOffer) => {
-        setDialogDetailsState(theOffer);
-    };
+    // const handleEventBtnClick = (theOffer) => {
+    //     setDialogDetailsState(theOffer);
+    // };
     //End of Dialog Functions
 
     //for animated border
@@ -296,6 +299,18 @@ const HostDashboardEventCard = ({
                                     <EditHostEvent
                                         theEvent={thisEvent}
                                     ></EditHostEvent>
+                                </Grid>
+                            )}
+                            {thisEvent.createdBy === 'ARTIST' && (
+                                <Grid item container>
+                                    <EventHostDialog
+                                        theHost={host.me}
+                                        theEvent={thisEvent}
+                                        //theOffer={hostOffer}
+                                    >
+                                        <Button>CONCERT DETAILS</Button>
+                                        {/* Put the button here */}
+                                    </EventHostDialog>
                                 </Grid>
                             )}
                         </Grid>
