@@ -2,10 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 
-import { ListItemIcon } from '@mui/material';
+import { Grid, ListItemIcon, Typography } from '@mui/material';
 
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 import Switch from '@mui/material/Switch';
 
 import Dialog from '@mui/material/Dialog';
@@ -44,17 +46,24 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
     }, [hostMe]);
     useEffect(() => {
         if (changesMade.current) {
-            console.log(formData);
+            // console.log(formData);
             createMyHost(formData, true);
             changesMade.current = false;
         }
     }, [formData]);
 
-    const handleOnChange = () => {
+    const handleSwitchOnChange = () => {
         changesMade.current = true;
         setFormData({
             ...formData,
             notificationFrequency: notificationFrequency != 0 ? 0 : 7,
+        });
+    };
+    const handleOnChange = (e) => {
+        changesMade.current = true;
+        setFormData({
+            ...formData,
+            notificationFrequency: e.target.value < 1 ? 0 : e.target.value,
         });
     };
 
@@ -87,19 +96,61 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
                             alignItems: 'center',
                         }}
                     >
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={notificationFrequency != 0}
-                                    onChange={handleOnChange}
-                                />
-                            }
-                            label={
-                                notificationFrequency != 0
-                                    ? 'Send me emails'
-                                    : "Don't send me emails"
-                            }
-                        />
+                        <Grid item>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={notificationFrequency != 0}
+                                        onChange={handleSwitchOnChange}
+                                    />
+                                }
+                                label={
+                                    notificationFrequency != 0
+                                        ? 'Send me emails'
+                                        : "Don't send me emails"
+                                }
+                                sx={{ display: 'inline', margin: '0' }}
+                            ></FormControlLabel>
+                            {notificationFrequency != 0 && (
+                                <>
+                                    <Typography sx={{ display: 'inline' }}>
+                                        {' '}
+                                        as often as once every{' '}
+                                    </Typography>
+                                    <TextField
+                                        sx={{
+                                            width: '40px',
+                                            margin: '3px 0 -3px',
+                                            textAlign: 'center',
+                                            '& input': {
+                                                textAlign: 'center',
+                                            },
+                                        }}
+                                        variant="standard"
+                                        name="notificationFrequency"
+                                        id="notificationFrequency"
+                                        value={notificationFrequency}
+                                        onChange={(e) => handleOnChange(e)}
+                                        type="number"
+                                        // InputProps={{
+                                        //     endAdornment: (
+                                        //         <InputAdornment position="end">
+                                        //             {notificationFrequency > 1
+                                        //                 ? 'days'
+                                        //                 : 'day'}
+                                        //         </InputAdornment>
+                                        //     ),
+                                        // }}
+                                    />
+                                    <Typography sx={{ display: 'inline' }}>
+                                        {' '}
+                                        {notificationFrequency > 1
+                                            ? 'days.'
+                                            : 'day.'}{' '}
+                                    </Typography>
+                                </>
+                            )}
+                        </Grid>
                     </FormGroup>
                 </DialogContent>
             </Dialog>
