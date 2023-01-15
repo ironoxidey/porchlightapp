@@ -46,7 +46,7 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
     }, [hostMe]);
     useEffect(() => {
         if (changesMade.current) {
-            // console.log(formData);
+            //console.log(formData);
             createMyHost(formData, true);
             changesMade.current = false;
         }
@@ -60,6 +60,20 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
         });
     };
     const handleOnChange = (e) => {
+        //console.log('e.target.value: ', e.target.value);
+        if (Number(e.target.value) === 0) {
+            //e.target.value is a string; have to convert it to a Number
+            //if entering 0, it toggles the switch, but the switch doesn't register an onChange, and the textField doesn't register an onBlur
+            //don't set changesMade.current = true on all onChanges because it creates a stutter in the ui, when it tries to update the database everytime the value changes
+            //console.log('notificationFrequency should change to 0');
+            changesMade.current = true;
+        }
+        setFormData({
+            ...formData,
+            notificationFrequency: e.target.value < 1 ? 0 : e.target.value,
+        });
+    };
+    const onHandleBlur = (e) => {
         changesMade.current = true;
         setFormData({
             ...formData,
@@ -131,6 +145,7 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
                                         id="notificationFrequency"
                                         value={notificationFrequency}
                                         onChange={(e) => handleOnChange(e)}
+                                        onBlur={(e) => onHandleBlur(e)}
                                         type="number"
                                         // InputProps={{
                                         //     endAdornment: (

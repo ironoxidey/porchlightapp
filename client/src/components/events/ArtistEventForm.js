@@ -163,6 +163,8 @@ const ArtistEventForm = ({
         tourVibe: [],
         bookingWhen: '',
         bookingWhere: {},
+
+        hostReachRadius: 40, //the distance is actually in meters, but I'm storing miles and converting it when I make the call to the database, 1609.35m = 1 mile
         // setLength: '',
         // schedule: '',
         showSchedule: {
@@ -270,6 +272,10 @@ const ArtistEventForm = ({
                     loading || !theEvent.bookingWhere
                         ? {}
                         : theEvent.bookingWhere,
+                hostReachRadius:
+                    loading || !theEvent.hostReachRadius
+                        ? 40
+                        : theEvent.hostReachRadius,
                 // setLength:
                 //     loading || !theEvent.setLength ? '' : theEvent.setLength,
                 // schedule:
@@ -378,6 +384,7 @@ const ArtistEventForm = ({
                     tourVibe: [],
                     bookingWhen: '',
                     bookingWhere: {},
+                    hostReachRadius: 40,
                     // setLength: '',
                     // schedule: '',
                     showSchedule: {
@@ -441,6 +448,7 @@ const ArtistEventForm = ({
         namedPrice,
         bookingWhen,
         bookingWhere,
+        hostReachRadius,
         // setLength,
         // schedule,
         showSchedule,
@@ -649,8 +657,8 @@ const ArtistEventForm = ({
         ],
         bookingWhere: [
             <FormLabel component="legend">
-                Please select roughly where you’d like to try to play a concert
-                on {prettifyDate(bookingWhen)}:
+                Please select where you’d like to try to play a concert on{' '}
+                {prettifyDate(bookingWhen)}:
             </FormLabel>,
             bookingWhere && (
                 <Grid
@@ -745,6 +753,42 @@ const ArtistEventForm = ({
                                     name="bookingWhere"
                                 />
                             )}
+                        />
+                        <Typography
+                            sx={{
+                                display: 'inline-block',
+                                margin: '4px 4px -4px 0',
+                            }}
+                        >
+                            Within a radius of{' '}
+                        </Typography>
+                        <TextField
+                            sx={{
+                                display: 'inline-block',
+                                width: `calc(${
+                                    String(hostReachRadius).length
+                                }ch + 8ch)`, //based on character(ch) count
+                                textAlign: 'center',
+                                '& input': {
+                                    textAlign: 'center',
+                                },
+                            }}
+                            variant="standard"
+                            name="hostReachRadius"
+                            id="hostReachRadius"
+                            value={hostReachRadius}
+                            onChange={(e) =>
+                                Number(e.target.value) > 0 && onChange(e)
+                            } //value can't be less than 1!!
+                            // onBlur={(e) => onHandleBlur(e)}
+                            type="number"
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        {hostReachRadius > 1 ? 'miles' : 'mile'}
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                     </Grid>
                 </Grid>
