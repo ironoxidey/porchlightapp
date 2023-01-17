@@ -14,8 +14,13 @@ import {
     TextField,
     Button,
     Grid,
-    Tooltip,
 } from '@mui/material';
+
+import { styled } from '@mui/material/styles';
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import { toTitleCase } from '../../actions/app';
+import states from 'us-state-converter';
+
 import { ProfileAvatar } from '../../common/components';
 import HostProfile from '../hosts/HostProfile';
 import EventHostDialog from './EventHostDialog';
@@ -27,6 +32,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+
+const CustomWidthTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))({
+    [`& .${tooltipClasses.tooltip}`]: {
+        maxWidth: 500,
+    },
+});
 
 const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
     const changesMade = useRef(false);
@@ -478,9 +491,24 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
         },
 
         {
+            field: 'hostReachRadius',
+            headerName: 'Reach Radius',
+            width: 100,
+            editable: false,
+            type: 'string',
+            valueFormatter: (params) => {
+                if (params.value) {
+                    return params.value + ' miles';
+                } else {
+                    return;
+                }
+            },
+        },
+
+        {
             field: 'hostsInReach',
             headerName: 'Hosts in Area',
-            width: 900,
+            width: 150,
             editable: false,
             type: 'string',
             sortable: true,
@@ -502,39 +530,96 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                             params.row.profile.slug
                         } to check out the details and let us know if you’re available, and wanting, to host the concert.%0D%0A%0D%0AThank you so much!`;
                         return (
-                            <Tooltip
-                                arrow={true}
-                                placement="bottom"
-                                title={
-                                    <>
-                                        <div>
-                                            {hostInReach.host.city},{' '}
-                                            {hostInReach.host.state}
-                                        </div>
-                                        <div>
-                                            <a
-                                                target="_blank"
-                                                href={`mailto:${
-                                                    hostInReach.host.email
-                                                }?subject=${encodeURIComponent(
-                                                    params.row.stageName
-                                                )} is looking to play a Porchlight concert near you!&body=${emailBody}`}
-                                            >
-                                                {hostInReach.host.email}
-                                            </a>
-                                        </div>
-                                    </>
-                                }
+                            // <Tooltip
+                            //     arrow={true}
+                            //     placement="bottom"
+                            //     title={
+                            //         <>
+                            //             <div>
+                            //                 <a
+                            //                     target="_blank"
+                            //                     href={`mailto:${
+                            //                         hostInReach.host.email
+                            //                     }?subject=${encodeURIComponent(
+                            //                         params.row.stageName
+                            //                     )} is looking to play a Porchlight concert near you!&body=${emailBody}`}
+                            //                 >
+                            //                     {hostInReach.host.email}
+                            //                 </a>
+                            //             </div>
+                            //         </>
+                            //     }
+                            // >
+                            <Grid
+                                container
+                                sx={{
+                                    justifyContent: 'space-between',
+                                    flexDirection: 'row',
+                                    flexWrap: 'nowrap',
+                                    alignItems: 'center',
+                                    width: 'max-content',
+                                }}
                             >
-                                <span>
-                                    {i > 0 && ', '}
+                                <Grid item sx={{ padding: '4px 4px 4px 0px' }}>
+                                    <ProfileAvatar
+                                        profileImg={hostInReach.host.profileImg}
+                                    />
+                                </Grid>
+                                <Grid
+                                    item
+                                    sx={{
+                                        display: 'inline-block',
+                                        width: 'auto',
+                                        // whiteSpace: 'nowrap',
+                                    }}
+                                >
                                     {hostInReach.host.firstName}{' '}
                                     {hostInReach.host.lastName}
-                                </span>
-                            </Tooltip>
+                                </Grid>
+                                <Grid
+                                    item
+                                    sx={{
+                                        display: 'inline-block',
+                                        width: 'auto',
+
+                                        padding: '0px 8px 0px 8px',
+                                        //whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {toTitleCase(hostInReach.host.city)},{' '}
+                                    {states(hostInReach.host.state).usps}
+                                </Grid>
+                                <Grid
+                                    item
+                                    sx={{
+                                        display: 'inline-block',
+                                        width: 'auto',
+                                    }}
+                                >
+                                    <a
+                                        target="_blank"
+                                        href={`mailto:${
+                                            hostInReach.host.email
+                                        }?subject=${encodeURIComponent(
+                                            params.row.stageName
+                                        )} is looking to play a Porchlight concert near you!&body=${emailBody}`}
+                                    >
+                                        {hostInReach.host.email}
+                                    </a>
+                                </Grid>
+                            </Grid>
+                            // </Tooltip>
                         );
                     });
-                    return hostsInReach;
+                    return (
+                        <CustomWidthTooltip
+                            arrow={true}
+                            placement="bottom"
+                            title={<>{hostsInReach}</>}
+                        >
+                            <span>{hostsInReach.length} hosts</span>
+                        </CustomWidthTooltip>
+                    );
                 } else {
                     return;
                 }
@@ -579,6 +664,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                             '',
                         profile: adminEvent.artist || '',
                         createdAt: adminEvent.createdAt,
+                        hostReachRadius: adminEvent.hostReachRadius,
                         hostsInReach: adminEvent.hostsInReach,
                         offersFromHosts: adminEvent.offersFromHosts,
                         status: adminEvent.status,

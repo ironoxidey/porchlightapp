@@ -309,7 +309,6 @@ const HostDashboardEventCard = ({
                                         //theOffer={hostOffer}
                                     >
                                         <Button>CONCERT DETAILS</Button>
-                                        {/* Put the button here */}
                                     </EventHostDialog>
                                 </Grid>
                             )}
