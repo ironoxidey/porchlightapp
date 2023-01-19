@@ -617,7 +617,14 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                             placement="bottom"
                             title={<>{hostsInReach}</>}
                         >
-                            <span>{hostsInReach.length} hosts</span>
+                            <span
+                                style={{
+                                    color: 'var(--link-color)',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                {hostsInReach.length} hosts
+                            </span>
                         </CustomWidthTooltip>
                     );
                 } else {

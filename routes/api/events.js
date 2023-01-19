@@ -278,7 +278,7 @@ router.post(
         }
 
         let eventFields = req.body;
-        console.log('eventFields', eventFields);
+        // console.log('eventFields', eventFields);
 
         let userRole = req.user.role;
 
@@ -462,7 +462,7 @@ router.post(
         }
 
         let eventFields = req.body;
-        console.log('eventFields', eventFields);
+        // console.log('eventFields', eventFields);
 
         let userRole = req.user.role;
 
@@ -546,8 +546,18 @@ router.post(
                         });
                         //console.log(await hostsInReach);
                         const hostsIDInReach = hostsInReach.map(
-                            (hostInReach) => {
+                            (hostInReach, i) => {
                                 //console.log('hostInReach._id', hostInReach._id);
+                                // console.log(
+                                //     'hostInReach' + i + ': ',
+                                //     hostInReach.firstName +
+                                //         ' ' +
+                                //         hostInReach.lastName +
+                                //         ' | ' +
+                                //         hostInReach.city +
+                                //         ', ' +
+                                //         hostInReach.state
+                                // );
                                 return {
                                     host: hostInReach._id,
                                 };
@@ -570,6 +580,57 @@ router.post(
                         // }
                     }
                     //end geocoding
+                    else if (
+                        event.latLong &&
+                        event.latLong.coordinates &&
+                        event.latLong.coordinates.length > 0 && //if there is a latLong AND
+                        event.geocodedBookingWhere && //if there is geocodedBookingWhere AND
+                        event.bookingWhere.zip ===
+                            event.geocodedBookingWhere.zip && // the bookingWhere.zip matches the geocodedBookingWhere.zip, then the location hasn't changed since last geocoded, but we still want to find any hosts in reach, because the radius may have changed
+                        event.bookingWhere &&
+                        event.bookingWhere.city &&
+                        event.bookingWhere.state &&
+                        event.bookingWhere.zip
+                    ) {
+                        let hostsInReach = await Host.find({
+                            latLong: {
+                                $near: {
+                                    $maxDistance:
+                                        event.hostReachRadius * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
+                                    $geometry: {
+                                        type: 'Point',
+                                        coordinates: event.latLong.coordinates,
+                                    },
+                                },
+                            },
+                        });
+                        //console.log(await hostsInReach);
+                        const hostsIDInReach = hostsInReach.map(
+                            (hostInReach, i) => {
+                                //console.log('hostInReach._id', hostInReach._id);
+                                // console.log(
+                                //     'hostInReach' + i + ': ',
+                                //     hostInReach.firstName +
+                                //         ' ' +
+                                //         hostInReach.lastName +
+                                //         ' | ' +
+                                //         hostInReach.city +
+                                //         ', ' +
+                                //         hostInReach.state
+                                // );
+                                return {
+                                    host: hostInReach._id,
+                                };
+                            }
+                        );
+
+                        let savedDetails = await event.updateOne(
+                            {
+                                hostsInReach: hostsIDInReach,
+                            },
+                            { new: true }
+                        );
+                    }
 
                     //console.log('event', event);
                     //res.json(event);
@@ -1042,15 +1103,16 @@ router.get('/nearMeToHost', auth, async (req, res) => {
         //     status: 'PENDING',
         // })
         const eventsNearMeToHost = await Event.find({
-            latLong: {
-                $near: {
-                    $maxDistance: 40 * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
-                    $geometry: {
-                        type: 'Point',
-                        coordinates: thisHost.latLong.coordinates,
-                    },
-                },
-            },
+            // latLong: {
+            //     $near: {
+            //         $maxDistance: 40 * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
+            //         $geometry: {
+            //             type: 'Point',
+            //             coordinates: thisHost.latLong.coordinates,
+            //         },
+            //     },
+            // },
+            'hostsInReach.host': thisHost._id,
             offersFromHosts: { $not: { $elemMatch: { host: thisHost._id } } },
             status: 'PENDING',
             createdBy: { $ne: 'HOST' }, // $ne means "Not Equal" — don't show events created by HOSTs to other HOSTs as nearMeToHost events — I would've singled out events that are created by ARTISTs, but not all the events had a "createdBy" field, because I added it WAY later on
