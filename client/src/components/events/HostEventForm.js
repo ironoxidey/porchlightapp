@@ -16,19 +16,19 @@ import {
     FormControlLabel,
     FormControl,
     FormLabel,
-    Select,
-    InputLabel,
-    MenuItem,
+    //Select,
+    //InputLabel,
+    //MenuItem,
     InputAdornment,
-    IconButton,
+    //IconButton,
     Grid,
-    Box,
-    Paper,
-    BottomNavigationAction,
-    BottomNavigation,
+    //Box,
+    //Paper,
+    //BottomNavigationAction,
+    // BottomNavigation,
     Autocomplete,
     Chip,
-    withStyles,
+    // withStyles,
     Typography,
     Tooltip,
     Avatar,
@@ -69,6 +69,7 @@ import ReactPlayer from 'react-player/lazy';
 
 import EventDetails from './EventDetails';
 import HostEventDetails from './HostEventDetails';
+import HostProfile from '../hosts/HostProfile';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -786,7 +787,15 @@ const HostEventForm = ({
                         value={preferredArtists}
                         options={artists}
                         getOptionLabel={(option) =>
-                            option.stageName + ' ' + option.genres
+                            option.stageName +
+                            ' ' +
+                            option.genres +
+                            ' ' +
+                            option.city +
+                            ' ' +
+                            option.state +
+                            ' ' +
+                            states(option.state).usps
                         }
                         isOptionEqualToValue={(option, value) =>
                             option._id === value._id
@@ -831,7 +840,16 @@ const HostEventForm = ({
                                                 margin: '0 4px',
                                             }}
                                         >
-                                            {option.stageName}
+                                            {option.stageName}{' '}
+                                            <span
+                                                style={{
+                                                    color: 'var(--primary-color)',
+                                                    fontSize: '.75em',
+                                                }}
+                                            >
+                                                ({toTitleCase(option.city)},{' '}
+                                                {states(option.state).usps})
+                                            </span>
                                         </Typography>
                                     </Grid>
                                 </Tooltip>
@@ -1826,8 +1844,33 @@ const HostEventForm = ({
         endSlide: [
             [
                 <Typography component="h2" sx={{ textAlign: 'center' }}>
-                    Artists will see the fields you’ve filled out (nothing
-                    orange):
+                    {preferredArtists.length > 2
+                        ? preferredArtists
+                              .map((preferredArtist, i) => {
+                                  if (
+                                      preferredArtists.length > 1 &&
+                                      i === preferredArtists.length - 1
+                                  ) {
+                                      return (
+                                          ' and ' + preferredArtist.stageName
+                                      );
+                                  } else {
+                                      return preferredArtist.stageName;
+                                  }
+                              })
+                              .join(', ')
+                        : preferredArtists.map((preferredArtist, i) => {
+                              if (
+                                  preferredArtists.length > 1 &&
+                                  i === preferredArtists.length - 1
+                              ) {
+                                  return ' and ' + preferredArtist.stageName;
+                              } else {
+                                  return preferredArtist.stageName;
+                              }
+                          })}
+                    {preferredArtists.length === 0 && '[The Artist]'} will see
+                    the fields you’ve filled out (nothing orange):
                 </Typography>,
                 <Typography
                     component="p"
@@ -1840,21 +1883,55 @@ const HostEventForm = ({
                 //Event Details as a host will see it
                 //theEvent usually comes from EditHostEvent.js, but if the user is proposing this event we'll hit up the Redux store for the myHostEvents that has a matching bookingWhen
                 //
-                <HostEventDetails
-                    theEvent={{
-                        ...(theEvent ||
-                            myHostEvents.find((event) => {
-                                if (
-                                    bookingWhen &&
-                                    bookingWhen.length > 0 &&
-                                    bookingWhen[0]
-                                ) {
-                                    return event.bookingWhen === bookingWhen[0];
-                                }
-                            })),
-                        artist: hostMe,
-                    }}
-                />,
+                <>
+                    <Grid
+                        container
+                        sx={{
+                            margin: '16px',
+                            width: '100%',
+                            maxWidth: '900px',
+                        }}
+                    >
+                        <HostProfile
+                            theHost={hostMe}
+                            theEvent={
+                                theEvent ||
+                                myHostEvents.find((event) => {
+                                    if (
+                                        bookingWhen &&
+                                        bookingWhen.length > 0 &&
+                                        bookingWhen[0]
+                                    ) {
+                                        return (
+                                            event.bookingWhen === bookingWhen[0]
+                                        );
+                                    }
+                                })
+                            }
+                            // theOffer={eventDialogDetails}
+                            // eventDetailsDialogHandleClose={
+                            //     eventDetailsDialogHandleClose
+                            // }
+                        />
+                    </Grid>
+                    <HostEventDetails
+                        theEvent={{
+                            ...(theEvent ||
+                                myHostEvents.find((event) => {
+                                    if (
+                                        bookingWhen &&
+                                        bookingWhen.length > 0 &&
+                                        bookingWhen[0]
+                                    ) {
+                                        return (
+                                            event.bookingWhen === bookingWhen[0]
+                                        );
+                                    }
+                                })),
+                            artist: hostMe,
+                        }}
+                    />
+                </>,
             ],
         ],
     };

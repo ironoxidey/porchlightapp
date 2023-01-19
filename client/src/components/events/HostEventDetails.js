@@ -134,7 +134,7 @@ const HostEventDetails = ({
                             className="bookingSpecifics"
                         >
                             {/* preferredArtists */}
-                            <EventDetailsCard
+                            {/* <EventDetailsCard
                                 fieldName="preferredArtists"
                                 isMe={isMe}
                                 jumpTo={jumpTo}
@@ -163,7 +163,7 @@ const HostEventDetails = ({
                                         </strong>
                                     </>
                                 )}
-                            </EventDetailsCard>
+                            </EventDetailsCard> */}
 
                             {/* tourVibe */}
                             <EventDetailsCard
