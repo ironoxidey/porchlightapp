@@ -317,19 +317,29 @@ router.post(
                         // bookingWhen: eventFields.bookingWhen,
                         // bookingWhere: eventFields.bookingWhere,
                         createdBy: 'HOST',
+                        status: 'DRAFT',
                         confirmedHost: host._id,
-                        $addToSet: {
-                            hostsOfferingToBook: req.user.email,
-                            offersFromHosts: {
+                        // $addToSet: {
+                        //     hostsOfferingToBook: req.user.email,
+                        //     offersFromHosts: {
+                        //         ...eventFields.theOffer,
+                        //         host: host._id,
+                        //     },
+                        // },
+                        // We don't want to addToSet here because the host is always the same and it should be replaced rather than duplicated
+                        hostsOfferingToBook: [req.user.email],
+                        offersFromHosts: [
+                            {
                                 ...eventFields.theOffer,
                                 host: host._id,
                             },
-                        },
+                        ],
                         preferredArtists: eventFields.preferredArtists.map(
                             (preferredArtist) => {
                                 return preferredArtist._id;
                             }
                         ),
+                        hostReachRadius: 30,
                     },
                     { new: true, upsert: true }
                 );
@@ -385,8 +395,9 @@ router.post(
                 //res.json(event);
                 //console.log('event', event);
 
-                const myHostEvents = await Event.find({
+                const offeredToBookEvents = await Event.find({
                     hostsOfferingToBook: req.user.email,
+                    createdBy: 'ARTIST',
                 })
                     .select(
                         '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'
@@ -400,6 +411,29 @@ router.post(
                         '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp '
                     )
                     .sort({ bookingWhen: 1 }); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
+
+                const proposedEventsToHost = await Event.find({
+                    hostsOfferingToBook: req.user.email,
+                    createdBy: 'HOST',
+                })
+                    .select(
+                        '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -agreeToPayAdminFee -payoutHandle'
+                    )
+                    .populate(
+                        'artist',
+                        '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
+                    )
+                    .populate(
+                        'preferredArtists',
+                        '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
+                    )
+                    .sort({ bookingWhen: 1 });
+
+                const myHostEvents = [
+                    ...offeredToBookEvents,
+                    ...proposedEventsToHost,
+                ];
+
                 if (!myHostEvents) {
                     return res.json({
                         email: req.user.email,
@@ -440,7 +474,7 @@ router.delete('/hostEvent/:id', auth, async (req, res) => {
             _id: req.params.id,
             confirmedHost: host._id, //the requesting user must be the confirmedHost
             createdBy: 'HOST', //only if the host created the event
-            status: 'PENDING', //don't let people delete confirmed shows
+            status: 'DRAFT', //don't let people delete anything but DRAFT events
         });
         res.json(req.params.id);
     } catch (err) {
@@ -1052,8 +1086,95 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
     //res.json(eventCount + " event(s) submitted to the database."); //eventually remove this
 });
 
+// @route    POST api/events/hostProposes
+// @desc     Host Proposes a concert — update the status of the event from DRAFT to PENDING and email artists
+// @access   Private
+router.post('/hostProposes', [auth], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    let eventFields = req.body;
+
+    let userRole = req.user.role;
+
+    if (userRole && userRole.indexOf('HOST') === -1) {
+        //if the requesting user doesn't have the HOST role, check the database for the requesting user and see if they have the HOST user role there (this can happen if they just filled out the "Sign Up to Host" form but haven't relogged-in to update their auth token with the new HOST role)
+        let user = await User.findOne({ email: req.user.email }).select('role');
+        //console.log('User has these roles: ', user);
+        userRole = user.role;
+    }
+    //if (req.user.role === 'ADMIN' && eventFields.email !== '') {
+    if (userRole && userRole.indexOf('HOST') > -1) {
+        //console.log("User is HOST and can propose shows.");
+        try {
+            //console.log('eventFields', eventFields);
+            let host = await Host.findOne({ email: req.user.email });
+
+            let eventDetails = await Event.findOneAndUpdate(
+                {
+                    confirmedHost: host._id,
+                    bookingWhen: eventFields.bookingWhen,
+                    status: 'DRAFT', //don't update anything but DRAFTs
+                    createdBy: 'HOST',
+                },
+                {
+                    status: 'PENDING',
+                },
+                { new: true }
+            ).select(
+                //'-artistEmail -agreeToPayAdminFee -payoutHandle -offersFromHosts -hostsOfferingToBook'
+                '-agreeToPayAdminFee -payoutHandle -hostsOfferingToBook -latLong -hostsInReach'
+            );
+            //     .populate(
+            //         'artist',
+            //         '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
+            //     )
+            //     .lean(); //.lean required to delete artistEmail later -- Documents returned from queries with the lean option enabled are plain javascript objects, not Mongoose Documents. They have no save method, getters/setters, virtuals, or other Mongoose features. https://stackoverflow.com/a/71746004/3338608
+
+            // let emailDate = new Date(
+            //     eventDetails.bookingWhen
+            // ).toLocaleDateString(undefined, {
+            //     weekday: 'long',
+            //     year: 'numeric',
+            //     month: 'long',
+            //     day: 'numeric',
+            // });
+            // //Send an email to the artist and then delete the artist's email address from the eventDetails object we return to the host in the app
+            // sendEmail(eventDetails.artistEmail, {
+            //     event: 'HOST_OFFER',
+            //     template: 'BXKVWA13SK4G60N1ZE1S339YPKAM',
+            //     name: eventDetails.artist.firstName,
+            //     hostName: host.firstName + ' ' + host.lastName,
+            //     stageName: eventDetails.artist.stageName,
+            //     eventDate: emailDate,
+            //     hostLocation: host.city + ', ' + host.state,
+            //     hostImg: host.profileImg,
+            //     artistImg: eventDetails.artist.squareImg,
+            // });
+            // delete eventDetails.artistEmail;
+
+            //res.json(event);
+            console.log('eventDetails', eventDetails);
+            res.json(eventDetails);
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server Error: ' + err.message);
+        }
+    } else {
+        console.error(
+            req.user.email +
+                ' cannot make a hosting proposal without the HOST user role.'
+        );
+        res.status(500).send('User does not have authority to do this.');
+    }
+
+    //res.json(eventCount + " event(s) submitted to the database."); //eventually remove this
+});
+
 // @route    GET api/events/myEventsOfferedToHost
-// @desc     Get current user's events they've offered to host
+// @desc     Get current user's events they've offered to host, createdBy ARTIST (DON'T return offersFromHosts)
 // @access   Private
 router.get('/myEventsOfferedToHost', auth, async (req, res) => {
     try {
@@ -1063,6 +1184,7 @@ router.get('/myEventsOfferedToHost', auth, async (req, res) => {
         //console.log(req.user);
         const offeredToBookEvents = await Event.find({
             hostsOfferingToBook: req.user.email,
+            createdBy: 'ARTIST',
         })
             .select(
                 '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'
@@ -1071,19 +1193,47 @@ router.get('/myEventsOfferedToHost', auth, async (req, res) => {
                 'artist',
                 '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
             )
+            // I don't think we need to populate preferredArtists here, because we're only getting ARTIST created events
+            // .populate(
+            //     'preferredArtists',
+            //     '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
+            // )
+            .sort({ bookingWhen: 1 });
+
+        const proposedEventsToHost = await Event.find({
+            hostsOfferingToBook: req.user.email,
+            createdBy: 'HOST',
+        })
+            .select(
+                '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -agreeToPayAdminFee -payoutHandle'
+            )
+            .populate(
+                'artist',
+                '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
+            )
             .populate(
                 'preferredArtists',
-                '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp '
+                '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
             )
             .sort({ bookingWhen: 1 });
-        if (!offeredToBookEvents) {
+
+        // console.log(
+        //     'offeredToBookEvents: ',
+        //     offeredToBookEvents,
+        //     'proposedEventsToHost: ',
+        //     proposedEventsToHost
+        // );
+
+        const myHostEvents = [...offeredToBookEvents, ...proposedEventsToHost];
+
+        if (!myHostEvents) {
             return res.json({
                 email: req.user.email,
                 msg: 'There are no events associated with ' + req.user.email,
             });
         }
 
-        res.json(offeredToBookEvents);
+        res.json(myHostEvents);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');

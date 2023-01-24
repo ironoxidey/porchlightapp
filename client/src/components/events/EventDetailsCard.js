@@ -19,6 +19,10 @@ const EventDetailsCard = ({
                         marginTop: '0',
                         cursor: !isMe ? 'auto' : `pointer`,
                         color: isBlank ? 'var(--link-color)' : 'inherit',
+                        backgroundImage: isBlank
+                            ? 'repeating-linear-gradient(45deg,     rgba(255,255,255,0.05) 5px,    rgba(255,255,255,.05) 15px,    transparent 15px,    transparent 30px)'
+                            : 'none',
+                        padding: '8px 16px!important',
                     }}
                     onClick={() => {
                         if (isMe) {

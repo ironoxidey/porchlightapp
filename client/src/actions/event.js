@@ -7,6 +7,7 @@ import {
     DELETE_ARTIST_EVENT,
     DELETE_HOST_EVENT,
     HOST_RAISE_HAND,
+    HOST_PROPOSES,
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
     GET_EVENTS_NEAR_ME_TO_HOST,
@@ -29,7 +30,7 @@ export const editHostEvent = (formData, history) => async (dispatch) => {
             },
         };
         const res = await axios.post('/api/events/hostEvent', formData, config);
-        //console.log('hostRaiseHand res.data', res.data);
+        console.log('editHostEvent res.data', res.data);
         dispatch({
             type: EDIT_HOST_EVENT,
             payload: res.data,
@@ -175,6 +176,8 @@ export const deleteArtistEvent = (id) => async (dispatch) => {
 export const getMyEventsOfferedToHost = () => async (dispatch) => {
     try {
         const res = await axios.get(`/api/events/myEventsOfferedToHost`);
+        console.log('res', res);
+
         dispatch({
             type: GET_EVENTS_OFFERED_TO_HOST,
             payload: res.data,
@@ -264,7 +267,7 @@ export const hostRaiseHand = (formData, history) => async (dispatch) => {
             formData,
             config
         );
-        console.log('hostRaiseHand res.data', res.data);
+        //console.log('hostRaiseHand res.data', res.data);
         dispatch({
             type: HOST_RAISE_HAND,
             payload: res.data,
@@ -282,6 +285,58 @@ export const hostRaiseHand = (formData, history) => async (dispatch) => {
                         }
                     ) +
                     ' was submitted.',
+                'success'
+            )
+        ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+    } catch (err) {
+        console.log('error: ' + err);
+        const errors = err.response.data.errors;
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+        }
+        dispatch({
+            type: UPDATE_EVENT_ERROR,
+            payload: {
+                msg: err.response.statusText,
+                status: err.response.status,
+            },
+        });
+        dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+    }
+};
+
+// Host submits proposal — update the status of the event in the database to PENDING, no longer DRAFT
+export const hostProposes = (formData, history) => async (dispatch) => {
+    try {
+        //console.log('hostRaiseHand formData', formData);
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        const res = await axios.post(
+            '/api/events/hostProposes',
+            formData,
+            config
+        );
+        console.log('hostProposes res.data', res.data);
+        dispatch({
+            type: HOST_PROPOSES,
+            payload: res.data,
+        });
+        dispatch(
+            setAlert(
+                'Your proposal to host the show on ' +
+                    new Date(formData.bookingWhen).toLocaleDateString(
+                        undefined,
+                        {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                        }
+                    ) +
+                    ' was sent.',
                 'success'
             )
         ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)

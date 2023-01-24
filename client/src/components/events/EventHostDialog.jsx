@@ -67,7 +67,7 @@ const EventHostDialog = (props) => {
                                         date={props.theEvent.bookingWhen}
                                     ></StackDateforDisplay>
                                 </Box>
-                                {props.thoOffer &&
+                                {props.theOffer &&
                                     props.theHost &&
                                     props.theEvent && (
                                         <HostProfile

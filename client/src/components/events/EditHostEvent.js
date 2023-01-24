@@ -72,7 +72,12 @@ const EditHostEvent = ({
                     </Grid>
                 </Box>
 
-                <Grid item sx={{ minHeight: '85vh' }}>
+                <Grid
+                    item
+                    sx={{
+                        minHeight: '85vh',
+                    }}
+                >
                     {drawerOpen && ( //so that the ArtistEventForm doesn't setSelectedDates a bajillion times until it's necessary
                         <HostEventForm theEvent={theEvent}></HostEventForm>
                     )}
