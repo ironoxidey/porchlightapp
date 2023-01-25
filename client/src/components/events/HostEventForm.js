@@ -1485,6 +1485,66 @@ const HostEventForm = ({
                             sx={{ marginLeft: '8px!important' }}
                         ></SendIcon>
                     </Button>
+
+                    {/* <Dialog
+                            open={adminAlertOpen}
+                            onClose={adminAlertHandleClose}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">
+                                <Avatar
+                                    alt={`${adminAlertUser.row.avatar}`}
+                                    src={`${adminAlertUser.row.avatar}`}
+                                    sx={{
+                                        width: '150px',
+                                        height: '150px',
+                                        margin: '0 auto',
+                                    }}
+                                />
+
+                                {`Are you sure you want ` +
+                                    adminAlertUser.row.name +
+                                    ` (` +
+                                    adminAlertUser.row.email +
+                                    `) to have the ${
+                                        value.indexOf('ADMIN') === -1 &&
+                                        adminAlertUser.value.indexOf('ADMIN') >
+                                            -1
+                                            ? 'ADMIN'
+                                            : 'BOOKING'
+                                    } role?`}
+                            </DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                    {value.indexOf('ADMIN') === -1 &&
+                                    adminAlertUser.value.indexOf('ADMIN') > -1
+                                        ? `Giving this user the ADMIN role will give
+                                    them access to everything. You should only
+                                    do this if you really trust 
+                                    ${adminAlertUser.row.name}.`
+                                        : `Giving this user the BOOKING role will give
+                                    them access to our entire network of hosts. You should only
+                                    do this if you really trust 
+                                    ${adminAlertUser.row.name}.`}
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={adminAlertHandleClose}>
+                                    No
+                                </Button>
+                                <Button
+                                    onClick={(e) => {
+                                        adminAlertHandleClose();
+                                        onAutocompleteTagChange(
+                                            adminAlertUser.value
+                                        );
+                                    }}
+                                >
+                                    Yes
+                                </Button>
+                            </DialogActions>
+                        </Dialog> */}
                 </Grid>,
             ],
             [

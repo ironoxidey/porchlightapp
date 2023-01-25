@@ -1123,10 +1123,23 @@ router.post('/hostProposes', [auth], async (req, res) => {
                     status: 'PENDING',
                 },
                 { new: true }
-            ).select(
-                //'-artistEmail -agreeToPayAdminFee -payoutHandle -offersFromHosts -hostsOfferingToBook'
-                '-agreeToPayAdminFee -payoutHandle -hostsOfferingToBook -latLong -hostsInReach'
-            );
+            )
+                .select(
+                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -agreeToPayAdminFee -payoutHandle'
+                )
+                .populate(
+                    'artist',
+                    '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
+                )
+                .populate(
+                    'preferredArtists',
+                    '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
+                );
+
+            // .select(
+            //     //'-artistEmail -agreeToPayAdminFee -payoutHandle -offersFromHosts -hostsOfferingToBook'
+            //     '-agreeToPayAdminFee -payoutHandle -hostsOfferingToBook -latLong -hostsInReach'
+            // );
             //     .populate(
             //         'artist',
             //         '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
@@ -1686,7 +1699,7 @@ router.get('/edit', [auth], async (req, res) => {
 });
 
 // @route    GET api/events/triggerHostEmailDigest
-// @desc     [ADMIN, BOOKING] Get all events for editing (everything)
+// @desc     [ADMIN, BOOKING] Trigger Host Email Digest
 // @access   Private
 router.get('/triggerHostEmailDigest', [auth], async (req, res) => {
     //if (req.user.role === 'ADMIN') {
@@ -1840,14 +1853,15 @@ router.get('/triggerHostEmailDigest', [auth], async (req, res) => {
                         const hostsIDInReach = hostsInReach.map(
                             async (hostInReach) => {
                                 if (
-                                    hostInReach.notificationFrequency &&
-                                    hostInReach.lastEmailed
+                                    hostInReach.notificationFrequency
+                                    //&& hostInReach.lastEmailed
                                 ) {
                                     //this limits who we reach out to, until everyone has a "lastEmailed" ---- "notificationFrequency" defaults to 7
                                     //hostInReach.notificationFrequency is never going to be 0, because we filtered that out in the database request
                                     let today = new Date().getTime();
                                     let hostLastEmailed = new Date(
-                                        hostInReach.lastEmailed
+                                        hostInReach.lastEmailed ||
+                                            hostInReach.date //if !lastEmailed date just use the creation date of their profile——I think this is only going to be necessary for the first email we send to a host
                                     ).getTime();
                                     let differenceInDays =
                                         (today - hostLastEmailed) /
@@ -1952,7 +1966,17 @@ router.get('/triggerHostEmailDigest', [auth], async (req, res) => {
                 let loopThruHosts = new Promise((resolve, reject) => {
                     emailHostsCollection.forEach(
                         async (hostToEmail, index, array) => {
-                            console.log('hostToEmail', hostToEmail);
+                            console.log(
+                                'sending to ' +
+                                    hostToEmail.email +
+                                    ': ' +
+                                    hostToEmail.firstName +
+                                    ' ' +
+                                    hostToEmail.lastName +
+                                    ' (' +
+                                    hostToEmail.eventsForEmail.length +
+                                    ' events)'
+                            );
                             sendEmail(hostToEmail.email, {
                                 event: 'HOST_EMAIL_DIGEST',
                                 template: '5VAZYQK9RAM506GYRGYMMJ8X3D55',
@@ -1974,6 +1998,14 @@ router.get('/triggerHostEmailDigest', [auth], async (req, res) => {
                 });
 
                 loopThruHosts.then(() => {
+                    console.log(
+                        'Sending an email to ' +
+                            emailHostsCollection.length +
+                            (emailHostsCollection.length > 1
+                                ? ' hosts'
+                                : ' host') +
+                            ' of the Porchlight Network.'
+                    );
                     res.json(
                         'Sending an email to ' +
                             emailHostsCollection.length +
@@ -1985,6 +2017,9 @@ router.get('/triggerHostEmailDigest', [auth], async (req, res) => {
                     //res.json(emailHostsCollection);
                 });
                 if (emailHostsCollection.length === 0) {
+                    console.log(
+                        "There aren't any hosts to email at this time."
+                    );
                     res.json("There aren't any hosts to email at this time.");
                 }
             });
