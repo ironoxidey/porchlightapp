@@ -284,11 +284,18 @@ module.exports = async () => {
 
             loopThruHosts.then(() => {
                 console.log(
-                    'Sending an email to ' +
+                    'Sending host email digests to ' +
                         emailHostsCollection.length +
                         (emailHostsCollection.length > 1 ? ' hosts' : ' host') +
                         ' of the Porchlight Network.'
                 );
+
+                sendEmail('russellhein@gmail.com', {
+                    event: 'ADMIN_EMAIL_DIGEST',
+                    template: 'DX2C4B5H4XMMYDH7FB4YGNFRJDF5',
+                    emailHostsCollection: [...emailHostsCollection],
+                });
+
                 // res.json(
                 //     'Sending an email to ' +
                 //         emailHostsCollection.length +

@@ -63,7 +63,7 @@ const HostProfile = ({
 }) => {
     //console.log('theEvent', theEvent);
     //console.log('theHost', theHost);
-    console.log('theOffer', theOffer);
+    //console.log('theOffer', theOffer);
     // console.log('user', user);
 
     // const convert24HourTime = (dateString) => {

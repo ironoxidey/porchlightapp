@@ -52,48 +52,48 @@ const EventHostDialog = (props) => {
                         maxWidth="md"
                     >
                         <DialogContent>
-                            <DialogContentText id="alert-dialog-description">
-                                <Box
-                                    sx={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        right: 0,
-                                        backgroundColor: 'rgba(0 0 0 /.6)',
-                                        padding: '0',
-                                        zIndex: 100,
-                                    }}
-                                >
-                                    <StackDateforDisplay
-                                        date={props.theEvent.bookingWhen}
-                                    ></StackDateforDisplay>
-                                </Box>
-                                {props.theOffer &&
-                                    props.theHost &&
-                                    props.theEvent && (
-                                        <HostProfile
-                                            theHost={props.theHost}
-                                            theEvent={props.theEvent}
-                                            theOffer={props.theOffer}
-                                            eventDetailsDialogHandleClose={
-                                                eventDetailsDialogHandleClose
-                                            }
-                                        ></HostProfile>
-                                    )}
-                                {props.theEvent && props.theEvent.artist && (
-                                    <>
-                                        <Box sx={{ marginTop: '16px' }}>
-                                            <ArtistTop
-                                                artist={props.theEvent.artist}
-                                            ></ArtistTop>
-                                        </Box>
-                                        <Box sx={{ marginTop: '16px' }}>
-                                            <EventDetails
-                                                theEvent={props.theEvent}
-                                            />
-                                        </Box>
-                                    </>
+                            {/* <DialogContentText id="alert-dialog-description"> */}
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 0,
+                                    backgroundColor: 'rgba(0 0 0 /.6)',
+                                    padding: '0',
+                                    zIndex: 100,
+                                }}
+                            >
+                                <StackDateforDisplay
+                                    date={props.theEvent.bookingWhen}
+                                ></StackDateforDisplay>
+                            </Box>
+                            {props.theOffer &&
+                                props.theHost &&
+                                props.theEvent && (
+                                    <HostProfile
+                                        theHost={props.theHost}
+                                        theEvent={props.theEvent}
+                                        theOffer={props.theOffer}
+                                        eventDetailsDialogHandleClose={
+                                            eventDetailsDialogHandleClose
+                                        }
+                                    ></HostProfile>
                                 )}
-                            </DialogContentText>
+                            {props.theEvent && props.theEvent.artist && (
+                                <>
+                                    <Box sx={{ marginTop: '16px' }}>
+                                        <ArtistTop
+                                            artist={props.theEvent.artist}
+                                        ></ArtistTop>
+                                    </Box>
+                                    <Box sx={{ marginTop: '16px' }}>
+                                        <EventDetails
+                                            theEvent={props.theEvent}
+                                        />
+                                    </Box>
+                                </>
+                            )}
+                            {/* </DialogContentText> */}
                         </DialogContent>
                     </Dialog>
                 )}

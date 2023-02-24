@@ -176,7 +176,7 @@ export const deleteArtistEvent = (id) => async (dispatch) => {
 export const getMyEventsOfferedToHost = () => async (dispatch) => {
     try {
         const res = await axios.get(`/api/events/myEventsOfferedToHost`);
-        console.log('res', res);
+        //console.log('res', res);
 
         dispatch({
             type: GET_EVENTS_OFFERED_TO_HOST,

@@ -381,7 +381,7 @@ const HostEventForm = ({
 
     // const stageName = hostMe.stageName;
 
-    console.log('HostEventForm offersFromHosts', offersFromHosts);
+    //console.log('HostEventForm offersFromHosts', offersFromHosts);
 
     const onChange = (e) => {
         //console.log(e);

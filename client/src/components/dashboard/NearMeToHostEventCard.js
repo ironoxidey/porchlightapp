@@ -182,66 +182,66 @@ const NearMeToHostEventCard = ({
                             : ''} */}
                     </DialogTitle>
                     <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            {!isAuthenticated && wantsToBook ? (
-                                <Login bookingDialog={bookingDialogDetails} />
-                            ) : !wantsToBook ? (
-                                <EventDetails theEvent={bookingDialogDetails} />
-                            ) : host &&
-                              host.me &&
-                              host.me._id &&
-                              host.me.completedProfileForm &&
-                              host.me.firstName &&
-                              host.me.lastName &&
-                              host.me.email &&
-                              host.me.profileImg &&
-                              (host.me.streetAddress ||
-                                  host.me.venueStreetAddress) ? (
-                                <Grid
-                                    container
-                                    item
-                                    direction="row"
-                                    alignItems="center"
-                                    justifyContent="center"
-                                    className="dateLocationForBooking"
-                                >
-                                    <Grid
-                                        container
-                                        item
-                                        direction="row"
-                                        alignItems="start"
-                                        justifyContent="center"
-                                        height="80vh"
-                                    >
-                                        <EventSpecificHostForm
-                                            theEvent={bookingDialogDetails}
-                                            artist={thisEvent.artist}
-                                            bookingDetailsDialogHandleClose={
-                                                bookingDetailsDialogHandleClose
-                                            }
-                                        />
-                                        {/* <StackDateforDisplay
-                                            date={
-                                                bookingDialogDetails.bookingWhen
-                                            }
-                                        ></StackDateforDisplay> */}
-                                    </Grid>
-                                </Grid>
-                            ) : (
+                        {/* <DialogContentText id="alert-dialog-description"> */}
+                        {!isAuthenticated && wantsToBook ? (
+                            <Login bookingDialog={bookingDialogDetails} />
+                        ) : !wantsToBook ? (
+                            <EventDetails theEvent={bookingDialogDetails} />
+                        ) : host &&
+                          host.me &&
+                          host.me._id &&
+                          host.me.completedProfileForm &&
+                          host.me.firstName &&
+                          host.me.lastName &&
+                          host.me.email &&
+                          host.me.profileImg &&
+                          (host.me.streetAddress ||
+                              host.me.venueStreetAddress) ? (
+                            <Grid
+                                container
+                                item
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="center"
+                                className="dateLocationForBooking"
+                            >
                                 <Grid
                                     container
                                     item
                                     direction="row"
                                     alignItems="start"
                                     justifyContent="center"
-                                    height="100vh"
+                                    height="80vh"
                                 >
-                                    <EditMyHostProfile
-                                        inDialog={bookingDialogDetails}
+                                    <EventSpecificHostForm
+                                        theEvent={bookingDialogDetails}
+                                        artist={thisEvent.artist}
+                                        bookingDetailsDialogHandleClose={
+                                            bookingDetailsDialogHandleClose
+                                        }
                                     />
+                                    {/* <StackDateforDisplay
+                                            date={
+                                                bookingDialogDetails.bookingWhen
+                                            }
+                                        ></StackDateforDisplay> */}
                                 </Grid>
-                            )}
-                        </DialogContentText>
+                            </Grid>
+                        ) : (
+                            <Grid
+                                container
+                                item
+                                direction="row"
+                                alignItems="start"
+                                justifyContent="center"
+                                height="100vh"
+                            >
+                                <EditMyHostProfile
+                                    inDialog={bookingDialogDetails}
+                                />
+                            </Grid>
+                        )}
+                        {/* </DialogContentText> */}
                     </DialogContent>
                     {host &&
                         host.me &&
