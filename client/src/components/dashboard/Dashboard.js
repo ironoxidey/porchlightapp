@@ -560,6 +560,7 @@ const Dashboard = ({
                                                         thisEvent.bookingWhen &&
                                                         thisEvent.bookingWhere && (
                                                             <ArtistDashboardEventCard
+                                                                key={idx}
                                                                 thisEvent={
                                                                     thisEvent
                                                                 }
@@ -631,6 +632,7 @@ const Dashboard = ({
                                                         thisEvent.bookingWhen &&
                                                         thisEvent.bookingWhere && (
                                                             <ArtistDashboardEventCard
+                                                                key={idx}
                                                                 thisEvent={
                                                                     thisEvent
                                                                 }
@@ -694,13 +696,9 @@ const Dashboard = ({
                                         }}
                                     ></Grid>
                                     {myHostEvents
-                                        .filter((e) => e)
+                                        .filter((e) => e) //.filter(e => e) to remove any null values
                                         .map(
-                                            (
-                                                thisEvent,
-                                                idx,
-                                                whenWhereOrig //.filter(e => e) to remove any null values
-                                            ) =>
+                                            (thisEvent, idx, whenWhereOrig) =>
                                                 thisEvent.bookingWhen &&
                                                 thisEvent.bookingWhere && (
                                                     <HostDashboardEventCard
@@ -755,12 +753,12 @@ const Dashboard = ({
                                             }}
                                         ></Grid>
                                         {nearMeToHost
-                                            .filter((e) => e)
+                                            .filter((e) => e) //.filter(e => e) to remove any null values
                                             .map(
                                                 (
                                                     thisEvent,
                                                     idx,
-                                                    whenWhereOrig //.filter(e => e) to remove any null values
+                                                    whenWhereOrig
                                                 ) =>
                                                     thisEvent.bookingWhen &&
                                                     thisEvent.bookingWhere && (

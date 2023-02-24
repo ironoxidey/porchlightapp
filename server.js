@@ -4,6 +4,11 @@ const express = require('express');
 const connectDB = require('./config/db');
 const path = require('path');
 
+const cronConfig = require('./scheduler/config.js');
+const cronScheduler = require('./scheduler');
+
+cronScheduler.initCrons(cronConfig);
+
 const app = express();
 
 //Connect Database

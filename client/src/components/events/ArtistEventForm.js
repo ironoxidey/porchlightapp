@@ -1614,7 +1614,13 @@ const ArtistEventForm = ({
                         inputProps={{
                             step: 900, // 15 min
                         }}
-                        sx={{ padding: '0 8px' }}
+                        sx={{
+                            padding: '0 8px',
+                            '& input[type="time"]::-webkit-calendar-picker-indicator':
+                                {
+                                    filter: 'invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)',
+                                },
+                        }}
                     />{' '}
                     to have “doors open” at
                     <TextField
@@ -1628,7 +1634,13 @@ const ArtistEventForm = ({
                         inputProps={{
                             step: 900, // 15 min
                         }}
-                        sx={{ padding: '0 8px' }}
+                        sx={{
+                            padding: '0 8px',
+                            '& input[type="time"]::-webkit-calendar-picker-indicator':
+                                {
+                                    filter: 'invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)',
+                                },
+                        }}
                     />
                     for the show starting at
                     <TextField
@@ -1642,7 +1654,13 @@ const ArtistEventForm = ({
                         inputProps={{
                             step: 900, // 15 min
                         }}
-                        sx={{ padding: '0 0 0 8px' }}
+                        sx={{
+                            padding: '0 0 0 8px',
+                            '& input[type="time"]::-webkit-calendar-picker-indicator':
+                                {
+                                    filter: 'invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)',
+                                },
+                        }}
                     />
                     with a hard wrap at about{' '}
                     <TextField
@@ -1656,7 +1674,13 @@ const ArtistEventForm = ({
                         inputProps={{
                             step: 900, // 15 min
                         }}
-                        sx={{ padding: '0 0 0 8px' }}
+                        sx={{
+                            padding: '0 0 0 8px',
+                            '& input[type="time"]::-webkit-calendar-picker-indicator':
+                                {
+                                    filter: 'invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)',
+                                },
+                        }}
                     />
                     .
                 </Grid>,

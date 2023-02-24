@@ -127,7 +127,7 @@ const Navbar = ({
     };
 
     const guestLinks = [
-        <Link to="/login">
+        <Link to="/login" key="guestLoginLink">
             <ListItemIcon>
                 <LoginIcon></LoginIcon>
             </ListItemIcon>
@@ -136,7 +136,7 @@ const Navbar = ({
     ];
 
     const dashboardLink = [
-        <Link to="/dashboard">
+        <Link to="/dashboard" key="dashboardLink">
             <ListItemIcon>
                 <DashboardTwoToneIcon></DashboardTwoToneIcon>
             </ListItemIcon>
@@ -145,7 +145,7 @@ const Navbar = ({
     ];
 
     const logoutLink = [
-        <a onClick={logout} href="#!">
+        <a onClick={logout} href="#!" key="logoutLink">
             <ListItemIcon>
                 <LogoutIcon></LogoutIcon>
             </ListItemIcon>
@@ -154,7 +154,7 @@ const Navbar = ({
     ];
 
     const attenderLinks = [
-        <Link to="/edit-host-profile">
+        <Link to="/edit-host-profile" key="signupHostProfile">
             <ListItemIcon>
                 <AutoAwesomeTwoToneIcon></AutoAwesomeTwoToneIcon>
             </ListItemIcon>
@@ -164,7 +164,7 @@ const Navbar = ({
 
     const hostLinks = [
         <EditHostSettings />,
-        <Link to="/edit-host-profile">
+        <Link to="/edit-host-profile" key="editHostProfile">
             <ListItemIcon>
                 <EditTwoToneIcon></EditTwoToneIcon>
             </ListItemIcon>
@@ -174,7 +174,7 @@ const Navbar = ({
 
     const artistLinks = [
         artist.me && artist.me.slug ? (
-            <Link to={'/artists/' + artist.me.slug}>
+            <Link to={'/artists/' + artist.me.slug} key="artistProfile">
                 <ListItemIcon>
                     <AccountBoxTwoToneIcon></AccountBoxTwoToneIcon>
                 </ListItemIcon>
@@ -183,7 +183,7 @@ const Navbar = ({
         ) : (
             ''
         ),
-        <Link to="/edit-artist-profile">
+        <Link to="/edit-artist-profile" key="editArtistProfile">
             <ListItemIcon>
                 <EditTwoToneIcon></EditTwoToneIcon>
             </ListItemIcon>

@@ -16,19 +16,19 @@ import {
     FormControlLabel,
     FormControl,
     FormLabel,
-    Select,
-    InputLabel,
-    MenuItem,
+    //Select,
+    //InputLabel,
+    //MenuItem,
     InputAdornment,
-    IconButton,
+    //IconButton,
     Grid,
-    Box,
-    Paper,
-    BottomNavigationAction,
-    BottomNavigation,
+    //Box,
+    //Paper,
+    //BottomNavigationAction,
+    // BottomNavigation,
     Autocomplete,
     Chip,
-    withStyles,
+    // withStyles,
     Typography,
     Tooltip,
     Avatar,
@@ -45,6 +45,7 @@ import SaveTwoToneIcon from '@mui/icons-material/SaveTwoTone';
 import AddPhotoAlternateTwoToneIcon from '@mui/icons-material/AddPhotoAlternateTwoTone';
 import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
+import SendIcon from '@mui/icons-material/Send';
 
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
@@ -56,7 +57,6 @@ import { textAlign } from '@mui/system';
 
 import {
     getFontAwesomeIcon,
-    //getHostLocations,
     sortDates,
     jumpTo,
     toTitleCase,
@@ -64,11 +64,13 @@ import {
 //import { ProfileAvatar } from '../../common/components';
 import { getHostsLocations } from '../../actions/host';
 import { getArtists } from '../../actions/artist';
+import { hostProposes } from '../../actions/event';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
-import EventDetails from './EventDetails';
+// import EventDetails from './EventDetails';
 import HostEventDetails from './HostEventDetails';
+import HostProfile from '../hosts/HostProfile';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -79,14 +81,6 @@ Object.filter = (obj, predicate) =>
     Object.keys(obj)
         .filter((key) => predicate(obj[key]))
         .reduce((res, key) => ((res[key] = obj[key]), res), []);
-
-// const hostLocations = getHostsLocations();
-// console.log(
-//     'The hard coded list:',
-//     getHostLocations(),
-//     'The list from the database:',
-//     getHostsLocations()
-// );
 
 const UploadInput = styled('input')({
     display: 'none',
@@ -106,6 +100,7 @@ const HostEventForm = ({
     editHostEvent,
     getHostsLocations,
     getArtists,
+    hostProposes,
     artists,
     hosts,
     history,
@@ -127,50 +122,22 @@ const HostEventForm = ({
         isMe = true;
     }
 
-    //let hostLocations = [];
-    //const [hostLocations, setHostLocations] = useState([]);
-
     useEffect(() => {
         getArtists();
     }, []);
 
     useEffect(() => {
         getHostsLocations();
-        //setHostLocations(hosts);
-        // console.log(
-        //     'The hard coded list:',
-        //     getHostLocations(),
-        //     'The list from the database:',
-        //     hosts
-        // );
     }, []);
 
     const [formData, setFormData] = useState({
+        status: 'DRAFT',
         createdBy: 'HOST',
-        // email: '',
-        // genres: [],
-        // medium: '',
-        // active: '',
-        // phone: '',
-        // hometown: '',
-        // streetAddress: '',
-        // city: '',
-        // state: '',
-        // zip: '',
         promotionApproval: '',
-        // artistWebsite: '',
-        // artistStatementVideo: '',
-        // livePerformanceVideo: '',
-        // costStructure: '',
-        // namedPrice: '',
-        // payoutPlatform: 'PayPal',
-        // payoutHandle: '',
         tourVibe: [],
         preferredArtists: [],
         bookingWhen: '',
         bookingWhere: {},
-        // setLength: '',
-        // schedule: '',
         showSchedule: {
             setupTime: '17:45',
             startTime: '19:00',
@@ -180,91 +147,39 @@ const HostEventForm = ({
         },
         overnight: '',
         openers: '',
-        // travelingCompanions: [],
-        //companionTravelers: '',
         hangout: '',
         merchTable: false,
-        // allergies: [],
         familyFriendly: false,
         alcohol: false,
         soundSystem: '',
         agreeToPayAdminFee: false,
         agreeToPromote: false,
-        // wideImg: '',
-        // squareImg: '',
-        // covidPrefs: [],
         hostNotes: '',
-        // financialHopes: '',
-        // fanActions: [],
-        // onboardDate: '',
-        // bio: '',
         hostUpdated: new Date(),
+
+        offersFromHosts: [],
+
+        //from EventSpecificHostForm.js
+        refreshments: '',
+        houseRules: '',
+        eventbritePublicAddress: '',
+        additionalRequests: '',
+        guaranteeHonorarium: '',
+        honorariumAmount: '',
+        extraClarification: '',
+        seatingProvided: '',
     });
 
     useEffect(() => {
         if (theEvent) {
-            //console.log('theEvent', theEvent);
+            //console.log('theEvent.offersFromHosts', theEvent.offersFromHosts);
             setFormData({
+                status: loading || !theEvent.status ? '' : theEvent.status,
                 createdBy: 'HOST',
-                // email:
-                //     loading || !theEvent.artistEmail
-                //         ? ''
-                //         : theEvent.artistEmail,
-                // medium: loading || !theEvent.medium ? '' : theEvent.medium,
-                // genres: loading || !theEvent.genres ? [] : theEvent.genres,
-                // soundsLike:
-                //     loading || !theEvent.soundsLike ? [] : theEvent.soundsLike,
-                // repLinks:
-                //     loading || !theEvent.repLinks ? [] : theEvent.repLinks,
-                // repLink: loading || !theEvent.repLink ? '' : theEvent.repLink,
-                // socialLinks:
-                //     loading || !theEvent.socialLinks
-                //         ? []
-                //         : theEvent.socialLinks,
-                // helpKind:
-                //     loading || !theEvent.helpKind ? '' : theEvent.helpKind,
-                // typeformDate: loading || !theEvent.typeformDate ? '' : theEvent.typeformDate,
-                // active: loading || (theEvent.active == null) ? false : theEvent.active,
-                // phone: loading || !theEvent.phone ? '' : theEvent.phone,
-                // hometown:
-                //     loading || !theEvent.hometown ? '' : theEvent.hometown,
-                // streetAddress:
-                //     loading || !theEvent.streetAddress
-                //         ? ''
-                //         : theEvent.streetAddress,
-                // city: loading || !theEvent.city ? '' : theEvent.city,
-                // state: loading || !theEvent.state ? '' : theEvent.state,
-                // zip: loading || !theEvent.zip ? '' : theEvent.zip,
                 promotionApproval:
                     loading || !theEvent.promotionApproval
                         ? ''
                         : theEvent.promotionApproval,
-                // artistWebsite:
-                //     loading || !theEvent.artistWebsite
-                //         ? ''
-                //         : theEvent.artistWebsite,
-                // artistStatementVideo:
-                //     loading || !theEvent.artistStatementVideo
-                //         ? ''
-                //         : theEvent.artistStatementVideo,
-                // livePerformanceVideo:
-                //     loading || !theEvent.livePerformanceVideo
-                //         ? ''
-                //         : theEvent.livePerformanceVideo,
-                // costStructure:
-                //     loading || !theEvent.costStructure
-                //         ? ''
-                //         : theEvent.costStructure,
-                // namedPrice:
-                //     loading || !theEvent.namedPrice ? '' : theEvent.namedPrice,
-                // payoutPlatform:
-                //     loading || !theEvent.payoutPlatform
-                //         ? 'PayPal'
-                //         : theEvent.payoutPlatform,
-                // payoutHandle:
-                //     loading || !theEvent.payoutHandle
-                //         ? ''
-                //         : theEvent.payoutHandle,
                 tourVibe:
                     loading || !theEvent.tourVibe ? [] : theEvent.tourVibe,
                 preferredArtists:
@@ -284,10 +199,6 @@ const HostEventForm = ({
                               fullState: states(hostMe.state).name,
                               zip: hostMe.zipCode,
                           },
-                // setLength:
-                //     loading || !theEvent.setLength ? '' : theEvent.setLength,
-                // schedule:
-                //     loading || !theEvent.schedule ? '' : theEvent.schedule,
                 showSchedule:
                     loading || !theEvent.showSchedule
                         ? {
@@ -301,14 +212,7 @@ const HostEventForm = ({
                 overnight:
                     loading || !theEvent.overnight ? '' : theEvent.overnight,
                 openers: loading || !theEvent.openers ? '' : theEvent.openers,
-                // travelingCompanions:
-                //     loading || theEvent.travelingCompanions == null
-                //         ? []
-                //         : theEvent.travelingCompanions,
-                // companionTravelers:
-                //     loading || theEvent.companionTravelers == null
-                //         ? false
-                //         : theEvent.companionTravelers,
+
                 hangout:
                     loading || theEvent.hangout == null
                         ? false
@@ -317,8 +221,6 @@ const HostEventForm = ({
                     loading || theEvent.merchTable == null
                         ? false
                         : theEvent.merchTable,
-                // allergies:
-                //     loading || !theEvent.allergies ? [] : theEvent.allergies,
                 familyFriendly:
                     loading || theEvent.familyFriendly == null
                         ? false
@@ -331,63 +233,79 @@ const HostEventForm = ({
                     loading || !theEvent.soundSystem
                         ? ''
                         : theEvent.soundSystem,
-                // agreeToPayAdminFee:
-                //     loading || theEvent.agreeToPayAdminFee == null
-                //         ? false
-                //         : theEvent.agreeToPayAdminFee,
                 agreeToPromote:
                     loading || theEvent.agreeToPromote == null
                         ? false
                         : theEvent.agreeToPromote,
-                // wideImg: loading || !theEvent.wideImg ? '' : theEvent.wideImg,
-                // squareImg:
-                //     loading || !theEvent.squareImg ? '' : theEvent.squareImg,
-                // covidPrefs:
-                //     loading || !theEvent.covidPrefs ? [] : theEvent.covidPrefs,
                 hostNotes:
                     loading || !theEvent.hostNotes ? '' : theEvent.hostNotes,
-                // financialHopes:
-                //     loading || !theEvent.financialHopes
-                //         ? ''
-                //         : theEvent.financialHopes,
-                // fanActions:
-                //     loading || !theEvent.fanActions ? [] : theEvent.fanActions,
-                // onboardDate: loading || !theEvent.onboardDate ? '' : theEvent.onboardDate,
-                // bio: loading || !theEvent.bio ? '' : theEvent.bio,
                 hostUpdated: new Date(),
+
+                refreshments:
+                    loading ||
+                    theEvent.offersFromHosts.length < 1 ||
+                    !theEvent.offersFromHosts[0].refreshments
+                        ? ''
+                        : theEvent.offersFromHosts[0].refreshments,
+                houseRules:
+                    loading ||
+                    theEvent.offersFromHosts.length < 1 ||
+                    !theEvent.offersFromHosts[0].houseRules
+                        ? ''
+                        : theEvent.offersFromHosts[0].houseRules,
+                eventbritePublicAddress:
+                    loading ||
+                    theEvent.offersFromHosts.length < 1 ||
+                    !theEvent.offersFromHosts[0].eventbritePublicAddress
+                        ? ''
+                        : theEvent.offersFromHosts[0].eventbritePublicAddress,
+                additionalRequests:
+                    loading ||
+                    theEvent.offersFromHosts.length < 1 ||
+                    !theEvent.offersFromHosts[0].additionalRequests
+                        ? ''
+                        : theEvent.offersFromHosts[0].additionalRequests,
+
+                offersFromHosts:
+                    !loading ||
+                    (theEvent.offersFromHosts &&
+                        theEvent.offersFromHosts.length < 1)
+                        ? []
+                        : theEvent.offersFromHosts,
+
+                guaranteeHonorarium:
+                    loading ||
+                    theEvent.offersFromHosts.length < 1 ||
+                    !theEvent.offersFromHosts[0].guaranteeHonorarium
+                        ? ''
+                        : theEvent.offersFromHosts[0].guaranteeHonorarium,
+                honorariumAmount:
+                    loading ||
+                    theEvent.offersFromHosts.length < 1 ||
+                    !theEvent.offersFromHosts[0].honorariumAmount
+                        ? theEvent.financialHopes
+                        : theEvent.offersFromHosts[0].honorariumAmount,
+                extraClarification:
+                    loading ||
+                    theEvent.offersFromHosts.length < 1 ||
+                    !theEvent.offersFromHosts[0].extraClarification
+                        ? ''
+                        : theEvent.offersFromHosts[0].extraClarification,
+                seatingProvided:
+                    loading ||
+                    theEvent.offersFromHosts.length < 1 ||
+                    !theEvent.offersFromHosts[0].seatingProvided
+                        ? ''
+                        : theEvent.offersFromHosts[0].seatingProvided,
             });
         } else {
             if (!auth.loading) {
-                // console.log(
-                //     'Create a new event with email: ' + auth.user.email
-                // );
                 setFormData({
+                    status: 'DRAFT',
                     email: auth.user.email,
 
                     createdBy: 'HOST',
-                    // genres: [],
-                    // soundsLike: [],
-                    // medium: '',
-                    // repLinks: [],
-                    // repLink: '',
-                    // socialLinks: [],
-                    // helpKind: '',
-                    // typeformDate: '',
-                    // active: '',
-                    // phone: '',
-                    // hometown: '',
-                    // streetAddress: '',
-                    // city: '',
-                    // state: '',
-                    // zip: '',
                     promotionApproval: '',
-                    // artistWebsite: '',
-                    // artistStatementVideo: '',
-                    // livePerformanceVideo: '',
-                    // costStructure: '',
-                    // namedPrice: '',
-                    // payoutPlatform: 'PayPal',
-                    // payoutHandle: '',
                     preferredArtists: [],
                     tourVibe: [],
                     bookingWhen: '',
@@ -400,8 +318,6 @@ const HostEventForm = ({
                                   fullState: states(hostMe.state).name,
                                   zip: hostMe.zipCode,
                               },
-                    // setLength: '',
-                    // schedule: '',
                     showSchedule: {
                         setupTime: '17:45',
                         startTime: '19:00',
@@ -411,84 +327,61 @@ const HostEventForm = ({
                     },
                     overnight: '',
                     openers: '',
-                    // travelingCompanions: [],
-                    //companionTravelers: '',
                     hangout: '',
                     merchTable: false,
-                    // allergies: [],
                     familyFriendly: false,
                     alcohol: false,
                     soundSystem: '',
-                    // agreeToPayAdminFee: false,
                     agreeToPromote: false,
-                    // wideImg: '',
-                    // squareImg: '',
-                    // covidPrefs: [],
                     hostNotes: '',
-                    // financialHopes: '',
-                    // fanActions: [],
-                    // onboardDate: '',
-                    // bio: '',
+
+                    offersFromHosts: [],
+
+                    refreshments: '',
+                    houseRules: '',
+                    eventbritePublicAddress: '',
+                    additionalRequests: '',
+                    guaranteeHonorarium: '',
+                    honorariumAmount: '',
+                    extraClarification: '',
+                    seatingProvided: '',
                 });
             }
         }
     }, [auth.loading, editHostEvent]);
 
     const {
-        // email,
-        // medium,
-        // genres,
-        // soundsLike,
-        // repLinks,
-        // repLink,
-        // socialLinks,
-        // helpKind,
-        // typeformDate,
-        // active,
-        // phone,
-        // hometown,
-        // streetAddress,
-        // city,
-        // state,
-        // zip,
+        status,
         promotionApproval,
-        // artistWebsite,
-        // artistStatementVideo,
-        // livePerformanceVideo,
-        // costStructure,
-        // payoutPlatform,
-        // payoutHandle,
         preferredArtists,
         tourVibe,
-        // namedPrice,
         bookingWhen,
         bookingWhere,
-        // setLength,
-        // schedule,
         showSchedule,
         overnight,
-        // openers,
-        // travelingCompanions,
-        //companionTravelers,
         hangout,
         merchTable,
-        // allergies,
         familyFriendly,
         alcohol,
         soundSystem,
-        // agreeToPayAdminFee,
         agreeToPromote,
-        // wideImg,
-        // squareImg,
-        // covidPrefs,
         hostNotes,
-        // financialHopes,
-        // fanActions,
-        // onboardDate,
-        // bio,
+
+        offersFromHosts,
+
+        refreshments,
+        houseRules,
+        eventbritePublicAddress,
+        additionalRequests,
+        guaranteeHonorarium,
+        honorariumAmount,
+        extraClarification,
+        seatingProvided,
     } = formData;
 
-    const stageName = hostMe.stageName;
+    // const stageName = hostMe.stageName;
+
+    //console.log('HostEventForm offersFromHosts', offersFromHosts);
 
     const onChange = (e) => {
         //console.log(e);
@@ -622,7 +515,24 @@ const HostEventForm = ({
         e.preventDefault();
         //console.log('Submitting...');
         if (bookingWhen && bookingWhere && bookingWhere.city) {
-            editHostEvent(formData, history, true);
+            const formDataWithOffer = {
+                ...formData,
+                theOffer: {
+                    refreshments: formData.refreshments,
+                    houseRules: formData.houseRules,
+                    eventbritePublicAddress: formData.eventbritePublicAddress,
+                    additionalRequests: formData.additionalRequests,
+                    guaranteeHonorarium: formData.guaranteeHonorarium,
+                    honorariumAmount: formData.honorariumAmount,
+                    extraClarification: formData.extraClarification,
+                    seatingProvided: formData.seatingProvided,
+                    openers: formData.openers,
+                    overnight: formData.overnight,
+                    showSchedule: formData.showSchedule,
+                },
+            };
+            // editHostEvent(formData, history, true);
+            editHostEvent(formDataWithOffer, history, true);
             changesMade.current = false;
         }
     };
@@ -671,109 +581,6 @@ const HostEventForm = ({
                 />,
             ],
         ],
-        // bookingWhere: [
-        //     <FormLabel component="legend">
-        //         Please select roughly where you’d like to try to play a concert
-        //         on {prettifyDate(bookingWhen)}:
-        //     </FormLabel>,
-        //     bookingWhere && (
-        //         <Grid
-        //             className="whenBooking"
-        //             container
-        //             direction="row"
-        //             justifyContent="space-around"
-        //             alignItems="start"
-        //             spacing={2}
-        //             sx={{
-        //                 // borderColor: 'primary.dark',
-        //                 // borderWidth: '2px',
-        //                 // borderStyle: 'solid',
-        //                 backgroundColor: 'rgba(0,0,0,0.15)',
-        //                 '&:hover': {},
-        //                 border: `1px var(--light-color) solid`,
-        //                 padding: '0 10px 10px',
-        //                 margin: '0px auto',
-        //                 width: '100%',
-        //             }}
-        //         >
-        //             {/* <Grid item xs={12} md={3}>
-        // 							<TextField
-        // 								variant='standard'
-        // 								name='bookingWhenWhere'
-        // 								id={`bookingWhenWhere${idx}`}
-        // 								label={
-        // 									"On "+bookingWhen[idx]+" I’d like to play in "
-        // 								}
-        // 								value={bookingWhenWhere[idx].when || ''}
-        // 								onChange={(e) =>
-        // 									onMultiTextChange('when', bookingWhenWhere, idx, e)
-        // 								}
-        // 								sx={{ width: '100%' }}
-        // 							/>
-        // 						</Grid> */}
-        //             <Grid item xs={12} md={12}>
-        //                 <Autocomplete
-        //                     id="bookingWhere"
-        //                     //value={whenBooking && whenBooking.where || whenWhereOrig[idx-1] && whenWhereOrig[idx-1].where || null}
-        //                     value={(bookingWhere.city && bookingWhere) || null}
-        //                     options={hosts}
-        //                     disableClearable
-        //                     groupBy={(option) => option.fullState}
-        //                     getOptionLabel={(option) =>
-        //                         option.city + ', ' + option.state || ''
-        //                     }
-        //                     //getOptionSelected={(option, value) => option.city === value.city}
-        //                     isOptionEqualToValue={(option, value) =>
-        //                         option.city === value.city &&
-        //                         option.state === value.state
-        //                     }
-        //                     onChange={(e, value) => {
-        //                         onAutocompleteTagChange(
-        //                             e,
-        //                             'bookingWhere',
-        //                             value
-        //                         );
-
-        //                         // onMultiAutocompleteTagChange(
-        //                         //     'where',
-        //                         //     'bookingWhere',
-        //                         //     bookingWhere,
-        //                         //     idx,
-        //                         //     e,
-        //                         //     value
-        //                         // );
-        //                     }}
-        //                     renderTags={(value, getTagProps) =>
-        //                         value.map((option, index) => (
-        //                             <Chip
-        //                                 variant="outlined"
-        //                                 name="bookingWhere"
-        //                                 key={`bookingWhere${index}`}
-        //                                 label={
-        //                                     option.city + ', ' + option.state
-        //                                 }
-        //                                 {...getTagProps({
-        //                                     index,
-        //                                 })}
-        //                             />
-        //                         ))
-        //                     }
-        //                     renderInput={(params) => (
-        //                         <TextField
-        //                             {...params}
-        //                             sx={{ width: '100%' }}
-        //                             variant="standard"
-        //                             label={`On ${prettifyDate(
-        //                                 bookingWhen
-        //                             )}, I’d love to play in or around`}
-        //                             name="bookingWhere"
-        //                         />
-        //                     )}
-        //                 />
-        //             </Grid>
-        //         </Grid>
-        //     ),
-        // ],
         preferredArtists: [
             <FormLabel component="legend">
                 Who would you like to invite to perform?
@@ -786,7 +593,15 @@ const HostEventForm = ({
                         value={preferredArtists}
                         options={artists}
                         getOptionLabel={(option) =>
-                            option.stageName + ' ' + option.genres
+                            option.stageName +
+                            ' ' +
+                            option.genres +
+                            ' ' +
+                            option.city +
+                            ' ' +
+                            option.state +
+                            ' ' +
+                            states(option.state).usps
                         }
                         isOptionEqualToValue={(option, value) =>
                             option._id === value._id
@@ -831,7 +646,16 @@ const HostEventForm = ({
                                                 margin: '0 4px',
                                             }}
                                         >
-                                            {option.stageName}
+                                            {option.stageName}{' '}
+                                            <span
+                                                style={{
+                                                    color: 'var(--primary-color)',
+                                                    fontSize: '.75em',
+                                                }}
+                                            >
+                                                ({toTitleCase(option.city)},{' '}
+                                                {states(option.state).usps})
+                                            </span>
                                         </Typography>
                                     </Grid>
                                 </Tooltip>
@@ -969,7 +793,7 @@ const HostEventForm = ({
         promotionApproval: [
             <FormLabel component="legend">
                 Do you approve Porchlight to use video, photo, and audio
-                captured, for promotional purposes?
+                captured for promotional purposes?
             </FormLabel>,
             [
                 <FormControl component="fieldset">
@@ -993,150 +817,7 @@ const HostEventForm = ({
                 </FormControl>,
             ],
         ],
-        // openers: [
-        //     <FormLabel component="legend">
-        //         Let’s talk openers. What’s your preference?
-        //     </FormLabel>,
-        //     [
-        //         <RadioGroup
-        //             id="openers"
-        //             value={openers}
-        //             name="openers"
-        //             onChange={(e) => onChange(e)}
-        //         >
-        //             <FormControlLabel
-        //                 value="I plan on travelling with an opener."
-        //                 control={<Radio />}
-        //                 label="I plan on travelling with an opener."
-        //             />
-        //             <FormControlLabel
-        //                 value="I'd like Porchlight Hosts to invite local openers."
-        //                 control={<Radio />}
-        //                 label="I'd like Porchlight Hosts to invite local openers."
-        //             />
-        //             <FormControlLabel
-        //                 value="I'd prefer a solo set."
-        //                 control={<Radio />}
-        //                 label="I'd prefer a solo set."
-        //             />
-        //             <FormControlLabel
-        //                 value="I have no preference."
-        //                 control={<Radio />}
-        //                 label="I have no preference."
-        //             />
-        //         </RadioGroup>,
-        //     ],
-        // ],
-        // costStructure: [
-        //     <FormLabel component="legend">
-        //         What cost structure would you prefer?
-        //         <br />
-        //         <small>
-        //             *We currently offer very few guaranteed shows, for bands
-        //             selected at our discretion.
-        //         </small>
-        //     </FormLabel>,
-        //     [
-        //         <Grid item>
-        //             <RadioGroup
-        //                 id="costStructure"
-        //                 value={costStructure}
-        //                 name="costStructure"
-        //                 onChange={(e) => onChange(e)}
-        //             >
-        //                 <FormControlLabel
-        //                     value="ticket"
-        //                     control={<Radio />}
-        //                     label="Ticketed"
-        //                 />
-        //                 <FormControlLabel
-        //                     value="donation"
-        //                     control={<Radio />}
-        //                     label="Free RSVP, with a suggested donation"
-        //                 />
-        //             </RadioGroup>
-        //         </Grid>,
-        //     ],
-        // ],
-        // namedPrice: [
-        //     <FormLabel component="legend">Name your price.</FormLabel>,
-        //     [
-        //         <Grid item>
-        //             <TextField
-        //                 variant="standard"
-        //                 name="namedPrice"
-        //                 id="namedPrice"
-        //                 label={
-        //                     costStructure == 'donation'
-        //                         ? "I'd suggest a donation of"
-        //                         : 'Tickets should cost'
-        //                 }
-        //                 value={namedPrice}
-        //                 onChange={(e) => onChange(e)}
-        //                 type="number"
-        //                 InputProps={{
-        //                     startAdornment: (
-        //                         <InputAdornment position="start">
-        //                             $
-        //                         </InputAdornment>
-        //                     ),
-        //                 }}
-        //             />
-        //         </Grid>,
-        //     ],
-        // ],
-        // payoutPlatform: [
-        //     <FormLabel component="legend">
-        //         For show payout, what is the email address associated with your
-        //         Paypal account?
-        //     </FormLabel>,
-        //     <Grid
-        //         container
-        //         direction="row"
-        //         justifyContent="center"
-        //         alignItems="center"
-        //         spacing={2}
-        //     >
-        //         {/* <Grid item>
-        // 			<FormControl
-        // 				variant='outlined'
-        // 				sx={{ minWidth: 160, m: '8px 8px 8px 0' }}
-        // 			>
-        // 				<InputLabel id='payoutPlatformLabel'>I prefer using</InputLabel>
-        // 				<Select
-        // 					//variant="standard"
-        // 					labelId='payoutPlatformLabel'
-        // 					id='payoutPlatform'
-        // 					name='payoutPlatform'
-        // 					value={payoutPlatform}
-        // 					onChange={(e) => onChange(e)}
-        // 					label='I prefer using'
-        // 				>
-        // 					<MenuItem value='PayPal'>PayPal</MenuItem>
-        // 					<MenuItem value='Venmo'>Venmo</MenuItem>
-        // 					<MenuItem value='Zelle'>Zelle</MenuItem>
-        // 					<MenuItem value='Cash App'>Cash App</MenuItem>
-        // 				</Select>
-        // 			</FormControl>
-        // 		</Grid> */}
-        //         <Grid item>
-        //             <TextField
-        //                 variant="standard"
-        //                 sx={{ width: 420, maxWidth: '90vw', m: '0 0 0 0' }}
-        //                 name="payoutHandle"
-        //                 id="payoutHandle"
-        //                 label={
-        //                     'The handle for my ' +
-        //                     payoutPlatform +
-        //                     ' account is'
-        //                 }
-        //                 value={payoutHandle}
-        //                 onChange={(e) => onChange(e)}
-        //                 helperText=""
-        //             />
-        //         </Grid>
-        //     </Grid>,
-        // ],
+
         familyFriendly: [
             <FormLabel component="legend">
                 Are you looking to host a particularly family-friendly concert?
@@ -1222,127 +903,7 @@ const HostEventForm = ({
                 </FormControl>,
             ],
         ],
-        // financialHopes: [
-        //     <FormLabel component="legend">
-        //         What are your financial expectations and/or hopes for this
-        //         concert?
-        //     </FormLabel>,
-        //     [
-        //         // <Grid item>
-        //         // 	<TextField
-        //         // 		variant='standard'
-        //         // 		name='financialHopes'
-        //         // 		multiline
-        //         // 		id='financialHopes'
-        //         // 		label='What are your financial expectations and/or hopes for this show or tour?'
-        //         // 		value={financialHopes}
-        //         // 		onChange={(e) => onChange(e)}
-        //         // 	/>
-        //         // </Grid>,
-        //         <Grid item>
-        //             <TextField
-        //                 variant="standard"
-        //                 name="financialHopes"
-        //                 id="financialHopes"
-        //                 label={`It would be hard for me to make less than`}
-        //                 value={financialHopes}
-        //                 onChange={(e) => onChange(e)}
-        //                 type="number"
-        //                 InputProps={{
-        //                     startAdornment: (
-        //                         <InputAdornment position="start">
-        //                             $
-        //                         </InputAdornment>
-        //                     ),
-        //                     endAdornment: (
-        //                         <InputAdornment position="end">
-        //                             {' '}
-        //                             per show
-        //                         </InputAdornment>
-        //                     ),
-        //                 }}
-        //             />
-        //         </Grid>,
-        //     ],
-        // ],
-        // fanActions: [
-        //     <FormLabel component="legend">
-        //         What are the top ONE or TWO actions you’d like to see new fans
-        //         make?
-        //     </FormLabel>,
-        //     [
-        //         <Grid item xs={12} sx={{ width: '100%' }}>
-        //             <Autocomplete
-        //                 multiple
-        //                 id="fanActions"
-        //                 value={fanActions}
-        //                 options={[]}
-        //                 freeSolo
-        //                 onChange={(event, value) =>
-        //                     onAutocompleteTagChange(event, 'fanActions', value)
-        //                 }
-        //                 renderTags={(value, getTagProps) =>
-        //                     value.map((option, index) => (
-        //                         <Chip
-        //                             variant="outlined"
-        //                             name="fanActions"
-        //                             label={option}
-        //                             key={`fanAction${index}`}
-        //                             {...getTagProps({ index })}
-        //                         />
-        //                     ))
-        //                 }
-        //                 renderInput={(params) => (
-        //                     <TextField
-        //                         {...params}
-        //                         sx={{ width: '100%' }}
-        //                         variant="standard"
-        //                         label={`New fans of ${stageName} should `}
-        //                         name="fanActions"
-        //                     />
-        //                 )}
-        //             />
-        //         </Grid>,
-        //     ],
-        // ],
-        // agreeToPayAdminFee: [
-        //     <FormLabel component="legend">
-        //         Porchlight requests 20% of gross ticket sales, tips, and merch
-        //         sales (unless other terms have been agreed to in writing). Do
-        //         you agree to pay this fee upon completion of the show/tour?
-        //     </FormLabel>,
-        //     [
-        //         <FormControl component="fieldset">
-        //             <RadioGroup
-        //                 id="agreeToPayAdminFee"
-        //                 value={agreeToPayAdminFee}
-        //                 name="agreeToPayAdminFee"
-        //                 onChange={(e) => onChange(e)}
-        //             >
-        //                 <FormControlLabel
-        //                     value="true"
-        //                     control={<Radio />}
-        //                     label="Yes"
-        //                 />
-        //                 <FormControlLabel
-        //                     value="false"
-        //                     control={<Radio />}
-        //                     label="I'd like to discuss this further."
-        //                 />
-        //             </RadioGroup>
-        //         </FormControl>,
-        //         <FormLabel component="small">
-        //             *We collect this fee so that we can cover our costs of
-        //             managing and growing the Porchlight network. If we
-        //             experience a surplus at the end of the year, we are
-        //             committed (and personally gratified) to invest it back into
-        //             the Porchlight network in the form of an artist fund which
-        //             we will use for sponsored recording projects, micro
-        //             songwriter retreats, artist grants, and other artist
-        //             support.
-        //         </FormLabel>,
-        //     ],
-        // ],
+
         agreeToPromote: [
             <FormLabel component="legend">
                 Do you agree to promote this event to your community, including
@@ -1370,144 +931,7 @@ const HostEventForm = ({
                 </FormControl>,
             ],
         ],
-        // travelingCompanions: [
-        //     <FormLabel component="legend">
-        //         Will anybody be travelling with you?
-        //     </FormLabel>,
-        //     [
-        //         travelingCompanions && travelingCompanions.length > 0
-        //             ? travelingCompanions.map((travelingCompanion, idx) => (
-        //                   <Grid
-        //                       className="travelingCompanion"
-        //                       key={`travelingCompanion${idx}`}
-        //                       container
-        //                       direction="row"
-        //                       justifyContent="space-around"
-        //                       alignItems="start"
-        //                       spacing={2}
-        //                       sx={{
-        //                           // borderColor: 'primary.dark',
-        //                           // borderWidth: '2px',
-        //                           // borderStyle: 'solid',
-        //                           backgroundColor: 'rgba(0,0,0,0.15)',
-        //                           '&:hover': {},
-        //                           padding: '0 10px 10px',
-        //                           margin: '0px auto',
-        //                           width: '100%',
-        //                       }}
-        //                   >
-        //                       <Grid item xs={12} md={3}>
-        //                           <TextField
-        //                               variant="standard"
-        //                               name="travelingCompanions"
-        //                               id={`travelingCompanionName${idx}`}
-        //                               label={
-        //                                   travelingCompanions.length > 1
-        //                                       ? `One of their names is`
-        //                                       : `The person's name is`
-        //                               }
-        //                               value={travelingCompanion.name}
-        //                               onChange={(e) =>
-        //                                   onMultiTextChange(
-        //                                       'name',
-        //                                       travelingCompanions,
-        //                                       idx,
-        //                                       e
-        //                                   )
-        //                               }
-        //                               sx={{ width: '100%' }}
-        //                           />
-        //                       </Grid>
-        //                       <Grid item xs={12} md={2}>
-        //                           <TextField
-        //                               variant="standard"
-        //                               name="travelingCompanions"
-        //                               id={`travelingCompanionRole${idx}`}
-        //                               label={
-        //                                   travelingCompanion.name
-        //                                       ? `${
-        //                                             travelingCompanion.name.split(
-        //                                                 ' '
-        //                                             )[0]
-        //                                         }'s role is`
-        //                                       : `Their role is`
-        //                               }
-        //                               value={travelingCompanion.role}
-        //                               onChange={(e) =>
-        //                                   onMultiTextChange(
-        //                                       'role',
-        //                                       travelingCompanions,
-        //                                       idx,
-        //                                       e
-        //                                   )
-        //                               }
-        //                               sx={{ width: '100%' }}
-        //                           />
-        //                       </Grid>
-        //                       <Grid item xs={10} md={true}>
-        //                           <TextField
-        //                               variant="standard"
-        //                               name="travelingCompanions"
-        //                               id={`travelingCompanionEmail${idx}`}
-        //                               label={
-        //                                   travelingCompanion.name
-        //                                       ? `${
-        //                                             travelingCompanion.name.split(
-        //                                                 ' '
-        //                                             )[0]
-        //                                         }'s email is`
-        //                                       : `Their email is`
-        //                               }
-        //                               value={travelingCompanion.email}
-        //                               onChange={(e) =>
-        //                                   onMultiTextChange(
-        //                                       'email',
-        //                                       travelingCompanions,
-        //                                       idx,
-        //                                       e
-        //                                   )
-        //                               }
-        //                               sx={{ width: '100%' }}
-        //                           />
-        //                       </Grid>
-        //                       <Grid item xs={2} md={0.65}>
-        //                           <IconButton
-        //                               onClick={(e) =>
-        //                                   handleRemoveMultiTextField(
-        //                                       'travelingCompanions',
-        //                                       travelingCompanions,
-        //                                       idx
-        //                                   )
-        //                               }
-        //                           >
-        //                               <DeleteIcon />
-        //                           </IconButton>
-        //                       </Grid>
-        //                   </Grid>
-        //               ))
-        //             : '',
-        //         <Grid
-        //             container
-        //             item
-        //             direction="row"
-        //             justifyContent="center"
-        //             alignItems="center"
-        //             xs={12}
-        //         >
-        //             <Button
-        //                 onClick={(e) =>
-        //                     handleAddMultiTextField(
-        //                         'travelingCompanions',
-        //                         travelingCompanions
-        //                     )
-        //                 }
-        //             >
-        //                 <PersonAddIcon />
-        //                 Add person
-        //             </Button>
-        //         </Grid>,
-        //     ],
-        // ],
+
         overnight: [
             <FormLabel component="legend">
                 How many people are you able and willing to accommodate
@@ -1537,83 +961,11 @@ const HostEventForm = ({
                             ),
                         }}
                     />
-                    {/* <FormControl component="fieldset">
-                        <RadioGroup
-                            id="overnight"
-                            value={overnight}
-                            name="overnight"
-                            onChange={(e) => onChange(e)}
-                        >
-                            <FormControlLabel
-                                value="1"
-                                control={<Radio />}
-                                label="Yes, for 1 person, please."
-                            />
-                            {travelingCompanions &&
-                            travelingCompanions.length > 0
-                                ? travelingCompanions.map(
-                                      (travelingCompanion, idx) => (
-                                          <FormControlLabel
-                                              key={`travelingCompanion${idx}`}
-                                              value={idx + 2}
-                                              control={<Radio />}
-                                              label={
-                                                  'Yes, for ' +
-                                                  (idx + 2) +
-                                                  ' people, please.'
-                                              }
-                                          />
-                                      )
-                                  )
-                                : ''}
-                            <FormControlLabel
-                                value="0"
-                                control={<Radio />}
-                                label="No, thank you."
-                            />
-                        </RadioGroup>
-                    </FormControl> */}
                 </Grid>,
             ],
         ],
         hangout: [
             [
-                // <Grid
-                // 	container
-                // 	item
-                // 	justifyContent='center'
-                // 	alignItems='center'
-                // 	spacing={2}
-                // 	sx={{
-                // 		borderColor: 'primary.dark',
-                // 		borderWidth: '2px',
-                // 		borderStyle: 'solid',
-                // 		backgroundColor: 'rgba(0,0,0,0.15)',
-                // 		'&:hover': {},
-                // 		padding: '0 10px 10px',
-                // 		margin: '0px auto',
-                // 		width: '100%',
-                // 	}}
-                // >
-                // 	<FormLabel
-                // 		component='p'
-                // 		className='small'
-                // 		sx={{
-                // 			textAlign: 'left!important',
-                // 			width: '100%',
-                // 			fontSize: '1rem!important',
-                // 			lineHeight: '1.3em!important',
-                // 			padding: '8px 16px',
-                // 		}}
-                // 	>
-                // 		Our heart at Porchlight is to cultivate relationships between
-                // 		artists and hosts. As such, we’d love to make time for a little
-                // 		hangout either before or after the show, just for you, your hosts,
-                // 		and maybe a couple people interested in meeting with artists like
-                // 		you in a more informal setting.
-                // 	</FormLabel>
-                // </Grid>,
-
                 <Grid item xs={12}>
                     <FormLabel component="legend" sx={{}}>
                         The heart of Porchlight is to cultivate relationships
@@ -1750,61 +1102,6 @@ const HostEventForm = ({
                 </Grid>,
             ],
         ],
-        // covidPrefs: [
-        //     <FormLabel component="legend">
-        //         Beyond host preferences and local guidelines, do you have
-        //         particular Covid concerns you’d like these events to adhere to?
-        //     </FormLabel>,
-        //     <Grid item xs={12} sx={{ width: '100%' }}>
-        //         <Autocomplete
-        //             id="covidPrefs"
-        //             multiple
-        //             disableCloseOnSelect
-        //             value={covidPrefs}
-        //             options={[
-        //                 'the host determining what is best',
-        //                 'everyone passing a fever check',
-        //                 'everyone presenting a negative Covid test',
-        //                 'everyone presenting a vaccination passport',
-        //                 'everyone social distancing',
-        //                 'everyone wearing masks',
-        //                 'everything being outdoors',
-        //             ]}
-        //             onChange={(event, value) =>
-        //                 onAutocompleteTagChange(event, 'covidPrefs', value)
-        //             }
-        //             renderTags={(value, getTagProps) =>
-        //                 value.map((option, index) => (
-        //                     <Chip
-        //                         variant="outlined"
-        //                         name="covidPrefs"
-        //                         label={option}
-        //                         key={`covidPref${index}`}
-        //                         {...getTagProps({ index })}
-        //                     />
-        //                 ))
-        //             }
-        //             renderInput={(params) => (
-        //                 <TextField
-        //                     {...params}
-        //                     sx={{ width: '100%' }}
-        //                     variant="standard"
-        //                     label={`I would feel most comfortable with`}
-        //                     name="covidPrefs"
-        //                 />
-        //             )}
-        //         />
-        //     </Grid>,
-        //     {
-        //         /* <TextField
-        // 		name='covidPrefs'
-        // 		id='covidPrefs'
-        // 		label='Do you have Covid guidelines you’d like these events to adhere to, beyond local guidelines and host preferences?'
-        // 		value={covidPrefs}
-        // 		onChange={(e) => onChange(e)}
-        // 	/>, */
-        //     },
-        // ],
         hostNotes: [
             <FormLabel component="legend">
                 Do you have any final thoughts, questions, notes, or
@@ -1823,38 +1120,512 @@ const HostEventForm = ({
                 />
             </Grid>,
         ],
+        refreshments: [
+            <FormLabel component="legend">
+                Let's talk refreshments. Do you plan on having any food or
+                drinks?
+            </FormLabel>,
+            [
+                <Grid item xs={12}>
+                    <FormControl component="fieldset">
+                        <RadioGroup
+                            id="refreshments"
+                            value={refreshments}
+                            name="refreshments"
+                            onChange={(e) => onChange(e)}
+                        >
+                            <FormControlLabel
+                                value="I don't plan on providing any drinks or food."
+                                control={<Radio />}
+                                label={`I don't plan on providing any drinks or food.`}
+                            />
+                            <FormControlLabel
+                                value="I plan on providing some light snacks and drinks."
+                                control={<Radio />}
+                                label="I plan on providing some light snacks and drinks."
+                            />
+                            <FormControlLabel
+                                value="I plan on providing lots of finger foods and several drink options."
+                                control={<Radio />}
+                                label="I plan on providing lots of finger foods and several drink options."
+                            />
+                            <FormControlLabel
+                                value="I plan on providing a full meal for all my guests."
+                                control={<Radio />}
+                                label="I plan on providing a full meal for all my guests."
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                </Grid>,
+            ],
+        ],
+        seatingProvided: [
+            <FormLabel component="legend">
+                Do you have all the seating you’ll need, or should we encourage
+                people to bring their own chairs?
+            </FormLabel>,
+            [
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        id="seatingProvided"
+                        value={seatingProvided}
+                        name="seatingProvided"
+                        onChange={(e) => onChange(e)}
+                    >
+                        <FormControlLabel
+                            value="yes"
+                            control={<Radio />}
+                            label={`Yes, I've got all the seating needed for at least ${hostMe.maxNumAttendees} people.`}
+                        />
+                        <FormControlLabel
+                            value="no"
+                            control={<Radio />}
+                            label="No, please encourage attenders to bring something to sit on."
+                        />
+                    </RadioGroup>
+                </FormControl>,
+            ],
+        ],
+
+        houseRules: [
+            <FormLabel component="legend">
+                Let's talk house rules! What rules about being in/around your
+                house would you like to make known to the attendees and artists?
+            </FormLabel>,
+            [
+                <Grid item xs={12} sx={{ width: '100%' }}>
+                    <TextField
+                        variant="standard"
+                        name="houseRules"
+                        id="houseRules"
+                        label={`These are my house rules:`}
+                        value={houseRules}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        eventbritePublicAddress: [
+            [
+                <FormLabel component="h3">
+                    We usually set up Eventbrite pages for these shows. Some
+                    folks prefer to have their street address kept private, and
+                    shared in an email with only those who RSVP.
+                </FormLabel>,
+                <FormLabel component="legend">
+                    Are you comfortable with your address being publicly
+                    viewable on the Eventbrite page?
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        id="eventbritePublicAddress"
+                        value={eventbritePublicAddress}
+                        name="eventbritePublicAddress"
+                        onChange={(e) => onChange(e)}
+                    >
+                        <FormControlLabel
+                            value="yes"
+                            control={<Radio />}
+                            label="Yes"
+                        />
+                        <FormControlLabel
+                            value="no"
+                            control={<Radio />}
+                            label="No"
+                        />
+                        <FormControlLabel
+                            value="notSure"
+                            control={<Radio />}
+                            label="Not Sure"
+                        />
+                    </RadioGroup>
+                </FormControl>,
+            ],
+        ],
+        additionalRequests: [
+            <FormLabel component="legend">
+                As the host, do you have any other requests as we set up the
+                Eventbrite page for this show?
+            </FormLabel>,
+            [
+                <Grid item xs={12} sx={{ width: '100%' }}>
+                    <TextField
+                        variant="standard"
+                        name="additionalRequests"
+                        id="additionalRequests"
+                        label={`These are my additional requests:`}
+                        value={additionalRequests}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        guaranteeHonorarium: [
+            [
+                <FormLabel component="h3">
+                    You mentioned before that you might be able to draw{' '}
+                    {hostMe.numDraw} people to a show.
+                    {/* Considering that we’re{' '}
+                    {theEvent.costStructure === 'ticket'
+                        ? 'selling tickets for '
+                        : 'hoping for individual donations of '}{' '}
+                    ${theEvent.namedPrice}, the artist is looking at maybe
+                    making $
+                    {Math.round(
+                        (hostMe.numDraw * theEvent.namedPrice +
+                            Number.EPSILON) *
+                            100
+                    ) / 100}
+                    . */}
+                </FormLabel>,
+                <FormLabel component="legend">
+                    If the band comes up short of their hoped-for $
+                    {/* {theEvent.financialHopes}  */}
+                    minimum, we’d like to encourage you to consider offering a{' '}
+                    <Tooltip
+                        arrow={true}
+                        placement="bottom"
+                        title={
+                            'A guarantee is when the host covers the difference between the desired minimum and the amount made in tickets/donations.'
+                        }
+                    >
+                        <span style={{ textDecoration: 'underline dotted' }}>
+                            guarantee
+                        </span>
+                    </Tooltip>{' '}
+                    or{' '}
+                    <Tooltip
+                        arrow={true}
+                        placement="bottom"
+                        title={
+                            'An honorarium is a flat amount you’re willing to offer the musician to come play this concert.'
+                        }
+                    >
+                        <span style={{ textDecoration: 'underline dotted' }}>
+                            honorarium
+                        </span>
+                    </Tooltip>
+                    .
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{
+                        textAlign: 'center',
+                        display: 'block',
+                        marginTop: '6px',
+                    }}
+                >
+                    <em>
+                        We want to give you the opportunity to make this offer
+                        personally, if the artist reaches out to pursue your
+                        offer, rather than through this cold and impersonal
+                        form.
+                    </em>
+                </FormLabel>,
+            ],
+            [
+                // <FormControl component="fieldset">
+                //     <RadioGroup
+                //         id="guaranteeHonorarium"
+                //         value={guaranteeHonorarium}
+                //         name="guaranteeHonorarium"
+                //         onChange={(e) => onChange(e)}
+                //     >
+                //         <FormControlLabel
+                //             value="no"
+                //             control={<Radio />}
+                //             label="Not this time, thanks."
+                //         />
+                //         <FormControlLabel
+                //             value="guarantee"
+                //             control={<Radio />}
+                //             label={`I’m willing to guarantee that ${artist.stageName} makes a minimum of $${artist.financialHopes}—I’ll make up the difference.`}
+                //         />
+                //         <FormControlLabel
+                //             value="honorarium"
+                //             control={<Radio />}
+                //             label={`I’d like to offer ${artist.stageName} an honorarium...`}
+                //         />
+                //     </RadioGroup>
+                //     {guaranteeHonorarium === 'honorarium' && (
+                //         <TextField
+                //             variant="standard"
+                //             name="honorariumAmount"
+                //             id="honorariumAmount"
+                //             label="of "
+                //             value={honorariumAmount || artist.financialHopes}
+                //             onChange={(e) => onChange(e)}
+                //             type="number"
+                //             sx={{ maxWidth: '300px', margin: '8px auto' }}
+                //             helperText="no matter how much the band makes otherwise."
+                //             InputProps={{
+                //                 startAdornment: (
+                //                     <InputAdornment position="start">
+                //                         $
+                //                     </InputAdornment>
+                //                 ),
+                //             }}
+                //         />
+                //     )}
+                // </FormControl>,
+            ],
+        ],
+        extraClarification: [
+            <FormLabel component="legend">
+                Would you like to clarify any of your answers? Do you have any
+                questions for us?
+            </FormLabel>,
+            [
+                <Grid item xs={12} sx={{ width: '100%' }}>
+                    <TextField
+                        variant="standard"
+                        name="extraClarification"
+                        id="extraClarification"
+                        label={`Extra Clarifications:`}
+                        value={extraClarification}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+
         endSlide: [
             [
                 <Typography component="h2" sx={{ textAlign: 'center' }}>
-                    Artists will see the fields you’ve filled out (nothing
-                    orange):
+                    {preferredArtists.length > 2
+                        ? preferredArtists
+                              .map((preferredArtist, i) => {
+                                  if (
+                                      preferredArtists.length > 1 &&
+                                      i === preferredArtists.length - 1
+                                  ) {
+                                      return (
+                                          ' and ' + preferredArtist.stageName
+                                      );
+                                  } else {
+                                      return preferredArtist.stageName;
+                                  }
+                              })
+                              .join(', ')
+                        : preferredArtists.map((preferredArtist, i) => {
+                              if (
+                                  preferredArtists.length > 1 &&
+                                  i === preferredArtists.length - 1
+                              ) {
+                                  return ' and ' + preferredArtist.stageName;
+                              } else {
+                                  return preferredArtist.stageName;
+                              }
+                          })}
+                    {preferredArtists.length === 0 && '[The Artist]'} will see
+                    the fields you’ve filled out:
                 </Typography>,
+
                 <Typography
                     component="p"
                     sx={{ textAlign: 'center', marginTop: '0px' }}
                 >
-                    (click to edit)
+                    Before sending this proposal, please look it over and make
+                    any necessary changes. (After you send it, you won’t be able
+                    to change it. And if you need to cancel, it will still show
+                    up as “CANCELED” on the dashboard
+                    {preferredArtists.length > 1 ? 's' : ''} of{' '}
+                    {preferredArtists.length > 2
+                        ? preferredArtists
+                              .map((preferredArtist, i) => {
+                                  if (
+                                      preferredArtists.length > 1 &&
+                                      i === preferredArtists.length - 1
+                                  ) {
+                                      return (
+                                          ' and ' + preferredArtist.stageName
+                                      );
+                                  } else {
+                                      return preferredArtist.stageName;
+                                  }
+                              })
+                              .join(', ')
+                        : preferredArtists.map((preferredArtist, i) => {
+                              if (
+                                  preferredArtists.length > 1 &&
+                                  i === preferredArtists.length - 1
+                              ) {
+                                  return ' and ' + preferredArtist.stageName;
+                              } else {
+                                  return preferredArtist.stageName;
+                              }
+                          })}
+                    {preferredArtists.length === 0 && '[The Artist]'}
+                    .)
                 </Typography>,
+                <Grid
+                    container
+                    sx={{
+                        width: '100%',
+                        justifyContent: 'center',
+                        padding: '8px 0',
+                    }}
+                >
+                    <Button
+                        btnwidth={350}
+                        onClick={() => hostProposes(formData)}
+                    >
+                        <p>
+                            Send my proposal to the{' '}
+                            {preferredArtists.length > 1
+                                ? preferredArtists.length + ' artists'
+                                : ' artist'}
+                        </p>
+                        <SendIcon
+                            sx={{ marginLeft: '8px!important' }}
+                        ></SendIcon>
+                    </Button>
+
+                    {/* <Dialog
+                            open={adminAlertOpen}
+                            onClose={adminAlertHandleClose}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">
+                                <Avatar
+                                    alt={`${adminAlertUser.row.avatar}`}
+                                    src={`${adminAlertUser.row.avatar}`}
+                                    sx={{
+                                        width: '150px',
+                                        height: '150px',
+                                        margin: '0 auto',
+                                    }}
+                                />
+
+                                {`Are you sure you want ` +
+                                    adminAlertUser.row.name +
+                                    ` (` +
+                                    adminAlertUser.row.email +
+                                    `) to have the ${
+                                        value.indexOf('ADMIN') === -1 &&
+                                        adminAlertUser.value.indexOf('ADMIN') >
+                                            -1
+                                            ? 'ADMIN'
+                                            : 'BOOKING'
+                                    } role?`}
+                            </DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                    {value.indexOf('ADMIN') === -1 &&
+                                    adminAlertUser.value.indexOf('ADMIN') > -1
+                                        ? `Giving this user the ADMIN role will give
+                                    them access to everything. You should only
+                                    do this if you really trust 
+                                    ${adminAlertUser.row.name}.`
+                                        : `Giving this user the BOOKING role will give
+                                    them access to our entire network of hosts. You should only
+                                    do this if you really trust 
+                                    ${adminAlertUser.row.name}.`}
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={adminAlertHandleClose}>
+                                    No
+                                </Button>
+                                <Button
+                                    onClick={(e) => {
+                                        adminAlertHandleClose();
+                                        onAutocompleteTagChange(
+                                            adminAlertUser.value
+                                        );
+                                    }}
+                                >
+                                    Yes
+                                </Button>
+                            </DialogActions>
+                        </Dialog> */}
+                </Grid>,
             ],
             [
-                //Event Details as a host will see it
+                //Event Details as an artist will see it
                 //theEvent usually comes from EditHostEvent.js, but if the user is proposing this event we'll hit up the Redux store for the myHostEvents that has a matching bookingWhen
                 //
-                <HostEventDetails
-                    theEvent={{
-                        ...(theEvent ||
-                            myHostEvents.find((event) => {
-                                if (
-                                    bookingWhen &&
-                                    bookingWhen.length > 0 &&
-                                    bookingWhen[0]
-                                ) {
-                                    return event.bookingWhen === bookingWhen[0];
+                <>
+                    <Grid
+                        container
+                        sx={{
+                            width: '100%',
+                            maxWidth: '900px',
+                            paddingBottom: '16px',
+                            border:
+                                !status || status === 'DRAFT'
+                                    ? '4px dashed var(--primary-color)'
+                                    : 'none',
+                        }}
+                    >
+                        <Grid item sx={{ margin: '0 auto', width: '100%' }}>
+                            <HostProfile
+                                theHost={hostMe}
+                                theEvent={
+                                    theEvent ||
+                                    myHostEvents.find((event) => {
+                                        if (
+                                            bookingWhen &&
+                                            bookingWhen.length > 0 &&
+                                            bookingWhen[0]
+                                        ) {
+                                            return (
+                                                event.bookingWhen ===
+                                                bookingWhen[0]
+                                            );
+                                        }
+                                    })
                                 }
-                            })),
-                        artist: hostMe,
-                    }}
-                />,
+                                theOffer={{
+                                    refreshments: formData.refreshments,
+                                    houseRules: formData.houseRules,
+                                    eventbritePublicAddress:
+                                        formData.eventbritePublicAddress,
+                                    additionalRequests:
+                                        formData.additionalRequests,
+                                    guaranteeHonorarium:
+                                        formData.guaranteeHonorarium,
+                                    honorariumAmount: formData.honorariumAmount,
+                                    extraClarification:
+                                        formData.extraClarification,
+                                    seatingProvided: formData.seatingProvided,
+                                    openers: formData.openers,
+                                    overnight: formData.overnight,
+                                    showSchedule: formData.showSchedule,
+                                }}
+                                // eventDetailsDialogHandleClose={
+                                //     eventDetailsDialogHandleClose
+                                // }
+                            />
+                        </Grid>
+                        <Grid item sx={{ margin: '16px auto', width: '100%' }}>
+                            <HostEventDetails
+                                theEvent={{
+                                    ...(theEvent ||
+                                        myHostEvents.find((event) => {
+                                            if (
+                                                bookingWhen &&
+                                                bookingWhen.length > 0 &&
+                                                bookingWhen[0]
+                                            ) {
+                                                return (
+                                                    event.bookingWhen ===
+                                                    bookingWhen[0]
+                                                );
+                                            }
+                                        })),
+                                    artist: hostMe,
+                                }}
+                            />
+                        </Grid>
+                    </Grid>
+                </>,
             ],
         ],
     };
@@ -1955,7 +1726,7 @@ const HostEventForm = ({
                 delete mostRecentlyUpdatedEventTrimmed.bookingWhere;
                 delete mostRecentlyUpdatedEventTrimmed.updatedAt;
                 delete mostRecentlyUpdatedEventTrimmed.hostsOfferingToBook;
-                delete mostRecentlyUpdatedEventTrimmed.offersFromHosts;
+                // delete mostRecentlyUpdatedEventTrimmed.offersFromHosts;
                 delete mostRecentlyUpdatedEventTrimmed.confirmedHost;
                 delete mostRecentlyUpdatedEventTrimmed.confirmedHostUser;
                 delete mostRecentlyUpdatedEventTrimmed.confirmedDate;
@@ -2173,6 +1944,7 @@ const HostEventForm = ({
 HostEventForm.propTypes = {
     getHostsLocations: PropTypes.func.isRequired,
     getArtists: PropTypes.func.isRequired,
+    hostProposes: PropTypes.func.isRequired,
     artists: PropTypes.object.isRequired,
     hosts: PropTypes.array.isRequired,
     editHostEvent: PropTypes.func.isRequired,
@@ -2196,6 +1968,7 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
     jumpTo,
     getArtists,
+    hostProposes,
     getHostsLocations,
     editHostEvent,
 })(withRouter(HostEventForm)); //withRouter allows us to pass history objects

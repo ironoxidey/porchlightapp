@@ -66,34 +66,34 @@ const ArtistDashboardBookingOffers = ({
                 >
                     {/* <DialogTitle id="alert-dialog-title"></DialogTitle> */}
                     <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            <Box
-                                sx={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    right: 0,
-                                    backgroundColor: 'rgba(0 0 0 /.6)',
-                                    padding: '0',
-                                    zIndex: 100,
-                                }}
-                            >
-                                <StackDateforDisplay
-                                    date={thisEvent.bookingWhen}
-                                ></StackDateforDisplay>
-                            </Box>
-                            <HostProfile
-                                theHost={eventDialogDetails.host}
-                                theEvent={thisEvent}
-                                theOffer={eventDialogDetails}
-                                eventDetailsDialogHandleClose={
-                                    eventDetailsDialogHandleClose
-                                }
-                            ></HostProfile>
+                        {/* <DialogContentText id="alert-dialog-description"> */}
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 0,
+                                backgroundColor: 'rgba(0 0 0 /.6)',
+                                padding: '0',
+                                zIndex: 100,
+                            }}
+                        >
+                            <StackDateforDisplay
+                                date={thisEvent.bookingWhen}
+                            ></StackDateforDisplay>
+                        </Box>
+                        <HostProfile
+                            theHost={eventDialogDetails.host}
+                            theEvent={thisEvent}
+                            theOffer={eventDialogDetails}
+                            eventDetailsDialogHandleClose={
+                                eventDetailsDialogHandleClose
+                            }
+                        ></HostProfile>
 
-                            {/* <EventDetails
+                        {/* <EventDetails
                                 theEvent={eventDialogDetails.theEvent}
                             /> */}
-                        </DialogContentText>
+                        {/* </DialogContentText> */}
                     </DialogContent>
                     {/*<DialogActions>
                          <Typography>

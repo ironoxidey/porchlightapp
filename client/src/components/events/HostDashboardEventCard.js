@@ -133,6 +133,15 @@ const HostDashboardEventCard = ({
                     //         ? '0 0 5px 0px var(--dark-color)'
                     //         : ' 0 0 0 0 transparent',
                     position: 'relative',
+                    backgroundImage:
+                        thisEvent.status === 'DRAFT'
+                            ? 'repeating-linear-gradient(45deg,     rgba(255,255,255,0.03) 5px,    rgba(255,255,255,.03) 15px,    transparent 15px,    transparent 30px)'
+                            : 'none',
+                    border:
+                        thisEvent.status === 'DRAFT'
+                            ? '4px dashed var(--primary-color)'
+                            : '1px solid transparent',
+                    opacity: thisEvent.status === 'DRAFT' ? '0.7' : '1',
                 }}
             >
                 <svg
@@ -176,14 +185,14 @@ const HostDashboardEventCard = ({
                     item
                     direction="row"
                     alignItems="center"
-                    className="dateLocationForBooking"
-                    xs={11}
+                    className="dateLocationForBookingWrapper"
+                    xs={12}
                 >
                     {thisEvent.artist &&
                         thisEvent.artist.squareImg &&
                         thisEvent.artist.slug && (
                             <Link to={'/artists/' + thisEvent.artist.slug}>
-                                <Grid item>
+                                <Grid item sx={{ width: '100%' }}>
                                     <Tooltip
                                         title={
                                             thisEvent.artist &&
@@ -238,8 +247,13 @@ const HostDashboardEventCard = ({
                         className="dateLocationForBooking"
                         xs={
                             thisEvent.artist && thisEvent.artist.squareImg
+                                ? 12 //8
+                                : 12
+                        }
+                        sm={
+                            thisEvent.artist && thisEvent.artist.squareImg
                                 ? 8
-                                : 11
+                                : 8
                         }
                     >
                         <Grid item container>
@@ -289,6 +303,7 @@ const HostDashboardEventCard = ({
                                     // marginLeft: '8px',
                                     lineHeight: '1.5',
                                 }}
+                                xs={12}
                             >
                                 {thisEvent.bookingWhere.city +
                                     ', ' +

@@ -4,6 +4,8 @@ const HostSchema = new mongoose.Schema(
     {
         lastEmailed: {
             type: Date,
+            // default: Date.now, //needing a default to check against for first email
+            //default: new Date('2022-01-17T20:16:26.421+00:00'), //needing a default to check against for first email
         },
         notificationFrequency: {
             //in number of days — 0 means never

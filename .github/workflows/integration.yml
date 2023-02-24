@@ -33,8 +33,9 @@ jobs:
         steps:
             - name: Restart server
               #environment variables set in GitHub Secrets (don't use quotes in values!)
+              #"pm2 reload server --update-env" INSTEAD OF "pm2 restart server --update-env" to have zero downtime
               run: |
-                  unset mongoURI jwtSecret resetPasswordKey calendlyID calendlySecret cloud_name cloudinary_api_key cloudinary_api_secret
+                  unset mongoURI jwtSecret resetPasswordKey GOOGLE_MAPS_API_KEY calendlyID calendlySecret cloud_name cloudinary_api_key cloudinary_api_secret mailChimpApiKey eventbritePrivateToken courierApiKey
                   export NODE_ENV='production'
                   export mongoURI=${{secrets.MONGOURI}}
                   export jwtSecret=${{secrets.JWTSECRET}}
@@ -48,7 +49,7 @@ jobs:
                   export mailChimpApiKey=${{secrets.MAILCHIMP_API_KEY}}
                   export eventbritePrivateToken=${{secrets.EVENTBRITEPRIVATETOKEN}}
                   export courierApiKey=${{secrets.COURIER_API_KEY}}
-                  pm2 restart server --update-env
+                  pm2 reload server --update-env
                   pm2 save
                   sudo service nginx restart
 

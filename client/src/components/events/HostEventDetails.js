@@ -98,43 +98,45 @@ const HostEventDetails = ({
             {theEvent &&
                 theEvent.bookingWhen &&
                 theEvent.bookingWhere != '' && ( //check to be sure there's a valid bookingWhen and Where
-                    <Grid
-                        item
-                        container
-                        justifyContent="start"
-                        // direction="row"
-                        sx={{
-                            height: '100%',
-                            padding: '0 20px!important',
-                            color: 'var(--primary-color)',
-
-                            justifyContent: {
-                                xs: 'center',
-                            },
-                        }}
-                        className="bookingDetails"
-                    >
+                    <>
                         <Grid
-                            container
                             item
+                            container
+                            justifyContent="start"
                             // direction="row"
-                            xs={12}
-                            md={8}
-                            spacing={2}
                             sx={{
-                                paddingLeft: {
-                                    md: '16px',
-                                    xs: '0px',
-                                },
-                                paddingTop: {
-                                    md: '0px',
-                                    xs: '16px',
+                                height: '100%',
+                                // padding: '0 20px!important',
+                                color: 'var(--primary-color)',
+
+                                justifyContent: {
+                                    xs: 'center',
                                 },
                             }}
-                            className="bookingSpecifics"
+                            className="bookingDetails"
                         >
-                            {/* preferredArtists */}
-                            <EventDetailsCard
+                            <Grid
+                                container
+                                item
+                                // direction="row"
+                                xs={12}
+                                md={8}
+                                spacing={2}
+                                sx={{
+                                    margin: '0 auto',
+                                    paddingLeft: {
+                                        md: '16px',
+                                        xs: '0px',
+                                    },
+                                    paddingTop: {
+                                        md: '0px',
+                                        xs: '16px',
+                                    },
+                                }}
+                                className="bookingSpecifics"
+                            >
+                                {/* preferredArtists */}
+                                {/* <EventDetailsCard
                                 fieldName="preferredArtists"
                                 isMe={isMe}
                                 jumpTo={jumpTo}
@@ -163,314 +165,327 @@ const HostEventDetails = ({
                                         </strong>
                                     </>
                                 )}
-                            </EventDetailsCard>
+                            </EventDetailsCard> */}
 
-                            {/* tourVibe */}
-                            <EventDetailsCard
-                                fieldName="tourVibe"
-                                isMe={isMe}
-                                jumpTo={jumpTo}
-                                isBlank={
-                                    !theEvent.tourVibe ||
-                                    theEvent.tourVibe.length === 0
-                                }
-                                icon={<GroupsTwoToneIcon />}
-                            >
-                                {!theEvent.tourVibe ||
-                                theEvent.tourVibe.length === 0 ? (
-                                    'You haven’t told us about the audience you’re going to invite.'
-                                ) : (
-                                    <>
-                                        The folks I’m going to invite to the
-                                        concert are:{' '}
-                                        <strong>
-                                            {theEvent.tourVibe.join(', ')}
-                                        </strong>
-                                    </>
-                                )}
-                            </EventDetailsCard>
-
-                            {/* merchTable */}
-                            <EventDetailsCard
-                                fieldName="merchTable"
-                                isMe={isMe}
-                                jumpTo={jumpTo}
-                                // isBlank={!theEvent.merchTable}
-                                icon={<TableRestaurantTwoToneIcon />}
-                            >
-                                <>
-                                    {theEvent.merchTable
-                                        ? ` I can provide a merch table in the event that an artist needs one.`
-                                        : ' I cannot provide a merch table.'}
-                                </>
-                            </EventDetailsCard>
-
-                            {/* promotionApproval */}
-                            {isMe && (
+                                {/* tourVibe */}
                                 <EventDetailsCard
-                                    fieldName="promotionApproval"
+                                    fieldName="tourVibe"
                                     isMe={isMe}
                                     jumpTo={jumpTo}
-                                    isBlank={!theEvent.promotionApproval}
+                                    isBlank={
+                                        !theEvent.tourVibe ||
+                                        theEvent.tourVibe.length === 0
+                                    }
+                                    icon={<GroupsTwoToneIcon />}
+                                >
+                                    {!theEvent.tourVibe ||
+                                    theEvent.tourVibe.length === 0 ? (
+                                        'You haven’t told us about the audience you’re going to invite.'
+                                    ) : (
+                                        <>
+                                            The folks I’m going to invite to the
+                                            concert are:{' '}
+                                            <strong>
+                                                {theEvent.tourVibe.join(', ')}
+                                            </strong>
+                                        </>
+                                    )}
+                                </EventDetailsCard>
+
+                                {/* merchTable */}
+                                <EventDetailsCard
+                                    fieldName="merchTable"
+                                    isMe={isMe}
+                                    jumpTo={jumpTo}
+                                    // isBlank={!theEvent.merchTable}
+                                    icon={<TableRestaurantTwoToneIcon />}
+                                >
+                                    <>
+                                        {theEvent.merchTable
+                                            ? ` I can provide a merch table in the event that an artist needs one.`
+                                            : ' I cannot provide a merch table.'}
+                                    </>
+                                </EventDetailsCard>
+
+                                {/* promotionApproval */}
+                                {isMe && (
+                                    <EventDetailsCard
+                                        fieldName="promotionApproval"
+                                        isMe={isMe}
+                                        jumpTo={jumpTo}
+                                        isBlank={!theEvent.promotionApproval}
+                                        icon={
+                                            theEvent.promotionApproval !==
+                                            'yes' ? (
+                                                <NoPhotographyTwoToneIcon />
+                                            ) : (
+                                                <PhotoCameraTwoToneIcon />
+                                            )
+                                        }
+                                    >
+                                        <>
+                                            {!theEvent.promotionApproval
+                                                ? ` You haven’t said whether you approve Porchlight to use video, photo, and audio
+                captured for promotional purposes.`
+                                                : theEvent.promotionApproval ===
+                                                  'yes'
+                                                ? 'I approve Porchlight to use video, photo, and audio captured for promotional purposes'
+                                                : 'I DO NOT approve Porchlight to use video, photo, and audio captured for promotional purposes'}
+                                        </>
+                                    </EventDetailsCard>
+                                )}
+                                {/* familyFriendly */}
+                                <EventDetailsCard
+                                    fieldName="familyFriendly"
+                                    isMe={isMe}
+                                    jumpTo={jumpTo}
+                                    // isBlank={!theEvent.familyFriendly}
                                     icon={
-                                        theEvent.promotionApproval !== 'yes' ? (
-                                            <NoPhotographyTwoToneIcon />
+                                        !theEvent.familyFriendly ? (
+                                            <WcTwoToneIcon />
                                         ) : (
-                                            <PhotoCameraTwoToneIcon />
+                                            <FamilyRestroomTwoToneIcon />
                                         )
                                     }
                                 >
                                     <>
-                                        {!theEvent.promotionApproval
-                                            ? ` You haven’t said whether you approve Porchlight to use video, photo, and audio
-                captured, for promotional purposes.`
-                                            : theEvent.promotionApproval ===
-                                              'yes'
-                                            ? 'I approve Porchlight to use video, photo, and audio captured, for promotional purposes'
-                                            : 'I DO NOT approve Porchlight to use video, photo, and audio captured, for promotional purposes'}
+                                        {theEvent.familyFriendly ? (
+                                            <strong>Family-friendy</strong>
+                                        ) : (
+                                            <>
+                                                Would prefer to have an{' '}
+                                                <strong>adults-only</strong>{' '}
+                                                show
+                                            </>
+                                        )}
                                     </>
                                 </EventDetailsCard>
-                            )}
-                            {/* familyFriendly */}
-                            <EventDetailsCard
-                                fieldName="familyFriendly"
-                                isMe={isMe}
-                                jumpTo={jumpTo}
-                                // isBlank={!theEvent.familyFriendly}
-                                icon={
-                                    !theEvent.familyFriendly ? (
-                                        <WcTwoToneIcon />
-                                    ) : (
-                                        <FamilyRestroomTwoToneIcon />
-                                    )
-                                }
-                            >
-                                <>
-                                    {theEvent.familyFriendly ? (
-                                        <strong>Family-friendy</strong>
-                                    ) : (
-                                        <>
-                                            Would prefer to have an{' '}
-                                            <strong>adults-only</strong> show
-                                        </>
-                                    )}
-                                </>
-                            </EventDetailsCard>
 
-                            {/* alcohol */}
-                            <EventDetailsCard
-                                fieldName="alcohol"
-                                isMe={isMe}
-                                jumpTo={jumpTo}
-                                // isBlank={!theEvent.alcohol}
-                                icon={
-                                    !theEvent.alcohol ? (
-                                        <NoDrinksTwoToneIcon />
-                                    ) : (
-                                        <LiquorTwoToneIcon />
-                                    )
-                                }
-                            >
-                                <>
-                                    {theEvent.alcohol ? (
-                                        <>
-                                            Comfortable with having
-                                            <strong>{' alcohol '}</strong>at the
-                                            show
-                                        </>
-                                    ) : (
-                                        <>
-                                            Would prefer having{' '}
-                                            <strong> no alcohol </strong> at the
-                                            show
-                                        </>
-                                    )}
-                                </>
-                            </EventDetailsCard>
-
-                            {/* soundSystem */}
-                            <EventDetailsCard
-                                fieldName="soundSystem"
-                                isMe={isMe}
-                                jumpTo={jumpTo}
-                                isBlank={!theEvent.soundSystem}
-                                icon={<SpeakerTwoToneIcon />}
-                            >
-                                <>
-                                    {theEvent.soundSystem === 'yes' ? (
-                                        <>
-                                            <strong>
-                                                Able to provide a sound system
-                                            </strong>
-                                        </>
-                                    ) : theEvent.soundSystem === 'noButNeed' ? (
-                                        <>
-                                            <strong>
-                                                {' '}
-                                                Needs a sound system{' '}
-                                            </strong>
-                                        </>
-                                    ) : theEvent.soundSystem === 'no' ? (
-                                        <>
-                                            <strong>
-                                                {' '}
-                                                Artist can play an acoustic
-                                                show.{' '}
-                                            </strong>
-                                        </>
-                                    ) : (
-                                        <>
-                                            You haven’t told us if you need a
-                                            sound system.
-                                        </>
-                                    )}
-                                </>
-                            </EventDetailsCard>
-
-                            <EventDetailsCard
-                                fieldName="agreeToPromote"
-                                isMe={isMe}
-                                jumpTo={jumpTo}
-                                //isBlank={!theEvent.agreeToPromote}
-                                icon={<CampaignTwoToneIcon />}
-                            >
-                                <>
-                                    When asked “Do you agree to promote this
-                                    event to your community, including email
-                                    sends and social media?{' '}
-                                    {theEvent.confirmedHost === host.me._id &&
-                                        host.me.firstName}{' '}
-                                    answered,{' '}
-                                    {!theEvent.agreeToPromote ? (
-                                        <strong>
-                                            “No, I'm not willing to commit to
-                                            that.”
-                                        </strong>
-                                    ) : (
-                                        <strong>
-                                            “Yes, to the best of my ability.”
-                                        </strong>
-                                    )}
-                                </>
-                            </EventDetailsCard>
-
-                            {/* overnight */}
-                            <EventDetailsCard
-                                fieldName="overnight"
-                                isMe={isMe}
-                                jumpTo={jumpTo}
-                                isBlank={!theEvent.overnight}
-                                icon={
-                                    !theEvent.overnight ||
-                                    theEvent.overnight < 1 ? (
-                                        <BedtimeOffTwoToneIcon />
-                                    ) : (
-                                        <HotelTwoToneIcon />
-                                    )
-                                }
-                            >
-                                <>
-                                    {theEvent.overnight > 0 ? (
-                                        <>
-                                            Able to host{' '}
-                                            <strong>
-                                                {theEvent.overnight +
-                                                    (theEvent.overnight > 1
-                                                        ? ' people'
-                                                        : ' person')}
-                                            </strong>{' '}
-                                            overnight
-                                        </>
-                                    ) : (
-                                        <>Not able to host anyone overnight</>
-                                    )}
-                                </>
-                            </EventDetailsCard>
-
-                            {/* hangout */}
-                            <EventDetailsCard
-                                fieldName="hangout"
-                                isMe={isMe}
-                                jumpTo={jumpTo}
-                                isBlank={!theEvent.hangout}
-                                icon={<Diversity1TwoToneIcon />}
-                            >
-                                <>
-                                    {theEvent.hangout ? (
-                                        <>
-                                            {`  When asked about spending some informal time with the artist(s), ${
-                                                theEvent.confirmedHost ===
-                                                    host.me._id &&
-                                                host.me.firstName
-                                            } said, `}
-                                            <strong>
-                                                “{theEvent.hangout}”
-                                            </strong>
-                                        </>
-                                    ) : (
-                                        <>
-                                            You didn’t say when or if you’d like
-                                            to hang out with the artist(s).
-                                        </>
-                                    )}
-                                </>
-                            </EventDetailsCard>
-
-                            {/* showSchedule */}
-                            <EventDetailsCard
-                                fieldName="showSchedule"
-                                isMe={isMe}
-                                jumpTo={jumpTo}
-                                isBlank={!theEvent.showSchedule}
-                                icon={<AccessTimeTwoToneIcon />}
-                            >
-                                <>
-                                    {' Setup at '}
-                                    <strong>
-                                        {convert24HourTime(
-                                            theEvent.showSchedule.setupTime
-                                        )}
-                                    </strong>
-                                    {', doors open at '}
-                                    <strong>
-                                        {convert24HourTime(
-                                            theEvent.showSchedule.doorsOpen
-                                        )}
-                                    </strong>
-                                    {', show starts at '}
-                                    <strong>
-                                        {convert24HourTime(
-                                            theEvent.showSchedule.startTime
-                                        )}
-                                    </strong>
-                                    {', with a hard wrap at '}
-                                    <strong>
-                                        {convert24HourTime(
-                                            theEvent.showSchedule.hardWrap
-                                        )}
-                                    </strong>
-                                </>
-                            </EventDetailsCard>
-
-                            {/* hostNotes */}
-                            <EventDetailsCard
-                                fieldName="hostNotes"
-                                isMe={isMe}
-                                jumpTo={jumpTo}
-                                isBlank={!theEvent.hostNotes}
-                                icon={<SpeakerNotesTwoToneIcon />}
-                            >
-                                {theEvent.hostNotes ? (
+                                {/* alcohol */}
+                                <EventDetailsCard
+                                    fieldName="alcohol"
+                                    isMe={isMe}
+                                    jumpTo={jumpTo}
+                                    // isBlank={!theEvent.alcohol}
+                                    icon={
+                                        !theEvent.alcohol ? (
+                                            <NoDrinksTwoToneIcon />
+                                        ) : (
+                                            <LiquorTwoToneIcon />
+                                        )
+                                    }
+                                >
                                     <>
-                                        Host Notes:{' '}
-                                        <strong>{theEvent.hostNotes}</strong>
+                                        {theEvent.alcohol ? (
+                                            <>
+                                                Comfortable with having
+                                                <strong>{' alcohol '}</strong>
+                                                at the show
+                                            </>
+                                        ) : (
+                                            <>
+                                                Would prefer having{' '}
+                                                <strong> no alcohol </strong> at
+                                                the show
+                                            </>
+                                        )}
                                     </>
-                                ) : (
-                                    <>You haven’t added any extra notes.</>
-                                )}
-                            </EventDetailsCard>
+                                </EventDetailsCard>
+
+                                {/* soundSystem */}
+                                <EventDetailsCard
+                                    fieldName="soundSystem"
+                                    isMe={isMe}
+                                    jumpTo={jumpTo}
+                                    isBlank={!theEvent.soundSystem}
+                                    icon={<SpeakerTwoToneIcon />}
+                                >
+                                    <>
+                                        {theEvent.soundSystem === 'yes' ? (
+                                            <>
+                                                <strong>
+                                                    Able to provide a sound
+                                                    system
+                                                </strong>
+                                            </>
+                                        ) : theEvent.soundSystem ===
+                                          'noButNeed' ? (
+                                            <>
+                                                <strong>
+                                                    {' '}
+                                                    Needs a sound system{' '}
+                                                </strong>
+                                            </>
+                                        ) : theEvent.soundSystem === 'no' ? (
+                                            <>
+                                                <strong>
+                                                    {' '}
+                                                    Artist can play an acoustic
+                                                    show.{' '}
+                                                </strong>
+                                            </>
+                                        ) : (
+                                            <>
+                                                You haven’t told us if you need
+                                                a sound system.
+                                            </>
+                                        )}
+                                    </>
+                                </EventDetailsCard>
+
+                                <EventDetailsCard
+                                    fieldName="agreeToPromote"
+                                    isMe={isMe}
+                                    jumpTo={jumpTo}
+                                    //isBlank={!theEvent.agreeToPromote}
+                                    icon={<CampaignTwoToneIcon />}
+                                >
+                                    <>
+                                        When asked “Do you agree to promote this
+                                        event to your community, including email
+                                        sends and social media?{' '}
+                                        {theEvent.confirmedHost ===
+                                            host.me._id &&
+                                            host.me.firstName}{' '}
+                                        answered,{' '}
+                                        {!theEvent.agreeToPromote ? (
+                                            <strong>
+                                                “No, I'm not willing to commit
+                                                to that.”
+                                            </strong>
+                                        ) : (
+                                            <strong>
+                                                “Yes, to the best of my
+                                                ability.”
+                                            </strong>
+                                        )}
+                                    </>
+                                </EventDetailsCard>
+
+                                {/* overnight */}
+                                <EventDetailsCard
+                                    fieldName="overnight"
+                                    isMe={isMe}
+                                    jumpTo={jumpTo}
+                                    isBlank={!theEvent.overnight}
+                                    icon={
+                                        !theEvent.overnight ||
+                                        theEvent.overnight < 1 ? (
+                                            <BedtimeOffTwoToneIcon />
+                                        ) : (
+                                            <HotelTwoToneIcon />
+                                        )
+                                    }
+                                >
+                                    <>
+                                        {theEvent.overnight > 0 ? (
+                                            <>
+                                                Able to host{' '}
+                                                <strong>
+                                                    {theEvent.overnight +
+                                                        (theEvent.overnight > 1
+                                                            ? ' people'
+                                                            : ' person')}
+                                                </strong>{' '}
+                                                overnight
+                                            </>
+                                        ) : (
+                                            <>
+                                                Not able to host anyone
+                                                overnight
+                                            </>
+                                        )}
+                                    </>
+                                </EventDetailsCard>
+
+                                {/* hangout */}
+                                <EventDetailsCard
+                                    fieldName="hangout"
+                                    isMe={isMe}
+                                    jumpTo={jumpTo}
+                                    isBlank={!theEvent.hangout}
+                                    icon={<Diversity1TwoToneIcon />}
+                                >
+                                    <>
+                                        {theEvent.hangout ? (
+                                            <>
+                                                {`  When asked about spending some informal time with the artist(s), ${
+                                                    theEvent.confirmedHost ===
+                                                        host.me._id &&
+                                                    host.me.firstName
+                                                } said, `}
+                                                <strong>
+                                                    “{theEvent.hangout}”
+                                                </strong>
+                                            </>
+                                        ) : (
+                                            <>
+                                                You didn’t say when or if you’d
+                                                like to hang out with the
+                                                artist(s).
+                                            </>
+                                        )}
+                                    </>
+                                </EventDetailsCard>
+
+                                {/* showSchedule */}
+                                <EventDetailsCard
+                                    fieldName="showSchedule"
+                                    isMe={isMe}
+                                    jumpTo={jumpTo}
+                                    isBlank={!theEvent.showSchedule}
+                                    icon={<AccessTimeTwoToneIcon />}
+                                >
+                                    <>
+                                        {' Setup at '}
+                                        <strong>
+                                            {convert24HourTime(
+                                                theEvent.showSchedule.setupTime
+                                            )}
+                                        </strong>
+                                        {', doors open at '}
+                                        <strong>
+                                            {convert24HourTime(
+                                                theEvent.showSchedule.doorsOpen
+                                            )}
+                                        </strong>
+                                        {', show starts at '}
+                                        <strong>
+                                            {convert24HourTime(
+                                                theEvent.showSchedule.startTime
+                                            )}
+                                        </strong>
+                                        {', with a hard wrap at '}
+                                        <strong>
+                                            {convert24HourTime(
+                                                theEvent.showSchedule.hardWrap
+                                            )}
+                                        </strong>
+                                    </>
+                                </EventDetailsCard>
+
+                                {/* hostNotes */}
+                                <EventDetailsCard
+                                    fieldName="hostNotes"
+                                    isMe={isMe}
+                                    jumpTo={jumpTo}
+                                    isBlank={!theEvent.hostNotes}
+                                    icon={<SpeakerNotesTwoToneIcon />}
+                                >
+                                    {theEvent.hostNotes ? (
+                                        <>
+                                            Host Notes:{' '}
+                                            <strong>
+                                                {theEvent.hostNotes}
+                                            </strong>
+                                        </>
+                                    ) : (
+                                        <>You haven’t added any extra notes.</>
+                                    )}
+                                </EventDetailsCard>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </>
                 )}
         </Fragment>
     );

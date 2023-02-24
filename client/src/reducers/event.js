@@ -2,6 +2,7 @@ import {
     EDIT_ARTIST_EVENT,
     EDIT_HOST_EVENT,
     HOST_RAISE_HAND,
+    HOST_PROPOSES,
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
     GET_EVENTS_NEAR_ME_TO_HOST,
@@ -103,6 +104,16 @@ export default function (state = initialState, action) {
                 myHostEvents: [...state.myHostEvents, payload],
                 nearMeToHost: newNearMeToHost,
 
+                loading: false,
+            };
+        case HOST_PROPOSES:
+            return {
+                ...state,
+                myHostEvents: state.myHostEvents.map((myHostEvent) => {
+                    if (myHostEvent._id === payload._id) {
+                        return payload;
+                    } else return myHostEvent;
+                }),
                 loading: false,
             };
         case UPDATE_EVENT_ERROR:

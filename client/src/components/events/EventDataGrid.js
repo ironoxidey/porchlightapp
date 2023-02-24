@@ -623,7 +623,8 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                                     cursor: 'pointer',
                                 }}
                             >
-                                {hostsInReach.length} hosts
+                                {hostsInReach.length}{' '}
+                                {hostsInReach.length > 1 ? ' hosts' : ' host'}
                             </span>
                         </CustomWidthTooltip>
                     );

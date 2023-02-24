@@ -1453,16 +1453,16 @@ const EditHostProfileForm = ({
                 >
                     {/* <DialogTitle id="alert-dialog-title"></DialogTitle> */}
                     <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            <HostProfile
-                                theHost={hostDialogDetails}
-                                //theEvent={thisEvent}
-                                //theOffer={hostDialogDetails}
-                                hostDetailsDialogHandleClose={
-                                    hostDetailsDialogHandleClose
-                                }
-                            ></HostProfile>
-                        </DialogContentText>
+                        {/* <DialogContentText id="alert-dialog-description"> */}
+                        <HostProfile
+                            theHost={hostDialogDetails}
+                            //theEvent={thisEvent}
+                            //theOffer={hostDialogDetails}
+                            hostDetailsDialogHandleClose={
+                                hostDetailsDialogHandleClose
+                            }
+                        ></HostProfile>
+                        {/* </DialogContentText> */}
                     </DialogContent>
                     {/* <DialogActions>
                     <Button onClick={hostDetailsDialogHandleClose}>
