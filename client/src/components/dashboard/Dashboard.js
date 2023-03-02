@@ -426,11 +426,18 @@ const Dashboard = ({
                                 {myArtistEvents &&
                                     myArtistEvents.length > 0 &&
                                     myArtistEvents.filter(
-                                        (event) =>
-                                            !event.confirmedHost &&
-                                            event.offersFromHosts &&
-                                            event.offersFromHosts.length > 0
-                                    ).length > 0 && (
+                                        (myEvent) =>
+                                            (
+                                                (!myEvent.confirmedHost ||
+                                                    (myEvent.createdBy ===
+                                                        'HOST' &&
+                                                        myEvent.status ===
+                                                            'PENDING')) &&
+                                                myEvent.offersFromHosts &&
+                                                myEvent.offersFromHosts.length >
+                                                    0
+                                            ).length > 0
+                                    ) && (
                                         <Grid
                                             container
                                             direction="column"
@@ -439,19 +446,25 @@ const Dashboard = ({
                                             <Grid item>
                                                 <Typography component="h2">
                                                     {myArtistEvents.filter(
-                                                        (event) =>
-                                                            !event.confirmedHost &&
-                                                            event.offersFromHosts &&
-                                                            event
+                                                        (myEvent) =>
+                                                            !myEvent.confirmedHost &&
+                                                            myEvent.createdBy ===
+                                                                'HOST' &&
+                                                            myEvent.offersFromHosts &&
+                                                            myEvent
                                                                 .offersFromHosts
                                                                 .length > 0
                                                     ).length > 1
                                                         ? `These ${
                                                               myArtistEvents.filter(
-                                                                  (event) =>
-                                                                      !event.confirmedHost &&
-                                                                      event.offersFromHosts &&
-                                                                      event
+                                                                  (myEvent) =>
+                                                                      (!myEvent.confirmedHost ||
+                                                                          (myEvent.createdBy ===
+                                                                              'HOST' &&
+                                                                              myEvent.status ===
+                                                                                  'PENDING')) &&
+                                                                      myEvent.offersFromHosts &&
+                                                                      myEvent
                                                                           .offersFromHosts
                                                                           .length >
                                                                           0
@@ -459,10 +472,41 @@ const Dashboard = ({
                                                           } concerts have booking offers for you to consider`
                                                         : `This concert has ${
                                                               myArtistEvents.filter(
-                                                                  (event) =>
-                                                                      !event.confirmedHost &&
-                                                                      event.offersFromHosts &&
-                                                                      event
+                                                                  (myEvent) =>
+                                                                      (!myEvent.confirmedHost ||
+                                                                          (myEvent.createdBy ===
+                                                                              'HOST' &&
+                                                                              myEvent.status ===
+                                                                                  'PENDING')) &&
+                                                                      myEvent.offersFromHosts &&
+                                                                      myEvent
+                                                                          .offersFromHosts
+                                                                          .length >
+                                                                          0
+                                                              )[0] &&
+                                                              myArtistEvents.filter(
+                                                                  (myEvent) =>
+                                                                      (!myEvent.confirmedHost ||
+                                                                          (myEvent.createdBy ===
+                                                                              'HOST' &&
+                                                                              myEvent.status ===
+                                                                                  'PENDING')) &&
+                                                                      myEvent.offersFromHosts &&
+                                                                      myEvent
+                                                                          .offersFromHosts
+                                                                          .length >
+                                                                          0
+                                                              )[0]
+                                                                  .offersFromHosts &&
+                                                              myArtistEvents.filter(
+                                                                  (myEvent) =>
+                                                                      (!myEvent.confirmedHost ||
+                                                                          (myEvent.createdBy ===
+                                                                              'HOST' &&
+                                                                              myEvent.status ===
+                                                                                  'PENDING')) &&
+                                                                      myEvent.offersFromHosts &&
+                                                                      myEvent
                                                                           .offersFromHosts
                                                                           .length >
                                                                           0
@@ -489,13 +533,18 @@ const Dashboard = ({
                                                 }}
                                             ></Grid>
                                             {myArtistEvents
-                                                .filter(
-                                                    (event) =>
-                                                        !event.confirmedHost &&
-                                                        event.offersFromHosts &&
-                                                        event.offersFromHosts
+                                                .filter((myEvent) => {
+                                                    return (
+                                                        (!myEvent.confirmedHost ||
+                                                            (myEvent.createdBy ===
+                                                                'HOST' &&
+                                                                myEvent.status ===
+                                                                    'PENDING')) &&
+                                                        myEvent.offersFromHosts &&
+                                                        myEvent.offersFromHosts
                                                             .length > 0
-                                                ) //.filter(e => e) to remove any null values
+                                                    );
+                                                }) //.filter(e => e) to remove any null values
                                                 .map(
                                                     (thisEvent, idx) =>
                                                         thisEvent.bookingWhen &&
@@ -514,7 +563,9 @@ const Dashboard = ({
                                 {myArtistEvents &&
                                     myArtistEvents.length > 0 &&
                                     myArtistEvents.filter(
-                                        (event) => event.confirmedHost
+                                        (myEvent) =>
+                                            myEvent.confirmedHost &&
+                                            myEvent.status === 'CONFIRMED'
                                     ).length > 0 && (
                                         <Grid
                                             container
@@ -524,13 +575,15 @@ const Dashboard = ({
                                             <Grid item>
                                                 <Typography component="h2">
                                                     {myArtistEvents.filter(
-                                                        (event) =>
-                                                            event.confirmedHost
+                                                        (myEvent) =>
+                                                            myEvent.confirmedHost &&
+                                                            myEvent.status ===
+                                                                'CONFIRMED'
                                                     ).length > 1
                                                         ? `These ${
                                                               myArtistEvents.filter(
-                                                                  (event) =>
-                                                                      event.confirmedHost
+                                                                  (myEvent) =>
+                                                                      myEvent.confirmedHost
                                                               ).length
                                                           } concerts have been confirmed`
                                                         : `This concert has been confirmed`}
@@ -552,8 +605,10 @@ const Dashboard = ({
                                             ></Grid>
                                             {myArtistEvents
                                                 .filter(
-                                                    (event) =>
-                                                        event.confirmedHost
+                                                    (myEvent) =>
+                                                        myEvent.confirmedHost &&
+                                                        myEvent.status ===
+                                                            'CONFIRMED'
                                                 )
                                                 .map(
                                                     (thisEvent, idx) =>

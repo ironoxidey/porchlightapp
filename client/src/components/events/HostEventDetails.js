@@ -83,8 +83,9 @@ const HostEventDetails = ({
     let isMe = false;
     if (
         me &&
-        (me._id === theEvent.artist ||
-            me._id === theEvent.artist._id ||
+        me._id &&
+        ((theEvent.createdBy === 'ARTIST' &&
+            (me._id === theEvent.artist || me._id === theEvent.artist._id)) ||
             (theEvent.createdBy === 'HOST' &&
                 host.me._id === theEvent.confirmedHost))
     ) {
@@ -344,9 +345,14 @@ const HostEventDetails = ({
                                         When asked “Do you agree to promote this
                                         event to your community, including email
                                         sends and social media?{' '}
-                                        {theEvent.confirmedHost ===
+                                        {(theEvent.confirmedHost ===
                                             host.me._id &&
-                                            host.me.firstName}{' '}
+                                            host.me.firstName) ||
+                                            (theEvent.offersFromHosts &&
+                                                theEvent.offersFromHosts
+                                                    .length > 0 &&
+                                                theEvent.offersFromHosts[0].host
+                                                    .firstName)}{' '}
                                         answered,{' '}
                                         {!theEvent.agreeToPromote ? (
                                             <strong>
@@ -410,9 +416,15 @@ const HostEventDetails = ({
                                         {theEvent.hangout ? (
                                             <>
                                                 {`  When asked about spending some informal time with the artist(s), ${
-                                                    theEvent.confirmedHost ===
+                                                    (theEvent.confirmedHost ===
                                                         host.me._id &&
-                                                    host.me.firstName
+                                                        host.me.firstName) ||
+                                                    (theEvent.offersFromHosts &&
+                                                        theEvent.offersFromHosts
+                                                            .length > 0 &&
+                                                        theEvent
+                                                            .offersFromHosts[0]
+                                                            .host.firstName)
                                                 } said, `}
                                                 <strong>
                                                     “{theEvent.hangout}”

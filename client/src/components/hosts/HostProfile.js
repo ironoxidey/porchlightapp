@@ -778,7 +778,7 @@ const HostProfile = ({
                                                 ></ChairAltTwoToneIcon>
                                             </Tooltip>
                                             {theHost.firstName +
-                                                ` does NOT have the seating necessary for ${theHost.maxNumAttendees} people.`}
+                                                ` does NOT have seating for ${theHost.maxNumAttendees} people. Encourage attenders to bring something to sit on.`}
                                         </Typography>
                                     </Grid>
                                 )}

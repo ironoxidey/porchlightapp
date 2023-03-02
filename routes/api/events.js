@@ -1052,6 +1052,9 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
                 month: 'long',
                 day: 'numeric',
             });
+            const theEventDateForStacking = new Date(eventDetails.bookingWhen)
+                .toDateString()
+                .split(' ');
             //Send an email to the artist and then delete the artist's email address from the eventDetails object we return to the host in the app
             sendEmail(eventDetails.artistEmail, {
                 event: 'HOST_OFFER',
@@ -1060,6 +1063,7 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
                 hostName: host.firstName + ' ' + host.lastName,
                 stageName: eventDetails.artist.stageName,
                 eventDate: emailDate,
+                bookingWhenFormatted: theEventDateForStacking,
                 hostLocation: host.city + ', ' + host.state,
                 hostImg: host.profileImg,
                 artistImg: eventDetails.artist.squareImg,
@@ -1315,24 +1319,73 @@ router.get('/myArtistEvents', auth, async (req, res) => {
         //   id: req.user.id,
         // });
         //console.log(req.user);
-        const myArtistEvents = await Event.find({
-            artistEmail: req.user.email,
-            //'offersFromHosts.0': { $exists: true }, //checks to see if the first index of hostsOfferingToBook exists //https://www.mongodb.com/community/forums/t/is-there-a-way-to-query-array-fields-with-size-greater-than-some-specified-value/54597
-        })
-            .select('-artistEmail -hostsOfferingToBook -latLong -hostsInReach')
-            .populate(
-                'offersFromHosts.host',
-                '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin -lastEmailed -notificationFrequency -date -createdAt'
-            )
-            .sort({ bookingWhen: 1 }); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
-        if (!myArtistEvents) {
-            return res.json({
-                email: req.user.email,
-                msg: 'There are no events associated with ' + req.user.email,
-            });
-        }
 
-        res.json(myArtistEvents);
+        const thisArtist = await Artist.findOne({
+            email: req.user.email,
+        });
+
+        let userRole = req.user.role;
+
+        if (userRole && userRole.indexOf('TESTING') > -1) {
+            const myArtistEvents = await Event.find(
+                {
+                    $or: [
+                        { artistEmail: req.user.email },
+                        {
+                            createdBy: 'HOST',
+                            status: { $ne: 'DRAFT' }, //not equal to 'DRAFT'
+                            preferredArtists: thisArtist._id,
+                        },
+                    ],
+                }
+                // {
+                //     artistEmail: req.user.email,
+                //     //'offersFromHosts.0': { $exists: true }, //checks to see if the first index of hostsOfferingToBook exists //https://www.mongodb.com/community/forums/t/is-there-a-way-to-query-array-fields-with-size-greater-than-some-specified-value/54597
+                // }
+            )
+                .select(
+                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -preferredArtists'
+                )
+                .populate(
+                    'offersFromHosts.host',
+                    '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin -lastEmailed -notificationFrequency -date -createdAt'
+                )
+                .sort({ bookingWhen: 1 }); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
+            if (!myArtistEvents) {
+                return res.json({
+                    email: req.user.email,
+                    msg:
+                        'There are no events associated with ' + req.user.email,
+                });
+            }
+
+            res.json(myArtistEvents);
+        } else {
+            const myArtistEvents = await Event.find(
+                { artistEmail: req.user.email }
+                // {
+                //     artistEmail: req.user.email,
+                //     //'offersFromHosts.0': { $exists: true }, //checks to see if the first index of hostsOfferingToBook exists //https://www.mongodb.com/community/forums/t/is-there-a-way-to-query-array-fields-with-size-greater-than-some-specified-value/54597
+                // }
+            )
+                .select(
+                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -preferredArtists'
+                )
+                .populate(
+                    'offersFromHosts.host',
+                    '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin -lastEmailed -notificationFrequency -date -createdAt'
+                )
+                .sort({ bookingWhen: 1 }); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
+            if (!myArtistEvents) {
+                return res.json({
+                    email: req.user.email,
+                    msg:
+                        'There are no events associated with ' + req.user.email,
+                });
+            }
+
+            res.json(myArtistEvents);
+        }
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -1470,6 +1523,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                     'confirmedHost',
                     '_id email firstName lastName city state profileImg'
                 )
+                .populate('artist', 'squareImg')
                 .populate(
                     'offersFromHosts.host',
                     '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin -lastEmailed -notificationFrequency -date -createdAt'
@@ -1477,7 +1531,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                 .lean(); //.lean required to delete email later -- Documents returned from queries with the lean option enabled are plain javascript objects, not Mongoose Documents. They have no save method, getters/setters, virtuals, or other Mongoose features. https://stackoverflow.com/a/71746004/3338608
 
             if (eventDetails) {
-                //console.log('eventDetails', eventDetails);
+                // console.log('eventDetails', eventDetails);
                 let emailDate = new Date(
                     eventFields.bookingWhen
                 ).toLocaleDateString(undefined, {
@@ -1486,6 +1540,11 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                     month: 'long',
                     day: 'numeric',
                 });
+                const theEventDateForStacking = new Date(
+                    eventDetails.bookingWhen
+                )
+                    .toDateString()
+                    .split(' ');
                 //Send an email to the host and then delete the host's email address from the eventDetails object we return to the artist in the app
                 sendEmail(eventDetails.confirmedHost.email, {
                     event: 'ARTIST_ACCEPTS_OFFER',
@@ -1496,6 +1555,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                         eventDetails.confirmedHost.lastName,
                     stageName: eventFields.stageName,
                     eventDate: emailDate,
+                    bookingWhenFormatted: theEventDateForStacking,
                     hostLocation:
                         eventDetails.confirmedHost.city +
                         ', ' +
