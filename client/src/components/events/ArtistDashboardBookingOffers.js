@@ -16,7 +16,7 @@ import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import { StackDateforDisplay } from '../../actions/app';
 import { artistViewedHostOffer } from '../../actions/event';
 
-import HostEventDetails from './HostEventDetails';
+// import HostEventDetails from './HostEventDetails';
 
 import Button from '../layout/SvgButton';
 import HostProfile from '../hosts/HostProfile';
@@ -27,7 +27,7 @@ const ArtistDashboardBookingOffers = ({
     artistViewedHostOffer,
     thisOffer,
 }) => {
-    console.log('ArtistDashboardBookingOffers thisEvent:', thisEvent);
+    // console.log('ArtistDashboardBookingOffers thisEvent:', thisEvent);
 
     //Booking Details Dialog Functions
     const [eventDetailsDialogOpen, setEventDetailsDialogOpen] = useState(false);
@@ -90,14 +90,14 @@ const ArtistDashboardBookingOffers = ({
                             }
                         ></HostProfile>
 
-                        {thisEvent.createdBy === 'HOST' &&
+                        {/* {thisEvent.createdBy === 'HOST' &&
                             thisEvent.confirmedHost && (
                                 <HostEventDetails
                                     theEvent={{
                                         ...thisEvent,
                                     }}
                                 />
-                            )}
+                            )} */}
                         {/* <EventDetails
                                 theEvent={eventDialogDetails.theEvent}
                             /> */}

@@ -109,11 +109,39 @@ const ArtistSchema = new mongoose.Schema(
         city: {
             type: String,
         },
+        geocodedCity: {
+            type: String,
+        },
         state: {
+            type: String,
+        },
+        geocodedState: {
             type: String,
         },
         zip: {
             type: Number,
+        },
+        geocodedZipCode: {
+            type: Number,
+        },
+        timezone: {
+            type: String,
+        },
+        timezoneOffset: {
+            type: String,
+        },
+        latLong: {
+            //https://mongoosejs.com/docs/geojson.html#
+            type: {
+                type: String, // Don't do `{ latLong: { type: String } }`
+                enum: ['Point'], // 'latLong.type' must be 'Point'
+                required: true,
+                default: 'Point',
+            },
+            coordinates: {
+                type: [Number],
+                required: true,
+            },
         },
         costStructure: {
             type: String,

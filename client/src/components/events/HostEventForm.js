@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
 import { setAlert } from '../../actions/alert';
+import { StackDateforDisplay } from '../../actions/app';
 import { editHostEvent } from '../../actions/event';
 import {
     TextField,
@@ -22,7 +23,7 @@ import {
     InputAdornment,
     //IconButton,
     Grid,
-    //Box,
+    Box,
     //Paper,
     //BottomNavigationAction,
     // BottomNavigation,
@@ -584,6 +585,14 @@ const HostEventForm = ({
         preferredArtists: [
             <FormLabel component="legend">
                 Who would you like to invite to perform?
+                <br />
+                <small>
+                    (Please consider giving local artists priority in your
+                    offers to host. We want to help you invest in your
+                    community, and the relationships you develop with local
+                    artists have the potential to become most meaningful to you
+                    and your community over time.)
+                </small>
             </FormLabel>,
             [
                 <Grid item xs={12} sx={{ width: '100%' }}>
@@ -1001,7 +1010,7 @@ const HostEventForm = ({
                             <FormControlLabel
                                 value="That sounds great! Either before or after works for me."
                                 control={<Radio />}
-                                label="That sounds great! Either before or after works for me."
+                                label="That sounds great! Either before and/or after works for me."
                             />
                         </RadioGroup>
                     </FormControl>
@@ -1101,24 +1110,6 @@ const HostEventForm = ({
                     .
                 </Grid>,
             ],
-        ],
-        hostNotes: [
-            <FormLabel component="legend">
-                Do you have any final thoughts, questions, notes, or
-                clarifications for us? Feel free to list them below.
-            </FormLabel>,
-            <Grid item xs={12} sx={{ width: '100%' }}>
-                <TextField
-                    variant="standard"
-                    name="hostNotes"
-                    multiline
-                    id="hostNotes"
-                    label="Artist Notes"
-                    value={hostNotes}
-                    onChange={(e) => onChange(e)}
-                    sx={{ width: '100%' }}
-                />
-            </Grid>,
         ],
         refreshments: [
             <FormLabel component="legend">
@@ -1373,6 +1364,24 @@ const HostEventForm = ({
                 //     )}
                 // </FormControl>,
             ],
+        ],
+        hostNotes: [
+            <FormLabel component="legend">
+                Do you have any final thoughts, questions, notes, or
+                clarifications for us? Feel free to list them below.
+            </FormLabel>,
+            <Grid item xs={12} sx={{ width: '100%' }}>
+                <TextField
+                    variant="standard"
+                    name="hostNotes"
+                    multiline
+                    id="hostNotes"
+                    label="Host Notes"
+                    value={hostNotes}
+                    onChange={(e) => onChange(e)}
+                    sx={{ width: '100%' }}
+                />
+            </Grid>,
         ],
         extraClarification: [
             <FormLabel component="legend">
@@ -1796,6 +1805,22 @@ const HostEventForm = ({
 
     return (
         <Fragment>
+            {bookingWhen && (
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'rgba(0 0 0 /.6)',
+                        padding: '0',
+                        zIndex: 100,
+                    }}
+                >
+                    <StackDateforDisplay
+                        date={bookingWhen}
+                    ></StackDateforDisplay>
+                </Box>
+            )}
             <form className="form" onSubmit={(e) => onSubmit(e)}>
                 <Grid
                     container

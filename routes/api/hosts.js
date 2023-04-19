@@ -195,7 +195,7 @@ router.post('/admin-update', [auth], async (req, res) => {
 });
 
 // @route    POST api/hosts/updateMe
-// @desc     Create or update my host profile (copy of /batch)
+// @desc     Create or update my host profile (copied from /batch)
 // @access   Private
 router.post('/updateMe', [auth], async (req, res) => {
     const errors = validationResult(req);

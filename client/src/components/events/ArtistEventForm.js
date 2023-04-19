@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
 import { setAlert } from '../../actions/alert';
+import { StackDateforDisplay } from '../../actions/app';
 import { editArtistEvent } from '../../actions/event';
 import {
     TextField,
@@ -1972,6 +1973,22 @@ const ArtistEventForm = ({
 
     return (
         <Fragment>
+            {bookingWhen && (
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'rgba(0 0 0 /.6)',
+                        padding: '0',
+                        zIndex: 100,
+                    }}
+                >
+                    <StackDateforDisplay
+                        date={bookingWhen}
+                    ></StackDateforDisplay>
+                </Box>
+            )}
             <form className="form" onSubmit={(e) => onSubmit(e)}>
                 <Grid
                     container

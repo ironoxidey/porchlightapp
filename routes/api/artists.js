@@ -10,6 +10,7 @@ const Artist = require('../../models/Artist');
 const Event = require('../../models/Event');
 
 const addressGeocode = require('../../utils/maps/geocoding');
+const addressTimezone = require('../../utils/maps/timezone');
 
 function convertToSlug(Text) {
     return Text.toLowerCase()
@@ -281,7 +282,7 @@ router.post('/admin-update', [auth], async (req, res) => {
 });
 
 // @route    POST api/artists/updateMe
-// @desc     Create or update my artist profile (copy of /batch)
+// @desc     Create or update my artist profile (copied from /batch)
 // @access   Private
 router.post('/updateMe', [auth], async (req, res) => {
     const errors = validationResult(req);
@@ -331,6 +332,49 @@ router.post('/updateMe', [auth], async (req, res) => {
                             //if the user is not an ADMIN, but does have the right to edit their own profile
                             delete artistFields.active; //to prevent someone from being able to change their active status
                             artistFields.user = req.user.id;
+                        }
+
+                        //Pulled in to geocode artist locations from api/host/updateMe (line 257) on April 18, 2023
+                        let locationChanged = false;
+                        //IF THERE'S A DIFFERENCE BETWEEN THE artistFields.streetAddress AND THE artistFields.geocodedStreetAddress THEN THE HOST UPDATED THEIR LOCATION, AND A NEW LATLONG NEEDS TO BE GENERATED
+                        if (
+                            artistFields.city !== artistFields.geocodedCity ||
+                            artistFields.state !== artistFields.geocodedState ||
+                            artistFields.zipCode !==
+                                artistFields.geocodedZipCode
+                        ) {
+                            locationChanged = true;
+                            //geocode with Google Maps API
+                            const artistAddress =
+                                artistFields.city +
+                                ', ' +
+                                artistFields.state +
+                                ' ' +
+                                artistFields.zipCode;
+                            const geocodedAddress = await addressGeocode(
+                                artistAddress
+                            );
+                            const timezoneAddress = await addressTimezone(
+                                geocodedAddress
+                            );
+                            // console.log(
+                            //     host.firstName +
+                            //         ' ' +
+                            //         host.lastName +
+                            //         '’s geocodedAddress is: ',
+                            //     geocodedAddress
+                            // );
+                            artistFields.latLong = {
+                                type: 'Point',
+                                coordinates: geocodedAddress,
+                            };
+                            artistFields.timezone = timezoneAddress.timeZoneId;
+                            artistFields.timezoneOffset =
+                                timezoneAddress.rawOffset / 3600; //rawOffset is the offset from UTC (in seconds) for the given location. dividing rawOffset by 3600 you can get the GMT time of your requested time zone
+
+                            artistFields.geocodedCity = artistFields.city;
+                            artistFields.geocodedState = artistFields.state;
+                            artistFields.geocodedZipCode = artistFields.zipCode;
                         }
 
                         // Using upsert option (creates new doc if no match is found):
@@ -637,6 +681,47 @@ router.get('/', async (req, res) => {
             )
             .sort({ updatedAt: -1 });
         res.json(artists);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+// @route    GET api/artists/fromHost
+// @desc     Get all active artists sorted by distance from logged-in host
+// @access   Private
+router.get('/fromHost', [auth], async (req, res) => {
+    try {
+        const host = await Host.findOne({
+            email: req.user.email,
+        });
+        if (host && host.latLong && host.latLong.coordinates) {
+            const artists = await Artist.find({
+                active: true,
+                latLong: {
+                    $near: {
+                        $maxDistance: 10000 * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
+                        $geometry: {
+                            type: 'Point',
+                            coordinates: host.latLong.coordinates,
+                        },
+                    },
+                },
+            }).select(
+                '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
+            );
+            // .sort({ updatedAt: -1 });
+            res.json(artists);
+        } else {
+            //do it normal (sort alphabetically)
+            const artists = await Artist.find({
+                active: true,
+            })
+                .select(
+                    '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
+                )
+                .sort({ updatedAt: -1 });
+            res.json(artists);
+        }
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');

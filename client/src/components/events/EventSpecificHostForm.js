@@ -1183,7 +1183,7 @@ const EventSpecificHostForm = ({
 
     return (
         <Fragment>
-            <Box
+            {/* <Box
                 sx={{
                     position: 'absolute',
                     top: 0,
@@ -1195,7 +1195,7 @@ const EventSpecificHostForm = ({
                 <StackDateforDisplay
                     date={theEvent.bookingWhen}
                 ></StackDateforDisplay>
-            </Box>
+            </Box> */}
             <form className="form" onSubmit={(e) => onSubmit(e)}>
                 <Grid container sx={{ padding: '20px!important' }}>
                     <Grid
