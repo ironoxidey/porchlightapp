@@ -124,7 +124,7 @@ const HostEventForm = ({
     }
 
     useEffect(() => {
-        getArtists();
+        getArtists(true);
     }, []);
 
     useEffect(() => {

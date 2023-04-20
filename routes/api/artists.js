@@ -281,6 +281,116 @@ router.post('/admin-update', [auth], async (req, res) => {
     }
 });
 
+// @route    GET api/artists/getAllArtistLatLong
+// @desc     [ADMIN] Get all artists for editing (everything)
+// @access   Private
+router.get('/getAllArtistLatLong', [auth], async (req, res) => {
+    //if (req.user.role === 'ADMIN') {
+    if (req.user.role && req.user.role.indexOf('ADMIN') > -1) {
+        //must be an ADMIN to get into all of this!
+        try {
+            //https://masteringjs.io/tutorials/mongoose/update#using-documentupdateone
+            const artists = await Artist.find();
+
+            //console.log('artists', artists);
+            artists.forEach(async (artist) => {
+                //if !latLong {
+                if (
+                    artist.firstName &&
+                    artist.lastName &&
+                    artist.city &&
+                    artist.state &&
+                    artist.zip &&
+                    (artist.latLong.coordinates.length <= 0 ||
+                        !artist.latLong ||
+                        !artist.latLong.coordinates ||
+                        artist.latLong.coordinates[0] === 0 ||
+                        artist.latLong.coordinates[1] === 0)
+                ) {
+                    //geocode with Google Maps API
+                    const geocodedAddress = await addressGeocode(
+                        artist.city + ', ' + artist.state + ' ' + artist.zip
+                    );
+                    console.log(
+                        artist.firstName +
+                            ' ' +
+                            artist.lastName +
+                            '’s geocodedAddress is: ',
+                        geocodedAddress
+                    );
+                    artist.latLong.coordinates = geocodedAddress;
+                    // artist.longitude = geocodedAddress[0];
+                    // artist.latitude = geocodedAddress[1];
+                    artist.markModified('latLong');
+                    //save in artist doc
+                    await artist.save();
+                } else if (
+                    artist.firstName &&
+                    artist.lastName &&
+                    artist.city &&
+                    artist.state &&
+                    !artist.zip &&
+                    (artist.latLong.coordinates.length <= 0 ||
+                        !artist.latLong ||
+                        !artist.latLong.coordinates)
+                ) {
+                    //geocode with Google Maps API
+                    const geocodedAddress = await addressGeocode(
+                        artist.city + ', ' + artist.state
+                    );
+
+                    artist.latLong.coordinates = geocodedAddress;
+                    // artist.longitude = geocodedAddress[0];
+                    // artist.latitude = geocodedAddress[1];
+                    artist.markModified('latLong');
+                    //save in artist doc
+                    await artist.save();
+                }
+                if (
+                    artist.latLong.coordinates.length > 0 &&
+                    artist.latLong.coordinates[0] != 0 &&
+                    artist.latLong.coordinates[1] != 0 &&
+                    (!artist.timezone || !artist.timezoneOffset)
+                ) {
+                    console.log(artist.firstName + ' ' + artist.lastName);
+                    const timezoneAddress = await addressTimezone(
+                        artist.latLong.coordinates
+                    );
+                    artist.timezone = timezoneAddress.timeZoneId;
+                    artist.timezoneOffset = timezoneAddress.rawOffset / 3600; //rawOffset is the offset from UTC (in seconds) for the given location. dividing rawOffset by 3600 you can get the GMT time of your requested time zone
+
+                    artist.geocodedCity = artist.city;
+                    artist.geocodedState = artist.state;
+                    artist.geocodedZipCode = artist.zip;
+
+                    console.log(
+                        artist.firstName +
+                            ' ' +
+                            artist.lastName +
+                            '(' +
+                            artist.geocodedCity +
+                            ', ' +
+                            artist.geocodedState +
+                            ' ' +
+                            artist.geocodedZipCode +
+                            ')' +
+                            ' timezone: ',
+                        timezoneAddress
+                    );
+                    await artist.save();
+                }
+            });
+
+            res.json(artists);
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server Error');
+        }
+    } else {
+        res.status(500).send('Only ADMINs can edit all artists.');
+    }
+});
+
 // @route    POST api/artists/updateMe
 // @desc     Create or update my artist profile (copied from /batch)
 // @access   Private
@@ -695,20 +805,57 @@ router.get('/fromHost', [auth], async (req, res) => {
             email: req.user.email,
         });
         if (host && host.latLong && host.latLong.coordinates) {
-            const artists = await Artist.find({
-                active: true,
-                latLong: {
-                    $near: {
-                        $maxDistance: 10000 * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
-                        $geometry: {
+            // const artists = await Artist.find({
+            //     active: true,
+            //     latLong: {
+            //         $near: {
+            //             // $maxDistance: 10000 * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
+            //             $geometry: {
+            //                 type: 'Point',
+            //                 coordinates: host.latLong.coordinates,
+            //             },
+            //         },
+            //     },
+            // }).select(
+            //     '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
+            // );
+            const artists = await Artist.aggregate([
+                {
+                    $geoNear: {
+                        near: {
                             type: 'Point',
                             coordinates: host.latLong.coordinates,
                         },
+                        distanceField: 'dist.calculated',
+                        // distanceMultiplier: 0.00160935, //the distance is in meters, 1609.35m = 1 mile;
+                        spherical: true,
                     },
                 },
-            }).select(
-                '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes'
-            );
+                {
+                    $match: { active: true }, // Filter by only active artists
+                },
+                {
+                    $project: {
+                        //exclude these fields
+                        email: 0,
+                        phone: 0,
+                        streetAddress: 0,
+                        payoutHandle: 0,
+                        companionTravelers: 0,
+                        travelingCompanions: 0,
+                        artistNotes: 0,
+                        agreeToPayAdminFee: 0,
+                        sentFollowUp: 0,
+                    },
+                },
+                {
+                    $addFields: {
+                        'dist.calculatedMiles': {
+                            $multiply: ['$dist.calculated', 0.000621371],
+                        }, // Convert meters to miles
+                    },
+                },
+            ]);
             // .sort({ updatedAt: -1 });
             res.json(artists);
         } else {
