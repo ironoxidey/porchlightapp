@@ -267,6 +267,20 @@ const HostDashboardEventCard = ({
                                                     .length -
                                                     1);
 
+                                        let confirmed = false;
+
+                                        if (
+                                            thisEvent.confirmedArtist &&
+                                            thisEvent.confirmedArtist ===
+                                                prefArtist._id
+                                        ) {
+                                            console.log(
+                                                prefArtist.stageName +
+                                                    ' is the confirmed artist'
+                                            );
+                                            confirmed = true;
+                                        }
+
                                         if (
                                             thisEvent.preferredArtists.length >
                                             2
@@ -315,7 +329,9 @@ const HostDashboardEventCard = ({
                                                             overflow: 'hidden',
                                                             backgroundImage: `url("${prefArtist.squareImg}")`,
                                                             backgroundBlendMode:
-                                                                'soft-light',
+                                                                confirmed
+                                                                    ? 'normal'
+                                                                    : 'soft-light',
                                                             backgroundColor:
                                                                 'rgba(0,0,0,0.5)',
                                                             backgroundPosition:
@@ -325,9 +341,7 @@ const HostDashboardEventCard = ({
                                                             padding: '4px',
                                                             backgroundClip:
                                                                 'content-box',
-                                                            border: confirmedMy(
-                                                                thisEvent
-                                                            )
+                                                            border: confirmed
                                                                 ? '1px solid var(--link-color)'
                                                                 : '1px dashed var(--primary-color)',
                                                             // margin: '0 8px 0 0',
@@ -337,23 +351,27 @@ const HostDashboardEventCard = ({
                                                                 'center',
                                                         }}
                                                     >
-                                                        <Typography
-                                                            sx={{
-                                                                fontFamily:
-                                                                    'Tahoma',
-                                                                margin: 'auto',
-                                                                fontSize:
-                                                                    avatarSize *
-                                                                        0.8 +
-                                                                    'px',
-                                                                opacity: '.2',
-                                                                lineHeight: '1',
-                                                                textShadow:
-                                                                    '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
-                                                            }}
-                                                        >
-                                                            ?
-                                                        </Typography>
+                                                        {!confirmed && (
+                                                            <Typography
+                                                                sx={{
+                                                                    fontFamily:
+                                                                        'Tahoma',
+                                                                    margin: 'auto',
+                                                                    fontSize:
+                                                                        avatarSize *
+                                                                            0.8 +
+                                                                        'px',
+                                                                    opacity:
+                                                                        '.2',
+                                                                    lineHeight:
+                                                                        '1',
+                                                                    textShadow:
+                                                                        '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
+                                                                }}
+                                                            >
+                                                                ?
+                                                            </Typography>
+                                                        )}
                                                     </Box>
                                                 </Grid>
                                             </>

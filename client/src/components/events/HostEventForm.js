@@ -70,7 +70,7 @@ import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
 // import EventDetails from './EventDetails';
-import HostEventDetails from './HostEventDetails';
+// import HostEventDetails from './HostEventDetails';
 import HostProfile from '../hosts/HostProfile';
 
 function useQuery() {

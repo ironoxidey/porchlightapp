@@ -81,7 +81,8 @@ const EventDetails = ({
     if (
         me &&
         me._id &&
-        (me._id === theEvent.artist || me._id === theEvent.artist._id)
+        (me._id === theEvent.artist || me._id === theEvent.artist._id) &&
+        theEvent.status === 'PENDING'
     ) {
         isMe = true;
     }

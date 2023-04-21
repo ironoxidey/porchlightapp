@@ -242,7 +242,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
 
     function ProfileCell(props) {
         const { id, value, api, field } = props;
-        //console.log('ProfileCell props', props);
+        console.log('ProfileCell props', props);
         const artistEmail = props.row.email;
 
         const [artistSlug, setArtistSlug] = useState('');
@@ -276,103 +276,135 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                     </Link>
                 )}
 
-                {props.preferredArtists &&
-                    props.preferredArtists.length > 0 && (
+                {props.row.theEvent.preferredArtists &&
+                    props.row.theEvent.preferredArtists.length > 0 && (
                         <Grid
                             item
                             sx={{
-                                width: '130px',
-                                height: '130px',
+                                width: '30px',
+                                height: '30px',
                                 display: 'flex',
                                 flexWrap: 'wrap',
                                 flexDirection: 'row',
-                                margin: '0 8px 0 0',
+                                // margin: '0 8px 0 0',
+                                margin: '0 4px',
                                 justifyContent: 'space-around',
                                 // alignItems: 'space-between',
                                 alignContent: 'space-evenly',
                             }}
                             className="preferredArtistsWrapper"
                         >
-                            {props.preferredArtists.map((prefArtist) => {
-                                let avatarSize =
-                                    130 / props.preferredArtists.length -
-                                    4 * (props.preferredArtists.length - 1);
+                            {props.row.theEvent.preferredArtists.map(
+                                (prefArtist) => {
+                                    let avatarSize =
+                                        30 /
+                                            props.row.theEvent.preferredArtists
+                                                .length -
+                                        4 *
+                                            (props.row.theEvent.preferredArtists
+                                                .length -
+                                                1);
 
-                                if (props.preferredArtists.length > 2) {
-                                    // Find the square root of the input number
-                                    const squareRoot = Math.sqrt(
-                                        props.preferredArtists.length
-                                    );
+                                    if (
+                                        props.row.theEvent.preferredArtists
+                                            .length > 2
+                                    ) {
+                                        // Find the square root of the input number
+                                        const squareRoot = Math.sqrt(
+                                            props.row.theEvent.preferredArtists
+                                                .length
+                                        );
 
-                                    // Round up the square root to the nearest integer
-                                    const roundedSquareRoot =
-                                        Math.ceil(squareRoot);
+                                        // Round up the square root to the nearest integer
+                                        const roundedSquareRoot =
+                                            Math.ceil(squareRoot);
 
-                                    // Calculate the square of the rounded square root
-                                    const roundedSquare =
-                                        roundedSquareRoot * roundedSquareRoot;
+                                        // Calculate the square of the rounded square root
+                                        const roundedSquare =
+                                            roundedSquareRoot *
+                                            roundedSquareRoot;
 
-                                    avatarSize =
-                                        130 / roundedSquareRoot -
-                                        4 * (roundedSquareRoot - 1);
-                                }
+                                        avatarSize =
+                                            30 / roundedSquareRoot -
+                                            4 * (roundedSquareRoot - 1);
+                                    }
 
-                                return (
-                                    <>
-                                        <Grid item>
-                                            <Box
-                                                className="squareImgInACircle"
-                                                sx={{
-                                                    display: 'flex',
-
-                                                    width: avatarSize + 'px',
-                                                    height: avatarSize + 'px',
-                                                    maxHeight:
-                                                        avatarSize + 'px',
-                                                    maxWidth: avatarSize + 'px',
-                                                    borderRadius: '50%',
-                                                    overflow: 'hidden',
-                                                    backgroundImage: `url("${prefArtist.squareImg}")`,
-                                                    backgroundBlendMode:
-                                                        'soft-light',
-                                                    backgroundColor:
-                                                        'rgba(0,0,0,0.5)',
-                                                    backgroundPosition:
-                                                        '50% 25%',
-                                                    backgroundSize: 'cover',
-                                                    // padding: '4px',
-                                                    backgroundClip:
-                                                        'content-box',
-                                                    // border: confirmedMy(
-                                                    //     thisEvent
-                                                    // )
-                                                    //     ? '1px solid var(--link-color)'
-                                                    //     : '1px dashed var(--primary-color)',
-                                                    // margin: '0 8px 0 0',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                }}
-                                            >
-                                                <Typography
-                                                    sx={{
-                                                        fontFamily: 'Tahoma',
-                                                        margin: 'auto',
-                                                        fontSize:
-                                                            avatarSize * 0.8 +
-                                                            'px',
-                                                        opacity: '.2',
-                                                        lineHeight: '1',
-                                                        textShadow:
-                                                            '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
-                                                    }}
+                                    return (
+                                        <>
+                                            <Grid item>
+                                                <Tooltip
+                                                    arrow={true}
+                                                    placement="bottom"
+                                                    title={prefArtist.stageName}
                                                 >
-                                                    ?
-                                                </Typography>
-                                            </Box>
-                                        </Grid>
-                                    </>
-                                );
-                            })}
+                                                    <Box
+                                                        className="squareImgInACircle"
+                                                        sx={{
+                                                            display: 'flex',
+
+                                                            width:
+                                                                avatarSize +
+                                                                'px',
+                                                            height:
+                                                                avatarSize +
+                                                                'px',
+                                                            maxHeight:
+                                                                avatarSize +
+                                                                'px',
+                                                            maxWidth:
+                                                                avatarSize +
+                                                                'px',
+                                                            borderRadius: '50%',
+                                                            overflow: 'hidden',
+                                                            backgroundImage: `url("${prefArtist.squareImg}")`,
+                                                            backgroundBlendMode:
+                                                                'soft-light',
+                                                            backgroundColor:
+                                                                'rgba(0,0,0,0.5)',
+                                                            backgroundPosition:
+                                                                '50% 25%',
+                                                            backgroundSize:
+                                                                'cover',
+                                                            // padding: '4px',
+                                                            backgroundClip:
+                                                                'content-box',
+                                                            // border: confirmedMy(
+                                                            //     thisEvent
+                                                            // )
+                                                            //     ? '1px solid var(--link-color)'
+                                                            //     : '1px dashed var(--primary-color)',
+                                                            // margin: '0 8px 0 0',
+                                                            justifyContent:
+                                                                'center',
+                                                            alignItems:
+                                                                'center',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            sx={{
+                                                                fontFamily:
+                                                                    'Tahoma',
+                                                                margin: 'auto',
+                                                                fontSize:
+                                                                    avatarSize *
+                                                                        0.8 +
+                                                                    'px',
+                                                                opacity: '.2',
+                                                                lineHeight: '1',
+                                                                textShadow:
+                                                                    '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
+                                                                cursor: 'default',
+                                                            }}
+                                                        >
+                                                            ?
+                                                        </Typography>
+                                                    </Box>
+                                                </Tooltip>
+                                            </Grid>
+                                        </>
+                                    );
+                                }
+                            )}
                         </Grid>
                     )}
             </>
@@ -432,9 +464,10 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
 
     const eventColumns = [
         //https://codesandbox.io/s/e9o2j?file=/demo.js
-        { field: 'status', headerName: 'Status', width: 120 },
+        { field: 'createdBy', headerName: 'Created By', width: 90 },
+        { field: 'status', headerName: 'Status', width: 100 },
         {
-            field: 'artist',
+            field: 'artist' || 'preferredArtist',
             headerName: 'Artist',
             width: 75,
             sortable: false,
@@ -577,7 +610,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                                                     style={{
                                                         color: 'var(--link-color)',
                                                     }}
-                                                >{`${params.row.theEvent.artist.stageName} accepted this offer`}</div>
+                                                >{`This offer was accepted.`}</div>
                                             )}
                                         </>
                                     }
@@ -778,6 +811,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                         hostsInReach: adminEvent.hostsInReach,
                         offersFromHosts: adminEvent.offersFromHosts,
                         status: adminEvent.status,
+                        createdBy: adminEvent.createdBy,
                         bookingWhen: adminEvent.bookingWhen,
                         bookingWhere: adminEvent.bookingWhere,
                     };

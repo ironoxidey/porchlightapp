@@ -402,7 +402,7 @@ export const artistViewedHostOffer =
         }
     };
 
-// Artist viewed Host's offer to book
+// Artist accepted Host's offer to book
 export const artistAcceptOffer =
     (bookingWhen, theOffer, stageName, history) => async (dispatch) => {
         let formData = {
@@ -410,7 +410,7 @@ export const artistAcceptOffer =
             offeringHost: { _id: theOffer.host._id },
             stageName: stageName,
         };
-        //console.log('artistAcceptOffer theOffer', theOffer);
+        console.log('artistAcceptOffer theOffer', theOffer);
         try {
             const config = {
                 headers: {

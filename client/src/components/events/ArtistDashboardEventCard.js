@@ -26,7 +26,7 @@ import { artistViewedHostOffer, deleteArtistEvent } from '../../actions/event';
 import EventDetails from '../events/EventDetails';
 
 import Button from '../layout/SvgButton';
-import HostProfile from '../hosts/HostProfile';
+// import HostProfile from '../hosts/HostProfile';
 import { relativeTimeRounding } from 'moment';
 import ArtistDashboardBookingOffers from './ArtistDashboardBookingOffers';
 
@@ -211,7 +211,6 @@ const ArtistDashboardEventCard = ({
                             thisEvent.offersFromHosts[0].host.profileImg && (
                                 <Grid item container>
                                     <Typography component="h2">
-                                        Host:{' '}
                                         {
                                             thisEvent.offersFromHosts[0].host
                                                 .firstName
@@ -219,7 +218,7 @@ const ArtistDashboardEventCard = ({
                                         {
                                             thisEvent.offersFromHosts[0].host
                                                 .lastName
-                                        }
+                                        }{' '}
                                     </Typography>
                                 </Grid>
                             )}

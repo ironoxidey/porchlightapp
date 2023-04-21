@@ -1493,15 +1493,26 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
 
     let eventFields = req.body;
 
+    const thisArtist = await Artist.findOne({
+        email: req.user.email,
+    });
+
     //if (req.user.role === 'ADMIN' && eventFields.email !== '') {
     if (req.user.role && req.user.role.indexOf('ARTIST') > -1) {
         try {
-            //console.log('artistAcceptOffer eventFields', eventFields);
+            // console.log('artistAcceptOffer eventFields', eventFields);
 
             let eventDetails = await Event.findOneAndUpdate(
                 //https://www.mongodb.com/docs/manual/reference/operator/projection/
                 {
-                    artistEmail: req.user.email,
+                    $or: [
+                        { artistEmail: req.user.email },
+                        {
+                            createdBy: 'HOST',
+                            // status: { $ne: 'DRAFT' }, //not equal to 'DRAFT'
+                            preferredArtists: thisArtist._id,
+                        },
+                    ],
                     bookingWhen: eventFields.bookingWhen,
                     'offersFromHosts.host': eventFields.offeringHost._id,
                     status: 'PENDING',
@@ -1509,6 +1520,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                 {
                     $set: {
                         confirmedHost: eventFields.offeringHost._id,
+                        confirmedArtist: thisArtist._id,
                         confirmedDate: new Date(),
                         status: 'CONFIRMED',
                         'offersFromHosts.$.status': 'ACCEPTED',
@@ -1531,7 +1543,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                 .lean(); //.lean required to delete email later -- Documents returned from queries with the lean option enabled are plain javascript objects, not Mongoose Documents. They have no save method, getters/setters, virtuals, or other Mongoose features. https://stackoverflow.com/a/71746004/3338608
 
             if (eventDetails) {
-                // console.log('eventDetails', eventDetails);
+                console.log('eventDetails', eventDetails);
                 let emailDate = new Date(
                     eventFields.bookingWhen
                 ).toLocaleDateString(undefined, {
@@ -1553,7 +1565,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                         eventDetails.confirmedHost.firstName +
                         ' ' +
                         eventDetails.confirmedHost.lastName,
-                    stageName: eventFields.stageName,
+                    stageName: thisArtist.stageName,
                     eventDate: emailDate,
                     bookingWhenFormatted: theEventDateForStacking,
                     hostLocation:
@@ -1561,7 +1573,8 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                         ', ' +
                         eventDetails.confirmedHost.state,
                     hostImg: eventDetails.confirmedHost.profileImg,
-                    artistImg: eventDetails.artist.squareImg,
+                    artistImg:
+                        eventDetails.artist.squareImg || thisArtist.squareImg,
                 });
                 delete eventDetails.confirmedHost.email;
 
@@ -1608,10 +1621,8 @@ router.get('/edit', [auth], async (req, res) => {
                 .populate('hostsInReach.host')
                 .populate('offersFromHosts.host')
                 .populate('confirmedHost')
-                .populate(
-                    'preferredArtists',
-                    '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp '
-                );
+                .populate('preferredArtists')
+                .populate('confirmedArtist');
 
             events.forEach(async (eventDetails) => {
                 if (
