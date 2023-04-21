@@ -476,6 +476,7 @@ const ArtistProfile = ({
                                                       mediaTabs[i].mediaLink
                                                   ) === 'youtu'
                                               }
+                                              controls={true}
                                               url={mediaTabs[i].mediaLink}
                                               width="100%"
                                               style={{

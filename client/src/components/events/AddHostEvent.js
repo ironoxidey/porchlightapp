@@ -52,7 +52,9 @@ const AddHostEvent = ({
             >
                 <Grid item sx={{ minHeight: '85vh' }}>
                     {drawerOpen && ( //so that the ArtistEventForm doesn't setSelectedDates a bajillion times until it's necessary
-                        <HostEventForm></HostEventForm>
+                        <HostEventForm
+                            setDrawerOpen={setDrawerOpen} //pass setDrawerOpen down so that we can close the drawer whne the form is sent
+                        ></HostEventForm>
                     )}
                 </Grid>
             </SwipeableDrawer>

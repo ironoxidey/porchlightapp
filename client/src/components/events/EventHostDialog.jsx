@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Box, Tooltip } from '@mui/material';
+import { Avatar, Box, Tooltip, Grid, Typography } from '@mui/material';
 
 import { StackDateforDisplay } from '../../actions/app';
 
 import HostProfile from '../hosts/HostProfile';
+import { ProfileAvatar } from '../../common/components';
 
 import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 import Dialog from '@mui/material/Dialog';
@@ -67,6 +68,74 @@ const EventHostDialog = (props) => {
                                     date={props.theEvent.bookingWhen}
                                 ></StackDateforDisplay>
                             </Box>
+
+                            {props.theEvent.preferredArtists &&
+                                props.theEvent.preferredArtists.length > 0 && (
+                                    <Box sx={{ marginTop: '16px' }}>
+                                        <Typography variant="h2">
+                                            Your proposal to host this show is
+                                            now visible on the private profile
+                                            {props.theEvent.preferredArtists
+                                                .length > 1
+                                                ? 's'
+                                                : ''}{' '}
+                                            of:
+                                        </Typography>
+                                        <Grid
+                                            container
+                                            sx={{
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                margin: '8px 4px',
+                                                flexDirection: 'row',
+                                            }}
+                                        >
+                                            {props.theEvent.preferredArtists.map(
+                                                (prefArtist) => {
+                                                    return (
+                                                        <>
+                                                            <Grid
+                                                                item
+                                                                sx={{
+                                                                    textAlign:
+                                                                        'center',
+                                                                    margin: '8px 8px',
+                                                                    padding:
+                                                                        '8px',
+                                                                    background:
+                                                                        'rgba(0 0 0 / .2)',
+                                                                }}
+                                                            >
+                                                                <Avatar
+                                                                    src={
+                                                                        prefArtist.squareImg
+                                                                    }
+                                                                    sx={{
+                                                                        margin: '0 auto 4px',
+                                                                        width: '50px',
+                                                                        height: '50px',
+                                                                    }}
+                                                                />
+                                                                <Typography variant="span">
+                                                                    {
+                                                                        prefArtist.stageName
+                                                                    }
+                                                                </Typography>
+                                                            </Grid>
+                                                        </>
+                                                    );
+                                                }
+                                            )}
+                                        </Grid>
+                                        <Typography
+                                            variant="h2"
+                                            sx={{ marginBottom: '8px' }}
+                                        >
+                                            This is what it looks like:
+                                        </Typography>
+                                    </Box>
+                                )}
+
                             {props.theOffer &&
                                 props.theHost &&
                                 props.theEvent && (

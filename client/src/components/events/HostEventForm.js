@@ -109,6 +109,7 @@ const HostEventForm = ({
     myHostEvents, //for disabling dates in the multipledate picker calendar
     jumpTo,
     jumpToState, //user can click Edit Tooltip in EventDetails and jumpToState formField here
+    setDrawerOpen, //to close the drawer after the proposal has been sent
 }) => {
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     const dispatch = useDispatch();
@@ -1482,7 +1483,10 @@ const HostEventForm = ({
                 >
                     <Button
                         btnwidth={350}
-                        onClick={() => hostProposes(formData)}
+                        onClick={() => {
+                            hostProposes(formData);
+                            setDrawerOpen(false);
+                        }}
                     >
                         <p>
                             Send my proposal to the{' '}
@@ -1573,7 +1577,14 @@ const HostEventForm = ({
                                     : 'none',
                         }}
                     >
-                        <Grid item sx={{ margin: '0 auto', width: '100%' }}>
+                        <Grid
+                            item
+                            sx={{
+                                margin: '0 auto',
+                                width: '100%',
+                                height: 'fit-content',
+                            }}
+                        >
                             <HostProfile
                                 theHost={hostMe}
                                 theEvent={
@@ -1613,7 +1624,7 @@ const HostEventForm = ({
                                 // }
                             />
                         </Grid>
-                        <Grid item sx={{ margin: '16px auto', width: '100%' }}>
+                        {/* <Grid item sx={{ margin: '16px auto', width: '100%' }}>
                             <HostEventDetails
                                 theEvent={{
                                     ...(theEvent ||
@@ -1632,7 +1643,7 @@ const HostEventForm = ({
                                     artist: hostMe,
                                 }}
                             />
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                 </>,
             ],

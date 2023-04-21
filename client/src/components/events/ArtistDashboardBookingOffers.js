@@ -20,12 +20,14 @@ import { artistViewedHostOffer } from '../../actions/event';
 
 import Button from '../layout/SvgButton';
 import HostProfile from '../hosts/HostProfile';
+import EventDetails from '../events/EventDetails';
 import { relativeTimeRounding } from 'moment';
 
 const ArtistDashboardBookingOffers = ({
     thisEvent,
     artistViewedHostOffer,
     thisOffer,
+    artistMe,
 }) => {
     // console.log('ArtistDashboardBookingOffers thisEvent:', thisEvent);
 
@@ -98,9 +100,12 @@ const ArtistDashboardBookingOffers = ({
                                     }}
                                 />
                             )} */}
-                        {/* <EventDetails
-                                theEvent={eventDialogDetails.theEvent}
-                            /> */}
+                        <EventDetails
+                            theEvent={{
+                                ...thisEvent,
+                                artist: artistMe,
+                            }}
+                        />
                         {/* </DialogContentText> */}
                     </DialogContent>
                     {/*<DialogActions>
@@ -295,9 +300,12 @@ ArtistDashboardBookingOffers.propTypes = {
     thisOffer: PropTypes.object.isRequired,
     thisEvent: PropTypes.object.isRequired,
     artistViewedHostOffer: PropTypes.func.isRequired,
+    artistMe: PropTypes.object,
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+    artistMe: state.artist.me,
+});
 
 //export default ArtistDashboardBookingOffers;
 export default connect(mapStateToProps, {

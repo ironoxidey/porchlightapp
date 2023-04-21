@@ -309,13 +309,28 @@ const HostDashboardEventCard = ({
                                     ', ' +
                                     thisEvent.bookingWhere.state}
                             </Grid>
-                            {thisEvent.createdBy === 'HOST' && (
-                                <Grid item container>
-                                    <EditHostEvent
-                                        theEvent={thisEvent}
-                                    ></EditHostEvent>
-                                </Grid>
-                            )}
+                            {thisEvent.createdBy === 'HOST' &&
+                                thisEvent.status === 'DRAFT' && (
+                                    <Grid item container>
+                                        <EditHostEvent
+                                            theEvent={thisEvent}
+                                        ></EditHostEvent>
+                                    </Grid>
+                                )}
+                            {thisEvent.createdBy === 'HOST' &&
+                                thisEvent.status != 'DRAFT' && (
+                                    <Grid item container>
+                                        <EventHostDialog
+                                            theHost={host.me}
+                                            theEvent={thisEvent}
+                                            theOffer={
+                                                thisEvent.offersFromHosts[0]
+                                            }
+                                        >
+                                            <Button>CONCERT DETAILS</Button>
+                                        </EventHostDialog>
+                                    </Grid>
+                                )}
                             {thisEvent.createdBy === 'ARTIST' && (
                                 <Grid item container>
                                     <EventHostDialog
@@ -387,7 +402,7 @@ const HostDashboardEventCard = ({
                         }
                     </Grid>*/}
                 </Grid>
-                {thisEvent.status !== 'CONFIRMED' && !thisEvent.artist && (
+                {thisEvent.status === 'DRAFT' && !thisEvent.artist && (
                     <Grid item className="deleteBtn" xs={1}>
                         <IconButton
                             onClick={(e) => deleteHostEvent(thisEvent._id)}
