@@ -30,6 +30,7 @@ const EventHostDialog = (props) => {
     useEffect(() => {
         //console.log('eventDialogDetails', eventDialogDetails);
         //console.log('EventHostDialog should open');
+        console.log('props', props);
         setEventDetailsDialogOpen(true);
     }, [eventDialogDetails]);
 
@@ -72,9 +73,21 @@ const EventHostDialog = (props) => {
                             {props.theEvent.preferredArtists &&
                                 props.theEvent.preferredArtists.length > 0 && (
                                     <Box sx={{ marginTop: '16px' }}>
-                                        <Typography variant="h2">
-                                            Your proposal to host this show is
-                                            now visible on the private profile
+                                        <Typography
+                                            variant="h2"
+                                            sx={{ margin: '0 50px' }}
+                                        >
+                                            Your proposal to host this show on{' '}
+                                            {new Date(
+                                                props.theEvent.bookingWhen
+                                            ).toLocaleDateString(undefined, {
+                                                weekday: 'long',
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                            })}{' '}
+                                            is now visible on the private
+                                            profile
                                             {props.theEvent.preferredArtists
                                                 .length > 1
                                                 ? 's'

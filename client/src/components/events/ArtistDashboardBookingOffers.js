@@ -100,12 +100,14 @@ const ArtistDashboardBookingOffers = ({
                                     }}
                                 />
                             )} */}
-                        <EventDetails
-                            theEvent={{
-                                ...thisEvent,
-                                artist: artistMe,
-                            }}
-                        />
+                        <Box sx={{ marginTop: '16px' }}>
+                            <EventDetails
+                                theEvent={{
+                                    ...thisEvent,
+                                    artist: artistMe,
+                                }}
+                            />
+                        </Box>
                         {/* </DialogContentText> */}
                     </DialogContent>
                     {/*<DialogActions>

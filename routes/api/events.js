@@ -1607,7 +1607,11 @@ router.get('/edit', [auth], async (req, res) => {
                 .populate('artist')
                 .populate('hostsInReach.host')
                 .populate('offersFromHosts.host')
-                .populate('confirmedHost');
+                .populate('confirmedHost')
+                .populate(
+                    'preferredArtists',
+                    '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp '
+                );
 
             events.forEach(async (eventDetails) => {
                 if (

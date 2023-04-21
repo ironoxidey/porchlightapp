@@ -14,6 +14,8 @@ import {
     TextField,
     Button,
     Grid,
+    Box,
+    Typography,
 } from '@mui/material';
 
 import { styled } from '@mui/material/styles';
@@ -273,6 +275,106 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                         />
                     </Link>
                 )}
+
+                {props.preferredArtists &&
+                    props.preferredArtists.length > 0 && (
+                        <Grid
+                            item
+                            sx={{
+                                width: '130px',
+                                height: '130px',
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                flexDirection: 'row',
+                                margin: '0 8px 0 0',
+                                justifyContent: 'space-around',
+                                // alignItems: 'space-between',
+                                alignContent: 'space-evenly',
+                            }}
+                            className="preferredArtistsWrapper"
+                        >
+                            {props.preferredArtists.map((prefArtist) => {
+                                let avatarSize =
+                                    130 / props.preferredArtists.length -
+                                    4 * (props.preferredArtists.length - 1);
+
+                                if (props.preferredArtists.length > 2) {
+                                    // Find the square root of the input number
+                                    const squareRoot = Math.sqrt(
+                                        props.preferredArtists.length
+                                    );
+
+                                    // Round up the square root to the nearest integer
+                                    const roundedSquareRoot =
+                                        Math.ceil(squareRoot);
+
+                                    // Calculate the square of the rounded square root
+                                    const roundedSquare =
+                                        roundedSquareRoot * roundedSquareRoot;
+
+                                    avatarSize =
+                                        130 / roundedSquareRoot -
+                                        4 * (roundedSquareRoot - 1);
+                                }
+
+                                return (
+                                    <>
+                                        <Grid item>
+                                            <Box
+                                                className="squareImgInACircle"
+                                                sx={{
+                                                    display: 'flex',
+
+                                                    width: avatarSize + 'px',
+                                                    height: avatarSize + 'px',
+                                                    maxHeight:
+                                                        avatarSize + 'px',
+                                                    maxWidth: avatarSize + 'px',
+                                                    borderRadius: '50%',
+                                                    overflow: 'hidden',
+                                                    backgroundImage: `url("${prefArtist.squareImg}")`,
+                                                    backgroundBlendMode:
+                                                        'soft-light',
+                                                    backgroundColor:
+                                                        'rgba(0,0,0,0.5)',
+                                                    backgroundPosition:
+                                                        '50% 25%',
+                                                    backgroundSize: 'cover',
+                                                    // padding: '4px',
+                                                    backgroundClip:
+                                                        'content-box',
+                                                    // border: confirmedMy(
+                                                    //     thisEvent
+                                                    // )
+                                                    //     ? '1px solid var(--link-color)'
+                                                    //     : '1px dashed var(--primary-color)',
+                                                    // margin: '0 8px 0 0',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <Typography
+                                                    sx={{
+                                                        fontFamily: 'Tahoma',
+                                                        margin: 'auto',
+                                                        fontSize:
+                                                            avatarSize * 0.8 +
+                                                            'px',
+                                                        opacity: '.2',
+                                                        lineHeight: '1',
+                                                        textShadow:
+                                                            '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
+                                                    }}
+                                                >
+                                                    ?
+                                                </Typography>
+                                            </Box>
+                                        </Grid>
+                                    </>
+                                );
+                            })}
+                        </Grid>
+                    )}
             </>
         );
     }
