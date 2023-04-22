@@ -147,7 +147,11 @@ const HostDashboardEventCard = ({
                 <svg
                     width={eventCardWidth}
                     height={eventCardHeight}
-                    className="eventCardSvgBorder"
+                    className={
+                        thisEvent.status === 'DRAFT'
+                            ? 'eventCardSvgBorder eventDraft'
+                            : 'eventCardSvgBorder'
+                    }
                 >
                     <polygon
                         points={
@@ -274,10 +278,6 @@ const HostDashboardEventCard = ({
                                             thisEvent.confirmedArtist ===
                                                 prefArtist._id
                                         ) {
-                                            console.log(
-                                                prefArtist.stageName +
-                                                    ' is the confirmed artist'
-                                            );
                                             confirmed = true;
                                         }
 

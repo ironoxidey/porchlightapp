@@ -667,30 +667,30 @@ router.post(
                     }
 
                     //console.log('event', event);
-                    //res.json(event);
+                    res.json(event);
 
-                    const myArtistEvents = await Event.find({
-                        artistEmail: req.user.email,
-                        //'offersFromHosts.0': { $exists: true }, //checks to see if the first index of hostsOfferingToBook exists //https://www.mongodb.com/community/forums/t/is-there-a-way-to-query-array-fields-with-size-greater-than-some-specified-value/54597
-                    })
-                        .select(
-                            '-artistEmail -hostsOfferingToBook -latLong -hostsInReach'
-                        )
-                        .populate(
-                            'offersFromHosts.host',
-                            '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin -lastEmailed -notificationFrequency -date -createdAt'
-                        )
-                        .sort({ bookingWhen: 1 }); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
-                    if (!myArtistEvents) {
-                        return res.json({
-                            email: req.user.email,
-                            msg:
-                                'There are no events associated with ' +
-                                req.user.email,
-                        });
-                    }
+                    // const myArtistEvents = await Event.find({
+                    //     artistEmail: req.user.email,
+                    //     //'offersFromHosts.0': { $exists: true }, //checks to see if the first index of hostsOfferingToBook exists //https://www.mongodb.com/community/forums/t/is-there-a-way-to-query-array-fields-with-size-greater-than-some-specified-value/54597
+                    // })
+                    //     .select(
+                    //         '-artistEmail -hostsOfferingToBook -latLong -hostsInReach'
+                    //     )
+                    //     .populate(
+                    //         'offersFromHosts.host',
+                    //         '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin -lastEmailed -notificationFrequency -date -createdAt'
+                    //     )
+                    //     .sort({ bookingWhen: 1 }); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
+                    // if (!myArtistEvents) {
+                    //     return res.json({
+                    //         email: req.user.email,
+                    //         msg:
+                    //             'There are no events associated with ' +
+                    //             req.user.email,
+                    //     });
+                    // }
 
-                    res.json(myArtistEvents);
+                    // res.json(myArtistEvents);
                 }
             } catch (err) {
                 console.error(err.message);
@@ -726,6 +726,35 @@ router.delete('/artistEvent/:id', auth, async (req, res) => {
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
+    }
+});
+
+// @route    DELETE api/events/adminEvent/:id
+// @desc     Delete artist event
+// @access   Private
+router.delete('/adminEvent/:id', auth, async (req, res) => {
+    let eventFields = req.body;
+    console.log('DELETE adminEvent eventFields: ', eventFields);
+
+    if (
+        req.user.role &&
+        (req.user.role.indexOf('BOOKING') > -1 ||
+            req.user.role.indexOf('ADMIN') > -1)
+    ) {
+        try {
+            // Remove event
+            await Event.findOneAndRemove({
+                _id: req.params.id,
+                bookingWhen: eventFields.bookingWhen,
+                createdBy: eventFields.createdBy,
+                status: eventFields.status,
+                createdAt: eventFields.createdAt,
+            });
+            res.json(req.params.id);
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server Error');
+        }
     }
 });
 
@@ -1574,7 +1603,9 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                         eventDetails.confirmedHost.state,
                     hostImg: eventDetails.confirmedHost.profileImg,
                     artistImg:
-                        eventDetails.artist.squareImg || thisArtist.squareImg,
+                        (eventDetails.artist &&
+                            eventDetails.artist.squareImg) ||
+                        thisArtist.squareImg,
                 });
                 delete eventDetails.confirmedHost.email;
 

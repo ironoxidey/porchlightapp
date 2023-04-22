@@ -441,106 +441,117 @@ const HostProfile = ({
                                     </Typography>
                                 </Grid>
                             )}
-                            {theOffer && theOffer.showSchedule && (
-                                <Grid
-                                    item
-                                    container
-                                    alignItems="center"
-                                    sx={{ marginTop: '8px' }}
-                                    className="showSchedule"
-                                >
-                                    <Typography component="h3">
-                                        <Tooltip
-                                            title={
-                                                !isMe ? (
-                                                    '' //'Location'
-                                                ) : (
-                                                    <Link to="/edit-host-profile?field=showSchedule">
-                                                        Edit
-                                                    </Link>
+                            {theOffer &&
+                                theOffer.showSchedule &&
+                                theEvent &&
+                                theEvent.showSchedule && (
+                                    <Grid
+                                        item
+                                        container
+                                        alignItems="center"
+                                        sx={{ marginTop: '8px' }}
+                                        className="showSchedule"
+                                    >
+                                        <Typography component="h3">
+                                            <Tooltip
+                                                title={
+                                                    !isMe ? (
+                                                        '' //'Location'
+                                                    ) : (
+                                                        <Link to="/edit-host-profile?field=showSchedule">
+                                                            Edit
+                                                        </Link>
+                                                    )
+                                                }
+                                                placement="bottom"
+                                                arrow
+                                            >
+                                                <AccessTimeTwoToneIcon
+                                                    sx={{ marginRight: '8px' }}
+                                                ></AccessTimeTwoToneIcon>
+                                            </Tooltip>
+                                            {theHost.firstName}{' '}
+                                            {theOffer.showSchedule.setupTime !==
+                                            theEvent.showSchedule.setupTime ? (
+                                                <>
+                                                    {`said setup should instead be at `}
+                                                    <span class="diffTime">
+                                                        {convert24HourTime(
+                                                            theOffer
+                                                                .showSchedule
+                                                                .setupTime
+                                                        )}
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                ` said setup could be at ` +
+                                                convert24HourTime(
+                                                    theOffer.showSchedule
+                                                        .setupTime
                                                 )
-                                            }
-                                            placement="bottom"
-                                            arrow
-                                        >
-                                            <AccessTimeTwoToneIcon
-                                                sx={{ marginRight: '8px' }}
-                                            ></AccessTimeTwoToneIcon>
-                                        </Tooltip>
-                                        {theHost.firstName}{' '}
-                                        {theOffer.showSchedule.setupTime !==
-                                        theEvent.showSchedule.setupTime ? (
-                                            <>
-                                                {`said setup should instead be at `}
-                                                <span class="diffTime">
-                                                    {convert24HourTime(
-                                                        theOffer.showSchedule
-                                                            .setupTime
-                                                    )}
-                                                </span>
-                                            </>
-                                        ) : (
-                                            ` said setup could be at ` +
-                                            convert24HourTime(
-                                                theOffer.showSchedule.setupTime
-                                            )
-                                        )}
-                                        {theOffer.showSchedule.doorsOpen !==
-                                        theEvent.showSchedule.doorsOpen ? (
-                                            <>
-                                                {`, doors should instead open at `}
-                                                <span class="diffTime">
-                                                    {convert24HourTime(
-                                                        theOffer.showSchedule
-                                                            .doorsOpen
-                                                    )}
-                                                </span>
-                                            </>
-                                        ) : (
-                                            `, doors could open at ` +
-                                            convert24HourTime(
-                                                theOffer.showSchedule.doorsOpen
-                                            )
-                                        )}
-                                        {theOffer.showSchedule.startTime !==
-                                        theEvent.showSchedule.startTime ? (
-                                            <>
-                                                {`, for the show instead to start at `}
-                                                <span class="diffTime">
-                                                    {convert24HourTime(
-                                                        theOffer.showSchedule
-                                                            .startTime
-                                                    )}
-                                                </span>
-                                            </>
-                                        ) : (
-                                            `, for the show to start at ` +
-                                            convert24HourTime(
-                                                theOffer.showSchedule.startTime
-                                            )
-                                        )}
-                                        {theOffer.showSchedule.hardWrap !==
-                                        theEvent.showSchedule.hardWrap ? (
-                                            <>
-                                                {`, and a hard wrap instead at about `}
-                                                <span class="diffTime">
-                                                    {convert24HourTime(
-                                                        theOffer.showSchedule
-                                                            .hardWrap
-                                                    )}
-                                                </span>
-                                                {`.`}
-                                            </>
-                                        ) : (
-                                            `, and a hard wrap at about ` +
-                                            convert24HourTime(
-                                                theOffer.showSchedule.hardWrap
-                                            ) +
-                                            `.`
-                                        )}
-                                    </Typography>
-                                </Grid>
-                            )}
+                                            )}
+                                            {theOffer.showSchedule.doorsOpen !==
+                                            theEvent.showSchedule.doorsOpen ? (
+                                                <>
+                                                    {`, doors should instead open at `}
+                                                    <span class="diffTime">
+                                                        {convert24HourTime(
+                                                            theOffer
+                                                                .showSchedule
+                                                                .doorsOpen
+                                                        )}
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                `, doors could open at ` +
+                                                convert24HourTime(
+                                                    theOffer.showSchedule
+                                                        .doorsOpen
+                                                )
+                                            )}
+                                            {theOffer.showSchedule.startTime !==
+                                            theEvent.showSchedule.startTime ? (
+                                                <>
+                                                    {`, for the show instead to start at `}
+                                                    <span class="diffTime">
+                                                        {convert24HourTime(
+                                                            theOffer
+                                                                .showSchedule
+                                                                .startTime
+                                                        )}
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                `, for the show to start at ` +
+                                                convert24HourTime(
+                                                    theOffer.showSchedule
+                                                        .startTime
+                                                )
+                                            )}
+                                            {theOffer.showSchedule.hardWrap !==
+                                            theEvent.showSchedule.hardWrap ? (
+                                                <>
+                                                    {`, and a hard wrap instead at about `}
+                                                    <span class="diffTime">
+                                                        {convert24HourTime(
+                                                            theOffer
+                                                                .showSchedule
+                                                                .hardWrap
+                                                        )}
+                                                    </span>
+                                                    {`.`}
+                                                </>
+                                            ) : (
+                                                `, and a hard wrap at about ` +
+                                                convert24HourTime(
+                                                    theOffer.showSchedule
+                                                        .hardWrap
+                                                ) +
+                                                `.`
+                                            )}
+                                        </Typography>
+                                    </Grid>
+                                )}
 
                             {user &&
                                 user.role &&
@@ -1115,13 +1126,15 @@ const HostProfile = ({
                 </Tooltip>
             </Grid>
 
-            {theEvent.createdBy === 'HOST' && theEvent.confirmedHost && (
-                <HostEventDetails
-                    theEvent={{
-                        ...theEvent,
-                    }}
-                />
-            )}
+            {theEvent &&
+                theEvent.createdBy === 'HOST' &&
+                theEvent.confirmedHost && (
+                    <HostEventDetails
+                        theEvent={{
+                            ...theEvent,
+                        }}
+                    />
+                )}
 
             {theEvent &&
                 theOffer &&

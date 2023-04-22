@@ -120,6 +120,7 @@ const UserDataGrid = ({
                             onClose={adminAlertHandleClose}
                             aria-labelledby="alert-dialog-title"
                             aria-describedby="alert-dialog-description"
+                            className="porchlightBG"
                         >
                             <DialogTitle id="alert-dialog-title">
                                 <Avatar

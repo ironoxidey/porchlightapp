@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 
-import { getAllEvents } from '../../actions/event';
+import { getAllEvents, deleteAdminEvent } from '../../actions/event';
 
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import {
@@ -16,7 +16,10 @@ import {
     Grid,
     Box,
     Typography,
+    IconButton,
 } from '@mui/material';
+
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
@@ -43,7 +46,12 @@ const CustomWidthTooltip = styled(({ className, ...props }) => (
     },
 });
 
-const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
+const EventDataGrid = ({
+    getAllEvents,
+    deleteAdminEvent,
+    auth: { user },
+    adminEvents,
+}) => {
     const changesMade = useRef(false);
     const [editRowsModel, setEditRowsModel] = React.useState({});
 
@@ -133,6 +141,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                         onClose={adminAlertHandleClose}
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
+                        className="porchlightBG"
                     >
                         <DialogTitle id="alert-dialog-title">
                             <Avatar
@@ -242,7 +251,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
 
     function ProfileCell(props) {
         const { id, value, api, field } = props;
-        console.log('ProfileCell props', props);
+        // console.log('ProfileCell props', props);
         const artistEmail = props.row.email;
 
         const [artistSlug, setArtistSlug] = useState('');
@@ -305,6 +314,16 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                                                 .length -
                                                 1);
 
+                                    let confirmed = false;
+
+                                    if (
+                                        props.row.theEvent.confirmedArtist &&
+                                        props.row.theEvent.confirmedArtist
+                                            ._id === prefArtist._id
+                                    ) {
+                                        confirmed = true;
+                                    }
+
                                     if (
                                         props.row.theEvent.preferredArtists
                                             .length > 2
@@ -358,7 +377,9 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                                                             overflow: 'hidden',
                                                             backgroundImage: `url("${prefArtist.squareImg}")`,
                                                             backgroundBlendMode:
-                                                                'soft-light',
+                                                                confirmed
+                                                                    ? 'normal'
+                                                                    : 'soft-light',
                                                             backgroundColor:
                                                                 'rgba(0,0,0,0.5)',
                                                             backgroundPosition:
@@ -368,11 +389,9 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                                                             // padding: '4px',
                                                             backgroundClip:
                                                                 'content-box',
-                                                            // border: confirmedMy(
-                                                            //     thisEvent
-                                                            // )
-                                                            //     ? '1px solid var(--link-color)'
-                                                            //     : '1px dashed var(--primary-color)',
+                                                            border: confirmed
+                                                                ? '1px solid var(--link-color)'
+                                                                : '1px dashed var(--primary-color)',
                                                             // margin: '0 8px 0 0',
                                                             justifyContent:
                                                                 'center',
@@ -380,24 +399,28 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                                                                 'center',
                                                         }}
                                                     >
-                                                        <Typography
-                                                            sx={{
-                                                                fontFamily:
-                                                                    'Tahoma',
-                                                                margin: 'auto',
-                                                                fontSize:
-                                                                    avatarSize *
-                                                                        0.8 +
-                                                                    'px',
-                                                                opacity: '.2',
-                                                                lineHeight: '1',
-                                                                textShadow:
-                                                                    '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
-                                                                cursor: 'default',
-                                                            }}
-                                                        >
-                                                            ?
-                                                        </Typography>
+                                                        {!confirmed && (
+                                                            <Typography
+                                                                sx={{
+                                                                    fontFamily:
+                                                                        'Tahoma',
+                                                                    margin: 'auto',
+                                                                    fontSize:
+                                                                        avatarSize *
+                                                                            0.8 +
+                                                                        'px',
+                                                                    opacity:
+                                                                        '.2',
+                                                                    lineHeight:
+                                                                        '1',
+                                                                    textShadow:
+                                                                        '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
+                                                                    cursor: 'default',
+                                                                }}
+                                                            >
+                                                                ?
+                                                            </Typography>
+                                                        )}
                                                     </Box>
                                                 </Tooltip>
                                             </Grid>
@@ -428,6 +451,10 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
     useEffect(() => {
         getAllEvents();
     }, [getAllEvents]);
+
+    const [deleteEventId, setDeleteEventID] = useState();
+
+    useEffect(() => {}, []);
 
     const profileSort = (v1, v2) => {
         if (v1.slug && v2.slug) {
@@ -654,7 +681,8 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                 if (params.value && params.value.length > 0) {
                     let hostsInReach = params.value.map((hostInReach, i) => {
                         const emailBody = `Hi ${
-                            hostInReach.host.firstName
+                            (hostInReach.host && hostInReach.host.firstName) ||
+                            ''
                         },%0D%0A%0D%0A${encodeURIComponent(
                             params.row.stageName
                         )} is looking to play a Porchlight concert near ${
@@ -783,6 +811,86 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                 }
             },
         },
+        {
+            field: 'delete', // Custom field for the delete button
+            headerName: 'Delete',
+            sortable: false,
+            width: 70,
+            editable: false,
+            type: 'string',
+            renderCell: (params) => (
+                <>
+                    {deleteEventId &&
+                        deleteEventId === params.row.theEvent._id && (
+                            <Dialog
+                                open={true}
+                                onClose={() => setDeleteEventID('')}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                                className="porchlightBG"
+                            >
+                                <DialogTitle id="alert-dialog-title"></DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText id="alert-dialog-description">
+                                        You are about to delete the event on{' '}
+                                        {new Date(
+                                            params.row.theEvent.bookingWhen
+                                        ).toLocaleDateString(undefined, {
+                                            weekday: 'long',
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                        })}{' '}
+                                        created by{' '}
+                                        {params.row.theEvent.createdBy ===
+                                        'ARTIST'
+                                            ? params.row.theEvent.artist
+                                                  .stageName
+                                            : params.row.theEvent
+                                                  .offersFromHosts[0].host
+                                                  .firstName +
+                                              ' ' +
+                                              params.row.theEvent
+                                                  .offersFromHosts[0].host
+                                                  .lastName}
+                                        . Are you sure you mean to do that?
+                                        (There's no undoing this!)
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button
+                                        onClick={() => setDeleteEventID('')}
+                                    >
+                                        No
+                                    </Button>
+                                    <Button
+                                        onClick={(e) => {
+                                            setDeleteEventID('');
+
+                                            deleteAdminEvent(
+                                                params.row.theEvent
+                                            );
+                                        }}
+                                    >
+                                        Yes
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                        )}
+                    <Grid item className="deleteBtn" xs={1}>
+                        <IconButton
+                            onClick={() => {
+                                // console.log('Delete: ', params);
+                                setDeleteEventID(params.row.theEvent._id);
+                                // deleteAdminEvent(params.row.theEvent);
+                            }}
+                        >
+                            <DeleteIcon></DeleteIcon>
+                        </IconButton>
+                    </Grid>
+                </>
+            ),
+        },
     ];
 
     useEffect(() => {
@@ -804,8 +912,13 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
                         stageName:
                             (adminEvent.artist &&
                                 adminEvent.artist.stageName) ||
+                            (adminEvent.confirmedArtist &&
+                                adminEvent.confirmedArtist.stageName) ||
                             '',
-                        profile: adminEvent.artist || '',
+                        profile:
+                            adminEvent.artist ||
+                            adminEvent.confirmedArtist ||
+                            '',
                         createdAt: adminEvent.createdAt,
                         hostReachRadius: adminEvent.hostReachRadius,
                         hostsInReach: adminEvent.hostsInReach,
@@ -854,6 +967,7 @@ const EventDataGrid = ({ getAllEvents, auth: { user }, adminEvents }) => {
 
 EventDataGrid.propTypes = {
     getAllEvents: PropTypes.func.isRequired,
+    deleteAdminEvent: PropTypes.func.isRequired,
     adminEvents: PropTypes.array,
     auth: PropTypes.object.isRequired,
 };
@@ -865,4 +979,5 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
     getAllEvents,
+    deleteAdminEvent,
 })(EventDataGrid);

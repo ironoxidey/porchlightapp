@@ -278,6 +278,7 @@ const SwipeableTemporaryDrawer = ({
                     onOpen={toggleDrawer(anchor, true)}
                     disableBackdropTransition={!iOS}
                     disableDiscovery={iOS}
+                    className="porchlightBG"
                 >
                     {list(anchor)}
                 </SwipeableDrawer>

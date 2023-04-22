@@ -52,6 +52,7 @@ const EventHostDialog = (props) => {
                         scroll="body"
                         fullWidth
                         maxWidth="md"
+                        className="porchlightBG"
                     >
                         <DialogContent>
                             {/* <DialogContentText id="alert-dialog-description"> */}

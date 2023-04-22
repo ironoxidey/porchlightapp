@@ -1564,67 +1564,72 @@ const HostEventForm = ({
                 //Event Details as an artist will see it
                 //theEvent usually comes from EditHostEvent.js, but if the user is proposing this event we'll hit up the Redux store for the myHostEvents that has a matching bookingWhen
                 //
+
                 <>
-                    <Grid
-                        container
-                        sx={{
-                            width: '100%',
-                            maxWidth: '900px',
-                            paddingBottom: '16px',
-                            border:
-                                !status || status === 'DRAFT'
-                                    ? '4px dashed var(--primary-color)'
-                                    : 'none',
-                        }}
-                    >
+                    {' '}
+                    {formData && (
                         <Grid
-                            item
+                            container
                             sx={{
-                                margin: '0 auto',
                                 width: '100%',
-                                height: 'fit-content',
+                                maxWidth: '900px',
+                                paddingBottom: '16px',
+                                border:
+                                    !status || status === 'DRAFT'
+                                        ? '4px dashed var(--primary-color)'
+                                        : 'none',
                             }}
                         >
-                            <HostProfile
-                                theHost={hostMe}
-                                theEvent={
-                                    theEvent ||
-                                    myHostEvents.find((event) => {
-                                        if (
-                                            bookingWhen &&
-                                            bookingWhen.length > 0 &&
-                                            bookingWhen[0]
-                                        ) {
-                                            return (
-                                                event.bookingWhen ===
-                                                bookingWhen[0]
-                                            );
-                                        }
-                                    })
-                                }
-                                theOffer={{
-                                    refreshments: formData.refreshments,
-                                    houseRules: formData.houseRules,
-                                    eventbritePublicAddress:
-                                        formData.eventbritePublicAddress,
-                                    additionalRequests:
-                                        formData.additionalRequests,
-                                    guaranteeHonorarium:
-                                        formData.guaranteeHonorarium,
-                                    honorariumAmount: formData.honorariumAmount,
-                                    extraClarification:
-                                        formData.extraClarification,
-                                    seatingProvided: formData.seatingProvided,
-                                    openers: formData.openers,
-                                    overnight: formData.overnight,
-                                    showSchedule: formData.showSchedule,
+                            <Grid
+                                item
+                                sx={{
+                                    margin: '0 auto',
+                                    width: '100%',
+                                    height: 'fit-content',
                                 }}
-                                // eventDetailsDialogHandleClose={
-                                //     eventDetailsDialogHandleClose
-                                // }
-                            />
-                        </Grid>
-                        {/* <Grid item sx={{ margin: '16px auto', width: '100%' }}>
+                            >
+                                <HostProfile
+                                    theHost={hostMe}
+                                    theEvent={
+                                        theEvent ||
+                                        myHostEvents.find((event) => {
+                                            if (
+                                                bookingWhen &&
+                                                bookingWhen.length > 0 &&
+                                                bookingWhen[0]
+                                            ) {
+                                                return (
+                                                    event.bookingWhen ===
+                                                    bookingWhen[0]
+                                                );
+                                            }
+                                        })
+                                    }
+                                    theOffer={{
+                                        refreshments: formData.refreshments,
+                                        houseRules: formData.houseRules,
+                                        eventbritePublicAddress:
+                                            formData.eventbritePublicAddress,
+                                        additionalRequests:
+                                            formData.additionalRequests,
+                                        guaranteeHonorarium:
+                                            formData.guaranteeHonorarium,
+                                        honorariumAmount:
+                                            formData.honorariumAmount,
+                                        extraClarification:
+                                            formData.extraClarification,
+                                        seatingProvided:
+                                            formData.seatingProvided,
+                                        openers: formData.openers,
+                                        overnight: formData.overnight,
+                                        showSchedule: formData.showSchedule,
+                                    }}
+                                    // eventDetailsDialogHandleClose={
+                                    //     eventDetailsDialogHandleClose
+                                    // }
+                                />
+                            </Grid>
+                            {/* <Grid item sx={{ margin: '16px auto', width: '100%' }}>
                             <HostEventDetails
                                 theEvent={{
                                     ...(theEvent ||
@@ -1644,7 +1649,8 @@ const HostEventForm = ({
                                 }}
                             />
                         </Grid> */}
-                    </Grid>
+                        </Grid>
+                    )}
                 </>,
             ],
         ],

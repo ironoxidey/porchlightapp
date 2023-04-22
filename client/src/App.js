@@ -65,7 +65,7 @@ const App = () => {
                 <Router>
                     <Fragment>
                         <Navbar />
-                        <SwipeableDrawer />
+                        <SwipeableDrawer className="porchlightBG" />
                         <Switch>
                             {/* <Route exact path='/' component={Landing} /> */}
                             <Route component={Routes} />

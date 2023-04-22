@@ -50,6 +50,7 @@ const EditArtistEvent = ({
                 onOpen={() => setDrawerOpen(true)}
                 disableBackdropTransition={!iOS}
                 disableDiscovery={iOS}
+                className="porchlightBG"
             >
                 <Box sx={{ top: 0, left: 0, position: 'absolute' }}>
                     <Grid container>
