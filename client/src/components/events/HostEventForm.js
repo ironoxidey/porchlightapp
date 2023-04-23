@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
 import { setAlert } from '../../actions/alert';
+import { StackDateforDisplay } from '../../actions/app';
 import { editHostEvent } from '../../actions/event';
 import {
     TextField,
@@ -22,7 +23,7 @@ import {
     InputAdornment,
     //IconButton,
     Grid,
-    //Box,
+    Box,
     //Paper,
     //BottomNavigationAction,
     // BottomNavigation,
@@ -69,7 +70,7 @@ import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
 // import EventDetails from './EventDetails';
-import HostEventDetails from './HostEventDetails';
+// import HostEventDetails from './HostEventDetails';
 import HostProfile from '../hosts/HostProfile';
 
 function useQuery() {
@@ -108,6 +109,7 @@ const HostEventForm = ({
     myHostEvents, //for disabling dates in the multipledate picker calendar
     jumpTo,
     jumpToState, //user can click Edit Tooltip in EventDetails and jumpToState formField here
+    setDrawerOpen, //to close the drawer after the proposal has been sent
 }) => {
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     const dispatch = useDispatch();
@@ -123,7 +125,7 @@ const HostEventForm = ({
     }
 
     useEffect(() => {
-        getArtists();
+        getArtists(true);
     }, []);
 
     useEffect(() => {
@@ -584,6 +586,14 @@ const HostEventForm = ({
         preferredArtists: [
             <FormLabel component="legend">
                 Who would you like to invite to perform?
+                <br />
+                <small>
+                    (Please consider giving local artists priority in your
+                    offers to host. We want to help you invest in your
+                    community, and the relationships you develop with local
+                    artists have the potential to become most meaningful to you
+                    and your community over time.)
+                </small>
             </FormLabel>,
             [
                 <Grid item xs={12} sx={{ width: '100%' }}>
@@ -1001,7 +1011,7 @@ const HostEventForm = ({
                             <FormControlLabel
                                 value="That sounds great! Either before or after works for me."
                                 control={<Radio />}
-                                label="That sounds great! Either before or after works for me."
+                                label="That sounds great! Either before and/or after works for me."
                             />
                         </RadioGroup>
                     </FormControl>
@@ -1101,24 +1111,6 @@ const HostEventForm = ({
                     .
                 </Grid>,
             ],
-        ],
-        hostNotes: [
-            <FormLabel component="legend">
-                Do you have any final thoughts, questions, notes, or
-                clarifications for us? Feel free to list them below.
-            </FormLabel>,
-            <Grid item xs={12} sx={{ width: '100%' }}>
-                <TextField
-                    variant="standard"
-                    name="hostNotes"
-                    multiline
-                    id="hostNotes"
-                    label="Artist Notes"
-                    value={hostNotes}
-                    onChange={(e) => onChange(e)}
-                    sx={{ width: '100%' }}
-                />
-            </Grid>,
         ],
         refreshments: [
             <FormLabel component="legend">
@@ -1374,6 +1366,24 @@ const HostEventForm = ({
                 // </FormControl>,
             ],
         ],
+        hostNotes: [
+            <FormLabel component="legend">
+                Do you have any final thoughts, questions, notes, or
+                clarifications for us? Feel free to list them below.
+            </FormLabel>,
+            <Grid item xs={12} sx={{ width: '100%' }}>
+                <TextField
+                    variant="standard"
+                    name="hostNotes"
+                    multiline
+                    id="hostNotes"
+                    label="Host Notes"
+                    value={hostNotes}
+                    onChange={(e) => onChange(e)}
+                    sx={{ width: '100%' }}
+                />
+            </Grid>,
+        ],
         extraClarification: [
             <FormLabel component="legend">
                 Would you like to clarify any of your answers? Do you have any
@@ -1473,7 +1483,10 @@ const HostEventForm = ({
                 >
                     <Button
                         btnwidth={350}
-                        onClick={() => hostProposes(formData)}
+                        onClick={() => {
+                            hostProposes(formData);
+                            setDrawerOpen(false);
+                        }}
                     >
                         <p>
                             Send my proposal to the{' '}
@@ -1551,60 +1564,72 @@ const HostEventForm = ({
                 //Event Details as an artist will see it
                 //theEvent usually comes from EditHostEvent.js, but if the user is proposing this event we'll hit up the Redux store for the myHostEvents that has a matching bookingWhen
                 //
+
                 <>
-                    <Grid
-                        container
-                        sx={{
-                            width: '100%',
-                            maxWidth: '900px',
-                            paddingBottom: '16px',
-                            border:
-                                !status || status === 'DRAFT'
-                                    ? '4px dashed var(--primary-color)'
-                                    : 'none',
-                        }}
-                    >
-                        <Grid item sx={{ margin: '0 auto', width: '100%' }}>
-                            <HostProfile
-                                theHost={hostMe}
-                                theEvent={
-                                    theEvent ||
-                                    myHostEvents.find((event) => {
-                                        if (
-                                            bookingWhen &&
-                                            bookingWhen.length > 0 &&
-                                            bookingWhen[0]
-                                        ) {
-                                            return (
-                                                event.bookingWhen ===
-                                                bookingWhen[0]
-                                            );
-                                        }
-                                    })
-                                }
-                                theOffer={{
-                                    refreshments: formData.refreshments,
-                                    houseRules: formData.houseRules,
-                                    eventbritePublicAddress:
-                                        formData.eventbritePublicAddress,
-                                    additionalRequests:
-                                        formData.additionalRequests,
-                                    guaranteeHonorarium:
-                                        formData.guaranteeHonorarium,
-                                    honorariumAmount: formData.honorariumAmount,
-                                    extraClarification:
-                                        formData.extraClarification,
-                                    seatingProvided: formData.seatingProvided,
-                                    openers: formData.openers,
-                                    overnight: formData.overnight,
-                                    showSchedule: formData.showSchedule,
+                    {' '}
+                    {formData && (
+                        <Grid
+                            container
+                            sx={{
+                                width: '100%',
+                                maxWidth: '900px',
+                                paddingBottom: '16px',
+                                border:
+                                    !status || status === 'DRAFT'
+                                        ? '4px dashed var(--primary-color)'
+                                        : 'none',
+                            }}
+                        >
+                            <Grid
+                                item
+                                sx={{
+                                    margin: '0 auto',
+                                    width: '100%',
+                                    height: 'fit-content',
                                 }}
-                                // eventDetailsDialogHandleClose={
-                                //     eventDetailsDialogHandleClose
-                                // }
-                            />
-                        </Grid>
-                        <Grid item sx={{ margin: '16px auto', width: '100%' }}>
+                            >
+                                <HostProfile
+                                    theHost={hostMe}
+                                    theEvent={
+                                        theEvent ||
+                                        myHostEvents.find((event) => {
+                                            if (
+                                                bookingWhen &&
+                                                bookingWhen.length > 0 &&
+                                                bookingWhen[0]
+                                            ) {
+                                                return (
+                                                    event.bookingWhen ===
+                                                    bookingWhen[0]
+                                                );
+                                            }
+                                        })
+                                    }
+                                    theOffer={{
+                                        refreshments: formData.refreshments,
+                                        houseRules: formData.houseRules,
+                                        eventbritePublicAddress:
+                                            formData.eventbritePublicAddress,
+                                        additionalRequests:
+                                            formData.additionalRequests,
+                                        guaranteeHonorarium:
+                                            formData.guaranteeHonorarium,
+                                        honorariumAmount:
+                                            formData.honorariumAmount,
+                                        extraClarification:
+                                            formData.extraClarification,
+                                        seatingProvided:
+                                            formData.seatingProvided,
+                                        openers: formData.openers,
+                                        overnight: formData.overnight,
+                                        showSchedule: formData.showSchedule,
+                                    }}
+                                    // eventDetailsDialogHandleClose={
+                                    //     eventDetailsDialogHandleClose
+                                    // }
+                                />
+                            </Grid>
+                            {/* <Grid item sx={{ margin: '16px auto', width: '100%' }}>
                             <HostEventDetails
                                 theEvent={{
                                     ...(theEvent ||
@@ -1623,8 +1648,9 @@ const HostEventForm = ({
                                     artist: hostMe,
                                 }}
                             />
+                        </Grid> */}
                         </Grid>
-                    </Grid>
+                    )}
                 </>,
             ],
         ],
@@ -1796,6 +1822,22 @@ const HostEventForm = ({
 
     return (
         <Fragment>
+            {bookingWhen && (
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        backgroundColor: 'rgba(0 0 0 /.6)',
+                        padding: '0',
+                        zIndex: 100,
+                    }}
+                >
+                    <StackDateforDisplay
+                        date={bookingWhen}
+                    ></StackDateforDisplay>
+                </Box>
+            )}
             <form className="form" onSubmit={(e) => onSubmit(e)}>
                 <Grid
                     container

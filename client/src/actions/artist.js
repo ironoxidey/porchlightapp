@@ -60,24 +60,36 @@ export const getArtistByEmail = (email) => async (dispatch) => {
 };
 
 // Get all artists
-export const getArtists = () => async (dispatch) => {
-    dispatch({ type: CLEAR_ARTIST });
-    try {
-        const res = await axios.get('/api/artists');
-        dispatch({
-            type: GET_ARTISTS,
-            payload: res.data,
-        });
-    } catch (err) {
-        dispatch({
-            type: ARTIST_ERROR,
-            payload: {
-                msg: err.response.statusText,
-                status: err.response.status,
-            },
-        });
-    }
-};
+export const getArtists =
+    (host = false) =>
+    async (dispatch) => {
+        dispatch({ type: CLEAR_ARTIST });
+
+        try {
+            if (host) {
+                const res = await axios.get(`/api/artists/fromHost`);
+                console.log('sort artists by distance from host');
+                dispatch({
+                    type: GET_ARTISTS,
+                    payload: res.data,
+                });
+            } else {
+                const res = await axios.get(`/api/artists`);
+                dispatch({
+                    type: GET_ARTISTS,
+                    payload: res.data,
+                });
+            }
+        } catch (err) {
+            dispatch({
+                type: ARTIST_ERROR,
+                payload: {
+                    msg: err.response.statusText,
+                    status: err.response.status,
+                },
+            });
+        }
+    };
 
 // Get all artists to edit
 export const getEditArtists = () => async (dispatch) => {

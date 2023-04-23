@@ -48,7 +48,13 @@ const ButtonRoot = React.forwardRef(function ButtonRoot(props, ref) {
                     }
                     className="borderEffect"
                 />
-                <foreignObject x="0" y="0" width={btnWidth} height={btnHeight}>
+                <foreignObject
+                    x="0"
+                    y="0"
+                    width={btnWidth}
+                    height={btnHeight}
+                    className="btnContent"
+                >
                     <div className="content">{children}</div>
                 </foreignObject>
             </svg>
@@ -124,7 +130,7 @@ const CustomButtonRoot = styled(ButtonRoot)(
     }
   }
 
-  & foreignObject {
+  & .btnContent {
     pointer-events: none;
 
     & .content {

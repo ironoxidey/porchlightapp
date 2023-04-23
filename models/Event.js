@@ -250,7 +250,10 @@ const EventSchema = new mongoose.Schema(
         hostUpdated: {
             type: Date,
         },
-
+        confirmedArtist: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'artist',
+        },
         preferredArtists: [
             {
                 type: mongoose.Schema.Types.ObjectId,

@@ -195,7 +195,7 @@ router.post('/admin-update', [auth], async (req, res) => {
 });
 
 // @route    POST api/hosts/updateMe
-// @desc     Create or update my host profile (copy of /batch)
+// @desc     Create or update my host profile (copied from /batch)
 // @access   Private
 router.post('/updateMe', [auth], async (req, res) => {
     const errors = validationResult(req);
@@ -489,80 +489,80 @@ router.get('/edit', [auth], async (req, res) => {
 // @route    GET api/hosts/getAllHostLatLong
 // @desc     [ADMIN] Get all hosts for editing (everything)
 // @access   Private
-router.get('/getAllHostLatLong', [auth], async (req, res) => {
-    //if (req.user.role === 'ADMIN') {
-    if (req.user.role && req.user.role.indexOf('ADMIN') > -1) {
-        //must be an ADMIN to get into all of this!
-        try {
-            //https://masteringjs.io/tutorials/mongoose/update#using-documentupdateone
-            const hosts = await Host.find();
+// router.get('/getAllHostLatLong', [auth], async (req, res) => {
+//     //if (req.user.role === 'ADMIN') {
+//     if (req.user.role && req.user.role.indexOf('ADMIN') > -1) {
+//         //must be an ADMIN to get into all of this!
+//         try {
+//             //https://masteringjs.io/tutorials/mongoose/update#using-documentupdateone
+//             const hosts = await Host.find();
 
-            //console.log('hosts', hosts);
-            hosts.forEach(async (host) => {
-                //if !latLong {
-                if (
-                    host.firstName &&
-                    host.lastName &&
-                    host.streetAddress &&
-                    host.city &&
-                    host.state &&
-                    host.zipCode &&
-                    host.latLong.coordinates.length <= 0
-                ) {
-                    //geocode with Google Maps API
-                    const geocodedAddress = await addressGeocode(
-                        host.streetAddress +
-                            ' ' +
-                            host.city +
-                            ', ' +
-                            host.state +
-                            ' ' +
-                            host.zipCode
-                    );
-                    // console.log(
-                    //     host.firstName +
-                    //         ' ' +
-                    //         host.lastName +
-                    //         '’s geocodedAddress is: ',
-                    //     geocodedAddress
-                    // );
-                    host.latLong.coordinates = geocodedAddress;
-                    // host.longitude = geocodedAddress[0];
-                    // host.latitude = geocodedAddress[1];
-                    host.markModified('latLong');
-                    //save in host doc
-                    await host.save();
-                }
-                if (
-                    host.latLong.coordinates.length > 0 &&
-                    (!host.timezone || !host.timezoneOffset)
-                ) {
-                    const timezoneAddress = await addressTimezone(
-                        host.latLong.coordinates
-                    );
-                    host.timezone = timezoneAddress.timeZoneId;
-                    host.timezoneOffset = timezoneAddress.rawOffset / 3600; //rawOffset is the offset from UTC (in seconds) for the given location. dividing rawOffset by 3600 you can get the GMT time of your requested time zone
+//             //console.log('hosts', hosts);
+//             hosts.forEach(async (host) => {
+//                 //if !latLong {
+//                 if (
+//                     host.firstName &&
+//                     host.lastName &&
+//                     host.streetAddress &&
+//                     host.city &&
+//                     host.state &&
+//                     host.zipCode &&
+//                     host.latLong.coordinates.length <= 0
+//                 ) {
+//                     //geocode with Google Maps API
+//                     const geocodedAddress = await addressGeocode(
+//                         host.streetAddress +
+//                             ' ' +
+//                             host.city +
+//                             ', ' +
+//                             host.state +
+//                             ' ' +
+//                             host.zipCode
+//                     );
+//                     // console.log(
+//                     //     host.firstName +
+//                     //         ' ' +
+//                     //         host.lastName +
+//                     //         '’s geocodedAddress is: ',
+//                     //     geocodedAddress
+//                     // );
+//                     host.latLong.coordinates = geocodedAddress;
+//                     // host.longitude = geocodedAddress[0];
+//                     // host.latitude = geocodedAddress[1];
+//                     host.markModified('latLong');
+//                     //save in host doc
+//                     await host.save();
+//                 }
+//                 if (
+//                     host.latLong.coordinates.length > 0 &&
+//                     (!host.timezone || !host.timezoneOffset)
+//                 ) {
+//                     const timezoneAddress = await addressTimezone(
+//                         host.latLong.coordinates
+//                     );
+//                     host.timezone = timezoneAddress.timeZoneId;
+//                     host.timezoneOffset = timezoneAddress.rawOffset / 3600; //rawOffset is the offset from UTC (in seconds) for the given location. dividing rawOffset by 3600 you can get the GMT time of your requested time zone
 
-                    console.log(
-                        host.firstName +
-                            ' ' +
-                            host.lastName +
-                            '’s timezone is: ',
-                        timezoneAddress
-                    );
-                    await host.save();
-                }
-            });
+//                     console.log(
+//                         host.firstName +
+//                             ' ' +
+//                             host.lastName +
+//                             '’s timezone is: ',
+//                         timezoneAddress
+//                     );
+//                     await host.save();
+//                 }
+//             });
 
-            res.json(hosts);
-        } catch (err) {
-            console.error(err.message);
-            res.status(500).send('Server Error');
-        }
-    } else {
-        res.status(500).send('Only ADMINs can edit all hosts.');
-    }
-});
+//             res.json(hosts);
+//         } catch (err) {
+//             console.error(err.message);
+//             res.status(500).send('Server Error');
+//         }
+//     } else {
+//         res.status(500).send('Only ADMINs can edit all hosts.');
+//     }
+// });
 
 // @route    DELETE api/hosts
 // @desc     Delete host, user & posts

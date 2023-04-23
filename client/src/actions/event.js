@@ -6,6 +6,7 @@ import {
     EDIT_HOST_EVENT,
     DELETE_ARTIST_EVENT,
     DELETE_HOST_EVENT,
+    DELETE_ADMIN_EVENT,
     HOST_RAISE_HAND,
     HOST_PROPOSES,
     UPDATE_EVENT_ERROR,
@@ -68,6 +69,35 @@ export const editHostEvent = (formData, history) => async (dispatch) => {
     }
 };
 
+//Delete an admin event by id
+export const deleteAdminEvent = (eventData) => async (dispatch) => {
+    console.log('deleteAdminEvent eventData: ', eventData);
+    try {
+        const res = await axios.delete(
+            `/api/events/adminEvent/${eventData._id}`,
+            { data: eventData }
+        );
+        dispatch({
+            type: DELETE_ADMIN_EVENT,
+            payload: res.data,
+        });
+    } catch (err) {
+        console.log('error: ' + err);
+        const errors = err.response.data.errors;
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+        }
+        dispatch({
+            type: UPDATE_EVENT_ERROR,
+            payload: {
+                msg: err.response.statusText,
+                status: err.response.status,
+            },
+        });
+        dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+    }
+};
+
 //Delete a host event by id
 export const deleteHostEvent = (id) => async (dispatch) => {
     try {
@@ -107,7 +137,7 @@ export const editArtistEvent = (formData, history) => async (dispatch) => {
             formData,
             config
         );
-        //console.log('hostRaiseHand res.data', res.data);
+        console.log('editArtistEvent res.data', res.data);
         dispatch({
             type: EDIT_ARTIST_EVENT,
             payload: res.data,
@@ -402,7 +432,7 @@ export const artistViewedHostOffer =
         }
     };
 
-// Artist viewed Host's offer to book
+// Artist accepted Host's offer to book
 export const artistAcceptOffer =
     (bookingWhen, theOffer, stageName, history) => async (dispatch) => {
         let formData = {
@@ -410,7 +440,7 @@ export const artistAcceptOffer =
             offeringHost: { _id: theOffer.host._id },
             stageName: stageName,
         };
-        //console.log('artistAcceptOffer theOffer', theOffer);
+        console.log('artistAcceptOffer theOffer', theOffer);
         try {
             const config = {
                 headers: {

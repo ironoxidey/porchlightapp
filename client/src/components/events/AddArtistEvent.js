@@ -49,6 +49,7 @@ const AddArtistEvent = ({
                 onOpen={() => setDrawerOpen(true)}
                 disableBackdropTransition={!iOS}
                 disableDiscovery={iOS}
+                className="porchlightBG"
             >
                 <Grid item sx={{ minHeight: '85vh' }}>
                     {drawerOpen && ( //so that the ArtistEventForm doesn't setSelectedDates a bajillion times until it's necessary

@@ -182,6 +182,20 @@ const NearMeToHostEventCard = ({
                             : ''} */}
                     </DialogTitle>
                     <DialogContent>
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 0,
+                                backgroundColor: 'rgba(0 0 0 /.6)',
+                                padding: '0',
+                                zIndex: 100,
+                            }}
+                        >
+                            <StackDateforDisplay
+                                date={bookingDialogDetails.bookingWhen}
+                            ></StackDateforDisplay>
+                        </Box>
                         {/* <DialogContentText id="alert-dialog-description"> */}
                         {!isAuthenticated && wantsToBook ? (
                             <Login bookingDialog={bookingDialogDetails} />

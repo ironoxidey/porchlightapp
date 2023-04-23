@@ -19,6 +19,8 @@ import {
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import HostEventDetails from '../events/HostEventDetails';
+
 import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 import GroupAddTwoToneIcon from '@mui/icons-material/GroupAddTwoTone';
 import GroupsTwoToneIcon from '@mui/icons-material/GroupsTwoTone';
@@ -441,12 +443,14 @@ const HostProfile = ({
                             )}
                             {theOffer &&
                                 theOffer.showSchedule &&
-                                theOffer.showSchedule.length > 0 && (
+                                theEvent &&
+                                theEvent.showSchedule && (
                                     <Grid
                                         item
                                         container
                                         alignItems="center"
                                         sx={{ marginTop: '8px' }}
+                                        className="showSchedule"
                                     >
                                         <Typography component="h3">
                                             <Tooltip
@@ -778,7 +782,7 @@ const HostProfile = ({
                                                 ></ChairAltTwoToneIcon>
                                             </Tooltip>
                                             {theHost.firstName +
-                                                ` does NOT have the seating necessary for ${theHost.maxNumAttendees} people.`}
+                                                ` does NOT have seating for ${theHost.maxNumAttendees} people. Encourage attenders to bring something to sit on.`}
                                         </Typography>
                                     </Grid>
                                 )}
@@ -955,40 +959,6 @@ const HostProfile = ({
                                     </Typography>
                                 </Grid>
                             )}
-                            {theOffer && theOffer.extraClarification && (
-                                <Grid
-                                    item
-                                    container
-                                    alignItems="center"
-                                    sx={{ marginTop: '8px' }}
-                                >
-                                    <Typography component="h3">
-                                        <Tooltip
-                                            title={
-                                                !isMe ? (
-                                                    // theHost.firstName +
-                                                    // ' has these extra clarifications: ' +
-                                                    // theOffer.extraClarification
-                                                    ''
-                                                ) : (
-                                                    <Link to="/edit-host-profile?field=extraClarification">
-                                                        Edit
-                                                    </Link>
-                                                )
-                                            }
-                                            placement="bottom"
-                                            arrow
-                                        >
-                                            <FeedbackTwoToneIcon
-                                                sx={{ marginRight: '8px' }}
-                                            ></FeedbackTwoToneIcon>
-                                        </Tooltip>
-                                        {theHost.firstName +
-                                            ' has these extra clarifications: ' +
-                                            theOffer.extraClarification}
-                                    </Typography>
-                                </Grid>
-                            )}
 
                             {theOffer &&
                             theOffer.guaranteeHonorarium === 'honorarium' &&
@@ -1117,10 +1087,55 @@ const HostProfile = ({
                                         </Typography>
                                     </Grid>
                                 )}
+                            {theOffer && theOffer.extraClarification && (
+                                <Grid
+                                    item
+                                    container
+                                    alignItems="center"
+                                    sx={{ marginTop: '8px' }}
+                                >
+                                    <Typography component="h3">
+                                        <Tooltip
+                                            title={
+                                                !isMe ? (
+                                                    // theHost.firstName +
+                                                    // ' has these extra clarifications: ' +
+                                                    // theOffer.extraClarification
+                                                    ''
+                                                ) : (
+                                                    <Link to="/edit-host-profile?field=extraClarification">
+                                                        Edit
+                                                    </Link>
+                                                )
+                                            }
+                                            placement="bottom"
+                                            arrow
+                                        >
+                                            <FeedbackTwoToneIcon
+                                                sx={{ marginRight: '8px' }}
+                                            ></FeedbackTwoToneIcon>
+                                        </Tooltip>
+                                        {theHost.firstName +
+                                            ' has these extra clarifications: ' +
+                                            theOffer.extraClarification}
+                                    </Typography>
+                                </Grid>
+                            )}
                         </Grid>
                     </Grid>
                 </Tooltip>
             </Grid>
+
+            {theEvent &&
+                theEvent.createdBy === 'HOST' &&
+                theEvent.confirmedHost && (
+                    <HostEventDetails
+                        theEvent={{
+                            ...theEvent,
+                        }}
+                    />
+                )}
+
             {theEvent &&
                 theOffer &&
                 theEvent.status !== 'CONFIRMED' &&

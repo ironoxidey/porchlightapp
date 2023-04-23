@@ -16,18 +16,20 @@ import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import { StackDateforDisplay } from '../../actions/app';
 import { artistViewedHostOffer } from '../../actions/event';
 
-import EventDetails from './EventDetails';
+// import HostEventDetails from './HostEventDetails';
 
 import Button from '../layout/SvgButton';
 import HostProfile from '../hosts/HostProfile';
+import EventDetails from '../events/EventDetails';
 import { relativeTimeRounding } from 'moment';
 
 const ArtistDashboardBookingOffers = ({
     thisEvent,
     artistViewedHostOffer,
     thisOffer,
+    artistMe,
 }) => {
-    //console.log('ArtistDashboardBookingOffers thisEvent:', thisEvent);
+    // console.log('ArtistDashboardBookingOffers thisEvent:', thisEvent);
 
     //Booking Details Dialog Functions
     const [eventDetailsDialogOpen, setEventDetailsDialogOpen] = useState(false);
@@ -63,6 +65,7 @@ const ArtistDashboardBookingOffers = ({
                     scroll="body"
                     fullWidth
                     maxWidth="md"
+                    className="porchlightBG"
                 >
                     {/* <DialogTitle id="alert-dialog-title"></DialogTitle> */}
                     <DialogContent>
@@ -90,9 +93,26 @@ const ArtistDashboardBookingOffers = ({
                             }
                         ></HostProfile>
 
-                        {/* <EventDetails
-                                theEvent={eventDialogDetails.theEvent}
-                            /> */}
+                        {/* {thisEvent.createdBy === 'HOST' &&
+                            thisEvent.confirmedHost && (
+                                <HostEventDetails
+                                    theEvent={{
+                                        ...thisEvent,
+                                    }}
+                                />
+                            )} */}
+
+                        {thisEvent.createdBy === 'ARTIST' && (
+                            <Box sx={{ marginTop: '16px' }}>
+                                <EventDetails
+                                    theEvent={{
+                                        ...thisEvent,
+                                        artist: artistMe,
+                                    }}
+                                />
+                            </Box>
+                        )}
+
                         {/* </DialogContentText> */}
                     </DialogContent>
                     {/*<DialogActions>
@@ -129,88 +149,137 @@ const ArtistDashboardBookingOffers = ({
                     </DialogActions>*/}
                 </Dialog>
             )}
-            {thisOffer.host.firstName && thisOffer.host.lastName && (
-                <Grid
-                    item
-                    sx={{
-                        marginLeft: '8px',
-                    }}
-                >
-                    <Tooltip
-                        arrow={true}
-                        placement="bottom"
-                        title={
-                            <>
-                                <div
-                                    style={{
-                                        textAlign: 'center',
-                                    }}
-                                >{`${thisOffer.host.firstName} ${thisOffer.host.lastName}`}</div>
-                                {thisOffer.status === 'ACCEPTED' && (
+            {thisEvent.createdBy === 'ARTIST' &&
+                thisOffer.host.firstName &&
+                thisOffer.host.lastName && (
+                    <Grid
+                        item
+                        sx={{
+                            marginRight: '4px',
+                        }}
+                    >
+                        <Tooltip
+                            arrow={true}
+                            placement="bottom"
+                            title={
+                                <>
                                     <div
                                         style={{
-                                            fontFamily: 'var(--secondary-font)',
-                                            color: 'var(--link-color)',
                                             textAlign: 'center',
                                         }}
-                                    >
-                                        You accepted this offer
-                                    </div>
+                                    >{`${thisOffer.host.firstName} ${thisOffer.host.lastName}`}</div>
+                                    {thisOffer.status === 'ACCEPTED' && (
+                                        <div
+                                            style={{
+                                                fontFamily:
+                                                    'var(--secondary-font)',
+                                                color: 'var(--link-color)',
+                                                textAlign: 'center',
+                                            }}
+                                        >
+                                            You accepted this offer
+                                        </div>
+                                    )}
+                                </>
+                            }
+                        >
+                            <Box
+                                className="squareImgInACircle"
+                                sx={{
+                                    height: '50px',
+                                    width: '50px',
+                                    maxHeight: '200px',
+                                    maxWidth: '200px',
+                                    borderRadius: '50%',
+                                    overflow: 'hidden',
+                                    backgroundImage: `url("${thisOffer.host.profileImg}")`,
+                                    backgroundPosition: '50% 25%',
+                                    backgroundSize: 'cover',
+                                    padding: '2px',
+                                    backgroundClip: 'content-box',
+                                    border: `${
+                                        !thisOffer.artistViewedOn
+                                            ? '1px solid var(--primary-color)'
+                                            : thisOffer.status === 'ACCEPTED'
+                                            ? '1px solid var(--link-color)'
+                                            : '1px solid transparent'
+                                    }`,
+                                    margin: '0',
+                                    cursor: 'pointer',
+                                    opacity: `${
+                                        thisOffer.status === 'ACCEPTED'
+                                            ? 1
+                                            : 0.8
+                                    }`,
+                                    transform: `${
+                                        thisOffer.status === 'ACCEPTED'
+                                            ? 'scale(1.1)'
+                                            : 'scale(1)'
+                                    }`,
+                                    filter: `${
+                                        thisOffer.status === 'ACCEPTED'
+                                            ? 'grayscale(0%)'
+                                            : 'grayscale(50%)'
+                                    }`,
+                                    '&:hover': {
+                                        filter: 'grayscale(0%)',
+                                        opacity: 1,
+                                        transform: 'scale(1.1)',
+                                    },
+                                    transition:
+                                        'all 450ms cubic-bezier(0.23, 1, 0.32, 1)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    position: 'relative',
+                                    zIndex: '0',
+                                }}
+                                onClick={() => {
+                                    //thisEvent.offeringHost = thisOffer.host;
+                                    let eventDetails = {
+                                        ...thisEvent,
+
+                                        offeringHost: thisOffer.host,
+                                    };
+                                    // thisOffer.theEvent =
+                                    //     thisEvent;
+                                    !thisOffer.artistViewedOn &&
+                                        artistViewedHostOffer(
+                                            thisOffer.host._id,
+                                            thisEvent.bookingWhen
+                                        );
+                                    handleEventBtnClick(thisOffer);
+                                }}
+                            >
+                                {thisOffer.status === 'ACCEPTED' && (
+                                    <ThumbUpAltOutlinedIcon
+                                        sx={{
+                                            fontSize: '2em',
+                                            color: 'var(--link-color)',
+                                            filter: 'drop-shadow(0 0 3px rgba(0,0,0, 1))',
+                                            position: 'relative',
+                                            zIndex: '5',
+                                            opacity: '.8',
+                                        }}
+                                    ></ThumbUpAltOutlinedIcon>
                                 )}
-                            </>
-                        }
+                            </Box>
+                        </Tooltip>
+                    </Grid>
+                )}
+            {thisEvent.createdBy === 'HOST' &&
+                thisEvent.confirmedHost &&
+                thisOffer.host.firstName &&
+                thisOffer.host.lastName && (
+                    <Grid
+                        item
+                        sx={{
+                            marginLeft: '0',
+                        }}
                     >
-                        <Box
-                            className="squareImgInACircle"
-                            sx={{
-                                height: '50px',
-                                width: '50px',
-                                maxHeight: '200px',
-                                maxWidth: '200px',
-                                borderRadius: '50%',
-                                overflow: 'hidden',
-                                backgroundImage: `url("${thisOffer.host.profileImg}")`,
-                                backgroundPosition: '50% 25%',
-                                backgroundSize: 'cover',
-                                padding: '2px',
-                                backgroundClip: 'content-box',
-                                border: `${
-                                    !thisOffer.artistViewedOn
-                                        ? '1px solid var(--primary-color)'
-                                        : thisOffer.status === 'ACCEPTED'
-                                        ? '1px solid var(--link-color)'
-                                        : '1px solid transparent'
-                                }`,
-                                margin: '0',
-                                cursor: 'pointer',
-                                opacity: `${
-                                    thisOffer.status === 'ACCEPTED' ? 1 : 0.8
-                                }`,
-                                transform: `${
-                                    thisOffer.status === 'ACCEPTED'
-                                        ? 'scale(1.1)'
-                                        : 'scale(1)'
-                                }`,
-                                filter: `${
-                                    thisOffer.status === 'ACCEPTED'
-                                        ? 'grayscale(0%)'
-                                        : 'grayscale(50%)'
-                                }`,
-                                '&:hover': {
-                                    filter: 'grayscale(0%)',
-                                    opacity: 1,
-                                    transform: 'scale(1.1)',
-                                },
-                                transition:
-                                    'all 450ms cubic-bezier(0.23, 1, 0.32, 1)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                position: 'relative',
-                                zIndex: '0',
-                            }}
+                        <Button
+                            btnwidth="200"
                             onClick={() => {
-                                //thisEvent.offeringHost = thisOffer.host;
                                 let eventDetails = {
                                     ...thisEvent,
 
@@ -226,22 +295,10 @@ const ArtistDashboardBookingOffers = ({
                                 handleEventBtnClick(thisOffer);
                             }}
                         >
-                            {thisOffer.status === 'ACCEPTED' && (
-                                <ThumbUpAltOutlinedIcon
-                                    sx={{
-                                        fontSize: '2em',
-                                        color: 'var(--link-color)',
-                                        filter: 'drop-shadow(0 0 3px rgba(0,0,0, 1))',
-                                        position: 'relative',
-                                        zIndex: '5',
-                                        opacity: '.8',
-                                    }}
-                                ></ThumbUpAltOutlinedIcon>
-                            )}
-                        </Box>
-                    </Tooltip>
-                </Grid>
-            )}
+                            Concert Details
+                        </Button>
+                    </Grid>
+                )}
         </>
     );
 };
@@ -250,9 +307,12 @@ ArtistDashboardBookingOffers.propTypes = {
     thisOffer: PropTypes.object.isRequired,
     thisEvent: PropTypes.object.isRequired,
     artistViewedHostOffer: PropTypes.func.isRequired,
+    artistMe: PropTypes.object,
 };
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+    artistMe: state.artist.me,
+});
 
 //export default ArtistDashboardBookingOffers;
 export default connect(mapStateToProps, {

@@ -78,11 +78,16 @@ const EventDetails = ({
     let history = useHistory();
 
     let isMe = false;
-    if (me && (me._id === theEvent.artist || me._id === theEvent.artist._id)) {
+    if (
+        me &&
+        me._id &&
+        (me._id === theEvent.artist || me._id === theEvent.artist._id) &&
+        theEvent.status === 'PENDING'
+    ) {
         isMe = true;
     }
 
-    //console.log('theEvent', theEvent);
+    //console.log('EventDetails theEvent', theEvent);
 
     return (
         <Fragment>
@@ -306,23 +311,24 @@ const EventDetails = ({
                                         <Divider />
                                     </Grid>
                                 )}
-                            {theEvent.tourVibe && theEvent.tourVibe.length > 0 && (
-                                <Grid
-                                    item
-                                    sx={{
-                                        marginTop: '0',
-                                        cursor: isMe ? 'pointer' : 'auto',
-                                    }}
-                                    onClick={() => {
-                                        if (isMe) {
-                                            jumpTo('tourVibe');
-                                        }
-                                    }}
-                                    xs={12}
-                                    md={6}
-                                    className="tourVibe"
-                                >
-                                    {/* <Tooltip
+                            {theEvent.tourVibe &&
+                                theEvent.tourVibe.length > 0 && (
+                                    <Grid
+                                        item
+                                        sx={{
+                                            marginTop: '0',
+                                            cursor: isMe ? 'pointer' : 'auto',
+                                        }}
+                                        onClick={() => {
+                                            if (isMe) {
+                                                jumpTo('tourVibe');
+                                            }
+                                        }}
+                                        xs={12}
+                                        md={6}
+                                        className="tourVibe"
+                                    >
+                                        {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -339,18 +345,18 @@ const EventDetails = ({
                                             </>
                                         }
                                     > */}
-                                    <GroupsTwoToneIcon></GroupsTwoToneIcon>
-                                    {/* </Tooltip> */}
-                                    {
-                                        ' Feels most comfortable performing for an audience who is: '
-                                    }
-                                    <strong>
-                                        {theEvent.tourVibe.join(', ')}
-                                    </strong>
+                                        <GroupsTwoToneIcon></GroupsTwoToneIcon>
+                                        {/* </Tooltip> */}
+                                        {
+                                            ' Feels most comfortable performing for an audience who is: '
+                                        }
+                                        <strong>
+                                            {theEvent.tourVibe.join(', ')}
+                                        </strong>
 
-                                    <Divider />
-                                </Grid>
-                            )}
+                                        <Divider />
+                                    </Grid>
+                                )}
                             {theEvent.showSchedule && (
                                 <Fragment>
                                     <Grid

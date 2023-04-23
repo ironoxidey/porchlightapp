@@ -100,6 +100,7 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
                 scroll="body"
                 fullWidth
                 maxWidth={'sm'}
+                className="porchlightBG"
             >
                 <DialogTitle id="alert-dialog-title">
                     Notification Settings

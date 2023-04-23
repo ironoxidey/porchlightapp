@@ -1450,6 +1450,7 @@ const EditHostProfileForm = ({
                     scroll="body"
                     fullWidth
                     maxWidth="md"
+                    className="porchlightBG"
                 >
                     {/* <DialogTitle id="alert-dialog-title"></DialogTitle> */}
                     <DialogContent>

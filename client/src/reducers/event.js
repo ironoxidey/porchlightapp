@@ -15,6 +15,7 @@ import {
     LOGOUT,
     DELETE_ARTIST_EVENT,
     DELETE_HOST_EVENT,
+    DELETE_ADMIN_EVENT,
 } from '../actions/types';
 
 const initialState = {
@@ -55,10 +56,26 @@ export default function (state = initialState, action) {
                 loading: false,
             };
         case GET_THIS_ARTIST_EVENTS:
-        case EDIT_ARTIST_EVENT:
             return {
                 ...state,
                 myArtistEvents: payload,
+                loading: false,
+            };
+        case EDIT_ARTIST_EVENT:
+            let update = state.myArtistEvents.findIndex(
+                (artistEvent) => artistEvent._id === payload._id
+            ); //if -1 then insert
+            console.log('update: ', update);
+            return {
+                ...state,
+                myArtistEvents:
+                    update > -1
+                        ? state.myArtistEvents.map((myArtistEvent) =>
+                              myArtistEvent._id === payload._id
+                                  ? payload //updates an event in the state
+                                  : myArtistEvent
+                          )
+                        : [...state.myArtistEvents, payload], //inserts an event into the state
                 loading: false,
             };
         case ARTIST_VIEWED_HOST_OFFER:
@@ -87,6 +104,14 @@ export default function (state = initialState, action) {
                 ...state,
                 myHostEvents: state.myHostEvents.filter(
                     (myHostEvent) => myHostEvent._id !== payload && myHostEvent //deletes an event from the state
+                ),
+                loading: false,
+            };
+        case DELETE_ADMIN_EVENT:
+            return {
+                ...state,
+                adminEvents: state.adminEvents.filter(
+                    (adminEvent) => adminEvent._id !== payload && adminEvent //deletes an event from the state
                 ),
                 loading: false,
             };

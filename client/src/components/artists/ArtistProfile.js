@@ -214,6 +214,7 @@ const ArtistProfile = ({
                     scroll="body"
                     fullWidth
                     maxWidth={isAuthenticated || !wantsToBook ? 'md' : 'xs'}
+                    className="porchlightBG"
                 >
                     <DialogTitle id="alert-dialog-title">
                         {!isAuthenticated &&
@@ -245,6 +246,20 @@ const ArtistProfile = ({
                             : ''} */}
                     </DialogTitle>
                     <DialogContent>
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 0,
+                                backgroundColor: 'rgba(0 0 0 /.6)',
+                                padding: '0',
+                                zIndex: 100,
+                            }}
+                        >
+                            <StackDateforDisplay
+                                date={bookingDialogDetails.bookingWhen}
+                            ></StackDateforDisplay>
+                        </Box>
                         {/* <DialogContentText id="alert-dialog-description"> */}
                         {!isAuthenticated && wantsToBook ? (
                             <Login bookingDialog={bookingDialogDetails} />
@@ -462,6 +477,7 @@ const ArtistProfile = ({
                                                       mediaTabs[i].mediaLink
                                                   ) === 'youtu'
                                               }
+                                              controls={true}
                                               url={mediaTabs[i].mediaLink}
                                               width="100%"
                                               style={{

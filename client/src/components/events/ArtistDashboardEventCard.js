@@ -26,7 +26,7 @@ import { artistViewedHostOffer, deleteArtistEvent } from '../../actions/event';
 import EventDetails from '../events/EventDetails';
 
 import Button from '../layout/SvgButton';
-import HostProfile from '../hosts/HostProfile';
+// import HostProfile from '../hosts/HostProfile';
 import { relativeTimeRounding } from 'moment';
 import ArtistDashboardBookingOffers from './ArtistDashboardBookingOffers';
 
@@ -157,82 +157,151 @@ const ArtistDashboardEventCard = ({
                         }}
                     />
                 </svg>
+
                 <Grid
                     container
                     item
                     direction="row"
                     alignItems="center"
-                    className="dateLocationForBooking"
-                    xs={11}
+                    className="dateLocationForBookingWrapper"
+                    xs={12}
                 >
-                    {/* <Grid item container>
-                        <Link to={'/artists/' + thisEvent.artist.slug}>
-                            <Typography component="h2">
-                                {thisEvent.artist.stageName}
-                            </Typography>
-                        </Link>
-                    </Grid> */}
-                    <Grid
-                        item
-                        sx={
-                            {
-                                // width: '55px',
-                            }
-                        }
-                    >
-                        <StackDateforDisplay
-                            date={thisEvent.bookingWhen}
-                        ></StackDateforDisplay>
-                    </Grid>
-                    <Grid
-                        item
-                        xs={9}
-                        sx={{
-                            marginLeft: '8px',
-                        }}
-                    >
-                        <Grid
-                            item
-                            sx={{
-                                fontSize: '1.5em',
-                                // marginLeft: '8px',
-                                lineHeight: '1.5',
-                            }}
-                        >
-                            {thisEvent.bookingWhere.city +
-                                ', ' +
-                                thisEvent.bookingWhere.state}
-                        </Grid>
-                        {thisEvent.offersFromHosts &&
-                        thisEvent.offersFromHosts.length > 0 ? (
-                            <Grid item container>
-                                {thisEvent.offersFromHosts
-                                    .filter((e) => e) //.filter(e => e) to remove any null values
-                                    .map((thisOffer, idx) => (
-                                        <ArtistDashboardBookingOffers
-                                            thisOffer={thisOffer}
-                                            thisEvent={thisEvent}
-                                        ></ArtistDashboardBookingOffers>
-                                    ))}
-                            </Grid>
-                        ) : (
-                            <Grid item container>
-                                <EditArtistEvent
-                                    theEvent={thisEvent}
-                                ></EditArtistEvent>
+                    {thisEvent.createdBy === 'HOST' &&
+                        thisEvent.offersFromHosts &&
+                        thisEvent.offersFromHosts.length > 0 &&
+                        thisEvent.offersFromHosts[0] &&
+                        thisEvent.offersFromHosts[0].host &&
+                        thisEvent.offersFromHosts[0].host.profileImg && (
+                            <Grid item>
+                                <Box
+                                    className="squareImgInACircle"
+                                    sx={{
+                                        height: '130px',
+                                        width: '130px',
+                                        maxHeight: '130px',
+                                        maxWidth: '130px',
+                                        borderRadius: '50%',
+                                        overflow: 'hidden',
+                                        backgroundImage: `url("${thisEvent.offersFromHosts[0].host.profileImg}")`,
+                                        backgroundPosition: '50% 25%',
+                                        backgroundSize: 'cover',
+                                        padding: '4px',
+                                        backgroundClip: 'content-box',
+                                        border: '1px solid var(--primary-color)',
+                                        margin: '0 8px 0 0',
+                                    }}
+                                ></Box>
                             </Grid>
                         )}
+
+                    <Grid
+                        container
+                        item
+                        direction="row"
+                        alignItems="center"
+                        className="dateLocationForBooking"
+                        xs={12}
+                        sm={8}
+                    >
+                        {thisEvent.createdBy === 'HOST' &&
+                            thisEvent.offersFromHosts &&
+                            thisEvent.offersFromHosts.length > 0 &&
+                            thisEvent.offersFromHosts[0] &&
+                            thisEvent.offersFromHosts[0].host &&
+                            thisEvent.offersFromHosts[0].host.profileImg && (
+                                <Grid item container>
+                                    <Typography component="h2">
+                                        {
+                                            thisEvent.offersFromHosts[0].host
+                                                .firstName
+                                        }{' '}
+                                        {
+                                            thisEvent.offersFromHosts[0].host
+                                                .lastName
+                                        }{' '}
+                                    </Typography>
+                                </Grid>
+                            )}
+                        <Grid
+                            item
+                            sx={
+                                {
+                                    // width: '55px',
+                                }
+                            }
+                        >
+                            <StackDateforDisplay
+                                date={thisEvent.bookingWhen}
+                            ></StackDateforDisplay>
+                        </Grid>
+                        <Grid
+                            item
+                            xs={9}
+                            sx={{
+                                marginLeft: '8px',
+                            }}
+                        >
+                            <Grid
+                                item
+                                sx={{
+                                    fontSize: '1.5em',
+                                    // marginLeft: '8px',
+                                    lineHeight: '1.5',
+                                }}
+                            >
+                                {thisEvent.bookingWhere.city +
+                                    ', ' +
+                                    thisEvent.bookingWhere.state}
+                            </Grid>
+                            {thisEvent.createdBy === 'ARTIST' &&
+                            thisEvent.offersFromHosts &&
+                            thisEvent.offersFromHosts.length > 0 ? (
+                                <Grid item container>
+                                    {thisEvent.offersFromHosts
+                                        .filter((e) => e) //.filter(e => e) to remove any null values
+                                        .map((thisOffer, idx) => (
+                                            <ArtistDashboardBookingOffers
+                                                thisOffer={thisOffer}
+                                                thisEvent={thisEvent}
+                                            ></ArtistDashboardBookingOffers>
+                                        ))}
+                                </Grid>
+                            ) : thisEvent.createdBy === 'ARTIST' ? (
+                                <Grid item container>
+                                    <EditArtistEvent
+                                        theEvent={thisEvent}
+                                    ></EditArtistEvent>
+                                </Grid>
+                            ) : thisEvent.createdBy === 'HOST' &&
+                              thisEvent.confirmedHost ? (
+                                <Grid item container className="">
+                                    {thisEvent.offersFromHosts
+                                        .filter((e) => e) //.filter(e => e) to remove any null values
+                                        .map((thisOffer, idx) => (
+                                            <ArtistDashboardBookingOffers
+                                                thisOffer={thisOffer}
+                                                thisEvent={thisEvent}
+                                            ></ArtistDashboardBookingOffers>
+                                        ))}
+                                </Grid>
+                            ) : (
+                                <></>
+                            )}
+                        </Grid>
                     </Grid>
                 </Grid>
-                {thisEvent.status !== 'CONFIRMED' && (
-                    <Grid item className="deleteBtn" xs={1}>
-                        <IconButton
-                            onClick={(e) => deleteArtistEvent(thisEvent._id)}
-                        >
-                            <DeleteIcon></DeleteIcon>
-                        </IconButton>
-                    </Grid>
-                )}
+                {thisEvent.createdBy === 'ARTIST' &&
+                    thisEvent.status !== 'CONFIRMED' && (
+                        <Grid item className="deleteBtn" xs={1}>
+                            <IconButton
+                                onClick={(e) =>
+                                    deleteArtistEvent(thisEvent._id)
+                                }
+                            >
+                                <DeleteIcon></DeleteIcon>
+                            </IconButton>
+                        </Grid>
+                    )}
             </Grid>
         </>
     );

@@ -147,7 +147,11 @@ const HostDashboardEventCard = ({
                 <svg
                     width={eventCardWidth}
                     height={eventCardHeight}
-                    className="eventCardSvgBorder"
+                    className={
+                        thisEvent.status === 'DRAFT'
+                            ? 'eventCardSvgBorder eventDraft'
+                            : 'eventCardSvgBorder'
+                    }
                 >
                     <polygon
                         points={
@@ -239,6 +243,144 @@ const HostDashboardEventCard = ({
                             </Link>
                         )}
 
+                    {thisEvent.preferredArtists &&
+                        thisEvent.preferredArtists.length > 0 && (
+                            <Grid
+                                item
+                                sx={{
+                                    width: '130px',
+                                    height: '130px',
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    flexDirection: 'row',
+                                    margin: '0 8px 0 0',
+                                    justifyContent: 'space-around',
+                                    // alignItems: 'space-between',
+                                    alignContent: 'space-evenly',
+                                }}
+                                className="preferredArtistsWrapper"
+                            >
+                                {thisEvent.preferredArtists.map(
+                                    (prefArtist) => {
+                                        let avatarSize =
+                                            130 /
+                                                thisEvent.preferredArtists
+                                                    .length -
+                                            4 *
+                                                (thisEvent.preferredArtists
+                                                    .length -
+                                                    1);
+
+                                        let confirmed = false;
+
+                                        if (
+                                            thisEvent.confirmedArtist &&
+                                            thisEvent.confirmedArtist ===
+                                                prefArtist._id
+                                        ) {
+                                            confirmed = true;
+                                        }
+
+                                        if (
+                                            thisEvent.preferredArtists.length >
+                                            2
+                                        ) {
+                                            // Find the square root of the input number
+                                            const squareRoot = Math.sqrt(
+                                                thisEvent.preferredArtists
+                                                    .length
+                                            );
+
+                                            // Round up the square root to the nearest integer
+                                            const roundedSquareRoot =
+                                                Math.ceil(squareRoot);
+
+                                            // Calculate the square of the rounded square root
+                                            const roundedSquare =
+                                                roundedSquareRoot *
+                                                roundedSquareRoot;
+
+                                            avatarSize =
+                                                130 / roundedSquareRoot -
+                                                4 * (roundedSquareRoot - 1);
+                                        }
+
+                                        return (
+                                            <>
+                                                <Grid item>
+                                                    <Box
+                                                        className="squareImgInACircle"
+                                                        sx={{
+                                                            display: 'flex',
+
+                                                            width:
+                                                                avatarSize +
+                                                                'px',
+                                                            height:
+                                                                avatarSize +
+                                                                'px',
+                                                            maxHeight:
+                                                                avatarSize +
+                                                                'px',
+                                                            maxWidth:
+                                                                avatarSize +
+                                                                'px',
+                                                            borderRadius: '50%',
+                                                            overflow: 'hidden',
+                                                            backgroundImage: `url("${prefArtist.squareImg}")`,
+                                                            backgroundBlendMode:
+                                                                confirmed
+                                                                    ? 'normal'
+                                                                    : 'soft-light',
+                                                            backgroundColor:
+                                                                'rgba(0,0,0,0.5)',
+                                                            backgroundPosition:
+                                                                '50% 25%',
+                                                            backgroundSize:
+                                                                'cover',
+                                                            padding: '4px',
+                                                            backgroundClip:
+                                                                'content-box',
+                                                            border: confirmed
+                                                                ? '1px solid var(--link-color)'
+                                                                : '1px dashed var(--primary-color)',
+                                                            // margin: '0 8px 0 0',
+                                                            justifyContent:
+                                                                'center',
+                                                            alignItems:
+                                                                'center',
+                                                        }}
+                                                    >
+                                                        {!confirmed && (
+                                                            <Typography
+                                                                sx={{
+                                                                    fontFamily:
+                                                                        'Tahoma',
+                                                                    margin: 'auto',
+                                                                    fontSize:
+                                                                        avatarSize *
+                                                                            0.8 +
+                                                                        'px',
+                                                                    opacity:
+                                                                        '.2',
+                                                                    lineHeight:
+                                                                        '1',
+                                                                    textShadow:
+                                                                        '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
+                                                                }}
+                                                            >
+                                                                ?
+                                                            </Typography>
+                                                        )}
+                                                    </Box>
+                                                </Grid>
+                                            </>
+                                        );
+                                    }
+                                )}
+                            </Grid>
+                        )}
+
                     <Grid
                         container
                         item
@@ -309,13 +451,28 @@ const HostDashboardEventCard = ({
                                     ', ' +
                                     thisEvent.bookingWhere.state}
                             </Grid>
-                            {thisEvent.createdBy === 'HOST' && (
-                                <Grid item container>
-                                    <EditHostEvent
-                                        theEvent={thisEvent}
-                                    ></EditHostEvent>
-                                </Grid>
-                            )}
+                            {thisEvent.createdBy === 'HOST' &&
+                                thisEvent.status === 'DRAFT' && (
+                                    <Grid item container>
+                                        <EditHostEvent
+                                            theEvent={thisEvent}
+                                        ></EditHostEvent>
+                                    </Grid>
+                                )}
+                            {thisEvent.createdBy === 'HOST' &&
+                                thisEvent.status != 'DRAFT' && (
+                                    <Grid item container>
+                                        <EventHostDialog
+                                            theHost={host.me}
+                                            theEvent={thisEvent}
+                                            theOffer={
+                                                thisEvent.offersFromHosts[0]
+                                            }
+                                        >
+                                            <Button>CONCERT DETAILS</Button>
+                                        </EventHostDialog>
+                                    </Grid>
+                                )}
                             {thisEvent.createdBy === 'ARTIST' && (
                                 <Grid item container>
                                     <EventHostDialog
@@ -387,7 +544,7 @@ const HostDashboardEventCard = ({
                         }
                     </Grid>*/}
                 </Grid>
-                {thisEvent.status !== 'CONFIRMED' && !thisEvent.artist && (
+                {thisEvent.status === 'DRAFT' && !thisEvent.artist && (
                     <Grid item className="deleteBtn" xs={1}>
                         <IconButton
                             onClick={(e) => deleteHostEvent(thisEvent._id)}

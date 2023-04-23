@@ -50,8 +50,9 @@ const EditHostEvent = ({
                 onOpen={() => setDrawerOpen(true)}
                 disableBackdropTransition={!iOS}
                 disableDiscovery={iOS}
+                className="porchlightBG"
             >
-                <Box sx={{ top: 0, left: 0, position: 'absolute' }}>
+                {/* <Box sx={{ top: 0, left: 0, position: 'absolute' }}>
                     <Grid container>
                         <StackDateforDisplay
                             date={theEvent.bookingWhen}
@@ -70,7 +71,7 @@ const EditHostEvent = ({
                                 theEvent.bookingWhere.state}
                         </Grid>
                     </Grid>
-                </Box>
+                </Box> */}
 
                 <Grid
                     item
@@ -79,7 +80,10 @@ const EditHostEvent = ({
                     }}
                 >
                     {drawerOpen && ( //so that the ArtistEventForm doesn't setSelectedDates a bajillion times until it's necessary
-                        <HostEventForm theEvent={theEvent}></HostEventForm>
+                        <HostEventForm
+                            theEvent={theEvent}
+                            setDrawerOpen={setDrawerOpen}
+                        ></HostEventForm>
                     )}
                 </Grid>
             </SwipeableDrawer>
