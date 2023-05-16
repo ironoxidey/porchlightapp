@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Link, withRouter } from 'react-router-dom';
@@ -63,7 +63,7 @@ const HostProfile = ({
     eventDetailsDialogHandleClose,
     artistAcceptOffer,
 }) => {
-    //console.log('theEvent', theEvent);
+    console.log('theEvent', theEvent);
     //console.log('theHost', theHost);
     //console.log('theOffer', theOffer);
     // console.log('user', user);
@@ -1140,13 +1140,19 @@ const HostProfile = ({
                 theOffer &&
                 theEvent.status !== 'CONFIRMED' &&
                 user &&
-                ((theEvent.artistUser &&
-                    user._id === theEvent.artistUser &&
-                    artist &&
-                    artist.me &&
-                    artist.me.stageName) ||
-                    (theEvent.profile &&
-                        user.email === theEvent.profile.email)) && ( //make sure the logged-in user is the artist and has a stageName (mostly for when booking coordinators are looking at this)
+                ((theEvent.artistUser && theEvent.artistUser === user._id) || //make sure the logged-in user is the artist OR
+                    (artist &&
+                        artist.me &&
+                        theEvent.preferredArtists &&
+                        theEvent.preferredArtists.length > 0 &&
+                        theEvent.preferredArtists.indexOf(artist.me._id) >
+                            -1)) && //make sure the logged-in user is in the list of preferred artists
+                artist &&
+                artist.me &&
+                artist.me.stageName && ( //make sure the logged-in user is the artist and has a stageName (mostly for when booking coordinators are looking at this)
+                    //  ||
+                    // (theEvent.profile &&
+                    //     user.email === theEvent.profile.email))
                     <>
                         <Typography
                             component="h2"
