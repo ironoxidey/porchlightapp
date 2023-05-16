@@ -148,6 +148,7 @@ export const forgotPassword =
                 payload: res.data,
             });
             dispatch(setAlert(res.data, 'success'));
+            return 'Verification Email Sent';
             //console.log('res.data: ' + res.data);
             // dispatch(setAlert(error.msg, 'success'));
         } catch (err) {

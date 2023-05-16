@@ -22,7 +22,7 @@ const ForgotPassword = ({ forgotPassword, isAuthenticated, forgotSuccess }) => {
     const onSubmit = async (e) => {
         e.preventDefault();
         const forgotThePassword = await forgotPassword({ email });
-        // console.log(forgotThePassword);
+        console.log(forgotThePassword);
         history.push('/login');
     };
 
