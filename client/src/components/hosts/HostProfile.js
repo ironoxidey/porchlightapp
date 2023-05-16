@@ -68,6 +68,19 @@ const HostProfile = ({
     //console.log('theOffer', theOffer);
     // console.log('user', user);
 
+    useEffect(() => {
+        // if (
+        //     artist.me._id &&
+        //     theEvent.preferredArtists &&
+        //     theEvent.preferredArtists.length > 0
+        // ) {
+        console.log(
+            'theEvent.preferredArtists.indexOf(artist.me._id)',
+            theEvent.preferredArtists.indexOf(artist.me._id)
+        );
+        // }
+    }, []);
+
     // const convert24HourTime = (dateString) => {
     //     let twelveHourTimeHour = dateString.split(':')[0] % 12;
     //     let amPm = dateString.split(':')[0] > 11 ? ' PM' : ' AM';

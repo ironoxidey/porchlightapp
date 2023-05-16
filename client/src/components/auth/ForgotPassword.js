@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { forgotPassword } from '../../actions/auth';
@@ -9,18 +9,21 @@ import { TextField, Grid, Box, FormLabel, Typography } from '@mui/material';
 import Button from '../layout/SvgButton';
 
 const ForgotPassword = ({ forgotPassword, isAuthenticated, forgotSuccess }) => {
+    const history = useHistory();
     const [formData, setFormData] = useState({
         email: '',
     });
 
     const { email } = formData;
 
-    const onChange = (e) =>
+    const onChange = async (e) =>
         setFormData({ ...formData, [e.target.name]: e.target.value }); //separate onChange function // calls setFormData() // copies and spreads formData then changes the state of [e.target.name] referring to the name attr of each input, and setting the value to e.target.value
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        forgotPassword({ email });
+        const forgotThePassword = await forgotPassword({ email });
+        // console.log(forgotThePassword);
+        history.push('/login');
     };
 
     //Redirect if logged in

@@ -1373,7 +1373,7 @@ router.get('/myArtistEvents', auth, async (req, res) => {
                 // }
             )
                 .select(
-                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -preferredArtists'
+                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach'
                 )
                 .populate(
                     'offersFromHosts.host',
@@ -1466,6 +1466,10 @@ router.post('/artistViewedHostOffer', [auth], async (req, res) => {
 
     let eventFields = req.body;
 
+    const thisArtist = await Artist.findOne({
+        email: req.user.email,
+    });
+
     //if (req.user.role === 'ADMIN' && eventFields.email !== '') {
     if (req.user.role && req.user.role.indexOf('ARTIST') > -1) {
         try {
@@ -1474,7 +1478,14 @@ router.post('/artistViewedHostOffer', [auth], async (req, res) => {
             let eventDetails = await Event.findOneAndUpdate(
                 //https://www.mongodb.com/docs/manual/reference/operator/projection/
                 {
-                    artistEmail: req.user.email,
+                    $or: [
+                        { artistEmail: req.user.email },
+                        {
+                            createdBy: 'HOST',
+                            // status: { $ne: 'DRAFT' }, //not equal to 'DRAFT'
+                            preferredArtists: thisArtist._id,
+                        },
+                    ],
                     bookingWhen: eventFields.bookingWhen,
                     'offersFromHosts.host': eventFields.offeringHost._id,
                 },
