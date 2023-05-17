@@ -1182,7 +1182,7 @@ const EventSpecificHostForm = ({
     };
 
     return (
-        <Fragment>
+        <Fragment key={`Fragment` + theEvent._id + artist._id}>
             {/* <Box
                 sx={{
                     position: 'absolute',
@@ -1197,7 +1197,11 @@ const EventSpecificHostForm = ({
                 ></StackDateforDisplay>
             </Box> */}
             <form className="form" onSubmit={(e) => onSubmit(e)}>
-                <Grid container sx={{ padding: '20px!important' }}>
+                <Grid
+                    container
+                    sx={{ padding: '20px!important' }}
+                    key={`cardGrid` + theEvent._id + artist._id}
+                >
                     <Grid
                         container
                         item
@@ -1280,6 +1284,12 @@ const EventSpecificHostForm = ({
                                     width: '100%',
                                     margin: '0 auto',
                                 }}
+                                key={
+                                    `bookingDetails` +
+                                    theEvent._id +
+                                    artist._id +
+                                    i
+                                }
                                 //className="bookingDetails"
                             >
                                 {/* <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}> */}

@@ -1020,6 +1020,40 @@ router.get('/getArtistBooking/:slug', async (req, res) => {
     }
 });
 
+// @route    GET api/events/event/:id
+// @desc     Get event by id
+// @access   Public
+router.get('/event/:id', async (req, res) => {
+    //console.log('getArtistBookingEvents req', req);
+    try {
+        const event = await Event.findOne(
+            {
+                _id: req.params.id,
+            },
+            {
+                latLong: 0,
+                artistEmail: 0,
+                agreeToPayAdminFee: 0,
+                payoutHandle: 0,
+                hostsOfferingToBook: 0,
+                offersFromHosts: 0,
+                'travelingCompanions.email': 0,
+                hostsInReach: 0,
+                confirmedHostEmail: 0,
+                confirmedHostUser: 0,
+            } //don't return these fields
+        ).populate(
+            'artist',
+            '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes' //don't return these fields
+        );
+        //console.log(event);
+        res.json(event);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 // @route    POST api/events/hostRaiseHand
 // @desc     Host Raises Hand to host an artist's show at a specific date and location
 // @access   Private

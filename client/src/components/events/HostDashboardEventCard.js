@@ -109,7 +109,6 @@ const HostDashboardEventCard = ({
                         ? 'bookingWhen mostRecent'
                         : 'bookingWhen'
                 }
-                key={thisEvent._id}
                 direction="row"
                 sm={5.5}
                 xs={12}
@@ -195,7 +194,14 @@ const HostDashboardEventCard = ({
                     {thisEvent.artist &&
                         thisEvent.artist.squareImg &&
                         thisEvent.artist.slug && (
-                            <Link to={'/artists/' + thisEvent.artist.slug}>
+                            <Link
+                                to={'/artists/' + thisEvent.artist.slug}
+                                className={
+                                    `feoyartist` +
+                                    thisEvent.artist._id +
+                                    thisEvent._id
+                                }
+                            >
                                 <Grid item sx={{ width: '100%' }}>
                                     <Tooltip
                                         title={
@@ -306,7 +312,13 @@ const HostDashboardEventCard = ({
                                         }
 
                                         return (
-                                            <>
+                                            <Fragment
+                                                key={
+                                                    `preffedArtistFragment` +
+                                                    prefArtist._id +
+                                                    thisEvent._id
+                                                }
+                                            >
                                                 <Grid item>
                                                     <Box
                                                         className="squareImgInACircle"
@@ -374,7 +386,7 @@ const HostDashboardEventCard = ({
                                                         )}
                                                     </Box>
                                                 </Grid>
-                                            </>
+                                            </Fragment>
                                         );
                                     }
                                 )}

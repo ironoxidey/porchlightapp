@@ -12,6 +12,7 @@ import {
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
     GET_EVENTS_NEAR_ME_TO_HOST,
+    GET_EVENT_BY_ID,
     GET_THIS_ARTIST_BOOKING_EVENTS,
     GET_THIS_ARTIST_EVENTS,
     GET_ALL_EVENTS,
@@ -223,6 +224,29 @@ export const getMyEventsOfferedToHost = () => async (dispatch) => {
         });
     }
 };
+
+// Get the events that I've offered to host
+export const getEventByID = (eventID) => async (dispatch) => {
+    try {
+        const res = await axios.get(`/api/events/event/${eventID}`);
+        //console.log('res', res);
+
+        dispatch({
+            type: GET_EVENT_BY_ID,
+            payload: res.data,
+        });
+    } catch (err) {
+        //dispatch({ type: CLEAR_ARTIST });
+        dispatch({
+            type: EVENTS_ERROR,
+            payload: {
+                msg: err.response.statusText,
+                status: err.response.status,
+            },
+        });
+    }
+};
+
 // Get the events that I've offered to host
 export const getEventsNearMeToHost = () => async (dispatch) => {
     try {

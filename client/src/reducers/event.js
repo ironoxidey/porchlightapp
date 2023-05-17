@@ -6,6 +6,7 @@ import {
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
     GET_EVENTS_NEAR_ME_TO_HOST,
+    GET_EVENT_BY_ID,
     GET_THIS_ARTIST_BOOKING_EVENTS,
     GET_ALL_EVENTS,
     GET_THIS_ARTIST_EVENTS,
@@ -36,6 +37,24 @@ export default function (state = initialState, action) {
                 nearMeToHost: payload,
                 loading: false,
             };
+        case GET_EVENT_BY_ID:
+            let updateNearMeToHost = state.nearMeToHost.findIndex(
+                (artistEvent) => artistEvent._id === payload._id
+            ); //if -1 then insert
+            console.log('updateNearMeToHost: ', updateNearMeToHost);
+            return {
+                ...state,
+                nearMeToHost:
+                    updateNearMeToHost > -1
+                        ? state.nearMeToHost.map((myNearMeEvent) =>
+                              myNearMeEvent._id === payload._id
+                                  ? payload //updates an event in the state
+                                  : myNearMeEvent
+                          )
+                        : [...state.nearMeToHost, payload], //inserts an event into the state
+                loading: false,
+            };
+
         case GET_EVENTS_OFFERED_TO_HOST:
         case EDIT_HOST_EVENT:
             return {

@@ -20,6 +20,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 import { StackDateforDisplay } from '../../actions/app';
+import { getEventByID } from '../../actions/event';
 
 import Login from '../auth/Login';
 import EditMyHostProfile from '../hosts/EditMyHostProfile';
@@ -48,11 +49,13 @@ function useQuery() {
 }
 
 const NearMeToHostEventCard = ({
+    nearMeToHost,
     thisEvent,
     idx,
     user,
     host,
     isAuthenticated,
+    getEventByID,
 }) => {
     //console.log('NearMeToHostEventCard thisEvent:', thisEvent);
 
@@ -79,11 +82,30 @@ const NearMeToHostEventCard = ({
     const queryEventID = query.get('eventID');
     let elementToScrollTo = document.getElementById(queryEventID);
     useEffect(() => {
+        //check if queryEventID is in nearMeToHost——sometimes the event changes location and no longer displays
+        if (nearMeToHost && queryEventID) {
+            // console.log(
+            //     'nearMeToHost.some(obj => Object.values(obj).includes(queryEventID))',
+            //     nearMeToHost.some((obj) =>
+            //         Object.values(obj).includes(queryEventID)
+            //     )
+            // );
+            if (
+                !nearMeToHost.some((obj) =>
+                    Object.values(obj).includes(queryEventID)
+                ) //if queryEventID is NOT in nearMeToHost)
+            ) {
+                getEventByID(queryEventID);
+                console.log('queryEventID NOT in nearMeToHost');
+            }
+            //
+        }
+
         if (queryEventID) {
-            console.log('queryEventID', queryEventID + ' vs. ' + thisEvent._id);
+            // console.log('queryEventID', queryEventID + ' vs. ' + thisEvent._id);
             elementToScrollTo = document.getElementById(queryEventID);
         }
-    }, [queryEventID]);
+    }, [queryEventID, nearMeToHost]);
 
     //for animated border
     const dashboardEventCardRef = useRef(null);
@@ -457,16 +479,21 @@ const NearMeToHostEventCard = ({
 
 NearMeToHostEventCard.propTypes = {
     thisEvent: PropTypes.object.isRequired,
+    nearMeToHost: PropTypes.object.isRequired,
     user: PropTypes.object,
     host: PropTypes.object,
     isAuthenticated: PropTypes.bool,
+    getEventByID: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
+    nearMeToHost: state.event.nearMeToHost,
     user: state.auth.user,
     host: state.host,
     isAuthenticated: state.auth.isAuthenticated,
 });
 
 //export default NearMeToHostEventCard;
-export default connect(mapStateToProps, {})(withRouter(NearMeToHostEventCard)); //withRouter allows us to pass history objects
+export default connect(mapStateToProps, { getEventByID })(
+    withRouter(NearMeToHostEventCard)
+); //withRouter allows us to pass history objects
