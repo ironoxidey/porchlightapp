@@ -1215,44 +1215,44 @@ const ArtistEventForm = ({
                 </Grid>,
             ],
         ],
-        agreeToPayAdminFee: [
-            <FormLabel component="legend">
-                Porchlight requests 20% of gross ticket sales, tips, and merch
-                sales (unless other terms have been agreed to in writing). Do
-                you agree to pay this fee upon completion of the show/tour?
-            </FormLabel>,
-            [
-                <FormControl component="fieldset">
-                    <RadioGroup
-                        id="agreeToPayAdminFee"
-                        value={agreeToPayAdminFee}
-                        name="agreeToPayAdminFee"
-                        onChange={(e) => onChange(e)}
-                    >
-                        <FormControlLabel
-                            value="true"
-                            control={<Radio />}
-                            label="Yes"
-                        />
-                        <FormControlLabel
-                            value="false"
-                            control={<Radio />}
-                            label="I'd like to discuss this further."
-                        />
-                    </RadioGroup>
-                </FormControl>,
-                <FormLabel component="small">
-                    *We collect this fee so that we can cover our costs of
-                    managing and growing the Porchlight network. If we
-                    experience a surplus at the end of the year, we are
-                    committed (and personally gratified) to invest it back into
-                    the Porchlight network in the form of an artist fund which
-                    we will use for sponsored recording projects, micro
-                    songwriter retreats, artist grants, and other artist
-                    support.
-                </FormLabel>,
-            ],
-        ],
+        // agreeToPayAdminFee: [
+        //     <FormLabel component="legend">
+        //         Porchlight requests 20% of gross ticket sales, tips, and merch
+        //         sales (unless other terms have been agreed to in writing). Do
+        //         you agree to pay this fee upon completion of the show/tour?
+        //     </FormLabel>,
+        //     [
+        //         <FormControl component="fieldset">
+        //             <RadioGroup
+        //                 id="agreeToPayAdminFee"
+        //                 value={agreeToPayAdminFee}
+        //                 name="agreeToPayAdminFee"
+        //                 onChange={(e) => onChange(e)}
+        //             >
+        //                 <FormControlLabel
+        //                     value="true"
+        //                     control={<Radio />}
+        //                     label="Yes"
+        //                 />
+        //                 <FormControlLabel
+        //                     value="false"
+        //                     control={<Radio />}
+        //                     label="I'd like to discuss this further."
+        //                 />
+        //             </RadioGroup>
+        //         </FormControl>,
+        //         <FormLabel component="small">
+        //             *We collect this fee so that we can cover our costs of
+        //             managing and growing the Porchlight network. If we
+        //             experience a surplus at the end of the year, we are
+        //             committed (and personally gratified) to invest it back into
+        //             the Porchlight network in the form of an artist fund which
+        //             we will use for sponsored recording projects, micro
+        //             songwriter retreats, artist grants, and other artist
+        //             support.
+        //         </FormLabel>,
+        //     ],
+        // ],
         agreeToPromote: [
             <FormLabel component="legend">
                 Do you agree to promote each show to your audience, including

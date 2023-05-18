@@ -426,7 +426,7 @@ const EventDetails = ({
                                     </Grid>
                                 </Fragment>
                             )}
-                            {isMe && !theEvent.agreeToPayAdminFee && (
+                            {/* {isMe && !theEvent.agreeToPayAdminFee && (
                                 <Grid
                                     item
                                     sx={{
@@ -450,7 +450,7 @@ const EventDetails = ({
                 sales upon completion of this show/tour.`}
                                     <Divider />
                                 </Grid>
-                            )}
+                            )} */}
                             {!theEvent.agreeToPromote && (
                                 <Grid
                                     item
