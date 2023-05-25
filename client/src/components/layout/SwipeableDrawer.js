@@ -71,6 +71,13 @@ const SwipeableTemporaryDrawer = ({
             </ListItemIcon>
             Edit Users
         </Link>,
+
+        <Link to="/edit-hosts">
+            <ListItemIcon>
+                <PeopleOutlineIcon></PeopleOutlineIcon>
+            </ListItemIcon>
+            Edit Hosts
+        </Link>,
         <Link to="/artists">
             <ListItemIcon>
                 <PeopleIcon></PeopleIcon>
@@ -102,6 +109,12 @@ const SwipeableTemporaryDrawer = ({
                 <PeopleIcon></PeopleIcon>
             </ListItemIcon>
             Artists
+        </Link>,
+        <Link to="/edit-hosts">
+            <ListItemIcon>
+                <PeopleOutlineIcon></PeopleOutlineIcon>
+            </ListItemIcon>
+            Edit Hosts
         </Link>,
         <Link to="/edit-events">
             <ListItemIcon>

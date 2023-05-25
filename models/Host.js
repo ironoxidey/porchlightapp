@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const HostSchema = new mongoose.Schema(
     {
+        active: {
+            type: Boolean,
+            default: true,
+        },
         lastEmailed: {
             type: Date,
             // default: Date.now, //needing a default to check against for first email

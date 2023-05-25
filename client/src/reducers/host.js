@@ -1,4 +1,6 @@
 import {
+    GET_ALL_HOSTS_EDIT,
+    TOGGLE_HOST_ACTIVE_STATUS,
     GET_HOST_ME,
     GET_HOSTS,
     UPDATE_HOST_ME,
@@ -23,6 +25,25 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 me: payload,
+                loading: false,
+            };
+        case GET_ALL_HOSTS_EDIT:
+            return {
+                ...state,
+                hosts: payload,
+                loading: false,
+            };
+        case TOGGLE_HOST_ACTIVE_STATUS:
+            return {
+                ...state,
+                hosts: state.hosts.map((host) => {
+                    if (host._id === payload._id) {
+                        return {
+                            ...host,
+                            ...payload,
+                        };
+                    } else return host;
+                }),
                 loading: false,
             };
         case GET_HOSTS:

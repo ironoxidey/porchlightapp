@@ -115,6 +115,12 @@ h2.MuiTypography-root {
     margin-bottom: 4px;
 }
 
+.inactive-host {
+    /* Host Matrix */
+    opacity: 0.3;
+    filter: blur(0.8px);
+}
+
 .diffTime {
     color: var(--light-color);
 }

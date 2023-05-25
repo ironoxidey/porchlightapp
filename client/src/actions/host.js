@@ -4,6 +4,7 @@ import { setAlert } from './alert';
 import { toTitleCase } from './app';
 
 import {
+    GET_ALL_HOSTS_EDIT,
     GET_HOST,
     GET_HOST_ME,
     GET_HOSTS,
@@ -13,7 +14,29 @@ import {
     HOST_ERROR,
     CLEAR_HOST,
     USER_LOADED,
+    TOGGLE_HOST_ACTIVE_STATUS,
 } from './types';
+
+//Get all users
+export const getAllHosts = () => async (dispatch) => {
+    try {
+        const res = await axios.get('/api/hosts/edit');
+        //res.data.avatar = await axios.get('/api/artists/my-avatar');
+
+        dispatch({
+            type: GET_ALL_HOSTS_EDIT,
+            payload: res.data,
+        });
+    } catch (err) {
+        dispatch({
+            type: HOST_ERROR,
+            payload: {
+                msg: err.response.statusText,
+                status: err.response.status,
+            },
+        });
+    }
+};
 
 // Get current host's profile
 export const getCurrentHost = () => async (dispatch) => {
@@ -140,6 +163,47 @@ export const createMyHost =
                 payload: res.data.user,
             });
             //dispatch(setAlert(edit ? 'Artist Updated' : 'Artist Created', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        } catch (err) {
+            const errors = err.response.data.errors;
+            console.log('error: ' + err);
+            if (errors) {
+                errors.forEach((error) =>
+                    dispatch(setAlert(error.msg, 'danger'))
+                );
+            }
+            dispatch({
+                type: UPDATE_HOST_ERROR,
+                payload: {
+                    msg: err.response.statusText,
+                    status: err.response.status,
+                },
+            });
+            dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        }
+    };
+
+// Toggle Host active status
+export const toggleHostActiveStatus =
+    (formData, history, edit = false) =>
+    async (dispatch) => {
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            const formDataArray = [formData];
+            // console.log('formDataArray', formDataArray);
+            const res = await axios.post(
+                '/api/hosts/updateMe',
+                formDataArray,
+                config
+            );
+            // console.log('toggleHostActiveStatus res', res);
+            dispatch({
+                type: TOGGLE_HOST_ACTIVE_STATUS,
+                payload: res.data.host,
+            });
         } catch (err) {
             const errors = err.response.data.errors;
             console.log('error: ' + err);

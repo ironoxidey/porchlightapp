@@ -202,7 +202,11 @@ router.post('/updateMe', [auth], async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    if (req.body instanceof Array) {
+    if (
+        req.body instanceof Array &&
+        ((req.user.role && req.user.role.indexOf('ADMIN') != -1) || //asking these things to keep an attacker from throwing a huge array of whatever at this endpoint and it mapping through all of it, even it won't do anything else
+            req.user.email.toLowerCase() === hostFields.email.toLowerCase())
+    ) {
         let hostCount = 0;
         await Promise.all(
             req.body.map(async (hostFields) => {
@@ -445,8 +449,8 @@ router.post('/unsubscribe/:id', async (req, res) => {
                     hostToUnsubscribe.notificationFrequency
             );
         } else {
-            res.json(
-                "That didn't seem to work. notificationFrequency = " +
+            res.status(500).send(
+                'ERROR: Request didn’t meet the requirements to authorize this change. notificationFrequency = ' +
                     hostToUnsubscribe.notificationFrequency
             );
         }
@@ -464,7 +468,51 @@ router.get('/edit', [auth], async (req, res) => {
     if (req.user.role && req.user.role.indexOf('ADMIN') != -1) {
         //must be an ADMIN to get into all of this!
         try {
-            const hosts = await Host.find();
+            const hosts = await Host.aggregate([
+                //Chatty G wrote this with the prompt "How can I, using mongo db, return all of the hosts in a collection, and attach to each host the events from another collection that have host._id in the 'confirmedHost' field of the event, and populate the artist field from each event with the corresponding document from the artist collection?"
+                {
+                    $lookup: {
+                        from: 'events',
+                        let: { hostId: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$$hostId', '$confirmedHost'],
+                                    },
+                                },
+                            },
+                            {
+                                $lookup: {
+                                    from: 'artists',
+                                    localField: 'artist',
+                                    foreignField: '_id',
+                                    as: 'artist',
+                                },
+                            },
+                            {
+                                $unwind: '$artist',
+                            },
+                            {
+                                $sort: {
+                                    bookingWhen: 1, // or -1 for descending order
+                                },
+                            },
+                        ],
+                        as: 'events',
+                    },
+                },
+                {
+                    $addFields: {
+                        notificationFrequency: {
+                            $ifNull: ['$notificationFrequency', 7],
+                        },
+                        active: { $ifNull: ['$active', true] },
+                    },
+                },
+            ]);
+
+            //console.log('hosts', hosts);
 
             // hosts.forEach(host => {
             //   //if no time exists in host.zoomDate {

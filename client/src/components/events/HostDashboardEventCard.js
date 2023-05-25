@@ -25,6 +25,8 @@ import ThumbDownAltTwoToneIcon from '@mui/icons-material/ThumbDownAltTwoTone';
 import { StackDateforDisplay } from '../../actions/app';
 import { artistViewedHostOffer, deleteHostEvent } from '../../actions/event';
 
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+
 // import EventDetails from '../events/EventDetails';
 
 import Button from '../layout/SvgButton';
@@ -519,7 +521,13 @@ const HostDashboardEventCard = ({
                         thisEvent.createdBy !== 'HOST' && //if this event is not created by a host
                         thisEvent.confirmedHost && //and if the event has a confirmedHost
                         !confirmedMy(thisEvent) && ( //and it's not me
-                            <Grid item alignContent="center" container xs={0.5}>
+                            <Grid
+                                item
+                                alignContent="center"
+                                container
+                                xs={0.5}
+                                style={{ zIndex: '5' }}
+                            >
                                 <Tooltip
                                     title={
                                         (thisEvent.artist &&
@@ -557,12 +565,61 @@ const HostDashboardEventCard = ({
                     </Grid>*/}
                 </Grid>
                 {thisEvent.status === 'DRAFT' && !thisEvent.artist && (
-                    <Grid item className="deleteBtn" xs={1}>
-                        <IconButton
-                            onClick={(e) => deleteHostEvent(thisEvent._id)}
+                    <Grid
+                        container
+                        item
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        xs={1}
+                    >
+                        <Grid
+                            item
+                            className="deleteBtn"
+                            // xs={1}
+                            style={{
+                                // alignSelf: 'flex-start',
+                                justifyContent: 'center',
+                            }}
                         >
-                            <DeleteIcon></DeleteIcon>
-                        </IconButton>
+                            <IconButton
+                                onClick={(e) => deleteHostEvent(thisEvent._id)}
+                            >
+                                <DeleteIcon></DeleteIcon>
+                            </IconButton>
+                        </Grid>
+                        <Grid
+                            item
+                            className="warningIcon"
+                            // xs={1}
+                            style={{
+                                color: 'var(--primary-color)',
+                                // alignSelf: 'flex-end',
+                                justifyContent: 'center',
+                                zIndex: '5',
+                            }}
+                        >
+                            <Tooltip
+                                arrow={true}
+                                placement="bottom"
+                                title={
+                                    <>
+                                        <div
+                                            style={{
+                                                textAlign: 'center',
+                                            }}
+                                        >{`This offer is still a DRAFT and has not been sent to ${
+                                            thisEvent.preferredArtists.length >
+                                            1
+                                                ? 'the artists'
+                                                : thisEvent.preferredArtists[0]
+                                        }, yet.`}</div>
+                                    </>
+                                }
+                            >
+                                <WarningAmberIcon></WarningAmberIcon>
+                            </Tooltip>
+                        </Grid>
                     </Grid>
                 )}
             </Grid>

@@ -31,6 +31,7 @@ import ArtistPrivateRoute from '../routing/ArtistPrivateRoute';
 import ResetPassword from '../auth/ResetPassword';
 import ForgotPassword from '../auth/ForgotPassword';
 import EventDataGrid from '../events/EventDataGrid';
+import EditHostsMatrix from '../hosts/EditHostsMatrix';
 
 import { useTransition, animated, config, useSpring } from '@react-spring/web';
 
@@ -167,6 +168,12 @@ const Routes = ({ app }) => {
                                 path="/edit-events"
                                 component={EventDataGrid}
                                 title="Edit Events"
+                            />
+                            <BookingPrivateRoute
+                                exact
+                                path="/edit-hosts"
+                                component={EditHostsMatrix}
+                                title="Edit Hosts"
                             />
                             <ArtistPrivateRoute
                                 exact
