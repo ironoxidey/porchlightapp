@@ -205,7 +205,9 @@ router.post('/updateMe', [auth], async (req, res) => {
     if (
         req.body instanceof Array &&
         ((req.user.role && req.user.role.indexOf('ADMIN') != -1) || //asking these things to keep an attacker from throwing a huge array of whatever at this endpoint and it mapping through all of it, even it won't do anything else
-            req.user.email.toLowerCase() === hostFields.email.toLowerCase())
+            (req.body[0] &&
+                req.user.email.toLowerCase() ===
+                    req.body[0].email.toLowerCase()))
     ) {
         let hostCount = 0;
         await Promise.all(

@@ -487,6 +487,13 @@ const HostDataGrid = ({
             editable: false,
         },
         {
+            field: 'streetAddress',
+            headerName: 'Street Address',
+            width: 200,
+            editable: false,
+            sortable: true,
+        },
+        {
             field: 'city',
             headerName: 'City',
             width: 150,
@@ -582,7 +589,7 @@ const HostDataGrid = ({
         {
             field: 'notificationFrequency',
             headerName: 'Notify Every',
-            width: 150,
+            width: 100,
             editable: false,
             sortable: true,
             valueFormatter: (params) => {
@@ -653,6 +660,7 @@ const HostDataGrid = ({
                         firstName: host.firstName,
                         lastName: host.lastName,
                         phone: host.phone,
+                        streetAddress: host.streetAddress,
                         city: host.city,
                         // state: host.state,
                         state: states(host.state.trim()).usps,

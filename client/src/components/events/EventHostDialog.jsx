@@ -30,7 +30,7 @@ const EventHostDialog = (props) => {
     useEffect(() => {
         //console.log('eventDialogDetails', eventDialogDetails);
         //console.log('EventHostDialog should open');
-        console.log('props', props);
+        // console.log('props', props);
         setEventDetailsDialogOpen(true);
     }, [eventDialogDetails]);
 
