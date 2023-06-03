@@ -152,8 +152,11 @@ router.post('/', [auth], async (req, res) => {
         eventFields.bookingWhen &&
         eventFields.bookingWhere
     ) {
+        //if eventFields.createdBy === 'ARTIST', delete "preferredArtists" because it could carry-over from an event they proposed as a HOST
+        delete eventFields.preferredArtists;
+
         try {
-            //console.log('eventFields', eventFields);
+            console.log('eventFields', eventFields);
             let artist = await Artist.findOne({
                 email: req.user.email.toLowerCase(),
             }).select('-hadMeeting -sentFollowUp -notes');
@@ -222,7 +225,7 @@ router.post('/', [auth], async (req, res) => {
                             },
                         },
                     });
-                    //console.log(await hostsInReach);
+                    console.log('hostsInReach', await hostsInReach);
                     const hostsIDInReach = hostsInReach.map((hostInReach) => {
                         //console.log('hostInReach._id', hostInReach._id);
                         return {
@@ -507,8 +510,11 @@ router.post(
             eventFields.bookingWhere &&
             eventFields.bookingWhere.zip
         ) {
+            //if eventFields.createdBy === 'ARTIST', delete "preferredArtists" because it could carry-over from an event they proposed as a HOST
+            delete eventFields.preferredArtists;
+
             try {
-                //console.log('eventFields', eventFields);
+                console.log('eventFields', eventFields);
                 let artist = await Artist.findOne({
                     email: req.user.email.toLowerCase(),
                 }).select('-hadMeeting -sentFollowUp -notes');
@@ -557,9 +563,7 @@ router.post(
                             event.bookingWhere.zip;
                         const geocodedAddress = await addressGeocode(address);
                         // console.log(
-                        //     updatedEvents +
-                        //         ') ' +
-                        //         event.artist.stageName +
+                        //     event.artist.slug +
                         //         ' wants to play a concert near ' +
                         //         address +
                         //         ': ',
@@ -639,6 +643,12 @@ router.post(
                             },
                         });
                         //console.log(await hostsInReach);
+                        // console.log(
+                        //     'these Hosts are near ' +
+                        //         event.bookingWhere.city +
+                        //         ', ' +
+                        //         event.bookingWhere.state
+                        // );
                         const hostsIDInReach = hostsInReach.map(
                             (hostInReach, i) => {
                                 //console.log('hostInReach._id', hostInReach._id);
@@ -666,7 +676,7 @@ router.post(
                         );
                     }
 
-                    //console.log('event', event);
+                    // console.log('event', event);
                     res.json(event);
 
                     // const myArtistEvents = await Event.find({

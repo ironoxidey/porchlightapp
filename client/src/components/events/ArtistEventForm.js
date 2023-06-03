@@ -1910,6 +1910,9 @@ const ArtistEventForm = ({
 
                 delete mostRecentlyUpdatedEventTrimmed.updatedAt;
                 delete mostRecentlyUpdatedEventTrimmed.geocodedBookingWhere;
+                delete mostRecentlyUpdatedEventTrimmed.latLong;
+
+                delete mostRecentlyUpdatedEventTrimmed.preferredArtists;
 
                 setFormData({
                     ...formData,
