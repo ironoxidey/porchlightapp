@@ -800,6 +800,7 @@ router.post('/setupEventbrite', [auth], async (req, res) => {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',
+                        timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
                     }
                 );
 
@@ -1124,6 +1125,7 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
+                timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
             });
             const theEventDateForStacking = new Date(eventDetails.bookingWhen)
                 .toDateString()
@@ -1635,6 +1637,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
+                    timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
                 });
                 const theEventDateForStacking = new Date(
                     eventDetails.bookingWhen

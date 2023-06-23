@@ -86,6 +86,7 @@ const EventHostDialog = (props) => {
                                                 year: 'numeric',
                                                 month: 'long',
                                                 day: 'numeric',
+                                                timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
                                             })}{' '}
                                             is now visible on the private
                                             profile

@@ -571,6 +571,7 @@ const HostDataGrid = ({
                                                         year: 'numeric',
                                                         month: 'long',
                                                         day: 'numeric',
+                                                        timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
                                                     }
                                                 )}`}
                                             </div>

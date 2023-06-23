@@ -440,11 +440,13 @@ const EventDataGrid = ({
     }
 
     function prettifyDate(date) {
+        // return new Date(date).toLocaleDateString(undefined, {
         return new Date(date).toLocaleDateString(undefined, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric',
+            timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
         });
     }
 
@@ -840,6 +842,7 @@ const EventDataGrid = ({
                                             year: 'numeric',
                                             month: 'long',
                                             day: 'numeric',
+                                            timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
                                         })}{' '}
                                         created by{' '}
                                         {params.row.theEvent.createdBy ===

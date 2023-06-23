@@ -1040,6 +1040,7 @@ const EventSpecificHostForm = ({
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',
+                            timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
                         }
                     )}{' '}
                     near {theEvent.bookingWhere.city},{' '}

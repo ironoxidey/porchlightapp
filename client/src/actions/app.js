@@ -106,7 +106,10 @@ export const pullDomainFrom = (url) => {
 };
 
 export const StackDateforDisplay = (props) => {
-    let theDate = new Date(props.date).toDateString().split(' ');
+    // let theDate = new Date(props.date).toDateString().split(' '); //['Day','Month','Date','Year']
+    let theDate = new Date(props.date).toUTCString().split(' '); //['Day,','Date','Month','Year']
+    // console.log('theDate', theDate);
+    // console.log('theDateUTC', theDateUTC);
     return (
         <Grid
             item
@@ -132,7 +135,9 @@ export const StackDateforDisplay = (props) => {
                     padding: '2px',
                 }}
             >
-                {theDate[0]}
+                {
+                    theDate[0].substring(0, theDate[0].length - 1) //.substring(0, theDate[0].length - 1) to remove the comma that .toUTCString() adds to the day
+                }
             </Grid>
             <Grid
                 className="month"
@@ -141,7 +146,7 @@ export const StackDateforDisplay = (props) => {
                     marginTop: '4px',
                 }}
             >
-                {theDate[1]}
+                {theDate[2]}
             </Grid>
             <Grid
                 className="date"
@@ -151,7 +156,7 @@ export const StackDateforDisplay = (props) => {
                     marginBottom: '-2px',
                 }}
             >
-                {theDate[2]}
+                {theDate[1]}
             </Grid>
             <Grid
                 item

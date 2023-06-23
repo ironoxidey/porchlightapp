@@ -336,6 +336,7 @@ export const hostRaiseHand = (formData, history) => async (dispatch) => {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',
+                            timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
                         }
                     ) +
                     ' was submitted.',
@@ -388,6 +389,7 @@ export const hostProposes = (formData, history) => async (dispatch) => {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',
+                            timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
                         }
                     ) +
                     ' was sent.',
@@ -496,6 +498,7 @@ export const artistAcceptOffer =
                                 year: 'numeric',
                                 month: 'long',
                                 day: 'numeric',
+                                timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
                             }
                         ) +
                         '. Someone will be in touch soon!',
