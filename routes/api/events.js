@@ -1212,8 +1212,10 @@ router.post('/hostProposes', [auth], async (req, res) => {
                 )
                 .populate(
                     'preferredArtists',
-                    '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
-                );
+                    //'-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
+                    '-phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
+                )
+                .lean(); //.lean required to delete artistEmail later -- Documents returned from queries with the lean option enabled are plain javascript objects, not Mongoose Documents. They have no save method, getters/setters, virtuals, or other Mongoose features. https://stackoverflow.com/a/71746004/3338608
 
             // .select(
             //     //'-artistEmail -agreeToPayAdminFee -payoutHandle -offersFromHosts -hostsOfferingToBook'
@@ -1225,29 +1227,35 @@ router.post('/hostProposes', [auth], async (req, res) => {
             //     )
             //     .lean(); //.lean required to delete artistEmail later -- Documents returned from queries with the lean option enabled are plain javascript objects, not Mongoose Documents. They have no save method, getters/setters, virtuals, or other Mongoose features. https://stackoverflow.com/a/71746004/3338608
 
-            // let emailDate = new Date(
-            //     eventDetails.bookingWhen
-            // ).toLocaleDateString(undefined, {
-            //     weekday: 'long',
-            //     year: 'numeric',
-            //     month: 'long',
-            //     day: 'numeric',
-            // });
-            // //Send an email to the artist and then delete the artist's email address from the eventDetails object we return to the host in the app
-            // sendEmail(eventDetails.artistEmail, {
-            //     event: 'HOST_OFFER',
-            //     template: 'BXKVWA13SK4G60N1ZE1S339YPKAM',
-            //     name: eventDetails.artist.firstName,
-            //     hostName: host.firstName + ' ' + host.lastName,
-            //     stageName: eventDetails.artist.stageName,
-            //     eventDate: emailDate,
-            //     hostLocation: host.city + ', ' + host.state,
-            //     hostImg: host.profileImg,
-            //     artistImg: eventDetails.artist.squareImg,
-            // });
-            // delete eventDetails.artistEmail;
+            let emailDate = new Date(
+                eventDetails.bookingWhen
+            ).toLocaleDateString(undefined, {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            });
+            const theEventDateForStacking = new Date(eventDetails.bookingWhen)
+                .toDateString()
+                .split(' ');
 
-            //res.json(event);
+            for (let i = 0; i < eventDetails.preferredArtists.length; i++) {
+                //Send an email to the artist and then delete the artist's email address from the eventDetails object we return to the host in the app
+                sendEmail(eventDetails.preferredArtists[i].email, {
+                    event: 'HOST_PROPOSES',
+                    template: 'N1R9V8456SM6P9KTQ7NWSFNRP08Z',
+                    name: eventDetails.preferredArtists[i].firstName,
+                    hostName: host.firstName + ' ' + host.lastName,
+                    stageName: eventDetails.preferredArtists[i].stageName,
+                    eventDate: emailDate,
+                    bookingWhenFormatted: theEventDateForStacking,
+                    hostLocation: host.city + ', ' + host.state,
+                    hostImg: host.profileImg,
+                    artistImg: eventDetails.preferredArtists[i].squareImg,
+                });
+                delete eventDetails.preferredArtists[i].email;
+            }
+
             console.log('eventDetails', eventDetails);
             res.json(eventDetails);
         } catch (err) {
