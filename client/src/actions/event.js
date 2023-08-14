@@ -72,11 +72,18 @@ export const editHostEvent = (formData, history) => async (dispatch) => {
 
 //Delete an admin event by id
 export const deleteAdminEvent = (eventData) => async (dispatch) => {
-    console.log('deleteAdminEvent eventData: ', eventData);
+    //console.log('deleteAdminEvent eventData: ', eventData);
     try {
         const res = await axios.delete(
             `/api/events/adminEvent/${eventData._id}`,
-            { data: eventData }
+            {
+                data: {
+                    bookingWhen: eventData.bookingWhen,
+                    createdBy: eventData.createdBy,
+                    status: eventData.status,
+                    createdAt: eventData.createdAt,
+                },
+            }
         );
         dispatch({
             type: DELETE_ADMIN_EVENT,

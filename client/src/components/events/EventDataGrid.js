@@ -814,6 +814,13 @@ const EventDataGrid = ({
             },
         },
         {
+            field: 'id',
+            headerName: 'Database ID',
+            width: 220,
+            editable: false,
+            type: 'string',
+        },
+        {
             field: 'delete', // Custom field for the delete button
             headerName: 'Delete',
             sortable: false,

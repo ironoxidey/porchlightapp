@@ -78,6 +78,7 @@ const HostProfile = ({
     // };
 
     const [artistReachedOut, setArtistReachedOut] = useState(false);
+    const [artistAgreedToTerms, setArtistAgreedToTerms] = useState(false);
 
     let theHostAddress =
         theHost.primarySpace === 'residence'
@@ -1164,7 +1165,11 @@ const HostProfile = ({
                         </Typography>
                         <FormGroup>
                             <FormControlLabel
-                                sx={{ textAlign: 'center', margin: '0 auto' }}
+                                sx={{
+                                    textAlign: 'left',
+                                    margin: '0 auto',
+                                    alignItems: 'flex-start',
+                                }}
                                 control={
                                     <Checkbox
                                         onChange={() =>
@@ -1176,12 +1181,52 @@ const HostProfile = ({
                                         inputProps={{
                                             'aria-label': 'controlled',
                                         }}
+                                        sx={{
+                                            marginTop: -1,
+                                        }}
                                     />
                                 }
                                 label={`I reached out and discussed the details of this offer with ${theHost.firstName} ${theHost.lastName}.`}
                             />
                         </FormGroup>
                         {artistReachedOut && (
+                            <Grid
+                                container
+                                sx={{
+                                    backgroundColor: 'rgba(0,0,0,.3)',
+                                    borderRadius: '3px',
+                                    padding: '16px 8px',
+                                }}
+                            >
+                                <FormGroup>
+                                    <FormControlLabel
+                                        sx={{
+                                            textAlign: 'left',
+                                            margin: '0 auto',
+                                            alignItems: 'flex-start',
+                                        }}
+                                        control={
+                                            <Checkbox
+                                                onChange={() =>
+                                                    setArtistAgreedToTerms(
+                                                        !artistAgreedToTerms
+                                                    )
+                                                }
+                                                checked={artistAgreedToTerms}
+                                                inputProps={{
+                                                    'aria-label': 'controlled',
+                                                }}
+                                                sx={{
+                                                    marginTop: -1,
+                                                }}
+                                            />
+                                        }
+                                        label={`I acknowledge that Porchlight exists to point people to an authentic relationship with Jesus. As such, I will strive to model Christ-like character as a representative of Porchlight, particularly in humility and generosity toward hosts and other artists.`}
+                                    />
+                                </FormGroup>
+                            </Grid>
+                        )}
+                        {artistReachedOut && artistAgreedToTerms && (
                             <>
                                 <Typography
                                     component="h2"

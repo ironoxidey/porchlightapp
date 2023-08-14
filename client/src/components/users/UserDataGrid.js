@@ -372,6 +372,13 @@ const UserDataGrid = ({
                 }
             },
         },
+        {
+            field: 'id',
+            headerName: 'Database ID',
+            width: 220,
+            editable: false,
+            type: 'string',
+        },
     ];
 
     useEffect(() => {
