@@ -613,6 +613,7 @@ const HostDashboardEventCard = ({
                                             1
                                                 ? 'the artists'
                                                 : thisEvent.preferredArtists[0]
+                                                      .stageName
                                         }, yet.`}</div>
                                     </>
                                 }

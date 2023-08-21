@@ -61,6 +61,8 @@ import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
 import { textAlign } from '@mui/system';
 
+import HostTermsAgreement from '../hosts/HostTermsAgreement';
+
 import {
     getFontAwesomeIcon,
     pullDomainFrom,
@@ -1026,55 +1028,88 @@ const EventSpecificHostForm = ({
                     That’s everything we think {artist.stageName} will need, in
                     order to make a decision about this show.
                 </Typography>,
-                <Typography
-                    component="p"
-                    sx={{ textAlign: 'center', marginTop: '20px' }}
-                >
-                    As soon as you submit this offer, a notification will be
-                    sent to {artist.stageName}, so that we can hopefully get
-                    this show booked for{' '}
-                    {new Date(theEvent.bookingWhen).toLocaleDateString(
-                        undefined,
-                        {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
-                        }
-                    )}{' '}
-                    near {theEvent.bookingWhere.city},{' '}
-                    {theEvent.bookingWhere.state}.
-                </Typography>,
-                <Typography
-                    component="p"
-                    sx={{ textAlign: 'center', marginTop: '20px' }}
-                >
-                    <em>
-                        {artist.stageName} will review this offer, and contact
-                        you by phone or email if it seems like a good fit.
-                    </em>
-                </Typography>,
-                <Grid
-                    item
-                    container
-                    justifyContent="center"
-                    sx={{ marginTop: '8px' }}
-                >
-                    <Button
-                        btnwidth="300"
-                        onClick={(e) => {
-                            hostRaiseHand({
-                                artist: artist,
-                                bookingWhen: theEvent.bookingWhen,
-                                theOffer: formData,
-                            });
-                            bookingDetailsDialogHandleClose();
-                        }}
-                    >
-                        Submit My Offer To Host
-                    </Button>
-                </Grid>,
+                <HostTermsAgreement></HostTermsAgreement>,
+                <>
+                    {host && host.me && host.me.agreedToTerms ? (
+                        <>
+                            <Typography
+                                component="p"
+                                sx={{
+                                    textAlign: 'center',
+                                    marginTop: '20px',
+                                }}
+                            >
+                                As soon as you submit this offer, a notification
+                                will be sent to {artist.stageName}, so that we
+                                can hopefully get this show booked for{' '}
+                                {new Date(
+                                    theEvent.bookingWhen
+                                ).toLocaleDateString(undefined, {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
+                                })}{' '}
+                                near {theEvent.bookingWhere.city},{' '}
+                                {theEvent.bookingWhere.state}.
+                            </Typography>
+
+                            <Typography
+                                component="p"
+                                sx={{
+                                    textAlign: 'center',
+                                    marginTop: '20px',
+                                }}
+                            >
+                                <em>
+                                    {artist.stageName} will review this offer,
+                                    and contact you by phone or email if it
+                                    seems like a good fit.
+                                </em>
+                            </Typography>
+
+                            <Grid
+                                item
+                                container
+                                justifyContent="center"
+                                sx={{ marginTop: '8px' }}
+                            >
+                                <Button
+                                    btnwidth="300"
+                                    onClick={(e) => {
+                                        hostRaiseHand({
+                                            artist: artist,
+                                            bookingWhen: theEvent.bookingWhen,
+                                            theOffer: formData,
+                                        });
+                                        bookingDetailsDialogHandleClose();
+                                    }}
+                                >
+                                    Submit My Offer To Host
+                                </Button>
+                            </Grid>
+                        </>
+                    ) : (
+                        <Grid
+                            container
+                            sx={{
+                                color: 'var(--link-color)',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                border: '1px solid',
+                                padding: '8px',
+                                margin: '16px auto',
+                            }}
+                        >
+                            <Typography component="p">
+                                You must agree to the Porchlight Host Terms and
+                                Conditions before you can submit this offer to
+                                host this concert.
+                            </Typography>
+                        </Grid>
+                    )}
+                </>,
                 <Grid
                     item
                     container

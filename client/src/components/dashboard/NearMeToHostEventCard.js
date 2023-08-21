@@ -174,6 +174,7 @@ const NearMeToHostEventCard = ({
                     scroll="body"
                     fullWidth
                     maxWidth={isAuthenticated || !wantsToBook ? 'md' : 'xs'}
+                    className="porchlightBG"
                 >
                     <DialogTitle id="alert-dialog-title">
                         {!isAuthenticated &&

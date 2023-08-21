@@ -52,6 +52,7 @@ import {
     convert24HourTime,
 } from '../../actions/app';
 import { artistAcceptOffer } from '../../actions/event';
+import ArtistTermsAgreement from '../artists/ArtistTermsAgreement';
 
 const HostProfile = ({
     artist,
@@ -78,7 +79,6 @@ const HostProfile = ({
     // };
 
     const [artistReachedOut, setArtistReachedOut] = useState(false);
-    const [artistAgreedToTerms, setArtistAgreedToTerms] = useState(false);
 
     let theHostAddress =
         theHost.primarySpace === 'residence'
@@ -1190,113 +1190,100 @@ const HostProfile = ({
                             />
                         </FormGroup>
                         {artistReachedOut && (
-                            <Grid
-                                container
-                                sx={{
-                                    backgroundColor: 'rgba(0,0,0,.3)',
-                                    borderRadius: '3px',
-                                    padding: '16px 8px',
-                                }}
-                            >
-                                <FormGroup>
-                                    <FormControlLabel
-                                        sx={{
-                                            textAlign: 'left',
-                                            margin: '0 auto',
-                                            alignItems: 'flex-start',
-                                        }}
-                                        control={
-                                            <Checkbox
-                                                onChange={() =>
-                                                    setArtistAgreedToTerms(
-                                                        !artistAgreedToTerms
-                                                    )
-                                                }
-                                                checked={artistAgreedToTerms}
-                                                inputProps={{
-                                                    'aria-label': 'controlled',
-                                                }}
-                                                sx={{
-                                                    marginTop: -1,
-                                                }}
-                                            />
-                                        }
-                                        label={`I acknowledge that Porchlight exists to point people to an authentic relationship with Jesus. As such, I will strive to model Christ-like character as a representative of Porchlight, particularly in humility and generosity toward hosts and other artists.`}
-                                    />
-                                </FormGroup>
-                            </Grid>
+                            <ArtistTermsAgreement></ArtistTermsAgreement>
                         )}
-                        {artistReachedOut && artistAgreedToTerms && (
-                            <>
-                                <Typography
-                                    component="h2"
-                                    sx={{
-                                        textAlign: 'center',
-                                        marginTop: '8px',
-                                    }}
-                                >
-                                    Would you like to accept this offer to have
-                                    your show at {theHost.firstName}{' '}
-                                    {theHost.lastName}’s {theHost.primarySpace}{' '}
-                                    in{' '}
-                                    {theHost.primarySpace === 'residence'
-                                        ? toTitleCase(theHost.city) +
-                                          ', ' +
-                                          theHost.state
-                                        : toTitleCase(theHost.venueCity) +
-                                          ', ' +
-                                          theHost.venueState}{' '}
-                                    on{' '}
-                                    {new Date(
-                                        theEvent.bookingWhen
-                                    ).toLocaleDateString(undefined, {
-                                        weekday: 'long',
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
-                                    })}
-                                    ?
-                                </Typography>
-                                <Typography
-                                    component="p"
-                                    sx={{
-                                        textAlign: 'center',
-                                        marginTop: '8px',
-                                    }}
-                                >
-                                    <em>
-                                        Accepting this offer will immediately
-                                        send a notification to{' '}
-                                        {theHost.firstName} {theHost.lastName},
-                                        and anyone else who might need to know.
-                                    </em>
-                                </Typography>
-                                <Grid
-                                    item
-                                    container
-                                    justifyContent="center"
-                                    sx={{ marginTop: '16px' }}
-                                >
-                                    <Button
-                                        btnwidth="240"
-                                        onClick={(e) => {
-                                            artistAcceptOffer(
-                                                theEvent.bookingWhen,
-                                                theOffer,
-                                                artist.me.stageName
-                                            );
-                                            eventDetailsDialogHandleClose();
+                        {artistReachedOut &&
+                            (artist && artist.me && artist.me.agreedToTerms ? (
+                                <>
+                                    <Typography
+                                        component="h2"
+                                        sx={{
+                                            textAlign: 'center',
+                                            marginTop: '8px',
                                         }}
                                     >
-                                        <HowToRegTwoToneIcon
-                                            sx={{ marginRight: '8px' }}
-                                        ></HowToRegTwoToneIcon>{' '}
-                                        Accept This Offer
-                                    </Button>
+                                        Would you like to accept this offer to
+                                        have your show at {theHost.firstName}{' '}
+                                        {theHost.lastName}’s{' '}
+                                        {theHost.primarySpace} in{' '}
+                                        {theHost.primarySpace === 'residence'
+                                            ? toTitleCase(theHost.city) +
+                                              ', ' +
+                                              theHost.state
+                                            : toTitleCase(theHost.venueCity) +
+                                              ', ' +
+                                              theHost.venueState}{' '}
+                                        on{' '}
+                                        {new Date(
+                                            theEvent.bookingWhen
+                                        ).toLocaleDateString(undefined, {
+                                            weekday: 'long',
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
+                                        })}
+                                        ?
+                                    </Typography>
+                                    <Typography
+                                        component="p"
+                                        sx={{
+                                            textAlign: 'center',
+                                            marginTop: '8px',
+                                        }}
+                                    >
+                                        <em>
+                                            Accepting this offer will
+                                            immediately send a notification to{' '}
+                                            {theHost.firstName}{' '}
+                                            {theHost.lastName}, and anyone else
+                                            who might need to know.
+                                        </em>
+                                    </Typography>
+                                    <Grid
+                                        item
+                                        container
+                                        justifyContent="center"
+                                        sx={{ marginTop: '16px' }}
+                                    >
+                                        <Button
+                                            btnwidth="240"
+                                            onClick={(e) => {
+                                                artistAcceptOffer(
+                                                    theEvent.bookingWhen,
+                                                    theOffer,
+                                                    artist.me.stageName
+                                                );
+                                                eventDetailsDialogHandleClose();
+                                            }}
+                                        >
+                                            <HowToRegTwoToneIcon
+                                                sx={{ marginRight: '8px' }}
+                                            ></HowToRegTwoToneIcon>{' '}
+                                            Accept This Offer
+                                        </Button>
+                                    </Grid>
+                                </>
+                            ) : (
+                                <Grid
+                                    container
+                                    sx={{
+                                        color: 'var(--link-color)',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        border: '1px solid',
+                                        padding: '8px',
+                                        margin: '16px auto',
+                                    }}
+                                >
+                                    <Typography component="p">
+                                        You must agree to the Porchlight Artist
+                                        Terms and Conditions before you can
+                                        accept this offer from{' '}
+                                        {theHost.firstName} {theHost.lastName}.
+                                    </Typography>
                                 </Grid>
-                            </>
-                        )}
+                            ))}
                     </>
                 )}
         </>

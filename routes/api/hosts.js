@@ -204,7 +204,7 @@ router.post('/updateMe', [auth], async (req, res) => {
     }
     if (
         req.body instanceof Array &&
-        ((req.user.role && req.user.role.indexOf('ADMIN') != -1) || //asking these things to keep an attacker from throwing a huge array of whatever at this endpoint and it mapping through all of it, even it won't do anything else
+        ((req.user.role && req.user.role.indexOf('ADMIN') != -1) || //asking these things to keep an attacker from throwing a huge array of whatever at this endpoint and it mapping through all of it, even if it won't do anything else
             (req.body[0] &&
                 req.user.email.toLowerCase() ===
                     req.body[0].email.toLowerCase()))
@@ -394,6 +394,75 @@ router.post('/updateMe', [auth], async (req, res) => {
                         ).select('-password');
                         hostCount++;
                         res.json({ host: host.value, user: user });
+                    } catch (err) {
+                        console.error(err.message);
+                        res.status(500).send('Server Error');
+                    }
+                } else {
+                    console.error(
+                        req.user.email +
+                            " doesn't have authority to make these changes."
+                    );
+                    res.status(500).send(
+                        'User does not have authority to make these changes.'
+                    );
+                }
+            })
+        );
+        //res.json(hostCount + " host(s) submitted to the database."); //eventually remove this
+    }
+});
+
+// @route    POST api/hosts/termsAgreement
+// @desc     Create or update my host profile (copied from /batch)
+// @access   Private
+router.post('/termsAgreement', [auth], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    if (
+        req.body instanceof Array &&
+        ((req.user.role && req.user.role.indexOf('ADMIN') != -1) || //asking these things to keep an attacker from throwing a huge array of whatever at this endpoint and it mapping through all of it, even if it won't do anything else
+            (req.body[0] &&
+                req.user.email.toLowerCase() ===
+                    req.body[0].email.toLowerCase()))
+    ) {
+        await Promise.all(
+            req.body.map(async (hostFields) => {
+                //if (req.user.role === 'ADMIN' && hostFields.email !== '') {
+                if (
+                    req.user.email.toLowerCase() ===
+                    hostFields.email.toLowerCase()
+                ) {
+                    //if the request user email matches the host email they have authority to edit their own profile
+                    try {
+                        hostFields.user = req.user.id;
+                        // console.log('hostFields', hostFields);
+                        let host = {};
+                        if (hostFields.agreedToTerms === false) {
+                            host = await Host.findOneAndUpdate(
+                                { email: hostFields.email.toLowerCase() },
+                                { $unset: { agreedToTerms: '' } },
+                                { new: true }
+                            );
+                        } else if (
+                            !isNaN(Date.parse(hostFields.agreedToTerms))
+                        ) {
+                            //if we Date.parse hostFields.agreedToTerms and it's NOT not-a-number then it's a valid date!
+                            host = await Host.findOneAndUpdate(
+                                { email: hostFields.email.toLowerCase() },
+                                {
+                                    $set: {
+                                        agreedToTerms: hostFields.agreedToTerms,
+                                    },
+                                },
+                                { new: true }
+                            ); //.select('-hadMeeting -sentFollowUp -notes');
+                        }
+                        //console.log('host returned', host);
+
+                        res.json({ host: host });
                     } catch (err) {
                         console.error(err.message);
                         res.status(500).send('Server Error');

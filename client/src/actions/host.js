@@ -10,6 +10,7 @@ import {
     GET_HOSTS,
     UPDATE_HOST,
     UPDATE_HOST_ME,
+    UPDATE_HOST_TERMS_AGREEMENT,
     UPDATE_HOST_ERROR,
     HOST_ERROR,
     CLEAR_HOST,
@@ -171,6 +172,47 @@ export const createMyHost =
                     dispatch(setAlert(error.msg, 'danger'))
                 );
             }
+            dispatch({
+                type: UPDATE_HOST_ERROR,
+                payload: {
+                    msg: err.response.statusText,
+                    status: err.response.status,
+                },
+            });
+            dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        }
+    };
+// Agree to Terms
+export const agreeToHostTerms =
+    (formData, history, edit = false) =>
+    async (dispatch) => {
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            const formDataArray = [formData];
+            const res = await axios.post(
+                '/api/hosts/termsAgreement',
+                formDataArray,
+                config
+            );
+            console.log('agreedToHost res', res);
+            dispatch({
+                // type: UPDATE_HOST_ME,
+                type: UPDATE_HOST_TERMS_AGREEMENT,
+                payload: res.data.host,
+            });
+            //dispatch(setAlert(edit ? 'Artist Updated' : 'Artist Created', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        } catch (err) {
+            // const errors = err.response.data.errors;
+            console.log('error: ' + err);
+            // if (errors) {
+            //     errors.forEach((error) =>
+            //         dispatch(setAlert(error.msg, 'danger'))
+            //     );
+            // }
             dispatch({
                 type: UPDATE_HOST_ERROR,
                 payload: {

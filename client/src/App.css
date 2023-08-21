@@ -172,6 +172,16 @@ ul {
     list-style: none;
 }
 
+.termsAndConditions ul {
+    list-style: disc;
+    margin-left: 20px;
+    line-height: 1.7;
+}
+.termsAndConditions li,
+.termsAndConditions p {
+    margin-bottom: 8px;
+}
+
 img {
     width: 100%;
 }

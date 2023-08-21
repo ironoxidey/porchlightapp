@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 
 const ArtistSchema = new mongoose.Schema(
     {
+        agreedToTerms: {
+            type: Date,
+        },
         lastEmailed: {
             type: Date,
         },

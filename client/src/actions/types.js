@@ -60,6 +60,7 @@ export const GET_HOST = 'GET_HOST';
 export const GET_HOST_ME = 'GET_HOST_ME';
 export const UPDATE_HOST = 'UPDATE_HOST';
 export const UPDATE_HOST_ME = 'UPDATE_HOST_ME';
+export const UPDATE_HOST_TERMS_AGREEMENT = 'UPDATE_HOST_TERMS_AGREEMENT';
 export const CLEAR_HOST = 'CLEAR_HOST';
 export const HOST_RAISE_HAND = 'HOST_RAISE_HAND';
 export const HOST_PROPOSES = 'HOST_PROPOSES';

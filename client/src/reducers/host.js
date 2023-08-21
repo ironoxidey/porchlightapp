@@ -4,6 +4,7 @@ import {
     GET_HOST_ME,
     GET_HOSTS,
     UPDATE_HOST_ME,
+    UPDATE_HOST_TERMS_AGREEMENT,
     UPDATE_HOST_ERROR,
     HOST_ERROR,
     LOGOUT,
@@ -19,12 +20,24 @@ const initialState = {
 
 export default function (state = initialState, action) {
     const { type, payload } = action;
+    // console.log('host payload', payload);
     switch (type) {
         case GET_HOST_ME:
         case UPDATE_HOST_ME:
             return {
                 ...state,
                 me: payload,
+                loading: false,
+            };
+        case UPDATE_HOST_TERMS_AGREEMENT:
+            return {
+                ...state,
+                me: {
+                    ...state.me,
+                    agreedToTerms: payload.agreedToTerms
+                        ? payload.agreedToTerms
+                        : false,
+                },
                 loading: false,
             };
         case GET_ALL_HOSTS_EDIT:

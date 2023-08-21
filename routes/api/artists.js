@@ -391,6 +391,101 @@ router.get('/getAllArtistLatLong', [auth], async (req, res) => {
     }
 });
 
+// @route    POST api/artists/termsAgreement
+// @desc     Agree to terms
+// @access   Private
+router.post('/termsAgreement', [auth], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    //if req.user.role.indexOf turns up -1 (no indexes found) for ARTIST and ADMIN, then {return}, don't proceed
+    if (req.user.role && req.user.role.indexOf('ARTIST') === -1) {
+        console.error(
+            req.user.email + " doesn't have authority to make these changes."
+        );
+        return res
+            .status(500)
+            .send('User does not have authority to make these changes.');
+    }
+    if (req.body instanceof Array) {
+        let artistCount = 0;
+        await Promise.all(
+            req.body.map(async (artistFields) => {
+                artistFields.stageName && artistFields.stageName.length > 0
+                    ? (artistFields.slug = convertToSlug(
+                          artistFields.stageName
+                      ))
+                    : (artistFields.slug = convertToSlug(req.user.id));
+
+                if (
+                    req.user.email.toLowerCase() ===
+                    artistFields.email.toLowerCase()
+                ) {
+                    //if the requesting user has the same email as the artist they're trying to edit
+                    try {
+                        //console.log(artistFields);
+                        if (
+                            req.user.email.toLowerCase() ===
+                                artistFields.email.toLowerCase() &&
+                            req.user.role &&
+                            req.user.role.indexOf('ADMIN') === -1
+                        ) {
+                            //if the user is not an ADMIN, but does have the right to edit their own profile
+                            delete artistFields.active; //to prevent someone from being able to change their active status
+                            artistFields.user = req.user.id;
+                        }
+
+                        let artist = {};
+
+                        if (artistFields.agreedToTerms === false) {
+                            artist = await Artist.findOneAndUpdate(
+                                { email: artistFields.email.toLowerCase() },
+                                { $unset: { agreedToTerms: '' } },
+                                { new: true }
+                            ).select('-hadMeeting -sentFollowUp -notes');
+                        } else if (
+                            !isNaN(Date.parse(artistFields.agreedToTerms))
+                        ) {
+                            //if we Date.parse artistFields.agreedToTerms and it's NOT not-a-number then it's a valid date!
+                            // Using upsert option (creates new doc if no match is found):
+                            artist = await Artist.findOneAndUpdate(
+                                { email: artistFields.email.toLowerCase() },
+                                {
+                                    $set: {
+                                        agreedToTerms:
+                                            artistFields.agreedToTerms,
+                                    },
+                                },
+                                { new: true }
+                            ).select('-hadMeeting -sentFollowUp -notes');
+                        } else {
+                            console.error('termsAgreement payload invalid');
+                            res.status(500).send(
+                                'Server Error: termsAgreement payload invalid'
+                            );
+                        }
+
+                        res.json(artist);
+                    } catch (err) {
+                        console.error(err.message);
+                        res.status(500).send('Server Error: ' + err.message);
+                    }
+                } else {
+                    console.error(
+                        req.user.email +
+                            " doesn't have authority to make these changes."
+                    );
+                    res.status(500).send(
+                        'User does not have authority to make these changes.'
+                    );
+                }
+            })
+        );
+    }
+});
+
 // @route    POST api/artists/updateMe
 // @desc     Create or update my artist profile (copied from /batch)
 // @access   Private
