@@ -225,7 +225,7 @@ const ArtistTermsAgreement = ({ agreeToArtistTerms, artistMe }) => {
                     sx={{
                         backgroundColor: 'rgba(0,0,0,.3)',
                         borderRadius: '3px',
-                        padding: '16px 8px',
+                        padding: '16px',
                         justifyContent: 'center',
                     }}
                 >

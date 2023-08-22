@@ -72,6 +72,7 @@ import ReactPlayer from 'react-player/lazy';
 // import EventDetails from './EventDetails';
 // import HostEventDetails from './HostEventDetails';
 import HostProfile from '../hosts/HostProfile';
+import HostTermsAgreement from '../hosts/HostTermsAgreement';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -1407,7 +1408,10 @@ const HostEventForm = ({
 
         endSlide: [
             [
-                <Typography component="h2" sx={{ textAlign: 'center' }}>
+                <Typography
+                    component="h2"
+                    sx={{ textAlign: 'center', marginBottom: '8px' }}
+                >
                     {preferredArtists.length > 2
                         ? preferredArtists
                               .map((preferredArtist, i) => {
@@ -1436,130 +1440,107 @@ const HostEventForm = ({
                     {preferredArtists.length === 0 && '[The Artist]'} will see
                     the fields you’ve filled out:
                 </Typography>,
-
-                <Typography
-                    component="p"
-                    sx={{ textAlign: 'center', marginTop: '0px' }}
-                >
-                    Before sending this proposal, please look it over and make
-                    any necessary changes. (After you send it, you won’t be able
-                    to change it. And if you need to cancel, it will still show
-                    up as “CANCELED” on the dashboard
-                    {preferredArtists.length > 1 ? 's' : ''} of{' '}
-                    {preferredArtists.length > 2
-                        ? preferredArtists
-                              .map((preferredArtist, i) => {
-                                  if (
-                                      preferredArtists.length > 1 &&
-                                      i === preferredArtists.length - 1
-                                  ) {
-                                      return (
-                                          ' and ' + preferredArtist.stageName
-                                      );
-                                  } else {
-                                      return preferredArtist.stageName;
-                                  }
-                              })
-                              .join(', ')
-                        : preferredArtists.map((preferredArtist, i) => {
-                              if (
-                                  preferredArtists.length > 1 &&
-                                  i === preferredArtists.length - 1
-                              ) {
-                                  return ' and ' + preferredArtist.stageName;
-                              } else {
-                                  return preferredArtist.stageName;
-                              }
-                          })}
-                    {preferredArtists.length === 0 && '[The Artist]'}
-                    .)
-                </Typography>,
-                <Grid
-                    container
-                    sx={{
-                        width: '100%',
-                        justifyContent: 'center',
-                        padding: '8px 0',
-                    }}
-                >
-                    <Button
-                        btnwidth={350}
-                        onClick={() => {
-                            hostProposes(formData);
-                            setDrawerOpen(false);
-                        }}
-                    >
-                        <p>
-                            Send my proposal to the{' '}
-                            {preferredArtists.length > 1
-                                ? preferredArtists.length + ' artists'
-                                : ' artist'}
-                        </p>
-                        <SendIcon
-                            sx={{ marginLeft: '8px!important' }}
-                        ></SendIcon>
-                    </Button>
-
-                    {/* <Dialog
-                            open={adminAlertOpen}
-                            onClose={adminAlertHandleClose}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                        >
-                            <DialogTitle id="alert-dialog-title">
-                                <Avatar
-                                    alt={`${adminAlertUser.row.avatar}`}
-                                    src={`${adminAlertUser.row.avatar}`}
-                                    sx={{
-                                        width: '150px',
-                                        height: '150px',
-                                        margin: '0 auto',
-                                    }}
-                                />
-
-                                {`Are you sure you want ` +
-                                    adminAlertUser.row.name +
-                                    ` (` +
-                                    adminAlertUser.row.email +
-                                    `) to have the ${
-                                        value.indexOf('ADMIN') === -1 &&
-                                        adminAlertUser.value.indexOf('ADMIN') >
-                                            -1
-                                            ? 'ADMIN'
-                                            : 'BOOKING'
-                                    } role?`}
-                            </DialogTitle>
-                            <DialogContent>
-                                <DialogContentText id="alert-dialog-description">
-                                    {value.indexOf('ADMIN') === -1 &&
-                                    adminAlertUser.value.indexOf('ADMIN') > -1
-                                        ? `Giving this user the ADMIN role will give
-                                    them access to everything. You should only
-                                    do this if you really trust 
-                                    ${adminAlertUser.row.name}.`
-                                        : `Giving this user the BOOKING role will give
-                                    them access to our entire network of hosts. You should only
-                                    do this if you really trust 
-                                    ${adminAlertUser.row.name}.`}
-                                </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={adminAlertHandleClose}>
-                                    No
-                                </Button>
+                <HostTermsAgreement></HostTermsAgreement>,
+                <>
+                    {hostMe && hostMe.agreedToTerms ? (
+                        <>
+                            <Typography
+                                component="p"
+                                sx={{ textAlign: 'center', marginTop: '16px' }}
+                            >
+                                Before sending this proposal, please look it
+                                over and make any necessary changes. (After you
+                                send it, you won’t be able to change it. And if
+                                you need to cancel, it will still show up as
+                                “CANCELED” on the dashboard
+                                {preferredArtists.length > 1 ? 's' : ''} of{' '}
+                                {preferredArtists.length > 2
+                                    ? preferredArtists
+                                          .map((preferredArtist, i) => {
+                                              if (
+                                                  preferredArtists.length > 1 &&
+                                                  i ===
+                                                      preferredArtists.length -
+                                                          1
+                                              ) {
+                                                  return (
+                                                      ' and ' +
+                                                      preferredArtist.stageName
+                                                  );
+                                              } else {
+                                                  return preferredArtist.stageName;
+                                              }
+                                          })
+                                          .join(', ')
+                                    : preferredArtists.map(
+                                          (preferredArtist, i) => {
+                                              if (
+                                                  preferredArtists.length > 1 &&
+                                                  i ===
+                                                      preferredArtists.length -
+                                                          1
+                                              ) {
+                                                  return (
+                                                      ' and ' +
+                                                      preferredArtist.stageName
+                                                  );
+                                              } else {
+                                                  return preferredArtist.stageName;
+                                              }
+                                          }
+                                      )}
+                                {preferredArtists.length === 0 &&
+                                    '[The Artist]'}
+                                .)
+                            </Typography>
+                            <Grid
+                                container
+                                sx={{
+                                    width: '100%',
+                                    justifyContent: 'center',
+                                    padding: '8px 0',
+                                }}
+                            >
                                 <Button
-                                    onClick={(e) => {
-                                        adminAlertHandleClose();
-                                        onAutocompleteTagChange(
-                                            adminAlertUser.value
-                                        );
+                                    btnwidth={350}
+                                    onClick={() => {
+                                        hostProposes(formData);
+                                        setDrawerOpen(false);
+                                        jumpTo(''); //to reset the form for the next event
                                     }}
                                 >
-                                    Yes
+                                    <p>
+                                        Send my proposal to the{' '}
+                                        {preferredArtists.length > 1
+                                            ? preferredArtists.length +
+                                              ' artists'
+                                            : ' artist'}
+                                    </p>
+                                    <SendIcon
+                                        sx={{ marginLeft: '8px!important' }}
+                                    ></SendIcon>
                                 </Button>
-                            </DialogActions>
-                        </Dialog> */}
-                </Grid>,
+                            </Grid>
+                        </>
+                    ) : (
+                        <Grid
+                            container
+                            sx={{
+                                color: 'var(--link-color)',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                border: '1px solid',
+                                padding: '8px',
+                                margin: '16px auto',
+                            }}
+                        >
+                            <Typography component="p">
+                                You must agree to the Porchlight Host Terms and
+                                Conditions before you can propose this concert.
+                            </Typography>
+                        </Grid>
+                    )}{' '}
+                </>,
             ],
             [
                 //Event Details as an artist will see it

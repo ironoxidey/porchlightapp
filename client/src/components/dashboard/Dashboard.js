@@ -360,6 +360,23 @@ const Dashboard = ({
                         user.role &&
                         user.role.indexOf('HOST') != -1 && (
                             <>
+                                {' '}
+                                <Grid
+                                    item
+                                    sx={{
+                                        margin: '8px auto',
+                                    }}
+                                >
+                                    <a
+                                        target="_blank"
+                                        href="https://docs.google.com/document/d/10jINNrRtF1UCXpXnNS21b2riUUJAfnTBDfPG61bZSsk/edit?usp=sharing"
+                                    >
+                                        <Button btnwidth="250" className="">
+                                            <MenuBookTwoToneIcon /> Hosting
+                                            Guide
+                                        </Button>
+                                    </a>
+                                </Grid>
                                 <Grid item container className="hostStuff">
                                     <Grid
                                         item
@@ -766,9 +783,7 @@ const Dashboard = ({
                             )}
                             {/* End myHostEvents */}
                             {Array.isArray(user.role) &&
-                                user.role.indexOf('HOST') != -1 &&
-                                (user.role.indexOf('ADMIN') != -1 ||
-                                    user.role.indexOf('TESTING') != -1) && (
+                                user.role.indexOf('HOST') != -1 && (
                                     <Grid item sx={{ margin: '0 auto' }}>
                                         <AddHostEvent></AddHostEvent>
                                     </Grid>

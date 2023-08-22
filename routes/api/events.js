@@ -1708,11 +1708,11 @@ router.get('/edit', [auth], async (req, res) => {
     ) {
         //must have ADMIN or BOOKING role to get into all of this!
         let updatedEvents = 0;
-        let yesterDate = new Date();
-        yesterDate.setDate(yesterDate.getDate() - 1);
+        // let yesterDate = new Date();
+        // yesterDate.setDate(yesterDate.getDate() - 1);
         try {
             const events = await Event.find({
-                bookingWhen: { $gt: yesterDate }, //if we ask for $gte: new Date(), some of the events today won't show up because the time in the event's bookingWhen isn't the start time
+                // bookingWhen: { $gt: yesterDate }, //if we ask for $gte: new Date(), some of the events today won't show up because the time in the event's bookingWhen isn't the start time
             })
                 .populate('artist')
                 .populate('hostsInReach.host')

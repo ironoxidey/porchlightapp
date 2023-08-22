@@ -10,9 +10,16 @@ module.exports = async () => {
     let updatedEvents = 0;
     let yesterDate = new Date();
     yesterDate.setDate(yesterDate.getDate() - 1);
+    let dayBeforeYesterday = new Date();
+    dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
     try {
         let emailHostsCollection = [];
         let hostsToEmailArray = []; //for checking to see if we're already emailing a host, in order to add multiple events to a hosts email digest
+
+        const deletePastEvents = await Event.deleteMany({
+            bookingWhen: { $lt: dayBeforeYesterday }, //if we ask for $gte: new Date(), some of the events today won't show up because the time in the event's bookingWhen isn't the start time
+            status: 'PENDING', //only pull PENDING events
+        });
 
         const events = await Event.find({
             bookingWhen: { $gt: yesterDate }, //if we ask for $gte: new Date(), some of the events today won't show up because the time in the event's bookingWhen isn't the start time
@@ -304,10 +311,10 @@ module.exports = async () => {
                 // );
                 //res.json(emailHostsCollection);
             });
-            if (emailHostsCollection.length === 0) {
-                console.log("There aren't any hosts to email at this time.");
-                // res.json("There aren't any hosts to email at this time.");
-            }
+            // if (emailHostsCollection.length === 0) {
+            //     console.log("There aren't any hosts to email at this time.");
+            //     // res.json("There aren't any hosts to email at this time.");
+            // }
         });
     } catch (err) {
         console.error(err.message);

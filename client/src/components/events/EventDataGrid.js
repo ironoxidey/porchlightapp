@@ -503,21 +503,21 @@ const EventDataGrid = ({
             filterable: false,
             renderCell: renderProfileCell,
         },
-        {
-            field: 'agreeToPayAdminFee',
-            headerName: 'Agreed to Fee',
-            width: 75,
-            sortable: true,
-            renderCell: (params) => {
-                if (params.value === true) {
-                    return <ThumbUpIcon></ThumbUpIcon>;
-                } else {
-                    return (
-                        <ThumbDownAltOutlinedIcon></ThumbDownAltOutlinedIcon>
-                    );
-                }
-            },
-        },
+        // {
+        //     field: 'agreeToPayAdminFee',
+        //     headerName: 'Agreed to Fee',
+        //     width: 75,
+        //     sortable: true,
+        //     renderCell: (params) => {
+        //         if (params.value === true) {
+        //             return <ThumbUpIcon></ThumbUpIcon>;
+        //         } else {
+        //             return (
+        //                 <ThumbDownAltOutlinedIcon></ThumbDownAltOutlinedIcon>
+        //             );
+        //         }
+        //     },
+        // },
         // { field: 'name', headerName: 'Name', width: 180 },
         // {
         //     field: 'email',
