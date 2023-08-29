@@ -30,7 +30,7 @@
         "lodash": "^4.17.21",
         "luxon": "^2.4.0",
         "md5": "^2.3.0",
-        "mongoose": "^6.0.9",
+        "mongoose": "^6.11.3",
         "node-cron": "^3.0.2",
         "node-fetch": "^2.6.7",
         "react-scripts": "^5.0.1",
