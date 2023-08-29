@@ -196,15 +196,24 @@ const HostDashboardEventCard = ({
                     {thisEvent.artist &&
                         thisEvent.artist.squareImg &&
                         thisEvent.artist.slug && (
-                            <Link
-                                to={'/artists/' + thisEvent.artist.slug}
-                                className={
-                                    `feoyartist` +
-                                    thisEvent.artist._id +
-                                    thisEvent._id
-                                }
+                            <Grid
+                                className="feoyAvatarGridItem"
+                                item
+                                sx={{
+                                    // width: '100%',
+                                    flexBasis: { xs: '80px', sm: '130px' },
+                                    flexShrink: '3',
+                                    flexGrow: '2',
+                                }}
                             >
-                                <Grid item sx={{ width: '100%' }}>
+                                <Link
+                                    to={'/artists/' + thisEvent.artist.slug}
+                                    className={
+                                        `feoyartist` +
+                                        thisEvent.artist._id +
+                                        thisEvent._id
+                                    }
+                                >
                                     <Tooltip
                                         title={
                                             thisEvent.artist &&
@@ -226,9 +235,11 @@ const HostDashboardEventCard = ({
                                         <Box
                                             className="squareImgInACircle"
                                             sx={{
-                                                height: '130px',
-                                                width: '130px',
+                                                height: 'auto',
+                                                width: 'auto',
+                                                // maxHeight: { xs: '100px', sm: '130px' },
                                                 maxHeight: '130px',
+                                                // maxWidth: { xs: '100px', sm: '130px' },
                                                 maxWidth: '130px',
                                                 borderRadius: '50%',
                                                 overflow: 'hidden',
@@ -244,11 +255,12 @@ const HostDashboardEventCard = ({
                                                     ? '1px solid var(--link-color)'
                                                     : '1px solid var(--primary-color)',
                                                 margin: '0 8px 0 0',
+                                                aspectRatio: '1 / 1',
                                             }}
                                         ></Box>
                                     </Tooltip>
-                                </Grid>
-                            </Link>
+                                </Link>
+                            </Grid>
                         )}
 
                     {thisEvent.preferredArtists &&
@@ -321,7 +333,18 @@ const HostDashboardEventCard = ({
                                                     thisEvent._id
                                                 }
                                             >
-                                                <Grid item>
+                                                <Grid
+                                                    item
+                                                    sx={{
+                                                        // width: '100%',
+                                                        flexBasis: {
+                                                            xs: '80px',
+                                                            sm: '130px',
+                                                        },
+                                                        flexShrink: '3',
+                                                        flexGrow: '2',
+                                                    }}
+                                                >
                                                     <Box
                                                         className="squareImgInACircle"
                                                         sx={{
@@ -363,6 +386,8 @@ const HostDashboardEventCard = ({
                                                                 'center',
                                                             alignItems:
                                                                 'center',
+                                                            aspectRatio:
+                                                                '1 / 1',
                                                         }}
                                                     >
                                                         {!confirmed && (
@@ -401,16 +426,22 @@ const HostDashboardEventCard = ({
                         direction="row"
                         alignItems="center"
                         className="dateLocationForBooking"
-                        xs={
-                            thisEvent.artist && thisEvent.artist.squareImg
-                                ? 12 //8
-                                : 12
-                        }
-                        sm={
-                            thisEvent.artist && thisEvent.artist.squareImg
-                                ? 8
-                                : 8
-                        }
+                        sx={{
+                            flexBasis: thisEvent.confirmedHost
+                                ? `calc(100% - 150px - 25px)`
+                                : `calc(100% - 150px)`,
+                            flexGrow: '1',
+                        }}
+                        // xs={
+                        //     thisEvent.artist && thisEvent.artist.squareImg
+                        //         ? 8
+                        //         : 12
+                        // }
+                        // sm={
+                        //     thisEvent.artist && thisEvent.artist.squareImg
+                        //         ? 8
+                        //         : 8
+                        // }
                     >
                         <Grid item container>
                             <Link
@@ -426,78 +457,92 @@ const HostDashboardEventCard = ({
                             </Link>
                         </Grid>
                         <Grid
+                            container
                             item
-                            sx={
-                                {
-                                    // width:
-                                    //     thisEvent.artist &&
-                                    //     thisEvent.artist.squareImg
-                                    //         ? 'auto'
-                                    //         : '55px',
-                                }
-                            }
-                        >
-                            <StackDateforDisplay
-                                date={thisEvent.bookingWhen}
-                            ></StackDateforDisplay>
-                        </Grid>
-                        <Grid
-                            item
-                            xs={
-                                thisEvent.artist && thisEvent.artist.squareImg
-                                    ? 8
-                                    : 9
-                            }
+                            className="feoyDateLocation"
                             sx={{
-                                marginLeft: '8px',
+                                flexWrap: 'nowrap',
                             }}
                         >
                             <Grid
                                 item
-                                sx={{
-                                    fontSize: '1.5em',
-                                    // marginLeft: '8px',
-                                    lineHeight: '1.5',
-                                }}
-                                xs={12}
+                                sx={
+                                    {
+                                        // width:
+                                        //     thisEvent.artist &&
+                                        //     thisEvent.artist.squareImg
+                                        //         ? 'auto'
+                                        //         : '55px',
+                                    }
+                                }
                             >
-                                {thisEvent.bookingWhere.city +
-                                    ', ' +
-                                    thisEvent.bookingWhere.state}
+                                <StackDateforDisplay
+                                    date={thisEvent.bookingWhen}
+                                ></StackDateforDisplay>
                             </Grid>
-                            {thisEvent.createdBy === 'HOST' &&
-                                thisEvent.status === 'DRAFT' && (
-                                    <Grid item container>
-                                        <EditHostEvent
-                                            theEvent={thisEvent}
-                                        ></EditHostEvent>
-                                    </Grid>
-                                )}
-                            {thisEvent.createdBy === 'HOST' &&
-                                thisEvent.status != 'DRAFT' && (
+                            <Grid
+                                item
+                                xs={
+                                    thisEvent.artist &&
+                                    thisEvent.artist.squareImg
+                                        ? 8
+                                        : 9
+                                }
+                                sx={{
+                                    marginLeft: '8px',
+                                }}
+                            >
+                                <Grid
+                                    item
+                                    sx={{
+                                        fontSize: { xs: '1.2em', sm: '1.5em' },
+                                        // marginLeft: '8px',
+                                        lineHeight: '1.5',
+                                    }}
+                                    xs={12}
+                                >
+                                    {thisEvent.bookingWhere.city +
+                                        ', ' +
+                                        thisEvent.bookingWhere.state}
+                                </Grid>
+                                {thisEvent.createdBy === 'HOST' &&
+                                    thisEvent.status === 'DRAFT' && (
+                                        <Grid item container>
+                                            <EditHostEvent
+                                                theEvent={thisEvent}
+                                            ></EditHostEvent>
+                                        </Grid>
+                                    )}
+                                {thisEvent.createdBy === 'HOST' &&
+                                    thisEvent.status != 'DRAFT' && (
+                                        <Grid item container>
+                                            <EventHostDialog
+                                                theHost={host.me}
+                                                theEvent={thisEvent}
+                                                theOffer={
+                                                    thisEvent.offersFromHosts[0]
+                                                }
+                                            >
+                                                <Button btnwidth="200">
+                                                    CONCERT DETAILS
+                                                </Button>
+                                            </EventHostDialog>
+                                        </Grid>
+                                    )}
+                                {thisEvent.createdBy === 'ARTIST' && (
                                     <Grid item container>
                                         <EventHostDialog
                                             theHost={host.me}
                                             theEvent={thisEvent}
-                                            theOffer={
-                                                thisEvent.offersFromHosts[0]
-                                            }
+                                            //theOffer={hostOffer}
                                         >
-                                            <Button>CONCERT DETAILS</Button>
+                                            <Button btnwidth="200">
+                                                CONCERT DETAILS
+                                            </Button>
                                         </EventHostDialog>
                                     </Grid>
                                 )}
-                            {thisEvent.createdBy === 'ARTIST' && (
-                                <Grid item container>
-                                    <EventHostDialog
-                                        theHost={host.me}
-                                        theEvent={thisEvent}
-                                        //theOffer={hostOffer}
-                                    >
-                                        <Button>CONCERT DETAILS</Button>
-                                    </EventHostDialog>
-                                </Grid>
-                            )}
+                            </Grid>
                         </Grid>
                     </Grid>
                     {confirmedMy(thisEvent) ? (
@@ -525,7 +570,11 @@ const HostDashboardEventCard = ({
                                 item
                                 alignContent="center"
                                 container
-                                xs={0.5}
+                                sx={{
+                                    flexBasis: '25px',
+                                    flexGrow: '0',
+                                    marginLeft: '8px',
+                                }}
                                 style={{ zIndex: '5' }}
                             >
                                 <Tooltip
@@ -612,8 +661,13 @@ const HostDashboardEventCard = ({
                                             thisEvent.preferredArtists.length >
                                             1
                                                 ? 'the artists'
-                                                : thisEvent.preferredArtists[0]
+                                                : thisEvent
+                                                      .preferredArtists[0] &&
+                                                  thisEvent.preferredArtists[0]
                                                       .stageName
+                                                ? thisEvent.preferredArtists[0]
+                                                      .stageName
+                                                : 'the artist'
                                         }, yet.`}</div>
                                     </>
                                 }

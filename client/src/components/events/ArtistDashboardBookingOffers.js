@@ -233,6 +233,7 @@ const ArtistDashboardBookingOffers = ({
                                     justifyContent: 'center',
                                     position: 'relative',
                                     zIndex: '0',
+                                    aspectRatio: '1 / 1',
                                 }}
                                 onClick={() => {
                                     //thisEvent.offeringHost = thisOffer.host;

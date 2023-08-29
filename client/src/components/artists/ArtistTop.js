@@ -154,6 +154,7 @@ const ArtistTop = ({ artist, user, isAuthenticated, me }) => {
                                         display: 'flex',
                                         justifyContent: 'center',
                                         alignItems: 'end',
+                                        aspectRatio: '1 / 1',
                                     }}
                                 >
                                     {artist.email && (

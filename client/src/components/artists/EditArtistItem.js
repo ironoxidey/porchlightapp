@@ -74,6 +74,7 @@ What is it like there this time of year?`
                         }`,
                         margin: '20px auto',
                         transition: 'all 400ms ease-in-out',
+                        aspectRatio: '1 / 1',
                     }}
                 ></Box>
                 <Link

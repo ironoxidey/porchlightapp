@@ -106,7 +106,8 @@ const ArtistDashboardEventCard = ({
                     padding: '16px',
                     margin: '4px',
                     color: 'var(--light-color)',
-                    justifyContent: 'space-between',
+                    // justifyContent: 'space-between',
+                    justifyContent: 'flex-start',
                     flexWrap: 'nowrap',
                     // border:
                     //     thisEvent._id === eventEditDrawer
@@ -164,6 +165,7 @@ const ArtistDashboardEventCard = ({
                     direction="row"
                     alignItems="center"
                     className="dateLocationForBookingWrapper"
+                    // sx={{ flexWrap: 'nowrap' }}
                     xs={12}
                 >
                     {thisEvent.createdBy === 'HOST' &&
@@ -172,13 +174,24 @@ const ArtistDashboardEventCard = ({
                         thisEvent.offersFromHosts[0] &&
                         thisEvent.offersFromHosts[0].host &&
                         thisEvent.offersFromHosts[0].host.profileImg && (
-                            <Grid item>
+                            <Grid
+                                className="feoyAvatarGridItem"
+                                item
+                                sx={{
+                                    // width: '100%',
+                                    flexBasis: { xs: '80px', sm: '130px' },
+                                    flexShrink: '3',
+                                    flexGrow: '2',
+                                }}
+                            >
                                 <Box
                                     className="squareImgInACircle"
                                     sx={{
-                                        height: '130px',
-                                        width: '130px',
+                                        height: 'auto',
+                                        width: 'auto',
+                                        // maxHeight: { xs: '100px', sm: '130px' },
                                         maxHeight: '130px',
+                                        // maxWidth: { xs: '100px', sm: '130px' },
                                         maxWidth: '130px',
                                         borderRadius: '50%',
                                         overflow: 'hidden',
@@ -189,6 +202,7 @@ const ArtistDashboardEventCard = ({
                                         backgroundClip: 'content-box',
                                         border: '1px solid var(--primary-color)',
                                         margin: '0 8px 0 0',
+                                        aspectRatio: '1 / 1',
                                     }}
                                 ></Box>
                             </Grid>
@@ -200,8 +214,15 @@ const ArtistDashboardEventCard = ({
                         direction="row"
                         alignItems="center"
                         className="dateLocationForBooking"
-                        xs={12}
-                        sm={8}
+                        sx={{
+                            flexBasis: {
+                                xs: 'calc(100% - 80px)',
+                                sm: 'calc(100% - 130px)',
+                            },
+                            flexGrow: '1',
+                        }}
+                        // xs={8}
+                        // sm={8}
                     >
                         {thisEvent.createdBy === 'HOST' &&
                             thisEvent.offersFromHosts &&
@@ -209,7 +230,7 @@ const ArtistDashboardEventCard = ({
                             thisEvent.offersFromHosts[0] &&
                             thisEvent.offersFromHosts[0].host &&
                             thisEvent.offersFromHosts[0].host.profileImg && (
-                                <Grid item container>
+                                <Grid item container className="hostName">
                                     <Typography component="h2">
                                         {
                                             thisEvent.offersFromHosts[0].host
@@ -223,70 +244,95 @@ const ArtistDashboardEventCard = ({
                                 </Grid>
                             )}
                         <Grid
+                            container
                             item
-                            sx={
-                                {
-                                    // width: '55px',
-                                }
-                            }
-                        >
-                            <StackDateforDisplay
-                                date={thisEvent.bookingWhen}
-                            ></StackDateforDisplay>
-                        </Grid>
-                        <Grid
-                            item
-                            xs={9}
+                            direction="row"
+                            alignItems="center"
+                            className="feoyDateLocation"
                             sx={{
-                                marginLeft: '8px',
+                                flexWrap: 'nowrap',
                             }}
+                            // xs={8}
+                            // sm={8}
                         >
                             <Grid
                                 item
+                                sx={
+                                    {
+                                        // width: '55px',
+                                    }
+                                }
+                            >
+                                <StackDateforDisplay
+                                    date={thisEvent.bookingWhen}
+                                ></StackDateforDisplay>
+                            </Grid>
+                            <Grid
+                                item
+                                xs={9}
                                 sx={{
-                                    fontSize: '1.5em',
-                                    // marginLeft: '8px',
-                                    lineHeight: '1.5',
+                                    marginLeft: '8px',
                                 }}
                             >
-                                {thisEvent.bookingWhere.city +
-                                    ', ' +
-                                    thisEvent.bookingWhere.state}
+                                <Grid
+                                    item
+                                    sx={{
+                                        fontSize: { xs: '1.2em', sm: '1.5em' },
+                                        // marginLeft: '8px',
+                                        lineHeight: '1.5',
+                                    }}
+                                >
+                                    {thisEvent.bookingWhere.city +
+                                        ', ' +
+                                        thisEvent.bookingWhere.state}
+                                </Grid>
+                                {thisEvent.createdBy === 'ARTIST' &&
+                                thisEvent.offersFromHosts &&
+                                thisEvent.offersFromHosts.length > 0 ? (
+                                    <Grid
+                                        item
+                                        container
+                                        className="artistOffersFromHosts"
+                                    >
+                                        {thisEvent.offersFromHosts
+                                            .filter((e) => e) //.filter(e => e) to remove any null values
+                                            .map((thisOffer, idx) => (
+                                                <ArtistDashboardBookingOffers
+                                                    thisOffer={thisOffer}
+                                                    thisEvent={thisEvent}
+                                                ></ArtistDashboardBookingOffers>
+                                            ))}
+                                    </Grid>
+                                ) : thisEvent.createdBy === 'ARTIST' ? (
+                                    <Grid
+                                        item
+                                        container
+                                        className="artistOffersFromHosts"
+                                    >
+                                        <EditArtistEvent
+                                            theEvent={thisEvent}
+                                        ></EditArtistEvent>
+                                    </Grid>
+                                ) : thisEvent.createdBy === 'HOST' &&
+                                  thisEvent.confirmedHost ? (
+                                    <Grid
+                                        item
+                                        container
+                                        className="artistOffersFromHosts"
+                                    >
+                                        {thisEvent.offersFromHosts
+                                            .filter((e) => e) //.filter(e => e) to remove any null values
+                                            .map((thisOffer, idx) => (
+                                                <ArtistDashboardBookingOffers
+                                                    thisOffer={thisOffer}
+                                                    thisEvent={thisEvent}
+                                                ></ArtistDashboardBookingOffers>
+                                            ))}
+                                    </Grid>
+                                ) : (
+                                    <></>
+                                )}
                             </Grid>
-                            {thisEvent.createdBy === 'ARTIST' &&
-                            thisEvent.offersFromHosts &&
-                            thisEvent.offersFromHosts.length > 0 ? (
-                                <Grid item container>
-                                    {thisEvent.offersFromHosts
-                                        .filter((e) => e) //.filter(e => e) to remove any null values
-                                        .map((thisOffer, idx) => (
-                                            <ArtistDashboardBookingOffers
-                                                thisOffer={thisOffer}
-                                                thisEvent={thisEvent}
-                                            ></ArtistDashboardBookingOffers>
-                                        ))}
-                                </Grid>
-                            ) : thisEvent.createdBy === 'ARTIST' ? (
-                                <Grid item container>
-                                    <EditArtistEvent
-                                        theEvent={thisEvent}
-                                    ></EditArtistEvent>
-                                </Grid>
-                            ) : thisEvent.createdBy === 'HOST' &&
-                              thisEvent.confirmedHost ? (
-                                <Grid item container className="">
-                                    {thisEvent.offersFromHosts
-                                        .filter((e) => e) //.filter(e => e) to remove any null values
-                                        .map((thisOffer, idx) => (
-                                            <ArtistDashboardBookingOffers
-                                                thisOffer={thisOffer}
-                                                thisEvent={thisEvent}
-                                            ></ArtistDashboardBookingOffers>
-                                        ))}
-                                </Grid>
-                            ) : (
-                                <></>
-                            )}
                         </Grid>
                     </Grid>
                 </Grid>

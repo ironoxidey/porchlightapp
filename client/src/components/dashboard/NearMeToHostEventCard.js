@@ -325,13 +325,14 @@ const NearMeToHostEventCard = ({
             <Grid
                 container
                 item
-                className="bookingWhen"
+                className="bookingWhen dateLocationForBookingWrapper"
                 key={`bookingWhen${idx}`}
                 id={thisEvent._id}
                 direction="row"
                 sm={5.5}
                 xs={12}
                 ref={dashboardEventCardRef}
+                alignItems="center"
                 sx={{
                     backgroundColor: 'rgba(0,0,0,0.35)',
                     '&:hover': {},
@@ -370,14 +371,25 @@ const NearMeToHostEventCard = ({
                         </Typography>
                     </Box>
                 )}
-                <Grid item>
+                <Grid
+                    item
+                    className="feoyAvatarGridItem"
+                    sx={{
+                        // width: '100%',
+                        flexBasis: { xs: '80px', sm: '130px' },
+                        flexShrink: '3',
+                        flexGrow: '2',
+                    }}
+                >
                     <Link to={'/artists/' + thisEvent.artist.slug}>
                         <Box
                             className="squareImgInACircle"
                             sx={{
-                                height: '130px',
-                                width: '130px',
+                                height: 'auto',
+                                width: 'auto',
+                                // maxHeight: { xs: '100px', sm: '130px' },
                                 maxHeight: '130px',
+                                // maxWidth: { xs: '100px', sm: '130px' },
                                 maxWidth: '130px',
                                 borderRadius: '50%',
                                 overflow: 'hidden',
@@ -388,6 +400,7 @@ const NearMeToHostEventCard = ({
                                 backgroundClip: 'content-box',
                                 border: '1px solid var(--primary-color)',
                                 margin: '0 8px 0 0',
+                                aspectRatio: '1 / 1',
                             }}
                         ></Box>
                     </Link>
@@ -399,8 +412,15 @@ const NearMeToHostEventCard = ({
                     direction="row"
                     alignItems="center"
                     className="dateLocationForBooking"
-                    md={8}
-                    xs={12}
+                    sx={{
+                        flexBasis: {
+                            xs: 'calc(100% - 80px)',
+                            sm: 'calc(100% - 130px)',
+                        },
+                        flexGrow: '1',
+                    }}
+                    // md={8}
+                    // xs={12}
                 >
                     <Grid
                         item
@@ -448,7 +468,7 @@ const NearMeToHostEventCard = ({
                         <Grid
                             item
                             sx={{
-                                fontSize: '1.5em',
+                                fontSize: { xs: '1.2em', sm: '1.5em' },
                                 marginLeft: '8px',
                                 lineHeight: '1.5',
                             }}
@@ -465,6 +485,7 @@ const NearMeToHostEventCard = ({
                             }}
                         >
                             <Button
+                                btnwidth="200"
                                 onClick={() => {
                                     handleBookingDetailsBtnClick(thisEvent);
                                 }}

@@ -1169,7 +1169,11 @@ const HostEventForm = ({
                         <FormControlLabel
                             value="yes"
                             control={<Radio />}
-                            label={`Yes, I've got all the seating needed for at least ${hostMe.maxNumAttendees} people.`}
+                            label={`Yes, I've got all the seating needed ${
+                                hostMe.maxNumAttendees > 0
+                                    ? `for at least ${hostMe.maxNumAttendees} people.`
+                                    : '.'
+                            }`}
                         />
                         <FormControlLabel
                             value="no"

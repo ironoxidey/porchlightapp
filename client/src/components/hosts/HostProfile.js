@@ -227,6 +227,7 @@ const HostProfile = ({
                                             display: 'flex',
                                             justifyContent: 'center',
                                             alignItems: 'end',
+                                            aspectRatio: '1 / 1',
                                         }}
                                     >
                                         {theEvent &&

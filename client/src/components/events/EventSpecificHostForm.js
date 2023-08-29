@@ -719,7 +719,11 @@ const EventSpecificHostForm = ({
                         <FormControlLabel
                             value="yes"
                             control={<Radio />}
-                            label={`Yes, I've got all the seating needed for at least ${host.me.maxNumAttendees} people.`}
+                            label={`Yes, I've got all the seating needed ${
+                                host.me.maxNumAttendees > 0
+                                    ? `for at least ${host.me.maxNumAttendees} people.`
+                                    : '.'
+                            }`}
                         />
                         <FormControlLabel
                             value="no"

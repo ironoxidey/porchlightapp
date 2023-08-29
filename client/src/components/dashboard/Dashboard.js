@@ -430,7 +430,7 @@ const Dashboard = ({
                             className="middle"
                             md={6}
                             xs={12}
-                            sx={{ padding: '0 20px' }}
+                            sx={{ padding: { xs: '0', md: '0 20px' } }}
                         >
                             <Grid
                                 item
@@ -444,17 +444,13 @@ const Dashboard = ({
                                     myArtistEvents.length > 0 &&
                                     myArtistEvents.filter(
                                         (myEvent) =>
-                                            (
-                                                (!myEvent.confirmedHost ||
-                                                    (myEvent.createdBy ===
-                                                        'HOST' &&
-                                                        myEvent.status ===
-                                                            'PENDING')) &&
-                                                myEvent.offersFromHosts &&
-                                                myEvent.offersFromHosts.length >
-                                                    0
-                                            ).length > 0
-                                    ) && (
+                                            (!myEvent.confirmedHost ||
+                                                (myEvent.createdBy === 'HOST' &&
+                                                    myEvent.status ===
+                                                        'PENDING')) &&
+                                            myEvent.offersFromHosts &&
+                                            myEvent.offersFromHosts.length > 0
+                                    ).length > 0 && (
                                         <Grid
                                             container
                                             direction="column"
@@ -723,19 +719,19 @@ const Dashboard = ({
                 {app.profileHat === 'HOST' &&
                     user &&
                     user.role &&
-                    user.role.indexOf('HOST') != -1 &&
-                    ((myHostEvents && myHostEvents.length > 0) ||
-                        //(user.role.indexOf('ADMIN') > -1 ||
-                        //user.role.indexOf('BOOKING') > -1 ||
-                        //user.role.indexOf('TESTING') > -1) &&
-                        (nearMeToHost && nearMeToHost.length > 0)) && (
+                    user.role.indexOf('HOST') != -1 && (
+                        // ((myHostEvents && myHostEvents.length > 0) ||
+                        //     //(user.role.indexOf('ADMIN') > -1 ||
+                        //     //user.role.indexOf('BOOKING') > -1 ||
+                        //     //user.role.indexOf('TESTING') > -1) &&
+                        //     (nearMeToHost && nearMeToHost.length > 0)) &&
                         <Grid
                             item
                             container
                             direction="column"
                             className="middle"
                             md={6}
-                            sx={{ padding: '0 20px' }}
+                            sx={{ padding: { xs: '0', md: '0 20px' } }}
                         >
                             {myHostEvents && myHostEvents.length > 0 && (
                                 <Grid

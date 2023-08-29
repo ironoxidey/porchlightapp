@@ -397,6 +397,8 @@ const EventDataGrid = ({
                                                                 'center',
                                                             alignItems:
                                                                 'center',
+                                                            aspectRatio:
+                                                                '1 / 1',
                                                         }}
                                                     >
                                                         {!confirmed && (
