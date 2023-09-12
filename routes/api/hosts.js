@@ -487,7 +487,11 @@ router.post('/termsAgreement', [auth], async (req, res) => {
 // @access   Public
 router.get('/', async (req, res) => {
     try {
-        const hosts = await Host.find().select(['city', 'state', 'zipCode']);
+        const hosts = await Host.find({ active: true }).select([
+            'city',
+            'state',
+            'zipCode',
+        ]);
         res.json(hosts);
     } catch (err) {
         console.error(err.message);

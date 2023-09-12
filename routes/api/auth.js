@@ -9,6 +9,7 @@ const { check, validationResult } = require('express-validator');
 
 const User = require('../../models/User');
 const Artist = require('../../models/Artist');
+const Host = require('../../models/Host');
 
 // @route   GET api/auth
 // @desc    Test Route
@@ -56,9 +57,10 @@ router.post(
                     .json({ errors: [{ msg: 'Invalid Credentials' }] });
             }
 
-            //Once they are authenicated
+            //Once they are authenticated
 
             let artist = user.artistProfile;
+            let host = user.hostProfile;
             let userUpdates = {
                 lastLogin: new Date(),
                 lastLastLogin: user.lastLogin || user.date,
@@ -71,6 +73,14 @@ router.post(
                 }
             }
             //console.log('artist', artist);
+            if (!host) {
+                //if we don't see a host profile in the returned user, let's check for one in the host profiles and add it
+                host = await Host.findOne({ email }).select('_id');
+                if (host) {
+                    userUpdates.hostProfile = host;
+                }
+            }
+            //console.log('artist', artist);
 
             const payload = {
                 user: {
@@ -79,9 +89,16 @@ router.post(
                     role: user.role,
                     lastLogin: user.lastLogin || new Date(),
                     artistProfile: artist,
+                    hostProfile: host,
                 },
             };
 
+            let updatedHost = await Host.updateOne(
+                { user: user.id },
+                {
+                    $set: userUpdates,
+                }
+            );
             let updatedUser = await User.updateOne(
                 { _id: user.id },
                 {

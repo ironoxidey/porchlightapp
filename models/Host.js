@@ -164,6 +164,9 @@ const HostSchema = new mongoose.Schema(
         lastLogin: {
             type: Date,
         },
+        lastLastLogin: {
+            type: Date,
+        },
     },
     { timestamps: true }
 );

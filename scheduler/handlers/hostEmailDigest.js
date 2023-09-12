@@ -33,6 +33,9 @@ module.exports = async () => {
             .sort({ bookingWhen: -1 }); //sort descending -- latest first, because hosts probably need more time to prepare, so show the most upcoming proposed concerts last
 
         let loopThruEvents = new Promise((resolve, reject) => {
+            // console.log(
+            //     'There are ' + events.length + ' events to loop through.'
+            // );
             events.forEach(async (eventDetails, index, array) => {
                 if (
                     !eventDetails.artistSlug &&
@@ -103,7 +106,15 @@ module.exports = async () => {
                     });
                     //console.log(await hostsInReach);
                     const hostsIDInReach = hostsInReach.map((hostInReach) => {
-                        //console.log('hostInReach._id', hostInReach._id);
+                        // console.log(
+                        //     'Event City: ' +
+                        //         eventDetails.city +
+                        //         ' | Host: ' +
+                        //         hostInReach.firstName +
+                        //         ' ' +
+                        //         hostInReach.lastName
+                        // );
+                        // console.log('hostInReach._id', hostInReach._id);
                         return { host: hostInReach._id };
                     });
 
@@ -116,7 +127,7 @@ module.exports = async () => {
                         { new: true }
                     );
                     if (savedDetails) {
-                        //console.log('savedDetails:', savedDetails);
+                        // console.log('savedDetails:', savedDetails);
                         updatedEvents++;
                     }
                 }
@@ -135,7 +146,8 @@ module.exports = async () => {
                     let hostsInReach = await Host.find({
                         notificationFrequency: { $ne: 0 }, //don't email hosts who've opted out
                         lastLogin: {
-                            $lte: new Date(eventDetails.createdAt),
+                            $not: { $gt: new Date(eventDetails.createdAt) }, //not greater than, so "less than or equal to", but this should also select documents where the lastLogin field doesn't exist yet -- https://www.mongodb.com/docs/manual/reference/operator/query/not/
+                            // $lte: new Date(eventDetails.createdAt),
                         }, //if the host logged in before this event was created, they might not have seen it yet
                         lastEmailed: {
                             // $lte: new Date(eventDetails.createdAt),
@@ -153,9 +165,18 @@ module.exports = async () => {
                             },
                         },
                     });
-                    //console.log(await hostsInReach);
+                    console.log(await hostsInReach);
                     const hostsIDInReach = hostsInReach.map(
                         async (hostInReach) => {
+                            // console.log(
+                            //     'Event City: ' +
+                            //         eventDetails.bookingWhere.city +
+                            //         ' | Host: ' +
+                            //         hostInReach.firstName +
+                            //         ' ' +
+                            //         hostInReach.lastName
+                            // );
+
                             // if (
                             //     hostInReach.notificationFrequency
                             //     //&& hostInReach.lastEmailed
@@ -172,11 +193,15 @@ module.exports = async () => {
                             //     hostInReach.email +
                             //         ' last emailed ' +
                             //         differenceInDays +
-                            //         ' days ago.'
+                            //         ' days ago. notificationFrequency: ' +
+                            //         hostInReach.notificationFrequency || 7
                             // );
                             if (
-                                differenceInDays >=
-                                hostInReach.notificationFrequency
+                                (hostInReach.notificationFrequency && //if the hostInReach has a notificationFrequency and the differenceInDays is greater than or equal to that number
+                                    differenceInDays >=
+                                        hostInReach.notificationFrequency) ||
+                                (!hostInReach.notificationFrequency && //OR if the host has not specified their notificationFrequency, default to 7
+                                    differenceInDays >= 7)
                             ) {
                                 //if it's time to email this host
                                 const theEventDate = new Date(
