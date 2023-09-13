@@ -61,7 +61,7 @@ import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
 import EventDetails from '../events/EventDetails';
-import GoogleMap from '../layout/GoogleMap';
+// import GoogleMap from '../layout/GoogleMap';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -802,9 +802,9 @@ const ArtistEventForm = ({
                         </Grid>
                     </Grid>
 
-                    <Grid item container className="feoyGoogleMap">
+                    {/* <Grid item container className="feoyGoogleMap">
                         <GoogleMap />
-                    </Grid>
+                    </Grid> */}
                 </>
             ),
         ],
