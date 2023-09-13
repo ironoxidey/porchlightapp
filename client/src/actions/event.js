@@ -258,6 +258,7 @@ export const getEventByID = (eventID) => async (dispatch) => {
 export const getEventsNearMeToHost = () => async (dispatch) => {
     try {
         const res = await axios.get(`/api/events/nearMeToHost`);
+        console.log('getEventsNearMeToHost() res', res);
         dispatch({
             type: GET_EVENTS_NEAR_ME_TO_HOST,
             payload: res.data,

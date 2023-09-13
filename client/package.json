@@ -9,6 +9,7 @@
         "@fortawesome/free-brands-svg-icons": "^5.15.4",
         "@fortawesome/free-solid-svg-icons": "^5.15.4",
         "@fortawesome/react-fontawesome": "^0.1.16",
+        "@googlemaps/react-wrapper": "^1.1.35",
         "@mui/icons-material": "^5.2.1",
         "@mui/lab": "^5.0.0-alpha.73",
         "@mui/material": "^5.10.6",

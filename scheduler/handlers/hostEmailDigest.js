@@ -120,9 +120,12 @@ module.exports = async () => {
 
                     let savedDetails = await eventDetails.updateOne(
                         {
-                            hostsInReach: hostsIDInReach,
-                            'latLong.coordinates': geocodedAddress,
-                            geocodedBookingWhere: eventDetails.bookingWhere,
+                            $set: {
+                                //$set added September 13, 20023
+                                hostsInReach: hostsIDInReach,
+                                'latLong.coordinates': geocodedAddress,
+                                geocodedBookingWhere: eventDetails.bookingWhere,
+                            },
                         },
                         { new: true }
                     );
@@ -264,7 +267,10 @@ module.exports = async () => {
                     updatedEvents++;
                     //await eventDetails.save();
                     await eventDetails.updateOne({
-                        hostsInReach: hostsIDInReach,
+                        $set: {
+                            //$set added September 13, 20023
+                            hostsInReach: hostsIDInReach,
+                        },
                     });
                 }
                 if (index === array.length - 1) resolve(); //so that we can return the results

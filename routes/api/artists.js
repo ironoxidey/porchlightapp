@@ -721,12 +721,15 @@ router.post('/updateMe', [auth], async (req, res) => {
                                                 let savedDetails =
                                                     await event.updateOne(
                                                         {
-                                                            hostsInReach:
-                                                                hostsIDInReach,
-                                                            'latLong.coordinates':
-                                                                geocodedAddress,
-                                                            geocodedBookingWhere:
-                                                                event.bookingWhere,
+                                                            $set: {
+                                                                //$set added September 13, 20023
+                                                                hostsInReach:
+                                                                    hostsIDInReach,
+                                                                'latLong.coordinates':
+                                                                    geocodedAddress,
+                                                                geocodedBookingWhere:
+                                                                    event.bookingWhere,
+                                                            },
                                                         },
                                                         { new: true }
                                                     );

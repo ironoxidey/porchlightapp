@@ -235,9 +235,12 @@ router.post('/', [auth], async (req, res) => {
 
                     let savedDetails = await event.updateOne(
                         {
-                            hostsInReach: hostsIDInReach,
-                            'latLong.coordinates': geocodedAddress,
-                            geocodedBookingWhere: event.bookingWhere,
+                            $set: {
+                                //$set added September 13, 20023
+                                hostsInReach: hostsIDInReach,
+                                'latLong.coordinates': geocodedAddress,
+                                geocodedBookingWhere: event.bookingWhere,
+                            },
                         },
                         { new: true }
                     );
@@ -604,9 +607,12 @@ router.post(
 
                         let savedDetails = await event.updateOne(
                             {
-                                hostsInReach: hostsIDInReach,
-                                'latLong.coordinates': geocodedAddress,
-                                geocodedBookingWhere: event.bookingWhere,
+                                $set: {
+                                    //$set added September 13, 20023
+                                    hostsInReach: hostsIDInReach,
+                                    'latLong.coordinates': geocodedAddress,
+                                    geocodedBookingWhere: event.bookingWhere,
+                                },
                             },
                             { new: true }
                         );
@@ -670,7 +676,10 @@ router.post(
 
                         let savedDetails = await event.updateOne(
                             {
-                                hostsInReach: hostsIDInReach,
+                                $set: {
+                                    //$set added September 13, 20023
+                                    hostsInReach: hostsIDInReach,
+                                },
                             },
                             { new: true }
                         );
@@ -1348,6 +1357,7 @@ router.get('/nearMeToHost', auth, async (req, res) => {
         const thisHost = await Host.findOne({
             email: req.user.email,
         });
+        // console.log('thisHost._id', thisHost._id);
         // const eventsNearMeToHost = await Event.find({
         //     hostsInReach: { $elemMatch: { host: thisHost._id } },
         //     status: 'PENDING',
@@ -1363,7 +1373,7 @@ router.get('/nearMeToHost', auth, async (req, res) => {
             //     },
             // },
             'hostsInReach.host': thisHost._id,
-            offersFromHosts: { $not: { $elemMatch: { host: thisHost._id } } },
+            offersFromHosts: { $not: { $elemMatch: { host: thisHost._id } } }, //if thisHost has made an offer, don't return it as an event to host
             status: 'PENDING',
             createdBy: { $ne: 'HOST' }, // $ne means "Not Equal" — don't show events created by HOSTs to other HOSTs as nearMeToHost events — I would've singled out events that are created by ARTISTs, but not all the events had a "createdBy" field, because I added it WAY later on
             bookingWhen: { $gt: new Date() }, // $gt means "Greater Than"
@@ -1385,7 +1395,11 @@ router.get('/nearMeToHost', auth, async (req, res) => {
                 msg: 'There are no events associated with ' + req.user.email,
             });
         }
-        //console.log('eventsNearMeToHost ', eventsNearMeToHost);
+        // console.log(
+        //     'There are ' +
+        //         eventsNearMeToHost.length +
+        //         ' events to host in your area.'
+        // );
         res.json(eventsNearMeToHost);
     } catch (err) {
         console.error(err.message);
@@ -1806,9 +1820,12 @@ router.get('/edit', [auth], async (req, res) => {
                     //let savedDetails = await eventDetails.save();
                     let savedDetails = await eventDetails.updateOne(
                         {
-                            hostsInReach: hostsIDInReach,
-                            'latLong.coordinates': geocodedAddress,
-                            geocodedBookingWhere: eventDetails.bookingWhere,
+                            $set: {
+                                //$set added September 13, 20023
+                                hostsInReach: hostsIDInReach,
+                                'latLong.coordinates': geocodedAddress,
+                                geocodedBookingWhere: eventDetails.bookingWhere,
+                            },
                         },
                         { new: true }
                     );
@@ -1852,7 +1869,10 @@ router.get('/edit', [auth], async (req, res) => {
                     updatedEvents++;
                     //await eventDetails.save();
                     await eventDetails.updateOne({
-                        hostsInReach: hostsIDInReach,
+                        $set: {
+                            //$set added September 13, 20023
+                            hostsInReach: hostsIDInReach,
+                        },
                     });
                 }
             });

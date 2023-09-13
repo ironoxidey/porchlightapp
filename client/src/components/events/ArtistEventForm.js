@@ -30,7 +30,6 @@ import {
     withStyles,
     Typography,
 } from '@mui/material';
-//import ReactPhoneInput from 'react-phone-input-mui';
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
 
@@ -62,6 +61,7 @@ import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
 import EventDetails from '../events/EventDetails';
+import GoogleMap from '../layout/GoogleMap';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -663,26 +663,27 @@ const ArtistEventForm = ({
                 {prettifyDate(bookingWhen)}:
             </FormLabel>,
             bookingWhere && (
-                <Grid
-                    className="whenBooking"
-                    container
-                    direction="row"
-                    justifyContent="space-around"
-                    alignItems="start"
-                    spacing={2}
-                    sx={{
-                        // borderColor: 'primary.dark',
-                        // borderWidth: '2px',
-                        // borderStyle: 'solid',
-                        backgroundColor: 'rgba(0,0,0,0.15)',
-                        '&:hover': {},
-                        border: `1px var(--light-color) solid`,
-                        padding: '0 10px 10px',
-                        margin: '0px auto',
-                        width: '100%',
-                    }}
-                >
-                    {/* <Grid item xs={12} md={3}>
+                <>
+                    <Grid
+                        className="whenBooking"
+                        container
+                        direction="row"
+                        justifyContent="space-around"
+                        alignItems="start"
+                        spacing={2}
+                        sx={{
+                            // borderColor: 'primary.dark',
+                            // borderWidth: '2px',
+                            // borderStyle: 'solid',
+                            backgroundColor: 'rgba(0,0,0,0.15)',
+                            '&:hover': {},
+                            border: `1px var(--light-color) solid`,
+                            padding: '0 10px 10px',
+                            margin: '0px auto',
+                            width: '100%',
+                        }}
+                    >
+                        {/* <Grid item xs={12} md={3}>
 									<TextField
 										variant='standard'
 										name='bookingWhenWhere'
@@ -697,103 +698,114 @@ const ArtistEventForm = ({
 										sx={{ width: '100%' }}
 									/>
 								</Grid> */}
-                    <Grid item xs={12} md={12}>
-                        <Autocomplete
-                            id="bookingWhere"
-                            //value={whenBooking && whenBooking.where || whenWhereOrig[idx-1] && whenWhereOrig[idx-1].where || null}
-                            value={(bookingWhere.city && bookingWhere) || null}
-                            options={hosts}
-                            disableClearable
-                            groupBy={(option) => option.fullState}
-                            getOptionLabel={(option) =>
-                                option.city + ', ' + option.state || ''
-                            }
-                            //getOptionSelected={(option, value) => option.city === value.city}
-                            isOptionEqualToValue={(option, value) =>
-                                option.city === value.city &&
-                                option.state === value.state
-                            }
-                            onChange={(e, value) => {
-                                onAutocompleteTagChange(
-                                    e,
-                                    'bookingWhere',
-                                    value
-                                );
+                        <Grid item xs={12} md={12}>
+                            <Autocomplete
+                                id="bookingWhere"
+                                //value={whenBooking && whenBooking.where || whenWhereOrig[idx-1] && whenWhereOrig[idx-1].where || null}
+                                value={
+                                    (bookingWhere.city && bookingWhere) || null
+                                }
+                                options={hosts}
+                                disableClearable
+                                groupBy={(option) => option.fullState}
+                                getOptionLabel={(option) =>
+                                    option.city + ', ' + option.state || ''
+                                }
+                                //getOptionSelected={(option, value) => option.city === value.city}
+                                isOptionEqualToValue={(option, value) =>
+                                    option.city === value.city &&
+                                    option.state === value.state
+                                }
+                                onChange={(e, value) => {
+                                    onAutocompleteTagChange(
+                                        e,
+                                        'bookingWhere',
+                                        value
+                                    );
 
-                                // onMultiAutocompleteTagChange(
-                                //     'where',
-                                //     'bookingWhere',
-                                //     bookingWhere,
-                                //     idx,
-                                //     e,
-                                //     value
-                                // );
-                            }}
-                            renderTags={(value, getTagProps) =>
-                                value.map((option, index) => (
-                                    <Chip
-                                        variant="outlined"
+                                    // onMultiAutocompleteTagChange(
+                                    //     'where',
+                                    //     'bookingWhere',
+                                    //     bookingWhere,
+                                    //     idx,
+                                    //     e,
+                                    //     value
+                                    // );
+                                }}
+                                renderTags={(value, getTagProps) =>
+                                    value.map((option, index) => (
+                                        <Chip
+                                            variant="outlined"
+                                            name="bookingWhere"
+                                            key={`bookingWhere${index}`}
+                                            label={
+                                                option.city +
+                                                ', ' +
+                                                option.state
+                                            }
+                                            {...getTagProps({
+                                                index,
+                                            })}
+                                        />
+                                    ))
+                                }
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        sx={{ width: '100%' }}
+                                        variant="standard"
+                                        label={`On ${prettifyDate(
+                                            bookingWhen
+                                        )}, I’d love to play in or around`}
                                         name="bookingWhere"
-                                        key={`bookingWhere${index}`}
-                                        label={
-                                            option.city + ', ' + option.state
-                                        }
-                                        {...getTagProps({
-                                            index,
-                                        })}
                                     />
-                                ))
-                            }
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    sx={{ width: '100%' }}
-                                    variant="standard"
-                                    label={`On ${prettifyDate(
-                                        bookingWhen
-                                    )}, I’d love to play in or around`}
-                                    name="bookingWhere"
-                                />
-                            )}
-                        />
-                        <Typography
-                            sx={{
-                                display: 'inline-block',
-                                margin: '4px 4px -4px 0',
-                            }}
-                        >
-                            Within a radius of{' '}
-                        </Typography>
-                        <TextField
-                            sx={{
-                                display: 'inline-block',
-                                width: `calc(${
-                                    String(hostReachRadius).length
-                                }ch + 8ch)`, //based on character(ch) count
-                                textAlign: 'center',
-                                '& input': {
+                                )}
+                            />
+                            <Typography
+                                sx={{
+                                    display: 'inline-block',
+                                    margin: '4px 4px -4px 0',
+                                }}
+                            >
+                                Within a radius of{' '}
+                            </Typography>
+                            <TextField
+                                sx={{
+                                    display: 'inline-block',
+                                    width: `calc(${
+                                        String(hostReachRadius).length
+                                    }ch + 8ch)`, //based on character(ch) count
                                     textAlign: 'center',
-                                },
-                            }}
-                            variant="standard"
-                            name="hostReachRadius"
-                            id="hostReachRadius"
-                            value={hostReachRadius}
-                            onChange={(e) =>
-                                Number(e.target.value) > 0 && onChange(e)
-                            } //value can't be less than 1!!
-                            // onBlur={(e) => onHandleBlur(e)}
-                            type="number"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        {hostReachRadius > 1 ? 'miles' : 'mile'}
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
+                                    '& input': {
+                                        textAlign: 'center',
+                                    },
+                                }}
+                                variant="standard"
+                                name="hostReachRadius"
+                                id="hostReachRadius"
+                                value={hostReachRadius}
+                                onChange={(e) =>
+                                    Number(e.target.value) > 0 && onChange(e)
+                                } //value can't be less than 1!!
+                                // onBlur={(e) => onHandleBlur(e)}
+                                type="number"
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            {hostReachRadius > 1
+                                                ? 'miles'
+                                                : 'mile'}
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        </Grid>
                     </Grid>
-                </Grid>
+
+                    <Grid item container className="feoyGoogleMap">
+                        <GoogleMap />
+                    </Grid>
+                </>
             ),
         ],
         tourVibe: [
