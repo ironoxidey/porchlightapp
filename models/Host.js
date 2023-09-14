@@ -93,6 +93,19 @@ const HostSchema = new mongoose.Schema(
                 required: true,
             },
         },
+        anonLatLong: {
+            //https://mongoosejs.com/docs/geojson.html#
+            type: {
+                type: String, // Don't do `{ latLong: { type: String } }`
+                enum: ['Point'], // 'latLong.type' must be 'Point'
+                // required: true,
+                default: 'Point',
+            },
+            coordinates: {
+                type: [Number],
+                // required: true,
+            },
+        },
         date: {
             type: Date,
             default: Date.now,

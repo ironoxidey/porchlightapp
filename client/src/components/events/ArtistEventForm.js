@@ -803,7 +803,14 @@ const ArtistEventForm = ({
                     </Grid>
 
                     <Grid item container className="feoyGoogleMap">
-                        <GoogleMap />
+                        <GoogleMap
+                            markers={hosts}
+                            markerClick={onAutocompleteTagChange}
+                            radius={Number(hostReachRadius)}
+                            circleCenter={
+                                bookingWhere && bookingWhere.anonLatLong
+                            }
+                        />
                     </Grid>
                 </>
             ),

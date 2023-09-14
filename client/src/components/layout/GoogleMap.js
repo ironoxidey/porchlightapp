@@ -1,31 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Map, Wrapper, Status } from '@googlemaps/react-wrapper';
+import { Wrapper, Status } from '@googlemaps/react-wrapper';
+import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import Spinner from './Spinner';
 import { Grid } from '@mui/material';
-
-function MyMapComponent({ center, zoom }) {
-    const ref = useRef(null); // Initialize ref with null
-
-    useEffect(() => {
-        if (ref.current) {
-            // Check if ref is not null before using it
-            console.log('display map!');
-            new window.google.maps.Map(ref.current, {
-                center,
-                zoom,
-            });
-        }
-    }, []); // Make sure to include center and zoom as dependencies if needed
-
-    return (
-        <div
-            ref={ref}
-            id="map"
-            style={{ marginTop: '20px', height: '600px', width: '980px' }}
-        />
-    );
-}
 
 const render = (status) => {
     switch (status) {
@@ -41,33 +19,149 @@ const render = (status) => {
             );
         case Status.SUCCESS:
             console.log('Map Success!');
-            return (
-                <MyMapComponent
-                    center={{
-                        lat: 36.974,
-                        lng: -122.03,
-                    }}
-                    zoom={8}
-                />
-            );
+            return <></>;
         default:
             return null; // Add a default case
     }
 };
 
-const GoogleMap = () => {
+let radiusCircle;
+
+const MyMapComponent = ({
+    center,
+    zoom,
+    markers,
+    markerClick,
+    radius,
+    circleCenter,
+}) => {
+    const mapRef = useRef(null); // Initialize mapRef with null
+
+    const [theMap, setTheMap] = useState(null); // Initialize theMap with null
+
+    console.log('theMap', theMap);
+
+    useEffect(async () => {
+        const { AdvancedMarkerElement, PinElement } =
+            await window.google.maps.importLibrary('marker');
+        if (mapRef.current) {
+            // Check if mapRef is not null before using it
+            setTheMap(
+                new window.google.maps.Map(mapRef.current, {
+                    center,
+                    zoom,
+                    mapId: 'dec1188be6451632',
+                    mapTypeControl: false,
+                    streetViewControl: false,
+                })
+            );
+            console.log('init theMap', theMap);
+        }
+    }, [markers]);
+
+    useEffect(() => {
+        if (markers && markers.length > 0 && theMap) {
+            const markersCoords = markers.map((marker, i) => {
+                if (marker.anonLatLong.coordinates.length === 2) {
+                    const icon = document.createElement('div');
+                    icon.innerHTML = '<i class="fa fa-home"></i>';
+
+                    const pinGlyph = new window.google.maps.marker.PinElement({
+                        glyph: icon,
+                        glyphColor: '#1C1E1C',
+                        background: '#ffa14e',
+                        borderColor: '#1C1E1C',
+                        scale: 0.8,
+                    });
+
+                    const thisMarker =
+                        // new window.google.maps.Marker({
+                        new window.google.maps.marker.AdvancedMarkerElement({
+                            map: theMap,
+                            position: {
+                                lat: marker.anonLatLong.coordinates[1],
+                                lng: marker.anonLatLong.coordinates[0],
+                            },
+                            content: pinGlyph && pinGlyph.element,
+                            title: marker.city,
+                            // icon: 'pin.png',
+                        });
+                    // Add a click listener for each marker
+                    thisMarker.addListener('click', ({ domEvent, latLng }) => {
+                        //send the clicked marker back up to the parent component to use for an Autocomplete probably
+                        markerClick(domEvent, 'bookingWhere', marker);
+                    });
+                    return thisMarker;
+                }
+            });
+        }
+    }, [markers, theMap]);
+
+    // const [radiusCircle, setRadiusCircle] = useState(null);
+
+    useEffect(() => {
+        if (mapRef.current && radius && theMap && theMap.mapId) {
+            radiusCircle = new window.google.maps.Circle({
+                center: {
+                    lat: 36.974,
+                    lng: -97.03,
+                },
+            });
+
+            radiusCircle.setMap(theMap);
+            radiusCircle.setRadius(radius * 1609.34); // Convert miles to meters (1 mile = 1609.34 meters)
+
+            console.log('circleCenter', circleCenter);
+            if (circleCenter && circleCenter.coordinates.length === 2) {
+                radiusCircle.setCenter({
+                    lat: circleCenter.coordinates[1],
+                    lng: circleCenter.coordinates[0],
+                });
+            }
+        }
+    }, [radius, theMap, circleCenter]);
+
+    return (
+        <div
+            ref={mapRef}
+            id="map"
+            style={{ marginTop: '20px', height: '600px', width: '980px' }}
+        />
+    );
+};
+
+const GoogleMap = ({ markers, markerClick, radius, circleCenter }) => {
+    // useEffect(() => {
+    //     console.log('markers', markers);
+    // }, [markers]);
+
     return (
         <>
             <Wrapper
                 apiKey={'AIzaSyBB0g4gW-3CLIIxud4I3j-BewNSO1c3rHM'}
                 render={render}
-            />
+            >
+                <MyMapComponent
+                    center={{
+                        lat: 36.974,
+                        lng: -97.03,
+                    }}
+                    zoom={4.5}
+                    markers={markers}
+                    markerClick={markerClick}
+                    radius={radius}
+                    circleCenter={circleCenter}
+                />
+            </Wrapper>
         </>
     );
 };
 
 GoogleMap.propTypes = {
-    // locations: PropTypes.array, // Remove this line as you are not using the 'locations' prop
+    markers: PropTypes.array,
+    markerClick: PropTypes.func,
+    radius: PropTypes.number,
+    circleCenter: PropTypes.object,
 };
 
 export default GoogleMap;

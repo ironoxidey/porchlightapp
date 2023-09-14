@@ -143,6 +143,13 @@ router.post('/admin-update', [auth], async (req, res) => {
                                 ' ' +
                                 hostFields.zipCode
                         );
+                        const geocodedAnonAddress = await addressGeocode(
+                            hostFields.city +
+                                ', ' +
+                                hostFields.state +
+                                ' ' +
+                                hostFields.zipCode
+                        );
                         console.log(
                             hostFields.firstName +
                                 ' ' +
@@ -150,9 +157,20 @@ router.post('/admin-update', [auth], async (req, res) => {
                                 '’s geocodedAddress is: ',
                             geocodedAddress
                         );
+                        console.log(
+                            hostFields.firstName +
+                                ' ' +
+                                hostFields.lastName +
+                                '’s geocodedAnonAddress is: ',
+                            geocodedAnonAddress
+                        );
                         hostFields.latLong = {
                             type: 'Point',
                             coordinates: geocodedAddress,
+                        };
+                        hostFields.anonLatLong = {
+                            type: 'Point',
+                            coordinates: geocodedAnonAddress,
                         };
                         hostFields.geocodedStreetAddress =
                             hostFields.streetAddress;
@@ -282,6 +300,13 @@ router.post('/updateMe', [auth], async (req, res) => {
                             const geocodedAddress = await addressGeocode(
                                 hostAddress
                             );
+                            const geocodedAnonAddress = await addressGeocode(
+                                hostFields.city +
+                                    ', ' +
+                                    hostFields.state +
+                                    ' ' +
+                                    hostFields.zipCode
+                            );
                             const timezoneAddress = await addressTimezone(
                                 geocodedAddress
                             );
@@ -295,6 +320,10 @@ router.post('/updateMe', [auth], async (req, res) => {
                             hostFields.latLong = {
                                 type: 'Point',
                                 coordinates: geocodedAddress,
+                            };
+                            hostFields.anonLatLong = {
+                                type: 'Point',
+                                coordinates: geocodedAnonAddress,
                             };
                             hostFields.timezone = timezoneAddress.timeZoneId;
                             hostFields.timezoneOffset =
@@ -489,7 +518,7 @@ router.get('/', async (req, res) => {
     try {
         const hosts = await Host.find({
             active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
-        }).select(['city', 'state', 'zipCode']);
+        }).select(['city', 'state', 'zipCode', 'anonLatLong']);
         res.json(hosts);
     } catch (err) {
         console.error(err.message);
@@ -607,9 +636,9 @@ router.get('/edit', [auth], async (req, res) => {
     }
 });
 
-// @route    GET api/hosts/getAllHostLatLong
-// @desc     [ADMIN] Get all hosts for editing (everything)
-// @access   Private
+// // @route    GET api/hosts/getAllHostLatLong
+// // @desc     [ADMIN] Get all hosts for editing (everything)
+// // @access   Private
 // router.get('/getAllHostLatLong', [auth], async (req, res) => {
 //     //if (req.user.role === 'ADMIN') {
 //     if (req.user.role && req.user.role.indexOf('ADMIN') > -1) {
@@ -624,55 +653,59 @@ router.get('/edit', [auth], async (req, res) => {
 //                 if (
 //                     host.firstName &&
 //                     host.lastName &&
-//                     host.streetAddress &&
 //                     host.city &&
 //                     host.state &&
 //                     host.zipCode &&
-//                     host.latLong.coordinates.length <= 0
+//                     host.anonLatLong.coordinates.length <= 0
 //                 ) {
 //                     //geocode with Google Maps API
-//                     const geocodedAddress = await addressGeocode(
-//                         host.streetAddress +
-//                             ' ' +
-//                             host.city +
-//                             ', ' +
-//                             host.state +
-//                             ' ' +
-//                             host.zipCode
-//                     );
-//                     // console.log(
-//                     //     host.firstName +
+//                     // const geocodedAddress = await addressGeocode(
+//                     //     host.streetAddress +
 //                     //         ' ' +
-//                     //         host.lastName +
-//                     //         '’s geocodedAddress is: ',
-//                     //     geocodedAddress
+//                     //         host.city +
+//                     //         ', ' +
+//                     //         host.state +
+//                     //         ' ' +
+//                     //         host.zipCode
 //                     // );
-//                     host.latLong.coordinates = geocodedAddress;
-//                     // host.longitude = geocodedAddress[0];
-//                     // host.latitude = geocodedAddress[1];
-//                     host.markModified('latLong');
-//                     //save in host doc
-//                     await host.save();
-//                 }
-//                 if (
-//                     host.latLong.coordinates.length > 0 &&
-//                     (!host.timezone || !host.timezoneOffset)
-//                 ) {
-//                     const timezoneAddress = await addressTimezone(
-//                         host.latLong.coordinates
+//                     const geocodedAnonAddress = await addressGeocode(
+//                         host.city + ', ' + host.state + ' ' + host.zipCode
 //                     );
-//                     host.timezone = timezoneAddress.timeZoneId;
-//                     host.timezoneOffset = timezoneAddress.rawOffset / 3600; //rawOffset is the offset from UTC (in seconds) for the given location. dividing rawOffset by 3600 you can get the GMT time of your requested time zone
 
 //                     console.log(
 //                         host.firstName +
 //                             ' ' +
 //                             host.lastName +
-//                             '’s timezone is: ',
-//                         timezoneAddress
+//                             '’s geocodedAnonAddress is: ',
+//                         geocodedAnonAddress
 //                     );
+//                     // host.latLong.coordinates = geocodedAddress;
+//                     host.anonLatLong.coordinates = geocodedAnonAddress;
+//                     // host.longitude = geocodedAddress[0];
+//                     // host.latitude = geocodedAddress[1];
+//                     host.markModified('anonLatLong');
+//                     //save in host doc
 //                     await host.save();
 //                 }
+//                 // if (
+//                 //     host.latLong.coordinates.length > 0 &&
+//                 //     (!host.timezone || !host.timezoneOffset)
+//                 // ) {
+//                 //     const timezoneAddress = await addressTimezone(
+//                 //         host.latLong.coordinates
+//                 //     );
+//                 //     host.timezone = timezoneAddress.timeZoneId;
+//                 //     host.timezoneOffset = timezoneAddress.rawOffset / 3600; //rawOffset is the offset from UTC (in seconds) for the given location. dividing rawOffset by 3600 you can get the GMT time of your requested time zone
+
+//                 //     console.log(
+//                 //         host.firstName +
+//                 //             ' ' +
+//                 //             host.lastName +
+//                 //             '’s timezone is: ',
+//                 //         timezoneAddress
+//                 //     );
+//                 //     await host.save();
+//                 // }
 //             });
 
 //             res.json(hosts);

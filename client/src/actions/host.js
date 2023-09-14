@@ -103,6 +103,7 @@ export const getHostsLocations = () => async (dispatch) => {
                     hostCityST.state = states(location.state).usps;
                     hostCityST.fullState = states(location.state).name;
                     hostCityST.zip = location.zipCode;
+                    hostCityST.anonLatLong = location.anonLatLong;
                     result.push(hostCityST);
                 }
                 return result;
