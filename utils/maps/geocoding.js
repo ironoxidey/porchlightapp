@@ -20,7 +20,7 @@ const addressGeocode = async (payload) => {
             return [str.geometry.location.lng, str.geometry.location.lat]; //this is for MongoDB, it's backwards for some reason
         }
     });
-    console.log('res', res);
+    console.log('addressGeocode res', res);
     return res;
 };
 

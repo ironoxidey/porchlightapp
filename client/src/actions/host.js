@@ -99,10 +99,11 @@ export const getHostsLocations = () => async (dispatch) => {
                 ) {
                     const hostCityST = {};
 
-                    hostCityST.city = toTitleCase(location.city);
+                    hostCityST.city = toTitleCase(location.city.trim());
                     hostCityST.state = states(location.state).usps;
                     hostCityST.fullState = states(location.state).name;
                     hostCityST.zip = location.zipCode;
+                    hostCityST.anonLatLong = location.anonLatLong;
                     result.push(hostCityST);
                 }
                 return result;
