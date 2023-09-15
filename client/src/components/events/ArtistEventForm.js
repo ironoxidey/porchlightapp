@@ -61,7 +61,7 @@ import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
 import EventDetails from '../events/EventDetails';
-// import GoogleMap from '../layout/GoogleMap';
+import GoogleMap from '../layout/GoogleMap';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
