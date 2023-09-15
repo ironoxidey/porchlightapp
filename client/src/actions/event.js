@@ -32,7 +32,7 @@ export const editHostEvent = (formData, history) => async (dispatch) => {
             },
         };
         const res = await axios.post('/api/events/hostEvent', formData, config);
-        console.log('editHostEvent res.data', res.data);
+        // console.log('editHostEvent res.data', res.data);
         dispatch({
             type: EDIT_HOST_EVENT,
             payload: res.data,
@@ -145,7 +145,7 @@ export const editArtistEvent = (formData, history) => async (dispatch) => {
             formData,
             config
         );
-        console.log('editArtistEvent res.data', res.data);
+        // console.log('editArtistEvent res.data', res.data);
         dispatch({
             type: EDIT_ARTIST_EVENT,
             payload: res.data,
@@ -258,7 +258,7 @@ export const getEventByID = (eventID) => async (dispatch) => {
 export const getEventsNearMeToHost = () => async (dispatch) => {
     try {
         const res = await axios.get(`/api/events/nearMeToHost`);
-        console.log('getEventsNearMeToHost() res', res);
+        // console.log('getEventsNearMeToHost() res', res);
         dispatch({
             type: GET_EVENTS_NEAR_ME_TO_HOST,
             payload: res.data,
@@ -382,7 +382,7 @@ export const hostProposes = (formData, history) => async (dispatch) => {
             formData,
             config
         );
-        console.log('hostProposes res.data', res.data);
+        // console.log('hostProposes res.data', res.data);
         dispatch({
             type: HOST_PROPOSES,
             payload: res.data,
@@ -474,7 +474,7 @@ export const artistAcceptOffer =
             offeringHost: { _id: theOffer.host._id },
             stageName: stageName,
         };
-        console.log('artistAcceptOffer theOffer', theOffer);
+        // console.log('artistAcceptOffer theOffer', theOffer);
         try {
             const config = {
                 headers: {

@@ -84,7 +84,7 @@ export default function (state = initialState, action) {
             let update = state.myArtistEvents.findIndex(
                 (artistEvent) => artistEvent._id === payload._id
             ); //if -1 then insert
-            console.log('update: ', update);
+            // console.log('update: ', update);
             return {
                 ...state,
                 myArtistEvents:

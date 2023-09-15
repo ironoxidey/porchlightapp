@@ -808,8 +808,11 @@ const ArtistEventForm = ({
                             markerClick={onAutocompleteTagChange}
                             radius={Number(hostReachRadius)}
                             circleCenter={
-                                bookingWhere && bookingWhere.anonLatLong
+                                bookingWhere &&
+                                bookingWhere.city &&
+                                bookingWhere.anonLatLong
                             }
+                            bookingWhereZip={bookingWhere.zip}
                         />
                     </Grid>
                 </>

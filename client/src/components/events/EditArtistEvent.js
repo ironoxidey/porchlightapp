@@ -52,11 +52,11 @@ const EditArtistEvent = ({
                 disableDiscovery={iOS}
                 className="porchlightBG"
             >
-                <Box sx={{ top: 0, left: 0, position: 'absolute' }}>
+                <Box sx={{ top: 0, right: 60, position: 'absolute' }}>
                     <Grid container>
-                        <StackDateforDisplay
+                        {/* <StackDateforDisplay
                             date={theEvent.bookingWhen}
-                        ></StackDateforDisplay>
+                        ></StackDateforDisplay> */}
                         <Grid
                             item
                             sx={{
