@@ -299,7 +299,7 @@ const GoogleMap = ({
     return (
         <>
             <Wrapper
-                apiKey={'AIzaSyBB0g4gW-3CLIIxud4I3j-BewNSO1c3rHM'}
+                apiKey={'AIzaSyBb4pAeXW0ouFyFYWVb6dz24PQw2C0GE1A'}
                 render={render}
             >
                 <MyMapComponent
