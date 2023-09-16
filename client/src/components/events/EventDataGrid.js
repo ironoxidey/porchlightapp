@@ -727,11 +727,20 @@ const EventDataGrid = ({
                                     width: 'max-content',
                                 }}
                             >
-                                <Grid item sx={{ padding: '4px 4px 4px 0px' }}>
-                                    <ProfileAvatar
-                                        profileImg={hostInReach.host.profileImg}
-                                    />
-                                </Grid>
+                                {hostInReach &&
+                                    hostInReach.host &&
+                                    hostInReach.host.profileImg && (
+                                        <Grid
+                                            item
+                                            sx={{ padding: '4px 4px 4px 0px' }}
+                                        >
+                                            <ProfileAvatar
+                                                profileImg={
+                                                    hostInReach.host.profileImg
+                                                }
+                                            />
+                                        </Grid>
+                                    )}
                                 <Grid
                                     item
                                     sx={{
