@@ -1846,6 +1846,7 @@ router.get('/edit', [auth], async (req, res) => {
                     //     eventDetails.hostsInReach.length <= 0)
                 ) {
                     let hostsInReach = await Host.find({
+                        // active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
                         latLong: {
                             $near: {
                                 $maxDistance:

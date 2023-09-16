@@ -727,53 +727,67 @@ const EventDataGrid = ({
                                     width: 'max-content',
                                 }}
                             >
-                                <Grid item sx={{ padding: '4px 4px 4px 0px' }}>
-                                    <ProfileAvatar
-                                        profileImg={hostInReach.host.profileImg}
-                                    />
-                                </Grid>
-                                <Grid
-                                    item
-                                    sx={{
-                                        display: 'inline-block',
-                                        width: 'auto',
-                                        // whiteSpace: 'nowrap',
-                                    }}
-                                >
-                                    {hostInReach.host.firstName}{' '}
-                                    {hostInReach.host.lastName}
-                                </Grid>
-                                <Grid
-                                    item
-                                    sx={{
-                                        display: 'inline-block',
-                                        width: 'auto',
+                                {hostInReach && hostInReach.host && (
+                                    <>
+                                        <Grid
+                                            item
+                                            sx={{ padding: '4px 4px 4px 0px' }}
+                                        >
+                                            <ProfileAvatar
+                                                profileImg={
+                                                    hostInReach.host.profileImg
+                                                }
+                                            />
+                                        </Grid>
 
-                                        padding: '0px 8px 0px 8px',
-                                        //whiteSpace: 'nowrap',
-                                    }}
-                                >
-                                    {toTitleCase(hostInReach.host.city)},{' '}
-                                    {states(hostInReach.host.state).usps}
-                                </Grid>
-                                <Grid
-                                    item
-                                    sx={{
-                                        display: 'inline-block',
-                                        width: 'auto',
-                                    }}
-                                >
-                                    <a
-                                        target="_blank"
-                                        href={`mailto:${
-                                            hostInReach.host.email
-                                        }?subject=${encodeURIComponent(
-                                            params.row.stageName
-                                        )} is looking to play a Porchlight concert near you!&body=${emailBody}`}
-                                    >
-                                        {hostInReach.host.email}
-                                    </a>
-                                </Grid>
+                                        <Grid
+                                            item
+                                            sx={{
+                                                display: 'inline-block',
+                                                width: 'auto',
+                                                // whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            {hostInReach.host.firstName}{' '}
+                                            {hostInReach.host.lastName}
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            sx={{
+                                                display: 'inline-block',
+                                                width: 'auto',
+
+                                                padding: '0px 8px 0px 8px',
+                                                //whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            {toTitleCase(hostInReach.host.city)}
+                                            ,{' '}
+                                            {
+                                                states(hostInReach.host.state)
+                                                    .usps
+                                            }
+                                        </Grid>
+                                        <Grid
+                                            item
+                                            sx={{
+                                                display: 'inline-block',
+                                                width: 'auto',
+                                            }}
+                                        >
+                                            <a
+                                                target="_blank"
+                                                href={`mailto:${
+                                                    hostInReach.host.email
+                                                }?subject=${encodeURIComponent(
+                                                    params.row.stageName
+                                                )} is looking to play a Porchlight concert near you!&body=${emailBody}`}
+                                            >
+                                                {hostInReach.host.email}
+                                            </a>
+                                        </Grid>
+                                    </>
+                                )}
                             </Grid>
                             // </Tooltip>
                         );

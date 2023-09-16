@@ -92,6 +92,7 @@ module.exports = async () => {
                     //     );
 
                     let hostsInReach = await Host.find({
+                        active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
                         notificationFrequency: { $ne: 0 }, //don't email hosts who've opted out
                         latLong: {
                             $near: {
@@ -146,7 +147,8 @@ module.exports = async () => {
                     //     'new Date(eventDetails.createdAt)',
                     //     new Date(eventDetails.createdAt)
                     // );
-                    let hostsInReach = await Host.find({
+                    let hostsToContact = await Host.find({
+                        active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
                         notificationFrequency: { $ne: 0 }, //don't email hosts who've opted out
                         lastLogin: {
                             $not: { $gt: new Date(eventDetails.createdAt) }, //not greater than, so "less than or equal to", but this should also select documents where the lastLogin field doesn't exist yet -- https://www.mongodb.com/docs/manual/reference/operator/query/not/
@@ -168,42 +170,42 @@ module.exports = async () => {
                             },
                         },
                     });
-                    console.log(await hostsInReach);
-                    const hostsIDInReach = hostsInReach.map(
-                        async (hostInReach) => {
+                    //console.log(await hostsToContact);
+                    const hostsIDToContact = hostsToContact.map(
+                        async (hostToContact) => {
                             // console.log(
                             //     'Event City: ' +
                             //         eventDetails.bookingWhere.city +
                             //         ' | Host: ' +
-                            //         hostInReach.firstName +
+                            //         hostToContact.firstName +
                             //         ' ' +
-                            //         hostInReach.lastName
+                            //         hostToContact.lastName
                             // );
 
                             // if (
-                            //     hostInReach.notificationFrequency
-                            //     //&& hostInReach.lastEmailed
+                            //     hostToContact.notificationFrequency
+                            //     //&& hostToContact.lastEmailed
                             // ) {
                             //this limits who we reach out to, until everyone has a "lastEmailed" ---- "notificationFrequency" defaults to 7
-                            //hostInReach.notificationFrequency is never going to be 0, because we filtered that out in the database request
+                            //hostToContact.notificationFrequency is never going to be 0, because we filtered that out in the database request
                             let today = new Date().getTime();
                             let hostLastEmailed = new Date(
-                                hostInReach.lastEmailed || hostInReach.date //if !lastEmailed date just use the creation date of their profile——I think this is only going to be necessary for the first email we send to a host
+                                hostToContact.lastEmailed || hostToContact.date //if !lastEmailed date just use the creation date of their profile——I think this is only going to be necessary for the first email we send to a host
                             ).getTime();
                             let differenceInDays =
                                 (today - hostLastEmailed) / (1000 * 3600 * 24); //to calculate the no. of days between two dates, divide the time difference of both dates by no. of milliseconds in a day (1000*60*60*24) //https://www.geeksforgeeks.org/how-to-calculate-the-number-of-days-between-two-dates-in-javascript/
                             // console.log(
-                            //     hostInReach.email +
+                            //     hostToContact.email +
                             //         ' last emailed ' +
                             //         differenceInDays +
                             //         ' days ago. notificationFrequency: ' +
-                            //         hostInReach.notificationFrequency || 7
+                            //         hostToContact.notificationFrequency || 7
                             // );
                             if (
-                                (hostInReach.notificationFrequency && //if the hostInReach has a notificationFrequency and the differenceInDays is greater than or equal to that number
+                                (hostToContact.notificationFrequency && //if the hostToContact has a notificationFrequency and the differenceInDays is greater than or equal to that number
                                     differenceInDays >=
-                                        hostInReach.notificationFrequency) ||
-                                (!hostInReach.notificationFrequency && //OR if the host has not specified their notificationFrequency, default to 7
+                                        hostToContact.notificationFrequency) ||
+                                (!hostToContact.notificationFrequency && //OR if the host has not specified their notificationFrequency, default to 7
                                     differenceInDays >= 7)
                             ) {
                                 //if it's time to email this host
@@ -222,15 +224,15 @@ module.exports = async () => {
                                 // );
                                 if (
                                     !hostsToEmailArray.includes(
-                                        hostInReach.email
+                                        hostToContact.email
                                     )
                                 ) {
-                                    //if the hostInReach's email is not already in the array, add it
+                                    //if the hostToContact's email is not already in the array, add it
 
                                     const hostForCollection = {
-                                        ...hostInReach._doc,
+                                        ...hostToContact._doc,
                                         createdAtGetTime: new Date(
-                                            hostInReach.date
+                                            hostToContact.date
                                         ).getTime(),
                                         eventsForEmail: [newEventDetails],
                                     };
@@ -238,11 +240,13 @@ module.exports = async () => {
                                     emailHostsCollection.push(
                                         hostForCollection
                                     );
-                                    hostsToEmailArray.push(hostInReach.email);
+                                    hostsToEmailArray.push(hostToContact.email);
                                 } else {
-                                    //if the hostInReach's email IS already in the array, append this event to the host's eventsForEmail
+                                    //if the hostToContact's email IS already in the array, append this event to the host's eventsForEmail
                                     _.map(emailHostsCollection, (host) => {
-                                        if (host.email === hostInReach.email) {
+                                        if (
+                                            host.email === hostToContact.email
+                                        ) {
                                             _.assign(host, {
                                                 eventsForEmail: [
                                                     ...host.eventsForEmail,
@@ -256,14 +260,34 @@ module.exports = async () => {
                             }
                             // }
 
-                            //console.log('hostInReach._id', hostInReach._id);
-                            return { host: hostInReach._id };
+                            //console.log('hostToContact._id', hostToContact._id);
+                            return { host: hostToContact._id };
                         }
                     );
 
+                    //Just to refresh the database daily
+                    let hostsInReach = await Host.find({
+                        // active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
+                        latLong: {
+                            $near: {
+                                $maxDistance:
+                                    eventDetails.hostReachRadius * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
+                                $geometry: {
+                                    type: 'Point',
+                                    coordinates:
+                                        eventDetails.latLong.coordinates,
+                                },
+                            },
+                        },
+                    });
+                    const hostsIDInReach = hostsInReach.map((hostInReach) => {
+                        //console.log('hostInReach._id', hostInReach._id);
+                        return { host: hostInReach._id };
+                    });
+
                     eventDetails.hostsInReach = hostsIDInReach;
                     eventDetails.markModified('hostsInReach');
-                    //console.log('hostsIDInReach', await hostsIDInReach);
+                    // console.log('hostsIDInReach', await hostsIDInReach);
                     updatedEvents++;
                     //await eventDetails.save();
                     await eventDetails.updateOne({
@@ -272,11 +296,13 @@ module.exports = async () => {
                             hostsInReach: hostsIDInReach,
                         },
                     });
+                    //console.log('eventDetails', eventDetails);
+                    //END daily database refresh
                 }
                 if (index === array.length - 1) resolve(); //so that we can return the results
             });
         });
-        //console.log('updatedEvents:', await updatedEvents);
+        // console.log('updatedEvents:', await updatedEvents);
 
         loopThruEvents.then(() => {
             //console.log('hostsToEmailArray', hostsToEmailArray);
@@ -300,11 +326,13 @@ module.exports = async () => {
                                 hostToEmail.eventsForEmail.length +
                                 ' events)'
                         );
+
                         sendEmail(hostToEmail.email, {
                             event: 'HOST_EMAIL_DIGEST',
                             template: '5VAZYQK9RAM506GYRGYMMJ8X3D55',
                             ...hostToEmail,
                         });
+
                         let updatedHost = await Host.findOneAndUpdate(
                             //Update the Host's lastEmailed field, so that we can check it when we trigger the host email digest next time, to know if the host is ready for their next one
                             { _id: hostToEmail._id },
