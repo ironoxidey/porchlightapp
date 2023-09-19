@@ -104,6 +104,7 @@ export const getHostsLocations = () => async (dispatch) => {
                     hostCityST.fullState = states(location.state).name;
                     hostCityST.zip = location.zipCode;
                     hostCityST.anonLatLong = location.anonLatLong;
+                    hostCityST.count = 1;
                     result.push(hostCityST);
                 }
                 return result;
@@ -111,13 +112,32 @@ export const getHostsLocations = () => async (dispatch) => {
             []
         );
 
-        let hostFilteredLocations = hostProcessedLocations.filter(
-            (value, index, self) =>
-                index ===
-                self.findIndex(
-                    (t) => t.city === value.city && t.state === value.state
-                )
-        );
+        // Create an object to store location counts
+        let locationCounts = {};
+
+        let hostFilteredLocations = hostProcessedLocations
+            .filter((value, index, self) => {
+                const key = value.city + value.state;
+                if (
+                    index ===
+                    self.findIndex(
+                        (t) => t.city === value.city && t.state === value.state
+                    )
+                ) {
+                    locationCounts[key] = 1;
+                    return true;
+                } else {
+                    locationCounts[key]++;
+                    // console.log(value.city + ': ' + locationCounts[key]);
+                    return false; // Exclude duplicates
+                }
+            })
+            .map((value) => {
+                const key = value.city + value.state;
+                value.count = locationCounts[key];
+                return value;
+            });
+        // console.log('hostFilteredLocations', hostFilteredLocations);
 
         let hostSortedLocations = hostFilteredLocations.sort((a, b) =>
             sortStateCity(a, b)

@@ -82,10 +82,12 @@ const MyMapComponent = ({
                 if (marker.anonLatLong.coordinates.length === 2) {
                     const icon = document.createElement('div');
                     icon.className = 'markerGlyph';
-                    icon.innerHTML = '<i class="fa fa-home"></i>';
-                    const lgIcon = document.createElement('div');
-                    lgIcon.className = 'markerGlyph';
-                    lgIcon.innerHTML = '<i class="fa fa-home fa-lg"></i>';
+                    icon.innerHTML =
+                        marker.count === 1
+                            ? '<i class="fa fa-home"></i>'
+                            : '<i class="fas fa-circle fa-lg"></i></i><span class="count">' +
+                              marker.count +
+                              '</span>';
 
                     if (
                         window.google &&

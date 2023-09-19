@@ -145,6 +145,31 @@ body {
 }
 
 /* Map Styles */
+
+.markerGlyph .count {
+    position: absolute;
+    display: block;
+    top: 5px;
+    left: 0;
+    right: 0;
+    width: 19px;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--link-color);
+    font-size: 1em;
+    text-align: center;
+
+    text-shadow: rgb(28, 30, 28) 1px 0px 0px, rgb(28, 30, 28) -1px 0px 0px,
+        rgb(28, 30, 28) -1px -1px 0px, rgb(28, 30, 28) -1px 1px 0px,
+        rgb(28, 30, 28) 0px 1px 0px, rgb(28, 30, 28) 0px -1px 0px,
+        rgb(28, 30, 28) 1px 1px 0px, rgb(28, 30, 28) 1px -1px 0px,
+        rgb(28, 30, 28) -1px 1px 0px, rgb(28, 30, 28) 1px -1px 0px;
+}
+.markerGlyph .fa-circle {
+    margin-top: 3px;
+    transform: scale(0.9, 0.9);
+}
+
 .markerSelected {
     z-index: 1000;
     perspective: 100px;
@@ -164,6 +189,13 @@ body {
     100% {
         top: -2px;
     }
+}
+
+.markerSelected .markerGlyph .count,
+.yNHHyP-marker-view:hover .markerGlyph .count {
+    text-shadow: #fff 1px 0px 0px, #fff -1px 0px 0px, #fff 0px 1px 0px,
+        #fff 0px -1px 0px, #fff 1px 1px 0px, #fff 1px -1px 0px,
+        #fff -1px 1px 0px, #fff 1px -1px 0px;
 }
 
 .markerSelected:after,
