@@ -73,6 +73,7 @@ import ReactPlayer from 'react-player/lazy';
 // import HostEventDetails from './HostEventDetails';
 import HostProfile from '../hosts/HostProfile';
 import HostTermsAgreement from '../hosts/HostTermsAgreement';
+import GoogleMapForHosts from '../layout/GoogleMapForHosts';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -421,8 +422,9 @@ const HostEventForm = ({
         setFormData({ ...formData, [theFieldName]: targetValue });
     };
     const onAutocompleteTagChange = (e, theFieldName, val) => {
-        //console.log(theFieldName);
-        //console.log(Object.keys(formGroups).length);
+        // console.log('onAutocompleteTagChange theFieldName: ', theFieldName);
+        // console.log('val', val);
+        // console.log(Object.keys(formGroups).length);
         changesMade.current = true;
         let targetValue = val;
         setFormData({ ...formData, [theFieldName]: targetValue });
@@ -675,13 +677,14 @@ const HostEventForm = ({
                         )}
                         disableCloseOnSelect={true}
                         clearOnBlur={true}
-                        onChange={(event, value) =>
+                        onChange={(event, value) => {
+                            // console.log('value', value);
                             onAutocompleteTagChange(
                                 event,
                                 'preferredArtists',
                                 value
-                            )
-                        }
+                            );
+                        }}
                         renderTags={(value, getTagProps) =>
                             value.map((option, index) => (
                                 <Chip
@@ -716,6 +719,28 @@ const HostEventForm = ({
 						helperText='are my audience.'
 						InputLabelProps={{ shrink: true }}
 					/> */}
+                    <Grid item container className="feoyGoogleMap">
+                        <GoogleMapForHosts
+                            markers={artists}
+                            markerClick={onAutocompleteTagChange}
+                            // radius={Number(hostReachRadius)}
+                            circleCenter={
+                                preferredArtists &&
+                                preferredArtists.length > 0 &&
+                                preferredArtists[preferredArtists.length - 1]
+                                    .city
+                                    ? preferredArtists[
+                                          preferredArtists.length - 1
+                                      ].latLong
+                                    : hostMe.latLong
+                            }
+                            preferredArtists={preferredArtists}
+                            // bookingWhereZip={
+                            //     preferredArtists[preferredArtists.length - 1]
+                            //         .zip
+                            // }
+                        />
+                    </Grid>
                 </Grid>,
             ],
         ],
