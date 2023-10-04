@@ -117,6 +117,15 @@ const EventSpecificHostForm = ({
         honorariumAmount: '',
         extraClarification: '',
         seatingProvided: '',
+
+        streetAddress: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        numDraw: '',
+        maxNumAttendees: '',
+        venueNickname: '',
+        primarySpace: '',
     });
 
     useEffect(() => {
@@ -174,6 +183,43 @@ const EventSpecificHostForm = ({
                     loading || !host.me.seatingProvided
                         ? ''
                         : host.me.seatingProvided,
+                streetAddress:
+                    loading || !host.me.streetAddress
+                        ? ''
+                        : host.me.primarySpace === 'residence'
+                        ? host.me.streetAddress
+                        : host.me.venueStreetAddress,
+                city:
+                    loading || !host.me.city
+                        ? ''
+                        : host.me.primarySpace === 'residence'
+                        ? host.me.city
+                        : host.me.venueCity,
+                state:
+                    loading || !host.me.state
+                        ? ''
+                        : host.me.primarySpace === 'residence'
+                        ? host.me.state
+                        : host.me.venueState,
+                zipCode:
+                    loading || !host.me.zipCode
+                        ? ''
+                        : host.me.primarySpace === 'residence'
+                        ? host.me.zipCode
+                        : host.me.venueZipCode,
+                numDraw: loading || !host.me.numDraw ? '' : host.me.numDraw,
+                maxNumAttendees:
+                    loading || !host.me.maxNumAttendees
+                        ? ''
+                        : host.me.maxNumAttendees,
+                venueNickname:
+                    loading || !host.me.venueNickname
+                        ? ''
+                        : host.me.venueNickname,
+                primarySpace:
+                    loading || !host.me.primarySpace
+                        ? ''
+                        : host.me.primarySpace,
             });
         }
     }, [auth.loading, createMyHost, host.me]);
@@ -191,6 +237,14 @@ const EventSpecificHostForm = ({
         honorariumAmount,
         extraClarification,
         seatingProvided,
+        streetAddress,
+        city,
+        state,
+        zipCode,
+        numDraw,
+        maxNumAttendees,
+        venueNickname,
+        primarySpace,
     } = formData;
 
     const onChange = (e) => {
@@ -221,6 +275,35 @@ const EventSpecificHostForm = ({
             //console.log(formData);
         }
     };
+
+    useEffect(() => {
+        if (primarySpace === 'residence' || primarySpace === '') {
+            setFormData({
+                ...formData,
+                primarySpace: 'residence',
+                streetAddress: host.me.streetAddress,
+                city: host.me.city,
+                state: host.me.state,
+                zipCode: host.me.zipCode,
+            });
+        } else {
+            if (
+                host.me.venueStreetAddress &&
+                host.me.venueCity &&
+                host.me.venueState &&
+                host.me.venueZipCode
+            ) {
+                setFormData({
+                    ...formData,
+                    streetAddress: host.me.venueStreetAddress,
+                    city: host.me.venueCity,
+                    state: host.me.venueState,
+                    zipCode: host.me.venueZipCode,
+                });
+            }
+        }
+    }, [primarySpace]);
+
     const onPhoneChange = (theFieldName, val) => {
         changesMade.current = true;
         let targetValue = val;
@@ -448,6 +531,113 @@ const EventSpecificHostForm = ({
                     />
                     .
                 </Grid>,
+            ],
+        ],
+        venue: [
+            [
+                <FormLabel component="legend">
+                    Are you still planning to host this concert at{' '}
+                    {host.me.primarySpace === 'residence'
+                        ? 'your ' + host.me.primarySpace
+                        : host.me.venueNickname ||
+                          'your ' + host.me.primarySpace}
+                    ?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    (based on what you indicated in your Host Profile)
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        id="primarySpace"
+                        value={primarySpace}
+                        name="primarySpace"
+                        onChange={(e) => onChange(e)}
+                    >
+                        <FormControlLabel
+                            value={host.me.primarySpace}
+                            control={<Radio />}
+                            label="Yes."
+                        />
+                        <FormControlLabel
+                            value={
+                                host.me.primarySpace === 'residence'
+                                    ? 'other'
+                                    : 'residence'
+                            }
+                            control={<Radio />}
+                            label={`No, I'd prefer to host it ${
+                                host.me.primarySpace === 'residence'
+                                    ? ' somewhere else.'
+                                    : ' at my residence.'
+                            }`}
+                        />
+                    </RadioGroup>
+                </FormControl>,
+                [
+                    <Grid
+                        container
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="center"
+                        spacing={2}
+                    >
+                        <Grid item xs={12}>
+                            <TextField
+                                variant="standard"
+                                name="streetAddress"
+                                id="streetAddress"
+                                label="At the street address of"
+                                value={streetAddress}
+                                onChange={(e) => onChange(e)}
+                                sx={{ width: '100%' }}
+                            />
+                        </Grid>
+                    </Grid>,
+                    <Grid
+                        container
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="center"
+                        spacing={2}
+                        sx={{ marginTop: '8px' }}
+                    >
+                        <Grid item>
+                            <TextField
+                                variant="standard"
+                                name="city"
+                                id="city"
+                                label="In the city of"
+                                value={city}
+                                onChange={(e) => onChange(e)}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                variant="standard"
+                                name="state"
+                                id="state"
+                                label="in the state of"
+                                value={state}
+                                onChange={(e) => onChange(e)}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <TextField
+                                variant="standard"
+                                name="zipCode"
+                                id="zipCode"
+                                label="with the zip code"
+                                value={zipCode}
+                                onChange={(e) => onChange(e)}
+                            />
+                        </Grid>
+                    </Grid>,
+                ],
             ],
         ],
         // refreshments: [
@@ -705,8 +895,16 @@ const EventSpecificHostForm = ({
         ],
         seatingProvided: [
             <FormLabel component="legend">
-                Do you have all the seating you’ll need, or should we encourage
-                people to bring their own chairs?
+                {host.me.maxNumAttendees > 0
+                    ? 'You mentioned in your Host Profile that you thought the maximum number of people you could host is ' +
+                      host.me.maxNumAttendees +
+                      '. '
+                    : ''}
+                Do you have all the seating you’d need
+                {host.me.maxNumAttendees
+                    ? ' if ' + host.me.maxNumAttendees + ' people showed up'
+                    : ''}
+                , or should we encourage attenders to bring their own chairs?
             </FormLabel>,
             [
                 <FormControl component="fieldset">
@@ -721,7 +919,7 @@ const EventSpecificHostForm = ({
                             control={<Radio />}
                             label={`Yes, I've got all the seating needed ${
                                 host.me.maxNumAttendees > 0
-                                    ? `for at least ${host.me.maxNumAttendees} people.`
+                                    ? `for ${host.me.maxNumAttendees} people.`
                                     : '.'
                             }`}
                         />

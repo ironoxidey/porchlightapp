@@ -111,6 +111,22 @@ const HostProfile = ({
               theHost.venueZipCode
             : toTitleCase(theHost.venueCity) + ', ' + theHost.venueState;
 
+    let theEventAddress =
+        user &&
+        user.role &&
+        (user.role.indexOf('ADMIN') > -1 ||
+            user.role.indexOf('BOOKING') > -1) &&
+        theEvent &&
+        theOffer.streetAddress
+            ? theOffer.streetAddress +
+              ' ' +
+              toTitleCase(theOffer.city) +
+              ', ' +
+              theOffer.state +
+              ' ' +
+              theOffer.zipCode
+            : null;
+
     return (
         <>
             <Grid
@@ -439,7 +455,7 @@ const HostProfile = ({
                                                 sx={{ marginRight: '8px' }}
                                             ></PlaceTwoToneIcon>
                                         </Tooltip>
-                                        {`${theHostAddress}`}
+                                        {`${theEventAddress || theHostAddress}`}
                                     </Typography>
                                 </Grid>
                             )}

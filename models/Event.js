@@ -83,9 +83,6 @@ const EventSchema = new mongoose.Schema(
                 refreshments: {
                     type: String,
                 },
-                seatingProvided: {
-                    type: String,
-                },
                 overnight: {
                     type: String,
                 },
@@ -112,6 +109,20 @@ const EventSchema = new mongoose.Schema(
                 },
                 extraClarification: {
                     type: String,
+                },
+                seatingProvided: {
+                    type: String,
+                },
+                streetAddress: { type: String },
+                city: { type: String },
+                state: { type: String },
+                zipCode: { type: Number },
+
+                numDraw: {
+                    type: Number,
+                },
+                maxNumAttendees: {
+                    type: Number,
                 },
                 artistViewedOn: {
                     type: Date,
