@@ -1423,7 +1423,7 @@ router.get('/myArtistEvents', auth, async (req, res) => {
 
         let userRole = req.user.role;
 
-        if (userRole && userRole.indexOf('TESTING') > -1) {
+        if (userRole && userRole.indexOf('ARTIST') > -1) {
             const myArtistEvents = await Event.find(
                 {
                     $or: [

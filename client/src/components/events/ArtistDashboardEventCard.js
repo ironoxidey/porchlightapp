@@ -27,7 +27,7 @@ import EventDetails from '../events/EventDetails';
 
 import Button from '../layout/SvgButton';
 // import HostProfile from '../hosts/HostProfile';
-import { relativeTimeRounding } from 'moment';
+// import { relativeTimeRounding } from 'moment';
 import ArtistDashboardBookingOffers from './ArtistDashboardBookingOffers';
 
 import DeleteIcon from '@mui/icons-material/Delete';

@@ -21,7 +21,7 @@ import { artistViewedHostOffer } from '../../actions/event';
 import Button from '../layout/SvgButton';
 import HostProfile from '../hosts/HostProfile';
 import EventDetails from '../events/EventDetails';
-import { relativeTimeRounding } from 'moment';
+// import { relativeTimeRounding } from 'moment';
 
 const ArtistDashboardBookingOffers = ({
     thisEvent,

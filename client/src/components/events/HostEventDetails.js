@@ -87,6 +87,7 @@ const HostEventDetails = ({
         ((theEvent.createdBy === 'ARTIST' &&
             (me._id === theEvent.artist || me._id === theEvent.artist._id)) ||
             (theEvent.createdBy === 'HOST' &&
+                host.me &&
                 host.me._id === theEvent.confirmedHost))
     ) {
         isMe = true;
@@ -345,8 +346,9 @@ const HostEventDetails = ({
                                         When asked “Do you agree to promote this
                                         event to your community, including email
                                         sends and social media?{' '}
-                                        {(theEvent.confirmedHost ===
-                                            host.me._id &&
+                                        {(host.me &&
+                                            theEvent.confirmedHost ===
+                                                host.me._id &&
                                             host.me.firstName) ||
                                             (theEvent.offersFromHosts &&
                                                 theEvent.offersFromHosts
@@ -416,8 +418,9 @@ const HostEventDetails = ({
                                         {theEvent.hangout ? (
                                             <>
                                                 {`  When asked about spending some informal time with the artist(s), ${
-                                                    (theEvent.confirmedHost ===
-                                                        host.me._id &&
+                                                    (host.me &&
+                                                        theEvent.confirmedHost ===
+                                                            host.me._id &&
                                                         host.me.firstName) ||
                                                     (theEvent.offersFromHosts &&
                                                         theEvent.offersFromHosts

@@ -29,7 +29,10 @@ import AddArtistEvent from '../events/AddArtistEvent';
 import EditArtistEvent from '../events/EditArtistEvent';
 import HostDashboardEventCard from '../events/HostDashboardEventCard';
 
-import { getEventsNearMeToHost } from '../../actions/event';
+import {
+    getMyArtistEventsOffers,
+    getEventsNearMeToHost,
+} from '../../actions/event';
 
 // A custom hook that builds on useLocation to parse the query string for you.
 function useQuery() {
@@ -49,6 +52,7 @@ const Dashboard = ({
     host,
     app,
     getEventsNearMeToHost,
+    getMyArtistEventsOffers,
 }) => {
     // useEffect(() => {
     //     getCurrentProfile();
@@ -86,6 +90,7 @@ const Dashboard = ({
             user.role.indexOf('ARTIST') > -1
         ) {
             getCurrentArtist();
+            getMyArtistEventsOffers();
             if (app.profileHat === '') {
                 changeHats('ARTIST');
             }
@@ -881,4 +886,5 @@ export default connect(mapStateToProps, {
     getCurrentHost,
     deleteAccount,
     getEventsNearMeToHost,
+    getMyArtistEventsOffers,
 })(Dashboard);
