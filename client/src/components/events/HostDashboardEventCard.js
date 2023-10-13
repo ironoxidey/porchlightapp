@@ -333,7 +333,7 @@ const HostDashboardEventCard = ({
                                                     thisEvent._id
                                                 }
                                             >
-                                                <Grid
+                                                {/* <Grid
                                                     item
                                                     sx={{
                                                         // width: '100%',
@@ -344,75 +344,66 @@ const HostDashboardEventCard = ({
                                                         flexShrink: '3',
                                                         flexGrow: '2',
                                                     }}
-                                                >
-                                                    <Box
-                                                        className="squareImgInACircle"
-                                                        sx={{
-                                                            display: 'flex',
+                                                > */}
+                                                <Box
+                                                    className="squareImgInACircle"
+                                                    sx={{
+                                                        display: 'flex',
 
-                                                            width:
-                                                                avatarSize +
-                                                                'px',
-                                                            height:
-                                                                avatarSize +
-                                                                'px',
-                                                            maxHeight:
-                                                                avatarSize +
-                                                                'px',
-                                                            maxWidth:
-                                                                avatarSize +
-                                                                'px',
-                                                            borderRadius: '50%',
-                                                            overflow: 'hidden',
-                                                            backgroundImage: `url("${prefArtist.squareImg}")`,
-                                                            backgroundBlendMode:
-                                                                confirmed
-                                                                    ? 'normal'
-                                                                    : 'soft-light',
-                                                            backgroundColor:
-                                                                'rgba(0,0,0,0.5)',
-                                                            backgroundPosition:
-                                                                '50% 25%',
-                                                            backgroundSize:
-                                                                'cover',
-                                                            padding: '4px',
-                                                            backgroundClip:
-                                                                'content-box',
-                                                            border: confirmed
-                                                                ? '1px solid var(--link-color)'
-                                                                : '1px dashed var(--primary-color)',
-                                                            // margin: '0 8px 0 0',
-                                                            justifyContent:
-                                                                'center',
-                                                            alignItems:
-                                                                'center',
-                                                            aspectRatio:
-                                                                '1 / 1',
-                                                        }}
-                                                    >
-                                                        {!confirmed && (
-                                                            <Typography
-                                                                sx={{
-                                                                    fontFamily:
-                                                                        'Tahoma',
-                                                                    margin: 'auto',
-                                                                    fontSize:
-                                                                        avatarSize *
-                                                                            0.8 +
-                                                                        'px',
-                                                                    opacity:
-                                                                        '.2',
-                                                                    lineHeight:
-                                                                        '1',
-                                                                    textShadow:
-                                                                        '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
-                                                                }}
-                                                            >
-                                                                ?
-                                                            </Typography>
-                                                        )}
-                                                    </Box>
-                                                </Grid>
+                                                        width:
+                                                            avatarSize + 'px',
+                                                        height:
+                                                            avatarSize + 'px',
+                                                        maxHeight:
+                                                            avatarSize + 'px',
+                                                        maxWidth:
+                                                            avatarSize + 'px',
+                                                        borderRadius: '50%',
+                                                        overflow: 'hidden',
+                                                        backgroundImage: `url("${prefArtist.squareImg}")`,
+                                                        backgroundBlendMode:
+                                                            confirmed
+                                                                ? 'normal'
+                                                                : 'soft-light',
+                                                        backgroundColor:
+                                                            'rgba(0,0,0,0.5)',
+                                                        backgroundPosition:
+                                                            '50% 25%',
+                                                        backgroundSize: 'cover',
+                                                        padding: '4px',
+                                                        backgroundClip:
+                                                            'content-box',
+                                                        border: confirmed
+                                                            ? '1px solid var(--link-color)'
+                                                            : '1px dashed var(--primary-color)',
+                                                        // margin: '0 8px 0 0',
+                                                        justifyContent:
+                                                            'center',
+                                                        alignItems: 'center',
+                                                        aspectRatio: '1 / 1',
+                                                    }}
+                                                >
+                                                    {!confirmed && (
+                                                        <Typography
+                                                            sx={{
+                                                                fontFamily:
+                                                                    'Tahoma',
+                                                                margin: 'auto',
+                                                                fontSize:
+                                                                    avatarSize *
+                                                                        0.8 +
+                                                                    'px',
+                                                                opacity: '.2',
+                                                                lineHeight: '1',
+                                                                textShadow:
+                                                                    '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
+                                                            }}
+                                                        >
+                                                            ?
+                                                        </Typography>
+                                                    )}
+                                                </Box>
+                                                {/* </Grid> */}
                                             </Fragment>
                                         );
                                     }

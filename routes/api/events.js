@@ -1255,12 +1255,15 @@ router.post('/hostProposes', [auth], async (req, res) => {
                     template: 'N1R9V8456SM6P9KTQ7NWSFNRP08Z',
                     name: eventDetails.preferredArtists[i].firstName,
                     hostName: host.firstName + ' ' + host.lastName,
+                    hostFirstName: host.firstName,
+                    hostLastName: host.lastName,
                     stageName: eventDetails.preferredArtists[i].stageName,
                     eventDate: emailDate,
                     bookingWhenFormatted: theEventDateForStacking,
                     hostLocation: host.city + ', ' + host.state,
                     hostImg: host.profileImg,
                     artistImg: eventDetails.preferredArtists[i].squareImg,
+                    preferredArtists: eventDetails.preferredArtists,
                 });
                 delete eventDetails.preferredArtists[i].email;
             }
