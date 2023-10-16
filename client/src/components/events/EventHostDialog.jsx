@@ -89,7 +89,7 @@ const EventHostDialog = (props) => {
                                                 timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
                                             })}{' '}
                                             is now visible on the private
-                                            profile
+                                            dashboard
                                             {props.theEvent.preferredArtists
                                                 .length > 1
                                                 ? 's'
