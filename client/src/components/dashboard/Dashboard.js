@@ -495,9 +495,11 @@ const Dashboard = ({
                                                 <Typography component="h2">
                                                     {myArtistEvents.filter(
                                                         (myEvent) =>
-                                                            myEvent.confirmedHost &&
-                                                            myEvent.createdBy ===
-                                                                'HOST' &&
+                                                            (!myEvent.confirmedHost ||
+                                                                (myEvent.createdBy ===
+                                                                    'HOST' &&
+                                                                    myEvent.status ===
+                                                                        'PENDING')) &&
                                                             myEvent.offersFromHosts &&
                                                             myEvent
                                                                 .offersFromHosts
