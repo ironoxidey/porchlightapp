@@ -1936,6 +1936,7 @@ const ArtistEventForm = ({
                 delete mostRecentlyUpdatedEventTrimmed.latLong;
 
                 delete mostRecentlyUpdatedEventTrimmed.preferredArtists;
+                delete mostRecentlyUpdatedEventTrimmed.declinedArtists;
 
                 setFormData({
                     ...formData,

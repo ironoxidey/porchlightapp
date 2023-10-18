@@ -16,7 +16,11 @@ import {
     TextField,
     Button,
     Switch,
+    Tooltip,
+    tooltipClasses,
 } from '@mui/material';
+
+import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -28,6 +32,14 @@ import EventHostDialog from '../events/EventHostDialog';
 import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 
 import states from 'us-state-converter';
+
+const CustomWidthTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))({
+    [`& .${tooltipClasses.tooltip}`]: {
+        maxWidth: 500,
+    },
+});
 
 const HostDataGrid = ({
     getArtistByEmail,
@@ -610,9 +622,78 @@ const HostDataGrid = ({
             headerName: 'Last Emailed',
             width: 200,
             editable: false,
-            type: 'dateTime',
-            valueFormatter: (params) => {
-                if (params.value) {
+            type: 'string',
+            sortable: true,
+            sortComparator: (v1, v2) => {
+                if (v1 && v2) {
+                    if (Array.isArray(v1) && Array.isArray(v2)) {
+                        // console.log('lastEmailed: Both are arrays');
+                        if (v1[v1.length - 1] > v2[v2.length - 1]) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    } else if (Array.isArray(v1) && !Array.isArray(v2)) {
+                        // console.log('lastEmailed: v1 is the only array');
+                        if (v1[v1.length - 1] > v2) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    } else if (!Array.isArray(v1) && Array.isArray(v2)) {
+                        // console.log('lastEmailed: v2 in the only array');
+                        if (v1 > v2[v2.length - 1]) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    } else {
+                        // console.log('lastEmailed:neither are arrays');
+                        if (v1 > v2) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    }
+                } else if (v1 && !v2) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            },
+
+            renderCell: (params) => {
+                if (
+                    params.value &&
+                    params.value.length > 0 &&
+                    Array.isArray(params.value)
+                ) {
+                    let emailHistory = params.value.map((emailedOn, i) => {
+                        return (
+                            <div>
+                                {new Date(emailedOn).toLocaleString('en-US')}
+                            </div>
+                        );
+                    });
+                    return (
+                        <CustomWidthTooltip
+                            arrow={true}
+                            placement="bottom"
+                            title={<>{emailHistory}</>}
+                        >
+                            <span
+                                style={{
+                                    color: 'var(--link-color)',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                {new Date(
+                                    params.value[params.value.length - 1]
+                                ).toLocaleString('en-US')}
+                            </span>
+                        </CustomWidthTooltip>
+                    );
+                } else if (params.value) {
                     return new Date(params.value).toLocaleString('en-US');
                 } else {
                     return;
@@ -677,7 +758,7 @@ const HostDataGrid = ({
                         //         ? host.events.length
                         //         : 0,
                         events: host.events ? host.events : 0,
-                        lastEmailed: host.lastEmailed,
+                        lastEmailed: host.everyTimeEmailed || host.lastEmailed,
                         notificationFrequency: host.notificationFrequency,
                         profile: host.artistProfile || '',
                         lastLogin: host.lastLogin || host.date,

@@ -336,7 +336,10 @@ module.exports = async () => {
                         let updatedHost = await Host.findOneAndUpdate(
                             //Update the Host's lastEmailed field, so that we can check it when we trigger the host email digest next time, to know if the host is ready for their next one
                             { _id: hostToEmail._id },
-                            { $set: { lastEmailed: new Date() } },
+                            {
+                                $set: { lastEmailed: new Date() },
+                                $addToSet: { everyTimeEmailed: new Date() },
+                            },
                             {
                                 new: true, //return the new document (after the update) . . . the default is to return the original document before the update
                                 rawResult: true,
