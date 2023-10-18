@@ -1437,11 +1437,16 @@ router.get('/myArtistEvents', auth, async (req, res) => {
                             preferredArtists: thisArtist._id,
                         },
                     ],
-                }
+                },
                 // {
                 //     artistEmail: req.user.email,
                 //     //'offersFromHosts.0': { $exists: true }, //checks to see if the first index of hostsOfferingToBook exists //https://www.mongodb.com/community/forums/t/is-there-a-way-to-query-array-fields-with-size-greater-than-some-specified-value/54597
                 // }
+                {
+                    declinedArtists: {
+                        message: 0, //0 means don't return this field
+                    },
+                }
             )
                 .select(
                     '-artistEmail -hostsOfferingToBook -latLong -hostsInReach'
@@ -1461,6 +1466,7 @@ router.get('/myArtistEvents', auth, async (req, res) => {
 
             res.json(myArtistEvents);
         } else {
+            //October 16th, 2023 ~Not sure what circumstance this 'else' is here for; I don't think myArtistEvents is going to get called by anyone without the ARTIST role, and I'm not sure what it would accomplish for them
             const myArtistEvents = await Event.find(
                 { artistEmail: req.user.email }
                 // {
@@ -1469,7 +1475,7 @@ router.get('/myArtistEvents', auth, async (req, res) => {
                 // }
             )
                 .select(
-                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -preferredArtists'
+                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -preferredArtists -declinedArtists'
                 )
                 .populate(
                     'offersFromHosts.host',
@@ -1651,7 +1657,7 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                     'offersFromHosts.host',
                     '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin -lastLastLogin -lastEmailed -notificationFrequency -date -createdAt'
                 )
-                .lean(); //.lean required to delete email later -- Documents returned from queries with the lean option enabled are plain javascript objects, not Mongoose Documents. They have no save method, getters/setters, virtuals, or other Mongoose features. https://stackoverflow.com/a/71746004/3338608
+                .lean(); //.lean required to delete Host's email later -- Documents returned from queries with the lean option enabled are plain javascript objects, not Mongoose Documents. They have no save method, getters/setters, virtuals, or other Mongoose features. https://stackoverflow.com/a/71746004/3338608
 
             if (eventDetails) {
                 console.log('eventDetails', eventDetails);
@@ -1690,6 +1696,124 @@ router.post('/artistAcceptOffer', [auth], async (req, res) => {
                             eventDetails.artist.squareImg) ||
                         thisArtist.squareImg,
                 });
+                delete eventDetails.confirmedHost.email;
+
+                //console.log('eventDetails', eventDetails);
+                res.json(eventDetails);
+            } else {
+                //console.log('This event is already booked.');
+                res.status(500).send('This event is already booked.');
+            }
+        } catch (err) {
+            console.log('artistAcceptOffer err', err);
+            res.status(500).send('Server Error: ' + err.message);
+        }
+    } else {
+        console.error(
+            req.user.email + " doesn't have authority to make these changes."
+        );
+        res.status(500).send(
+            'User does not have authority to make these changes.'
+        );
+    }
+
+    //res.json(eventCount + " event(s) submitted to the database."); //eventually remove this
+});
+
+// @route    POST api/events/artistDeclineOffer
+// @desc     Artist declined host's offer
+// @access   Private
+router.post('/artistDeclineOffer', [auth], async (req, res) => {
+    //console.log('artistAcceptOffer req.body', req.body);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    let eventFields = req.body;
+
+    const thisArtist = await Artist.findOne({
+        email: req.user.email,
+    });
+
+    //if (req.user.role === 'ADMIN' && eventFields.email !== '') {
+    if (req.user.role && req.user.role.indexOf('ARTIST') > -1) {
+        try {
+            // console.log('artistAcceptOffer eventFields', eventFields);
+
+            let eventDetails = await Event.findOneAndUpdate(
+                //https://www.mongodb.com/docs/manual/reference/operator/projection/
+                {
+                    $or: [
+                        { artistEmail: req.user.email },
+                        {
+                            createdBy: 'HOST',
+                            // status: { $ne: 'DRAFT' }, //not equal to 'DRAFT'
+                            preferredArtists: thisArtist._id,
+                        },
+                    ],
+                    bookingWhen: eventFields.bookingWhen,
+                    'offersFromHosts.host': eventFields.offeringHost._id,
+                    // status: 'PENDING',
+                },
+                {
+                    $addToSet: {
+                        declinedArtists: { artist: thisArtist._id },
+                    },
+                },
+                { new: true }
+            )
+                .select(
+                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach'
+                )
+                .populate(
+                    'confirmedHost',
+                    '_id email firstName lastName city state profileImg'
+                )
+                .populate('artist', 'squareImg')
+                .populate(
+                    'offersFromHosts.host',
+                    '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin -lastLastLogin -lastEmailed -notificationFrequency -date -createdAt'
+                )
+                .lean(); //.lean required to delete Host's email later -- Documents returned from queries with the lean option enabled are plain javascript objects, not Mongoose Documents. They have no save method, getters/setters, virtuals, or other Mongoose features. https://stackoverflow.com/a/71746004/3338608
+
+            if (eventDetails) {
+                console.log('eventDetails', eventDetails);
+                // let emailDate = new Date(
+                //     eventFields.bookingWhen
+                // ).toLocaleDateString(undefined, {
+                //     weekday: 'long',
+                //     year: 'numeric',
+                //     month: 'long',
+                //     day: 'numeric',
+                //     timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
+                // });
+                // const theEventDateForStacking = new Date(
+                //     eventDetails.bookingWhen
+                // )
+                //     .toDateString()
+                //     .split(' ');
+                //Send an email to the host and then delete the host's email address from the eventDetails object we return to the artist in the app
+                // sendEmail(eventDetails.confirmedHost.email, {
+                //     event: 'ARTIST_ACCEPTS_OFFER',
+                //     template: 'TFJSKATYZZMWHSNEGNPZCCYM4E1B',
+                //     hostName:
+                //         eventDetails.confirmedHost.firstName +
+                //         ' ' +
+                //         eventDetails.confirmedHost.lastName,
+                //     stageName: thisArtist.stageName,
+                //     eventDate: emailDate,
+                //     bookingWhenFormatted: theEventDateForStacking,
+                //     hostLocation:
+                //         eventDetails.confirmedHost.city +
+                //         ', ' +
+                //         eventDetails.confirmedHost.state,
+                //     hostImg: eventDetails.confirmedHost.profileImg,
+                //     artistImg:
+                //         (eventDetails.artist &&
+                //             eventDetails.artist.squareImg) ||
+                //         thisArtist.squareImg,
+                // });
                 delete eventDetails.confirmedHost.email;
 
                 //console.log('eventDetails', eventDetails);

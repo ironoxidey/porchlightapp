@@ -300,6 +300,30 @@ const HostDashboardEventCard = ({
                                         ) {
                                             confirmed = true;
                                         }
+                                        let declined = false;
+
+                                        if (
+                                            thisEvent.declinedArtists &&
+                                            thisEvent.declinedArtists.length >
+                                                -1
+                                        ) {
+                                            declined =
+                                                thisEvent.declinedArtists.filter(
+                                                    (declinedArtist) => {
+                                                        // console.log(
+                                                        //     'declinedArtist.artist | prefArtist._id',
+                                                        //     declinedArtist.artist +
+                                                        //         ' | ' +
+                                                        //         prefArtist._id
+                                                        // );
+                                                        return (
+                                                            declinedArtist.artist ===
+                                                            prefArtist._id
+                                                        );
+                                                    }
+                                                ).length > 0;
+                                            // console.log('declined', declined);
+                                        }
 
                                         if (
                                             thisEvent.preferredArtists.length >
@@ -333,77 +357,145 @@ const HostDashboardEventCard = ({
                                                     thisEvent._id
                                                 }
                                             >
-                                                {/* <Grid
-                                                    item
-                                                    sx={{
-                                                        // width: '100%',
-                                                        flexBasis: {
-                                                            xs: '80px',
-                                                            sm: '130px',
-                                                        },
-                                                        flexShrink: '3',
-                                                        flexGrow: '2',
-                                                    }}
-                                                > */}
-                                                <Box
-                                                    className="squareImgInACircle"
-                                                    sx={{
-                                                        display: 'flex',
-
-                                                        width:
-                                                            avatarSize + 'px',
-                                                        height:
-                                                            avatarSize + 'px',
-                                                        maxHeight:
-                                                            avatarSize + 'px',
-                                                        maxWidth:
-                                                            avatarSize + 'px',
-                                                        borderRadius: '50%',
-                                                        overflow: 'hidden',
-                                                        backgroundImage: `url("${prefArtist.squareImg}")`,
-                                                        backgroundBlendMode:
-                                                            confirmed
-                                                                ? 'normal'
-                                                                : 'soft-light',
-                                                        backgroundColor:
-                                                            'rgba(0,0,0,0.5)',
-                                                        backgroundPosition:
-                                                            '50% 25%',
-                                                        backgroundSize: 'cover',
-                                                        padding: '4px',
-                                                        backgroundClip:
-                                                            'content-box',
-                                                        border: confirmed
-                                                            ? '1px solid var(--link-color)'
-                                                            : '1px dashed var(--primary-color)',
-                                                        // margin: '0 8px 0 0',
-                                                        justifyContent:
-                                                            'center',
-                                                        alignItems: 'center',
-                                                        aspectRatio: '1 / 1',
-                                                    }}
+                                                <Tooltip
+                                                    title={
+                                                        !confirmed && !declined
+                                                            ? 'Haven’t heard from ' +
+                                                              prefArtist.stageName +
+                                                              '.'
+                                                            : confirmed === true
+                                                            ? prefArtist.stageName +
+                                                              ' accepted your offer.'
+                                                            : declined === true
+                                                            ? prefArtist.stageName +
+                                                              ' declined your offer.'
+                                                            : prefArtist.stageName
+                                                    }
+                                                    placement="bottom"
+                                                    arrow
                                                 >
-                                                    {!confirmed && (
-                                                        <Typography
-                                                            sx={{
-                                                                fontFamily:
-                                                                    'Tahoma',
-                                                                margin: 'auto',
-                                                                fontSize:
-                                                                    avatarSize *
-                                                                        0.8 +
-                                                                    'px',
-                                                                opacity: '.2',
-                                                                lineHeight: '1',
-                                                                textShadow:
-                                                                    '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
-                                                            }}
-                                                        >
-                                                            ?
-                                                        </Typography>
-                                                    )}
-                                                </Box>
-                                                {/* </Grid> */}
+                                                    {/* <Grid
+                                                        item
+                                                        sx={{
+                                                            // width: '100%',
+                                                            flexBasis: {
+                                                                xs: '80px',
+                                                                sm: '130px',
+                                                            },
+                                                            flexShrink: '3',
+                                                            flexGrow: '2',
+                                                        }}
+                                                    > */}
+                                                    <Box
+                                                        className="squareImgInACircle"
+                                                        sx={{
+                                                            display: 'flex',
+
+                                                            width:
+                                                                avatarSize +
+                                                                'px',
+                                                            height:
+                                                                avatarSize +
+                                                                'px',
+                                                            maxHeight:
+                                                                avatarSize +
+                                                                'px',
+                                                            maxWidth:
+                                                                avatarSize +
+                                                                'px',
+                                                            borderRadius: '50%',
+                                                            overflow: 'hidden',
+                                                            backgroundImage: `url("${prefArtist.squareImg}")`,
+                                                            backgroundBlendMode:
+                                                                confirmed
+                                                                    ? 'normal'
+                                                                    : declined
+                                                                    ? 'soft-light'
+                                                                    : 'soft-light',
+                                                            filter: declined
+                                                                ? 'grayscale(100%)'
+                                                                : '',
+                                                            backgroundColor:
+                                                                'rgba(0,0,0,0.5)',
+                                                            backgroundPosition:
+                                                                '50% 25%',
+                                                            backgroundSize:
+                                                                'cover',
+                                                            padding: '4px',
+                                                            backgroundClip:
+                                                                'content-box',
+                                                            border: confirmed
+                                                                ? '1px solid var(--link-color)'
+                                                                : declined
+                                                                ? '1px solid #777'
+                                                                : '1px dashed var(--primary-color)',
+                                                            // margin: '0 8px 0 0',
+                                                            justifyContent:
+                                                                'center',
+                                                            alignItems:
+                                                                'center',
+                                                            aspectRatio:
+                                                                '1 / 1',
+                                                        }}
+                                                    >
+                                                        {!confirmed &&
+                                                        !declined ? (
+                                                            <Typography
+                                                                sx={{
+                                                                    fontFamily:
+                                                                        'Tahoma',
+                                                                    margin: 'auto',
+                                                                    fontSize:
+                                                                        avatarSize *
+                                                                            0.8 +
+                                                                        'px',
+                                                                    opacity:
+                                                                        '.2',
+                                                                    lineHeight:
+                                                                        '1',
+                                                                    textShadow:
+                                                                        '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
+                                                                    cursor: 'default',
+                                                                    width: '100%',
+                                                                    textAlign:
+                                                                        'center',
+                                                                    borderRadius:
+                                                                        '100%',
+                                                                }}
+                                                            >
+                                                                ?
+                                                            </Typography>
+                                                        ) : (
+                                                            //this is here just for the sake of the Tooltip working
+                                                            <Typography
+                                                                sx={{
+                                                                    fontFamily:
+                                                                        'Tahoma',
+                                                                    margin: 'auto',
+                                                                    fontSize:
+                                                                        avatarSize *
+                                                                            0.8 +
+                                                                        'px',
+                                                                    opacity:
+                                                                        '.2',
+                                                                    lineHeight:
+                                                                        '1',
+                                                                    textShadow:
+                                                                        '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
+                                                                    cursor: 'default',
+                                                                    width: '100%',
+                                                                    textAlign:
+                                                                        'center',
+                                                                    borderRadius:
+                                                                        '100%',
+                                                                }}
+                                                            >
+                                                                &nbsp;
+                                                            </Typography>
+                                                        )}
+                                                    </Box>
+                                                    {/* </Grid> */}
+                                                </Tooltip>
                                             </Fragment>
                                         );
                                     }

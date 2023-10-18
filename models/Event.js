@@ -269,7 +269,17 @@ const EventSchema = new mongoose.Schema(
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'artist',
-                //required: true, //commented out June 27th, 2022 to make way for Host's to propose events
+            },
+        ],
+        declinedArtists: [
+            {
+                artist: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'artist',
+                },
+                message: {
+                    type: String,
+                },
             },
         ],
     },

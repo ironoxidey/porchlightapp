@@ -17,6 +17,7 @@ import {
     GET_THIS_ARTIST_EVENTS,
     GET_ALL_EVENTS,
     ARTIST_VIEWED_HOST_OFFER,
+    ARTIST_DECLINED_HOST_OFFER,
     ARTIST_ACCEPTED_HOST_OFFER,
     EVENTS_ERROR,
     AUTH_ERROR,
@@ -444,6 +445,51 @@ export const artistViewedHostOffer =
             //console.log('artistViewedHostOffer res.data:', res.data);
             dispatch({
                 type: ARTIST_VIEWED_HOST_OFFER,
+                payload: res.data,
+            });
+        } catch (err) {
+            console.log('error: ' + err);
+            const errors = err.response.data.errors;
+
+            if (errors) {
+                errors.forEach((error) =>
+                    dispatch(setAlert(error.msg, 'danger'))
+                );
+            }
+            dispatch({
+                type: UPDATE_EVENT_ERROR,
+                payload: {
+                    msg: err.response.statusText,
+                    status: err.response.status,
+                },
+            });
+            //dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        }
+    };
+
+// Artist declined Host's offer to book
+export const artistDeclinedHostOffer =
+    (theHost, theEvent, history) => async (dispatch) => {
+        let formData = {
+            bookingWhen: theEvent,
+            offeringHost: { _id: theHost },
+        };
+        //console.log('artistViewedHostOffer formData', formData);
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            //let formData = { ...theEvent, offeringHost: theHost };
+            const res = await axios.post(
+                '/api/events/artistDeclineOffer',
+                formData,
+                config
+            );
+            //console.log('artistViewedHostOffer res.data:', res.data);
+            dispatch({
+                type: ARTIST_DECLINED_HOST_OFFER,
                 payload: res.data,
             });
         } catch (err) {

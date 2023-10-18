@@ -1770,6 +1770,8 @@ const HostEventForm = ({
                 delete mostRecentlyUpdatedEventTrimmed.status;
                 delete mostRecentlyUpdatedEventTrimmed.hostUpdated;
                 delete mostRecentlyUpdatedEventTrimmed.geocodedBookingWhere;
+                delete mostRecentlyUpdatedEventTrimmed.confirmedArtist;
+                delete mostRecentlyUpdatedEventTrimmed.declinedArtists;
 
                 setFormData({
                     ...formData,

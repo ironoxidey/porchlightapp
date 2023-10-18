@@ -14,7 +14,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 
 import { StackDateforDisplay } from '../../actions/app';
-import { artistViewedHostOffer } from '../../actions/event';
+import {
+    artistViewedHostOffer,
+    artistDeclinedHostOffer,
+} from '../../actions/event';
 
 // import HostEventDetails from './HostEventDetails';
 
@@ -26,6 +29,7 @@ import EventDetails from '../events/EventDetails';
 const ArtistDashboardBookingOffers = ({
     thisEvent,
     artistViewedHostOffer,
+    artistDeclinedHostOffer,
     thisOffer,
     artistMe,
 }) => {
@@ -33,6 +37,7 @@ const ArtistDashboardBookingOffers = ({
 
     //Booking Details Dialog Functions
     const [eventDetailsDialogOpen, setEventDetailsDialogOpen] = useState(false);
+    const [declineDialogOpen, setDeclineDialogOpen] = useState(false);
 
     const [wantsToBook, setWantsToBook] = useState(false);
 
@@ -40,6 +45,9 @@ const ArtistDashboardBookingOffers = ({
         setDialogDetailsState({});
         setEventDetailsDialogOpen(false);
         setWantsToBook(false);
+    };
+    const declineDialogHandleClose = () => {
+        setDeclineDialogOpen(false);
     };
 
     const [eventDialogDetails, setDialogDetailsState] = useState({});
@@ -272,33 +280,186 @@ const ArtistDashboardBookingOffers = ({
                 thisEvent.confirmedHost &&
                 thisOffer.host.firstName &&
                 thisOffer.host.lastName && (
-                    <Grid
-                        item
-                        sx={{
-                            marginLeft: '0',
-                        }}
-                    >
-                        <Button
-                            btnwidth="200"
-                            onClick={() => {
-                                let eventDetails = {
-                                    ...thisEvent,
-
-                                    offeringHost: thisOffer.host,
-                                };
-                                // thisOffer.theEvent =
-                                //     thisEvent;
-                                !thisOffer.artistViewedOn &&
-                                    artistViewedHostOffer(
-                                        thisOffer.host._id,
-                                        thisEvent.bookingWhen
-                                    );
-                                handleEventBtnClick(thisOffer);
+                    <>
+                        <Grid
+                            item
+                            sx={{
+                                marginLeft: '0',
                             }}
                         >
-                            Concert Details
-                        </Button>
-                    </Grid>
+                            <Button
+                                btnwidth="200"
+                                onClick={() => {
+                                    let eventDetails = {
+                                        ...thisEvent,
+
+                                        offeringHost: thisOffer.host,
+                                    };
+                                    // thisOffer.theEvent =
+                                    //     thisEvent;
+                                    !thisOffer.artistViewedOn &&
+                                        artistViewedHostOffer(
+                                            thisOffer.host._id,
+                                            thisEvent.bookingWhen
+                                        );
+                                    handleEventBtnClick(thisOffer);
+                                }}
+                            >
+                                Concert Details
+                            </Button>
+                        </Grid>
+                        {thisEvent.status !== 'CONFIRMED' &&
+                            (!thisEvent.declinedArtists ||
+                                thisEvent.declinedArtists.filter(
+                                    (declinedArtist) => {
+                                        return (
+                                            declinedArtist.artist ===
+                                            artistMe._id
+                                        );
+                                    }
+                                ).length <= 0) && (
+                                <Grid
+                                    item
+                                    sx={{
+                                        marginLeft: '8px',
+                                    }}
+                                >
+                                    <Dialog
+                                        open={declineDialogOpen}
+                                        onClose={declineDialogHandleClose}
+                                        aria-labelledby="alert-dialog-title"
+                                        aria-describedby="alert-dialog-description"
+                                        className="porchlightBG"
+                                    >
+                                        <DialogTitle id="alert-dialog-title">
+                                            <Grid
+                                                container
+                                                sx={{
+                                                    flexDirection: 'row',
+                                                    // alignItems: 'center',
+                                                    justifyContent:
+                                                        'space-around',
+                                                }}
+                                            >
+                                                <Grid
+                                                    item
+                                                    sx={{ width: '130px' }}
+                                                >
+                                                    <Avatar
+                                                        alt={`${thisOffer.host.profileImg}`}
+                                                        src={`${thisOffer.host.profileImg}`}
+                                                        sx={{
+                                                            width: '130px',
+                                                            height: '130px',
+                                                            margin: '0 auto',
+                                                        }}
+                                                    />
+                                                </Grid>
+                                                <Grid
+                                                    item
+                                                    sx={{
+                                                        marginTop: '8px',
+                                                        minWidth: '150px',
+                                                    }}
+                                                >
+                                                    {/* <Typography
+                                                        component="p"
+                                                        sx={{
+                                                            fontSize: '1.1em',
+                                                        }}
+                                                    > */}
+                                                    {'Are you sure you want to decline this offer from ' +
+                                                        thisOffer.host
+                                                            .firstName +
+                                                        ' ' +
+                                                        thisOffer.host
+                                                            .lastName +
+                                                        '?'}
+                                                    {/* </Typography> */}
+                                                </Grid>
+                                            </Grid>
+                                        </DialogTitle>
+                                        <DialogContent>
+                                            <Box
+                                                sx={{
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    right: 0,
+                                                    backgroundColor:
+                                                        'rgba(0 0 0 /.6)',
+                                                    padding: '0',
+                                                    zIndex: 100,
+                                                }}
+                                            >
+                                                <StackDateforDisplay
+                                                    date={thisEvent.bookingWhen}
+                                                ></StackDateforDisplay>
+                                            </Box>
+                                            <DialogContentText id="alert-dialog-description"></DialogContentText>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Grid
+                                                container
+                                                sx={{
+                                                    flexDirection: 'row',
+                                                    justifyContent:
+                                                        'space-between',
+                                                    margin: '0 auto',
+                                                }}
+                                            >
+                                                <Grid item>
+                                                    <Button
+                                                        onClick={
+                                                            declineDialogHandleClose
+                                                        }
+                                                    >
+                                                        No
+                                                    </Button>
+                                                </Grid>
+                                                <Grid item>
+                                                    <Button
+                                                        onClick={(e) => {
+                                                            declineDialogHandleClose();
+                                                            let eventDetails = {
+                                                                ...thisEvent,
+
+                                                                offeringHost:
+                                                                    thisOffer.host,
+                                                            };
+                                                            artistDeclinedHostOffer(
+                                                                thisOffer.host
+                                                                    ._id,
+                                                                thisEvent.bookingWhen
+                                                            );
+                                                        }}
+                                                    >
+                                                        Yes
+                                                    </Button>
+                                                </Grid>
+                                            </Grid>
+                                        </DialogActions>
+                                    </Dialog>
+                                    <Button
+                                        btnwidth="140"
+                                        onClick={() => {
+                                            // let eventDetails = {
+                                            //     ...thisEvent,
+
+                                            //     offeringHost: thisOffer.host,
+                                            // };
+                                            // artistDeclinedHostOffer(
+                                            //     thisOffer.host._id,
+                                            //     thisEvent.bookingWhen
+                                            // );
+
+                                            setDeclineDialogOpen(true);
+                                        }}
+                                    >
+                                        Decline
+                                    </Button>
+                                </Grid>
+                            )}
+                    </>
                 )}
         </>
     );
@@ -308,6 +469,7 @@ ArtistDashboardBookingOffers.propTypes = {
     thisOffer: PropTypes.object.isRequired,
     thisEvent: PropTypes.object.isRequired,
     artistViewedHostOffer: PropTypes.func.isRequired,
+    artistDeclinedHostOffer: PropTypes.func.isRequired,
     artistMe: PropTypes.object,
 };
 
@@ -318,4 +480,5 @@ const mapStateToProps = (state) => ({
 //export default ArtistDashboardBookingOffers;
 export default connect(mapStateToProps, {
     artistViewedHostOffer,
+    artistDeclinedHostOffer,
 })(withRouter(ArtistDashboardBookingOffers)); //withRouter allows us to pass history objects

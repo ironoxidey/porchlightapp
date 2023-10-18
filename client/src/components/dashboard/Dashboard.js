@@ -82,6 +82,32 @@ const Dashboard = ({
         thisEvent.confirmedHost === host.me._id
             ? true
             : false;
+
+    const iDeclined = (thisEvent) =>
+        artist.me &&
+        (!thisEvent.declinedArtists ||
+            thisEvent.declinedArtists.filter((declinedArtist) => {
+                return declinedArtist.artist === artist.me._id;
+            }).length <= 0)
+            ? false
+            : true;
+    const iConfirmed = (thisEvent) => {
+        console.log(
+            thisEvent.bookingWhen,
+            'iConfirmed = ',
+            artist.me &&
+                thisEvent.confirmedArtist &&
+                thisEvent.confirmedArtist === artist.me._id
+                ? true
+                : false
+        );
+        return artist.me &&
+            thisEvent.confirmedArtist &&
+            thisEvent.confirmedArtist === artist.me._id
+            ? true
+            : false;
+    };
+
     useEffect(() => {
         if (
             user &&
@@ -469,7 +495,7 @@ const Dashboard = ({
                                                 <Typography component="h2">
                                                     {myArtistEvents.filter(
                                                         (myEvent) =>
-                                                            !myEvent.confirmedHost &&
+                                                            myEvent.confirmedHost &&
                                                             myEvent.createdBy ===
                                                                 'HOST' &&
                                                             myEvent.offersFromHosts &&
@@ -587,7 +613,8 @@ const Dashboard = ({
                                     myArtistEvents.filter(
                                         (myEvent) =>
                                             myEvent.confirmedHost &&
-                                            myEvent.status === 'CONFIRMED'
+                                            myEvent.status === 'CONFIRMED' &&
+                                            iConfirmed(myEvent)
                                     ).length > 0 && (
                                         <Grid
                                             container
@@ -600,15 +627,19 @@ const Dashboard = ({
                                                         (myEvent) =>
                                                             myEvent.confirmedHost &&
                                                             myEvent.status ===
-                                                                'CONFIRMED'
+                                                                'CONFIRMED' &&
+                                                            iConfirmed(myEvent)
                                                     ).length > 1
-                                                        ? `These ${
+                                                        ? `You booked these ${
                                                               myArtistEvents.filter(
                                                                   (myEvent) =>
-                                                                      myEvent.confirmedHost
+                                                                      myEvent.confirmedHost &&
+                                                                      iConfirmed(
+                                                                          myEvent
+                                                                      )
                                                               ).length
-                                                          } concerts have been confirmed`
-                                                        : `This concert has been confirmed`}
+                                                          } concerts`
+                                                        : `You booked this concert`}
                                                     :
                                                 </Typography>
                                             </Grid>
@@ -630,7 +661,79 @@ const Dashboard = ({
                                                     (myEvent) =>
                                                         myEvent.confirmedHost &&
                                                         myEvent.status ===
-                                                            'CONFIRMED'
+                                                            'CONFIRMED' &&
+                                                        iConfirmed(myEvent)
+                                                )
+                                                .map(
+                                                    (thisEvent, idx) =>
+                                                        thisEvent.bookingWhen &&
+                                                        thisEvent.bookingWhere && (
+                                                            <ArtistDashboardEventCard
+                                                                key={idx}
+                                                                thisEvent={
+                                                                    thisEvent
+                                                                }
+                                                            />
+                                                        )
+                                                )}
+                                        </Grid>
+                                    )}
+                                {/* Confirmed by other artist concerts */}
+                                {myArtistEvents &&
+                                    myArtistEvents.length > 0 &&
+                                    myArtistEvents.filter(
+                                        (myEvent) =>
+                                            myEvent.confirmedHost &&
+                                            myEvent.status === 'CONFIRMED' &&
+                                            !iConfirmed(myEvent)
+                                    ).length > 0 && (
+                                        <Grid
+                                            container
+                                            direction="column"
+                                            sx={{ marginBottom: '20px' }}
+                                        >
+                                            <Grid item>
+                                                <Typography component="h2">
+                                                    {myArtistEvents.filter(
+                                                        (myEvent) =>
+                                                            myEvent.confirmedHost &&
+                                                            myEvent.status ===
+                                                                'CONFIRMED' &&
+                                                            !iConfirmed(myEvent)
+                                                    ).length > 1
+                                                        ? `These ${
+                                                              myArtistEvents.filter(
+                                                                  (myEvent) =>
+                                                                      myEvent.confirmedHost &&
+                                                                      !iConfirmed(
+                                                                          myEvent
+                                                                      )
+                                                              ).length
+                                                          } concerts were booked by another artist`
+                                                        : `This concert was booked by another artist`}
+                                                    :
+                                                </Typography>
+                                            </Grid>
+                                            {/* {bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry */}
+                                            <Grid
+                                                container
+                                                className="whenBooking"
+                                                direction="row"
+                                                justifyContent="center"
+                                                alignItems="center"
+                                                spacing={2}
+                                                sx={{
+                                                    margin: '0px auto 16px',
+                                                    width: '100%',
+                                                }}
+                                            ></Grid>
+                                            {myArtistEvents
+                                                .filter(
+                                                    (myEvent) =>
+                                                        myEvent.confirmedHost &&
+                                                        myEvent.status ===
+                                                            'CONFIRMED' &&
+                                                        !iConfirmed(myEvent)
                                                 )
                                                 .map(
                                                     (thisEvent, idx) =>
