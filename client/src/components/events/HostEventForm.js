@@ -588,17 +588,52 @@ const HostEventForm = ({
             ],
         ],
         preferredArtists: [
-            <FormLabel component="legend">
-                Who would you like to invite to perform?
-                <br />
-                <small>
-                    (Please consider giving local artists priority in your
-                    offers to host. We want to help you invest in your
-                    community, and the relationships you develop with local
-                    artists have the potential to become most meaningful to you
-                    and your community over time.)
-                </small>
-            </FormLabel>,
+            [
+                <FormLabel component="legend">
+                    Who would you like to invite to perform?
+                </FormLabel>,
+                <Grid className="clarifyingText" item>
+                    <FormLabel
+                        component="small"
+                        sx={{
+                            textAlign: 'left',
+                            display: 'block',
+                            marginTop: '6px',
+                        }}
+                    >
+                        Consider giving local artists priority in your offers to
+                        host. We want to help you invest in your community, and
+                        the relationships you develop with local artists have
+                        the potential to become most meaningful to you and your
+                        community over time.
+                    </FormLabel>
+                    <FormLabel
+                        component="small"
+                        sx={{
+                            textAlign: 'left',
+                            display: 'block',
+                            marginTop: '8px',
+                        }}
+                    >
+                        Also, please do your homework on the artist/artists you
+                        invite to perform (checkout each artist’s profile to
+                        read about them, watch their Artist Statement video, and
+                        listen to their music).
+                    </FormLabel>
+                    <FormLabel
+                        component="small"
+                        sx={{
+                            textAlign: 'left',
+                            display: 'block',
+                            marginTop: '8px',
+                        }}
+                    >
+                        If you select multiple artists, we believe preference
+                        should be given to the first artist who wants to accept
+                        the offer.
+                    </FormLabel>
+                </Grid>,
+            ],
             [
                 <Grid item xs={12} sx={{ width: '100%' }}>
                     <Autocomplete
@@ -703,7 +738,7 @@ const HostEventForm = ({
                                 variant="standard"
                                 label={'I’d like to invite'}
                                 name="preferredArtists"
-                                helperText="(Select the artists you’d like to invite from the list)"
+                                helperText="(Select the artists you’d like to invite from the list or map. Note: artists in the same city will have overlapping map pins, and will be hard to select from the map.)"
                             />
                         )}
                     />

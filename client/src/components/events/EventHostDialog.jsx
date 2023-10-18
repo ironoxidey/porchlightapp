@@ -290,17 +290,17 @@ const EventHostDialog = (props) => {
                                                                                     : 'var(--primary-color)'
                                                                             }`,
                                                                             fontSize:
-                                                                                '.8em',
+                                                                                '.7em',
                                                                             margin: '0',
                                                                             lineHeight:
                                                                                 '1',
                                                                         }}
                                                                     >
                                                                         {confirmed
-                                                                            ? 'Accepted'
+                                                                            ? '(Accepted)'
                                                                             : declined
-                                                                            ? 'Declined'
-                                                                            : 'Hasn’t responded'}
+                                                                            ? '(Declined)'
+                                                                            : '(Hasn’t responded)'}
                                                                     </Typography>
                                                                 </Grid>
                                                             </Grid>
