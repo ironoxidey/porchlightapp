@@ -317,7 +317,42 @@ const HostProfile = ({
                                                 marginTop: '4px',
                                             }}
                                         >
-                                            <a href={`mailto:${theHost.email}`}>
+                                            <a
+                                                href={
+                                                    theEvent
+                                                        ? `mailto:${
+                                                              theHost.email
+                                                          }?subject=Following up about your offer to host the Porchlight concert on ${encodeURIComponent(
+                                                              new Date(
+                                                                  theEvent.bookingWhen
+                                                              ).toLocaleDateString(
+                                                                  undefined,
+                                                                  {
+                                                                      weekday:
+                                                                          'long',
+                                                                      year: 'numeric',
+                                                                      month: 'long',
+                                                                      day: 'numeric',
+                                                                      timeZone:
+                                                                          'UTC', //fixes timezone issues where users see the date a day off sometimes
+                                                                  }
+                                                              )
+                                                          )} in ${encodeURIComponent(
+                                                              theEvent
+                                                                  .bookingWhere
+                                                                  .city
+                                                          )}, ${encodeURIComponent(
+                                                              theEvent
+                                                                  .bookingWhere
+                                                                  .state
+                                                          )}!&body=Hi ${encodeURIComponent(
+                                                              theHost.firstName
+                                                          )},
+                                                            `
+                                                        : `mailto:${theHost.email}`
+                                                }
+                                                target="_blank"
+                                            >
                                                 <Typography
                                                     component="h3"
                                                     sx={{

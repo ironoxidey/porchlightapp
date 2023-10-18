@@ -92,6 +92,19 @@ const ArtistDashboardBookingOffers = ({
                                 date={thisEvent.bookingWhen}
                             ></StackDateforDisplay>
                         </Box>
+                        {thisEvent.preferredArtists &&
+                            thisEvent.preferredArtists.length > 1 && (
+                                <p
+                                    style={{
+                                        textAlign: 'center',
+                                        marginBottom: '8px',
+                                    }}
+                                >
+                                    You are one of{' '}
+                                    {thisEvent.preferredArtists.length} artists
+                                    invited to possibly perform this concert.
+                                </p>
+                            )}
                         <HostProfile
                             theHost={eventDialogDetails.host}
                             theEvent={thisEvent}
