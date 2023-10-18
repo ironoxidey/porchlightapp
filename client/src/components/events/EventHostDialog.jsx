@@ -64,6 +64,7 @@ const EventHostDialog = (props) => {
                                     backgroundColor: 'rgba(0 0 0 /.6)',
                                     padding: '0',
                                     zIndex: 100,
+                                    display: { xs: 'none', sm: 'block' },
                                 }}
                             >
                                 <StackDateforDisplay
@@ -76,7 +77,12 @@ const EventHostDialog = (props) => {
                                     <Box sx={{ marginTop: '16px' }}>
                                         <Typography
                                             variant="h2"
-                                            sx={{ margin: '0 50px' }}
+                                            sx={{
+                                                margin: {
+                                                    xs: '0 8px 0 ',
+                                                    sm: '0 50px',
+                                                },
+                                            }}
                                         >
                                             Your proposal to host this show on{' '}
                                             {new Date(
@@ -100,17 +106,57 @@ const EventHostDialog = (props) => {
                                             container
                                             sx={{
                                                 justifyContent: 'center',
-                                                alignItems: 'center',
+                                                alignItems: 'start',
                                                 margin: '8px 4px',
                                                 flexDirection: 'row',
                                             }}
                                         >
                                             {props.theEvent.preferredArtists.map(
                                                 (prefArtist) => {
+                                                    let confirmed = false;
+
+                                                    if (
+                                                        props.theEvent
+                                                            .confirmedArtist &&
+                                                        props.theEvent
+                                                            .confirmedArtist ===
+                                                            prefArtist._id
+                                                    ) {
+                                                        confirmed = true;
+                                                    }
+                                                    let declined = false;
+
+                                                    if (
+                                                        props.theEvent
+                                                            .declinedArtists &&
+                                                        props.theEvent
+                                                            .declinedArtists
+                                                            .length > -1
+                                                    ) {
+                                                        declined =
+                                                            props.theEvent.declinedArtists.filter(
+                                                                (
+                                                                    declinedArtist
+                                                                ) => {
+                                                                    // console.log(
+                                                                    //     'declinedArtist.artist | prefArtist._id',
+                                                                    //     declinedArtist.artist +
+                                                                    //         ' | ' +
+                                                                    //         prefArtist._id
+                                                                    // );
+                                                                    return (
+                                                                        declinedArtist.artist ===
+                                                                        prefArtist._id
+                                                                    );
+                                                                }
+                                                            ).length > 0;
+                                                        // console.log('declined', declined);
+                                                    }
                                                     return (
                                                         <>
                                                             <Grid
                                                                 item
+                                                                container
                                                                 sx={{
                                                                     textAlign:
                                                                         'center',
@@ -119,23 +165,144 @@ const EventHostDialog = (props) => {
                                                                         '8px',
                                                                     background:
                                                                         'rgba(0 0 0 / .2)',
+                                                                    flexDirection:
+                                                                        'column',
+                                                                    maxWidth: {
+                                                                        xs: '100px',
+                                                                        sm: '120px',
+                                                                        md: '180px',
+                                                                    },
+                                                                    filter: declined
+                                                                        ? 'grayscale(100%)blur(.5px)'
+                                                                        : '',
                                                                 }}
                                                             >
-                                                                <Avatar
-                                                                    src={
-                                                                        prefArtist.squareImg
-                                                                    }
+                                                                <Grid
+                                                                    item
+                                                                    className="prefArtistAvatar"
+                                                                >
+                                                                    {/* <Avatar
+                                                                        src={
+                                                                            prefArtist.squareImg
+                                                                        }
+                                                                        sx={{
+                                                                            margin: '0 auto 4px',
+                                                                            width: '50px',
+                                                                            height: '50px',
+                                                                            border: confirmed
+                                                                                ? '1px solid var(--link-color)'
+                                                                                : declined
+                                                                                ? '1px solid #777'
+                                                                                : '1px dashed var(--primary-color)',
+                                                                            padding:
+                                                                                '4px',
+                                                                        }}
+                                                                    /> */}
+                                                                    <Box
+                                                                        className="squareImgInACircle"
+                                                                        sx={{
+                                                                            display:
+                                                                                'flex',
+
+                                                                            width: {
+                                                                                xs: '70px',
+                                                                                sm: '80px',
+                                                                            },
+                                                                            height: {
+                                                                                xs: '70px',
+                                                                                sm: '80px',
+                                                                            },
+                                                                            maxHeight:
+                                                                                '80px',
+                                                                            maxWidth:
+                                                                                '80px',
+                                                                            borderRadius:
+                                                                                '50%',
+                                                                            overflow:
+                                                                                'hidden',
+                                                                            backgroundImage: `url("${prefArtist.squareImg}")`,
+                                                                            backgroundBlendMode:
+                                                                                'normal',
+                                                                            backgroundColor:
+                                                                                'rgba(0,0,0,0.5)',
+                                                                            backgroundPosition:
+                                                                                '50% 25%',
+                                                                            backgroundSize:
+                                                                                'cover',
+                                                                            padding:
+                                                                                '4px',
+                                                                            backgroundClip:
+                                                                                'content-box',
+                                                                            border: confirmed
+                                                                                ? '1px solid var(--link-color)'
+                                                                                : declined
+                                                                                ? '1px solid #bbb'
+                                                                                : '1px dashed var(--primary-color)',
+                                                                            // margin: '0 8px 0 0',
+                                                                            justifyContent:
+                                                                                'center',
+                                                                            alignItems:
+                                                                                'center',
+                                                                            aspectRatio:
+                                                                                '1 / 1',
+                                                                            margin: '0 auto 4px',
+                                                                        }}
+                                                                    ></Box>
+                                                                </Grid>
+                                                                <Grid
+                                                                    item
+                                                                    className="prefArtistStageName"
                                                                     sx={{
-                                                                        margin: '0 auto 4px',
-                                                                        width: '50px',
-                                                                        height: '50px',
+                                                                        margin: '0',
+                                                                        lineHeight:
+                                                                            '1.3',
                                                                     }}
-                                                                />
-                                                                <Typography variant="span">
-                                                                    {
-                                                                        prefArtist.stageName
-                                                                    }
-                                                                </Typography>
+                                                                >
+                                                                    <Typography
+                                                                        variant="span"
+                                                                        sx={{
+                                                                            margin: '0',
+                                                                            lineHeight:
+                                                                                '.6',
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            prefArtist.stageName
+                                                                        }
+                                                                    </Typography>
+                                                                </Grid>
+                                                                <Grid
+                                                                    item
+                                                                    className="prefArtistStatus"
+                                                                    sx={{
+                                                                        lineHeight:
+                                                                            '1.2',
+                                                                    }}
+                                                                >
+                                                                    <Typography
+                                                                        variant="span"
+                                                                        sx={{
+                                                                            color: `${
+                                                                                confirmed
+                                                                                    ? 'var(--link-color)'
+                                                                                    : declined
+                                                                                    ? '#bbb'
+                                                                                    : 'var(--primary-color)'
+                                                                            }`,
+                                                                            fontSize:
+                                                                                '.8em',
+                                                                            margin: '0',
+                                                                            lineHeight:
+                                                                                '1',
+                                                                        }}
+                                                                    >
+                                                                        {confirmed
+                                                                            ? 'Accepted'
+                                                                            : declined
+                                                                            ? 'Declined'
+                                                                            : 'Hasn’t responded'}
+                                                                    </Typography>
+                                                                </Grid>
                                                             </Grid>
                                                         </>
                                                     );
