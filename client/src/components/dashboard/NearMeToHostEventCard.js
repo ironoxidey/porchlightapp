@@ -97,7 +97,7 @@ const NearMeToHostEventCard = ({
                 ) //if queryEventID is NOT in nearMeToHost)
             ) {
                 getEventByID(queryEventID);
-                console.log('queryEventID NOT in nearMeToHost');
+                // console.log('queryEventID NOT in nearMeToHost');
             }
             //
         }

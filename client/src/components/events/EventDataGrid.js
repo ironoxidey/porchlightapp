@@ -278,10 +278,10 @@ const EventDataGrid = ({
                     ).length <= 0
                         ? false
                         : true;
-                console.log(
-                    'props.row.theEvent.confirmedArtist',
-                    props.row.theEvent.confirmedArtist
-                );
+                // console.log(
+                //     'props.row.theEvent.confirmedArtist',
+                //     props.row.theEvent.confirmedArtist
+                // );
                 const artistConfirmed =
                     props.row.theEvent.confirmedArtist &&
                     props.row.theEvent.confirmedArtist._id === thePrefArtist._id
@@ -536,28 +536,29 @@ const EventDataGrid = ({
                                                                 '1 / 1',
                                                         }}
                                                     >
-                                                        {!confirmed && (
-                                                            <Typography
-                                                                sx={{
-                                                                    fontFamily:
-                                                                        'Tahoma',
-                                                                    margin: 'auto',
-                                                                    fontSize:
-                                                                        avatarSize *
-                                                                            0.8 +
-                                                                        'px',
-                                                                    opacity:
-                                                                        '.2',
-                                                                    lineHeight:
-                                                                        '1',
-                                                                    textShadow:
-                                                                        '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
-                                                                    cursor: 'default',
-                                                                }}
-                                                            >
-                                                                ?
-                                                            </Typography>
-                                                        )}
+                                                        {!confirmed &&
+                                                            !declined && (
+                                                                <Typography
+                                                                    sx={{
+                                                                        fontFamily:
+                                                                            'Tahoma',
+                                                                        margin: 'auto',
+                                                                        fontSize:
+                                                                            avatarSize *
+                                                                                0.8 +
+                                                                            'px',
+                                                                        opacity:
+                                                                            '.2',
+                                                                        lineHeight:
+                                                                            '1',
+                                                                        textShadow:
+                                                                            '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
+                                                                        cursor: 'default',
+                                                                    }}
+                                                                >
+                                                                    ?
+                                                                </Typography>
+                                                            )}
                                                     </Box>
                                                     {/* </Tooltip> */}
                                                 </Grid>

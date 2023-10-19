@@ -49,7 +49,7 @@ const HostTermsAgreement = ({ agreeToHostTerms, hostMe }) => {
     };
 
     const checkboxOnChange = () => {
-        console.log('hostAgreedToTerms', hostAgreedToTerms);
+        // console.log('hostAgreedToTerms', hostAgreedToTerms);
         if (hostAgreedToTerms === false) {
             //if it's unchecked, check it
             setHostAgreedToTerms(true);

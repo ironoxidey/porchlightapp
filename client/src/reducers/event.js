@@ -42,7 +42,7 @@ export default function (state = initialState, action) {
             let updateNearMeToHost = state.nearMeToHost.findIndex(
                 (artistEvent) => artistEvent._id === payload._id
             ); //if -1 then insert
-            console.log('updateNearMeToHost: ', updateNearMeToHost);
+            // console.log('updateNearMeToHost: ', updateNearMeToHost);
             return {
                 ...state,
                 nearMeToHost:
@@ -144,7 +144,7 @@ export default function (state = initialState, action) {
                     }
                 }
             );
-            console.log('newNearMeToHost', newNearMeToHost);
+            // console.log('newNearMeToHost', newNearMeToHost);
             return {
                 ...state,
                 myHostEvents: [...state.myHostEvents, payload],
