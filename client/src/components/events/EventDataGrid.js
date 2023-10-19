@@ -267,6 +267,119 @@ const EventDataGrid = ({
             getArtistSlug();
         }, []);
 
+        let preferredArtists = props.row.theEvent.preferredArtists.map(
+            (thePrefArtist, i) => {
+                const artistDeclined =
+                    !props.row.theEvent.declinedArtists ||
+                    props.row.theEvent.declinedArtists.filter(
+                        (declinedArtist) => {
+                            return declinedArtist.artist === thePrefArtist._id;
+                        }
+                    ).length <= 0
+                        ? false
+                        : true;
+                console.log(
+                    'props.row.theEvent.confirmedArtist',
+                    props.row.theEvent.confirmedArtist
+                );
+                const artistConfirmed =
+                    props.row.theEvent.confirmedArtist &&
+                    props.row.theEvent.confirmedArtist._id === thePrefArtist._id
+                        ? true
+                        : false;
+
+                return (
+                    <>
+                        <Grid
+                            container
+                            sx={{
+                                justifyContent: 'space-between',
+                                flexDirection: 'row',
+                                flexWrap: 'nowrap',
+                                alignItems: 'center',
+                                width: 'max-content',
+                            }}
+                        >
+                            <>
+                                <Grid item sx={{ padding: '4px 4px 4px 0px' }}>
+                                    <Box
+                                        className="squareImgInACircle"
+                                        sx={{
+                                            display: 'flex',
+
+                                            width: '40px',
+                                            height: '40px',
+                                            maxHeight: '40px',
+                                            maxWidth: '40px',
+                                            borderRadius: '50%',
+                                            overflow: 'hidden',
+                                            backgroundImage: `url("${thePrefArtist.squareImg}")`,
+                                            backgroundBlendMode: 'normal',
+                                            // filter: declined
+                                            //     ? 'grayscale(100%)'
+                                            //     : '',
+                                            backgroundColor: 'rgba(0,0,0,0.5)',
+                                            backgroundPosition: '50% 25%',
+                                            backgroundSize: 'cover',
+                                            padding: '4px',
+                                            backgroundClip: 'content-box',
+                                            border: artistConfirmed
+                                                ? '1px solid var(--link-color)'
+                                                : artistDeclined
+                                                ? '1px solid #777'
+                                                : '1px dashed var(--primary-color)',
+                                            // margin: '0 8px 0 0',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            aspectRatio: '1 / 1',
+                                        }}
+                                    ></Box>
+                                </Grid>
+
+                                <Grid
+                                    container
+                                    item
+                                    sx={{ flexDirection: 'column' }}
+                                >
+                                    <Grid
+                                        item
+                                        sx={{
+                                            display: 'block',
+                                            width: 'auto',
+                                            // whiteSpace: 'nowrap',
+                                        }}
+                                    >
+                                        {thePrefArtist.stageName}
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        sx={{
+                                            display: 'block',
+                                            width: 'auto',
+                                            color: `${
+                                                artistConfirmed
+                                                    ? 'var(--link-color)'
+                                                    : artistDeclined
+                                                    ? '#bbb'
+                                                    : 'var(--primary-color)'
+                                            }`,
+                                            fontSize: '.9em',
+                                        }}
+                                    >
+                                        {artistConfirmed
+                                            ? '(Accepted)'
+                                            : artistDeclined
+                                            ? '(Declined)'
+                                            : '(Hasn’t responded)'}
+                                    </Grid>
+                                </Grid>
+                            </>
+                        </Grid>
+                    </>
+                );
+            }
+        );
+
         //console.log('artistSlug', artistSlug);
         return (
             <>
@@ -287,75 +400,95 @@ const EventDataGrid = ({
 
                 {props.row.theEvent.preferredArtists &&
                     props.row.theEvent.preferredArtists.length > 0 && (
-                        <Grid
-                            item
-                            sx={{
-                                width: '30px',
-                                height: '30px',
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                flexDirection: 'row',
-                                // margin: '0 8px 0 0',
-                                margin: '0 4px',
-                                justifyContent: 'space-around',
-                                // alignItems: 'space-between',
-                                alignContent: 'space-evenly',
-                            }}
-                            className="preferredArtistsWrapper"
+                        <CustomWidthTooltip
+                            arrow={true}
+                            placement="bottom"
+                            title={<>{preferredArtists}</>}
                         >
-                            {props.row.theEvent.preferredArtists.map(
-                                (prefArtist) => {
-                                    let avatarSize =
-                                        30 /
+                            <Grid
+                                item
+                                sx={{
+                                    width: '30px',
+                                    height: '30px',
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    flexDirection: 'row',
+                                    // margin: '0 8px 0 0',
+                                    margin: '0 4px',
+                                    justifyContent: 'space-around',
+                                    // alignItems: 'space-between',
+                                    alignContent: 'space-evenly',
+                                }}
+                                className="preferredArtistsWrapper"
+                            >
+                                {props.row.theEvent.preferredArtists.map(
+                                    (prefArtist) => {
+                                        let avatarSize =
+                                            30 /
+                                                props.row.theEvent
+                                                    .preferredArtists.length -
+                                            4 *
+                                                (props.row.theEvent
+                                                    .preferredArtists.length -
+                                                    1);
+
+                                        let confirmed = false;
+
+                                        const declined =
+                                            !props.row.theEvent
+                                                .declinedArtists ||
+                                            props.row.theEvent.declinedArtists.filter(
+                                                (declinedArtist) => {
+                                                    return (
+                                                        declinedArtist.artist ===
+                                                        prefArtist._id
+                                                    );
+                                                }
+                                            ).length <= 0
+                                                ? false
+                                                : true;
+
+                                        if (
+                                            props.row.theEvent
+                                                .confirmedArtist &&
+                                            props.row.theEvent.confirmedArtist
+                                                ._id === prefArtist._id
+                                        ) {
+                                            confirmed = true;
+                                        }
+
+                                        if (
                                             props.row.theEvent.preferredArtists
-                                                .length -
-                                        4 *
-                                            (props.row.theEvent.preferredArtists
-                                                .length -
-                                                1);
+                                                .length > 2
+                                        ) {
+                                            // Find the square root of the input number
+                                            const squareRoot = Math.sqrt(
+                                                props.row.theEvent
+                                                    .preferredArtists.length
+                                            );
 
-                                    let confirmed = false;
+                                            // Round up the square root to the nearest integer
+                                            const roundedSquareRoot =
+                                                Math.ceil(squareRoot);
 
-                                    if (
-                                        props.row.theEvent.confirmedArtist &&
-                                        props.row.theEvent.confirmedArtist
-                                            ._id === prefArtist._id
-                                    ) {
-                                        confirmed = true;
-                                    }
+                                            // Calculate the square of the rounded square root
+                                            const roundedSquare =
+                                                roundedSquareRoot *
+                                                roundedSquareRoot;
 
-                                    if (
-                                        props.row.theEvent.preferredArtists
-                                            .length > 2
-                                    ) {
-                                        // Find the square root of the input number
-                                        const squareRoot = Math.sqrt(
-                                            props.row.theEvent.preferredArtists
-                                                .length
-                                        );
+                                            avatarSize =
+                                                30 / roundedSquareRoot -
+                                                4 * (roundedSquareRoot - 1);
+                                        }
 
-                                        // Round up the square root to the nearest integer
-                                        const roundedSquareRoot =
-                                            Math.ceil(squareRoot);
-
-                                        // Calculate the square of the rounded square root
-                                        const roundedSquare =
-                                            roundedSquareRoot *
-                                            roundedSquareRoot;
-
-                                        avatarSize =
-                                            30 / roundedSquareRoot -
-                                            4 * (roundedSquareRoot - 1);
-                                    }
-
-                                    return (
-                                        <>
-                                            <Grid item>
-                                                <Tooltip
+                                        return (
+                                            <>
+                                                <Grid item>
+                                                    {/* <Tooltip
                                                     arrow={true}
                                                     placement="bottom"
                                                     title={prefArtist.stageName}
-                                                >
+                                                > */}
                                                     <Box
                                                         className="squareImgInACircle"
                                                         sx={{
@@ -391,6 +524,8 @@ const EventDataGrid = ({
                                                                 'content-box',
                                                             border: confirmed
                                                                 ? '1px solid var(--link-color)'
+                                                                : declined
+                                                                ? '1px solid #777'
                                                                 : '1px dashed var(--primary-color)',
                                                             // margin: '0 8px 0 0',
                                                             justifyContent:
@@ -424,13 +559,14 @@ const EventDataGrid = ({
                                                             </Typography>
                                                         )}
                                                     </Box>
-                                                </Tooltip>
-                                            </Grid>
-                                        </>
-                                    );
-                                }
-                            )}
-                        </Grid>
+                                                    {/* </Tooltip> */}
+                                                </Grid>
+                                            </>
+                                        );
+                                    }
+                                )}
+                            </Grid>
+                        </CustomWidthTooltip>
                     )}
             </>
         );
