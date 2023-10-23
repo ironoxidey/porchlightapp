@@ -693,7 +693,7 @@ const HostDataGrid = ({
                             </span>
                         </CustomWidthTooltip>
                     );
-                } else if (params.value) {
+                } else if (params.value && params.value != '') {
                     return new Date(params.value).toLocaleString('en-US');
                 } else {
                     return;
