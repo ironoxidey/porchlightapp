@@ -476,9 +476,12 @@ const EventDataGrid = ({
                                                 roundedSquareRoot *
                                                 roundedSquareRoot;
 
-                                            avatarSize =
-                                                30 / roundedSquareRoot -
-                                                4 * (roundedSquareRoot - 1);
+                                            avatarSize = Math.abs(
+                                                //to avoid negative numbers
+                                                30 / roundedSquareRoot //30, because that's the size of a single profile image
+                                                // -
+                                                // 4 * (roundedSquareRoot - 1) //add spacing around
+                                            );
                                         }
 
                                         return (
@@ -537,28 +540,73 @@ const EventDataGrid = ({
                                                         }}
                                                     >
                                                         {!confirmed &&
-                                                            !declined && (
-                                                                <Typography
-                                                                    sx={{
-                                                                        fontFamily:
-                                                                            'Tahoma',
-                                                                        margin: 'auto',
-                                                                        fontSize:
-                                                                            avatarSize *
-                                                                                0.8 +
-                                                                            'px',
-                                                                        opacity:
-                                                                            '.2',
-                                                                        lineHeight:
-                                                                            '1',
-                                                                        textShadow:
-                                                                            '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
-                                                                        cursor: 'default',
-                                                                    }}
-                                                                >
-                                                                    ?
-                                                                </Typography>
-                                                            )}
+                                                        !declined ? (
+                                                            <Typography
+                                                                sx={{
+                                                                    // width:
+                                                                    //     avatarSize +
+                                                                    //     'px',
+                                                                    // height:
+                                                                    //     avatarSize +
+                                                                    //     'px',
+                                                                    // maxHeight:
+                                                                    //     avatarSize +
+                                                                    //     'px',
+                                                                    // maxWidth:
+                                                                    //     avatarSize +
+                                                                    //     'px',
+                                                                    fontFamily:
+                                                                        'Tahoma',
+                                                                    margin: 'auto',
+                                                                    fontSize:
+                                                                        avatarSize *
+                                                                            0.8 +
+                                                                        'px',
+                                                                    opacity:
+                                                                        '.2',
+                                                                    lineHeight:
+                                                                        '1',
+                                                                    textShadow:
+                                                                        '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
+                                                                    cursor: 'default',
+                                                                }}
+                                                            >
+                                                                ?
+                                                            </Typography>
+                                                        ) : (
+                                                            <Typography
+                                                                sx={{
+                                                                    // width:
+                                                                    //     avatarSize +
+                                                                    //     'px',
+                                                                    // height:
+                                                                    //     avatarSize +
+                                                                    //     'px',
+                                                                    // maxHeight:
+                                                                    //     avatarSize +
+                                                                    //     'px',
+                                                                    // maxWidth:
+                                                                    //     avatarSize +
+                                                                    //     'px',
+                                                                    fontFamily:
+                                                                        'Tahoma',
+                                                                    margin: 'auto',
+                                                                    fontSize:
+                                                                        avatarSize *
+                                                                            0.8 +
+                                                                        'px',
+                                                                    opacity:
+                                                                        '.2',
+                                                                    lineHeight:
+                                                                        '1',
+                                                                    textShadow:
+                                                                        '0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1), 0 0 5px rgba(0,0,0,1);',
+                                                                    cursor: 'default',
+                                                                }}
+                                                            >
+                                                                &nbsp;
+                                                            </Typography>
+                                                        )}
                                                     </Box>
                                                     {/* </Tooltip> */}
                                                 </Grid>
