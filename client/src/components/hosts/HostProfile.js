@@ -200,8 +200,9 @@ const HostProfile = ({
                                     </a>
                                 </Grid>
                             )}
-                        {theHost.profileImg && (
-                            <Grid item sx={{ marginRight: '16px' }}>
+
+                        <Grid item sx={{ marginRight: '16px' }}>
+                            {theHost.profileImg && (
                                 <Tooltip
                                     arrow={true}
                                     disableHoverListener={!isMe}
@@ -272,147 +273,146 @@ const HostProfile = ({
                                             )}
                                     </Box>
                                 </Tooltip>
-                                {theHost.firstName && theHost.lastName && (
-                                    <Grid item>
-                                        <Grid
-                                            container
-                                            item
-                                            direction="row"
-                                            justifyContent="center"
+                            )}
+                            {theHost.firstName && theHost.lastName && (
+                                <Grid item>
+                                    <Grid
+                                        container
+                                        item
+                                        direction="row"
+                                        justifyContent="center"
+                                        sx={{
+                                            margin: '8px auto 0',
+                                            width: '100%',
+                                        }}
+                                    >
+                                        <Typography
+                                            component="h2"
                                             sx={{
-                                                margin: '8px auto 0',
-                                                width: '100%',
+                                                color: `${
+                                                    theOffer &&
+                                                    theOffer.status ===
+                                                        'ACCEPTED'
+                                                        ? 'var(--link-color)!important'
+                                                        : 'var(--primary-color)'
+                                                }`,
                                             }}
+                                        >
+                                            {theHost.firstName}{' '}
+                                            {theHost.lastName}
+                                        </Typography>{' '}
+                                    </Grid>
+                                </Grid>
+                            )}
+                            {
+                                //user &&
+                                //user.role &&
+                                //(user.role.indexOf('ADMIN') > -1 ||
+                                //    user.role.indexOf('BOOKING') > -1) &&
+                                theHost.email && (
+                                    <Grid
+                                        item
+                                        container
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        sx={{
+                                            marginTop: '4px',
+                                        }}
+                                    >
+                                        <a
+                                            href={
+                                                theEvent
+                                                    ? `mailto:${
+                                                          theHost.email
+                                                      }?subject=Following up about your offer to host the Porchlight concert on ${encodeURIComponent(
+                                                          new Date(
+                                                              theEvent.bookingWhen
+                                                          ).toLocaleDateString(
+                                                              undefined,
+                                                              {
+                                                                  weekday:
+                                                                      'long',
+                                                                  year: 'numeric',
+                                                                  month: 'long',
+                                                                  day: 'numeric',
+                                                                  timeZone:
+                                                                      'UTC', //fixes timezone issues where users see the date a day off sometimes
+                                                              }
+                                                          )
+                                                      )} in ${encodeURIComponent(
+                                                          theEvent.bookingWhere
+                                                              .city
+                                                      )}, ${encodeURIComponent(
+                                                          theEvent.bookingWhere
+                                                              .state
+                                                      )}!&body=Hi ${encodeURIComponent(
+                                                          theHost.firstName
+                                                      )},
+                                                            `
+                                                    : `mailto:${theHost.email}`
+                                            }
+                                            target="_blank"
                                         >
                                             <Typography
-                                                component="h2"
+                                                component="h3"
                                                 sx={{
-                                                    color: `${
-                                                        theOffer &&
-                                                        theOffer.status ===
-                                                            'ACCEPTED'
-                                                            ? 'var(--link-color)!important'
-                                                            : 'var(--primary-color)'
-                                                    }`,
+                                                    marginTop: '0px',
+                                                    width: '100%',
+                                                    textAlign: 'center',
+                                                    fontSize: '.8em',
                                                 }}
                                             >
-                                                {theHost.firstName}{' '}
-                                                {theHost.lastName}
-                                            </Typography>{' '}
-                                        </Grid>
+                                                <EmailTwoToneIcon
+                                                    sx={{
+                                                        fontSize: '1.3em',
+                                                        verticalAlign:
+                                                            'middle!important',
+                                                    }}
+                                                ></EmailTwoToneIcon>
+                                                {` ${theHost.email}`}
+                                            </Typography>
+                                        </a>
                                     </Grid>
-                                )}
-                                {
-                                    //user &&
-                                    //user.role &&
-                                    //(user.role.indexOf('ADMIN') > -1 ||
-                                    //    user.role.indexOf('BOOKING') > -1) &&
-                                    theHost.email && (
-                                        <Grid
-                                            item
-                                            container
-                                            alignItems="center"
-                                            justifyContent="center"
-                                            sx={{
-                                                marginTop: '4px',
-                                            }}
-                                        >
-                                            <a
-                                                href={
-                                                    theEvent
-                                                        ? `mailto:${
-                                                              theHost.email
-                                                          }?subject=Following up about your offer to host the Porchlight concert on ${encodeURIComponent(
-                                                              new Date(
-                                                                  theEvent.bookingWhen
-                                                              ).toLocaleDateString(
-                                                                  undefined,
-                                                                  {
-                                                                      weekday:
-                                                                          'long',
-                                                                      year: 'numeric',
-                                                                      month: 'long',
-                                                                      day: 'numeric',
-                                                                      timeZone:
-                                                                          'UTC', //fixes timezone issues where users see the date a day off sometimes
-                                                                  }
-                                                              )
-                                                          )} in ${encodeURIComponent(
-                                                              theEvent
-                                                                  .bookingWhere
-                                                                  .city
-                                                          )}, ${encodeURIComponent(
-                                                              theEvent
-                                                                  .bookingWhere
-                                                                  .state
-                                                          )}!&body=Hi ${encodeURIComponent(
-                                                              theHost.firstName
-                                                          )},
-                                                            `
-                                                        : `mailto:${theHost.email}`
-                                                }
-                                                target="_blank"
+                                )
+                            }
+                            {
+                                //user &&
+                                //user.role &&
+                                //(user.role.indexOf('ADMIN') > -1 ||
+                                //    user.role.indexOf('BOOKING') > -1) &&
+                                theHost.phone && (
+                                    <Grid
+                                        item
+                                        container
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        marginTop="8px"
+                                    >
+                                        <a href={`tel:${theHost.phone}`}>
+                                            <Typography
+                                                component="h3"
+                                                sx={{
+                                                    marginTop: '0px',
+                                                    width: '100%',
+                                                    textAlign: 'center',
+                                                    fontSize: '.8em',
+                                                }}
                                             >
-                                                <Typography
-                                                    component="h3"
+                                                <PhoneTwoToneIcon
                                                     sx={{
-                                                        marginTop: '0px',
-                                                        width: '100%',
-                                                        textAlign: 'center',
-                                                        fontSize: '.8em',
+                                                        fontSize: '1.3em',
                                                     }}
-                                                >
-                                                    <EmailTwoToneIcon
-                                                        sx={{
-                                                            fontSize: '1.3em',
-                                                            verticalAlign:
-                                                                'middle!important',
-                                                        }}
-                                                    ></EmailTwoToneIcon>
-                                                    {` ${theHost.email}`}
-                                                </Typography>
-                                            </a>
-                                        </Grid>
-                                    )
-                                }
-                                {
-                                    //user &&
-                                    //user.role &&
-                                    //(user.role.indexOf('ADMIN') > -1 ||
-                                    //    user.role.indexOf('BOOKING') > -1) &&
-                                    theHost.phone && (
-                                        <Grid
-                                            item
-                                            container
-                                            alignItems="center"
-                                            justifyContent="center"
-                                            marginTop="8px"
-                                        >
-                                            <a href={`tel:${theHost.phone}`}>
-                                                <Typography
-                                                    component="h3"
-                                                    sx={{
-                                                        marginTop: '0px',
-                                                        width: '100%',
-                                                        textAlign: 'center',
-                                                        fontSize: '.8em',
-                                                    }}
-                                                >
-                                                    <PhoneTwoToneIcon
-                                                        sx={{
-                                                            fontSize: '1.3em',
-                                                        }}
-                                                    ></PhoneTwoToneIcon>
-                                                    {` ${formatPhoneNumber(
-                                                        theHost.phone
-                                                    )}`}
-                                                </Typography>
-                                            </a>
-                                        </Grid>
-                                    )
-                                }
-                            </Grid>
-                        )}
+                                                ></PhoneTwoToneIcon>
+                                                {` ${formatPhoneNumber(
+                                                    theHost.phone
+                                                )}`}
+                                            </Typography>
+                                        </a>
+                                    </Grid>
+                                )
+                            }
+                        </Grid>
+
                         <Grid
                             item
                             container
