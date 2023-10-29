@@ -30,7 +30,7 @@ const EventHostDialog = (props) => {
     useEffect(() => {
         //console.log('eventDialogDetails', eventDialogDetails);
         //console.log('EventHostDialog should open');
-        // console.log('props', props);
+        console.log('EventHostDialog props', props);
         setEventDetailsDialogOpen(true);
     }, [eventDialogDetails]);
 
@@ -116,10 +116,14 @@ const EventHostDialog = (props) => {
                                                     let confirmed = false;
 
                                                     if (
-                                                        props.theEvent
+                                                        (props.theEvent
                                                             .confirmedArtist &&
+                                                            props.theEvent
+                                                                .confirmedArtist ===
+                                                                prefArtist._id) ||
                                                         props.theEvent
-                                                            .confirmedArtist ===
+                                                            .confirmedArtist
+                                                            ._id ===
                                                             prefArtist._id
                                                     ) {
                                                         confirmed = true;
