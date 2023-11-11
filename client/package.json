@@ -20,7 +20,7 @@
         "@testing-library/jest-dom": "^4.2.4",
         "@testing-library/react": "^9.5.0",
         "@testing-library/user-event": "^7.2.1",
-        "axios": "^0.25.0",
+        "axios": "^1.6.0",
         "cloudinary-react": "^1.7.1",
         "moment": "^2.29.0",
         "prepend-http": "^4.0.0",
