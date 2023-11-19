@@ -116,15 +116,15 @@ const EventHostDialog = (props) => {
                                                     let confirmed = false;
 
                                                     if (
-                                                        (props.theEvent
-                                                            .confirmedArtist &&
-                                                            props.theEvent
-                                                                .confirmedArtist ===
-                                                                prefArtist._id) ||
                                                         props.theEvent
-                                                            .confirmedArtist
-                                                            ._id ===
-                                                            prefArtist._id
+                                                            .confirmedArtist &&
+                                                        (props.theEvent
+                                                            .confirmedArtist ===
+                                                            prefArtist._id ||
+                                                            props.theEvent
+                                                                .confirmedArtist
+                                                                ._id ===
+                                                                prefArtist._id)
                                                     ) {
                                                         confirmed = true;
                                                     }
