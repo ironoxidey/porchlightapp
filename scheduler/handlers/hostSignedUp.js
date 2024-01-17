@@ -13,23 +13,25 @@ module.exports = async () => {
             adminActive: { $ne: true }, // $ne means "Not Equal" — I'm not sure every host has an "adminActive" field
         });
 
-        console.log(
-            hosts.length +
-                (hosts.length > 1 ? ' new hosts' : ' new host') +
-                ' signed up.'
-        );
+        if (hosts.length > 0) {
+            console.log(
+                hosts.length +
+                    (hosts.length > 1 ? ' new hosts' : ' new host') +
+                    ' signed up.'
+            );
 
-        sendEmail('russellhein@gmail.com', {
-            event: 'ADMIN_HOST_SIGNED_UP',
-            template: 'TN2MJTQX0EM4C9K0YHJ89D243DVJ',
-            hosts: [...hosts],
-        });
+            sendEmail('russellhein@gmail.com', {
+                event: 'ADMIN_HOST_SIGNED_UP',
+                template: 'TN2MJTQX0EM4C9K0YHJ89D243DVJ',
+                hosts: [...hosts],
+            });
 
-        hosts.forEach(async (host) => {
-            host.adminEmailedForFollowUp = true;
-            host.markModified('adminEmailedForFollowUp');
-            await host.save();
-        });
+            hosts.forEach(async (host) => {
+                host.adminEmailedForFollowUp = true;
+                host.markModified('adminEmailedForFollowUp');
+                await host.save();
+            });
+        }
     } catch (err) {
         console.error(err.message);
         // res.status(500).send('Server Error');
