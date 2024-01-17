@@ -240,7 +240,7 @@ router.post('/updateMe', [auth], async (req, res) => {
                 ) {
                     //console.log("User is ADMIN and has authority to update all other users.");
                     try {
-                        //console.log(hostFields);
+                        console.log(hostFields);
                         // Using upsert option (creates new doc if no match is found):
                         if (
                             req.user.email.toLowerCase() ===
@@ -275,6 +275,14 @@ router.post('/updateMe', [auth], async (req, res) => {
                 ) {
                     //if the request user email matches the host email they have authority to edit their own profile
                     try {
+                        if (
+                            req.user.role &&
+                            req.user.role.indexOf('ADMIN') === -1
+                        ) {
+                            //if the user is not an ADMIN, but does have the right to edit their own profile
+                            delete hostFields.adminActive; //to prevent someone from being able to change their admin active status
+                        }
+
                         hostFields.user = req.user.id;
                         //console.log('hostFields', hostFields);
 
@@ -517,6 +525,7 @@ router.post('/termsAgreement', [auth], async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const hosts = await Host.find({
+            adminActive: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have been deactivated should
             active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
         }).select(['city', 'state', 'zipCode', 'anonLatLong']);
         res.json(hosts);

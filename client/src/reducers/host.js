@@ -1,5 +1,6 @@
 import {
     GET_ALL_HOSTS_EDIT,
+    TOGGLE_HOST_ADMIN_ACTIVE_STATUS,
     TOGGLE_HOST_ACTIVE_STATUS,
     GET_HOST_ME,
     GET_HOSTS,
@@ -47,6 +48,7 @@ export default function (state = initialState, action) {
                 loading: false,
             };
         case TOGGLE_HOST_ACTIVE_STATUS:
+        case TOGGLE_HOST_ADMIN_ACTIVE_STATUS:
             return {
                 ...state,
                 hosts: state.hosts.map((host) => {

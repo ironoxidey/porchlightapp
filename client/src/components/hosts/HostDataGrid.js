@@ -6,7 +6,11 @@ import { connect } from 'react-redux';
 
 import { DataGrid } from '@mui/x-data-grid';
 
-import { getAllHosts, toggleHostActiveStatus } from '../../actions/host';
+import {
+    getAllHosts,
+    toggleHostActiveStatus,
+    toggleHostAdminActiveStatus,
+} from '../../actions/host';
 import { getArtistByEmail } from '../../actions/artist';
 
 import {
@@ -45,6 +49,7 @@ const HostDataGrid = ({
     getArtistByEmail,
     getAllHosts,
     toggleHostActiveStatus,
+    toggleHostAdminActiveStatus,
     hosts,
     auth: { user },
 }) => {
@@ -351,12 +356,13 @@ const HostDataGrid = ({
 
     const [adminAlertHost, setAdminAlertHostState] = useState({});
     const [adminAlertOpen, setAdminAlertOpen] = useState(false);
-    function ActiveSwitchEditCell(params) {
+
+    function AdminActiveSwitchEditCell(params) {
         const adminAlertHandleClose = () => {
             setAdminAlertHostState({});
             setAdminAlertOpen(false);
         };
-        const activeSwitchChange = (params) => {
+        const adminActiveSwitchChange = (params) => {
             // console.log('activeSwitchChange', params);
             setAdminAlertOpen(true);
             setAdminAlertHostState({ ...params });
@@ -389,7 +395,7 @@ const HostDataGrid = ({
                                     />
 
                                     {`Are you sure you want to ${
-                                        adminAlertHost.row.active
+                                        adminAlertHost.row.adminActive
                                             ? `deactivate `
                                             : `activate `
                                     }` +
@@ -403,20 +409,26 @@ const HostDataGrid = ({
                                 <DialogContent>
                                     <DialogContentText id="alert-dialog-description">
                                         {`${
-                                            adminAlertHost.row.active
+                                            adminAlertHost.row.adminActive
                                                 ? `${
                                                       adminAlertHost.row
                                                           .firstName +
                                                       ' ' +
                                                       adminAlertHost.row
                                                           .lastName
-                                                  } will no longer receive host email digests.`
+                                                  }’s location will no longer be added to the artist map, and ${
+                                                      adminAlertHost.row
+                                                          .firstName
+                                                  } will not receive host email digests, until an ADMIN reactivates the account.`
                                                 : `${
                                                       adminAlertHost.row
                                                           .firstName +
                                                       ' ' +
                                                       adminAlertHost.row
                                                           .lastName
+                                                  }’s location will be added to the artist map, and ${
+                                                      adminAlertHost.row
+                                                          .firstName
                                                   } will receive host email digests as often as once every 7 days.`
                                         }`}
                                     </DialogContentText>
@@ -429,6 +441,8 @@ const HostDataGrid = ({
                                         onClick={() => {
                                             toggleHostActiveStatus({
                                                 email: adminAlertHost.row.email,
+                                                adminActive:
+                                                    !adminAlertHost.value,
                                                 active: !adminAlertHost.value,
                                                 notificationFrequency:
                                                     !adminAlertHost.value
@@ -436,6 +450,119 @@ const HostDataGrid = ({
                                                         : 0,
                                             });
                                             adminAlertHandleClose();
+                                        }}
+                                    >
+                                        Yes
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                        )}
+                    <Switch
+                        checked={params.value}
+                        onChange={() => adminActiveSwitchChange(params)}
+                    />
+                </Fragment>
+            )
+        );
+    }
+
+    const [activeAlertHost, setActiveAlertHostState] = useState({});
+    const [activeAlertOpen, setActiveAlertOpen] = useState(false);
+
+    function ActiveSwitchEditCell(params) {
+        const activeAlertHandleClose = () => {
+            setActiveAlertHostState({});
+            setActiveAlertOpen(false);
+        };
+        const activeSwitchChange = (params) => {
+            // console.log('activeSwitchChange', params);
+            setActiveAlertOpen(true);
+            setActiveAlertHostState({ ...params });
+        };
+
+        return (
+            user &&
+            user.role &&
+            user.role.indexOf('ADMIN') > -1 && (
+                <Fragment>
+                    {activeAlertHost &&
+                        activeAlertHost.row &&
+                        activeAlertHost.row.id === params.row.id && (
+                            <Dialog
+                                open={activeAlertOpen}
+                                onClose={activeAlertHandleClose}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                                className="porchlightBG"
+                            >
+                                <DialogTitle id="alert-dialog-title">
+                                    <Avatar
+                                        alt={`${activeAlertHost.row.profileImg}`}
+                                        src={`${activeAlertHost.row.profileImg}`}
+                                        sx={{
+                                            width: '150px',
+                                            height: '150px',
+                                            margin: '0 auto',
+                                        }}
+                                    />
+
+                                    {`Are you sure you want to ${
+                                        activeAlertHost.row.active
+                                            ? `deactivate `
+                                            : `activate `
+                                    }` +
+                                        activeAlertHost.row.firstName +
+                                        `  ` +
+                                        activeAlertHost.row.lastName +
+                                        ` (` +
+                                        activeAlertHost.row.email +
+                                        `)?`}
+                                </DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText id="alert-dialog-description">
+                                        {`${
+                                            activeAlertHost.row.active
+                                                ? `${
+                                                      activeAlertHost.row
+                                                          .firstName +
+                                                      ' ' +
+                                                      activeAlertHost.row
+                                                          .lastName
+                                                  }’s location will no longer be added to the artist map, and ${
+                                                      activeAlertHost.row
+                                                          .firstName
+                                                  } will no longer receive host email digests.`
+                                                : `${
+                                                      activeAlertHost.row
+                                                          .firstName +
+                                                      ' ' +
+                                                      activeAlertHost.row
+                                                          .lastName
+                                                  }’s location will be added to the artist map, and ${
+                                                      activeAlertHost.row
+                                                          .firstName
+                                                  } will receive host email digests as often as once every 7 days.`
+                                        } ${
+                                            activeAlertHost.row.firstName
+                                        } is free to change this.`}
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={activeAlertHandleClose}>
+                                        No
+                                    </Button>
+                                    <Button
+                                        onClick={() => {
+                                            toggleHostActiveStatus({
+                                                email: activeAlertHost.row
+                                                    .email,
+                                                active: !activeAlertHost.value,
+                                                notificationFrequency:
+                                                    !activeAlertHost.value
+                                                        ? 7
+                                                        : 0,
+                                            });
+                                            activeAlertHandleClose();
                                         }}
                                     >
                                         Yes
@@ -454,6 +581,15 @@ const HostDataGrid = ({
 
     const hostColumns = [
         //https://codesandbox.io/s/e9o2j?file=/demo.js
+        {
+            field: 'adminActive',
+            headerName: 'Admin Active',
+            width: 100,
+            sortable: true,
+            renderCell: (params) => {
+                return AdminActiveSwitchEditCell(params);
+            },
+        },
         {
             field: 'active',
             headerName: 'Active',
@@ -601,8 +737,8 @@ const HostDataGrid = ({
         },
         {
             field: 'notificationFrequency',
-            headerName: 'Notify Every',
-            width: 100,
+            headerName: 'Notify At Most Every',
+            width: 140,
             editable: false,
             sortable: true,
             valueFormatter: (params) => {
@@ -763,6 +899,7 @@ const HostDataGrid = ({
                         profile: host.artistProfile || '',
                         lastLogin: host.lastLogin || host.date,
                         dateRegistered: host.date,
+                        adminActive: host.adminActive,
                         active: host.active,
                     };
 
@@ -803,6 +940,7 @@ HostDataGrid.propTypes = {
     auth: PropTypes.object.isRequired,
     hosts: PropTypes.array.isRequired,
     getAllHosts: PropTypes.func.isRequired,
+    toggleHostAdminActiveStatus: PropTypes.func.isRequired,
     toggleHostActiveStatus: PropTypes.func.isRequired,
     getArtistByEmail: PropTypes.func.isRequired,
     // updateUserRole: PropTypes.func.isRequired,
@@ -815,6 +953,7 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
     getAllHosts,
+    toggleHostAdminActiveStatus,
     toggleHostActiveStatus,
     getArtistByEmail,
     // updateUserRole,

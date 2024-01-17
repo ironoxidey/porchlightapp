@@ -92,6 +92,7 @@ module.exports = async () => {
                     //     );
 
                     let hostsInReach = await Host.find({
+                        adminActive: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "adminActive" field, but the ones that have been deactivated out should
                         active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
                         notificationFrequency: { $ne: 0 }, //don't email hosts who've opted out
                         latLong: {

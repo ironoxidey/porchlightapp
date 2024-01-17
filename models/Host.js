@@ -2,9 +2,17 @@ const mongoose = require('mongoose');
 
 const HostSchema = new mongoose.Schema(
     {
+        adminActive: {
+            type: Boolean,
+            default: false,
+        },
+        adminEmailedForFollowUp: {
+            type: Boolean,
+            default: false,
+        },
         active: {
             type: Boolean,
-            default: true,
+            default: false,
         },
         lastEmailed: {
             type: Date,
