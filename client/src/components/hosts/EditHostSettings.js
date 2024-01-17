@@ -147,6 +147,7 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
                                         value={notificationFrequency}
                                         onChange={(e) => handleOnChange(e)}
                                         onBlur={(e) => onHandleBlur(e)}
+                                        autocomplete="none"
                                         type="number"
                                         // InputProps={{
                                         //     endAdornment: (

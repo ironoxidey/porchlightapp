@@ -680,6 +680,7 @@ const EventDataGrid = ({
 
     const eventColumns = [
         //https://codesandbox.io/s/e9o2j?file=/demo.js
+        { field: 'index', headerName: 'Index', width: 10 },
         { field: 'createdBy', headerName: 'Created By', width: 90 },
         { field: 'status', headerName: 'Status', width: 100 },
         {
@@ -731,6 +732,14 @@ const EventDataGrid = ({
         //     renderCell: renderProfileCell,
         // },
         {
+            field: 'payoutHandle',
+            headerName: 'Payout Handle',
+            width: 170,
+            editable: false,
+            type: 'string',
+            sortable: true,
+        },
+        {
             field: 'bookingWhen',
             headerName: 'Event Date',
             width: 230,
@@ -772,7 +781,7 @@ const EventDataGrid = ({
         {
             field: 'offersFromHosts',
             headerName: 'Offers from Hosts',
-            width: 300,
+            width: 240,
             editable: false,
             type: 'string',
             sortable: true,
@@ -1108,8 +1117,9 @@ const EventDataGrid = ({
         //console.log('adminEvents', adminEvents);
         if (adminEvents && adminEvents.length > 0) {
             setEventRows(
-                adminEvents.map((adminEvent) => {
+                adminEvents.map((adminEvent, i) => {
                     const eventRow = {
+                        index: i,
                         theEvent: adminEvent,
                         id: adminEvent._id,
                         agreeToPayAdminFee: adminEvent.agreeToPayAdminFee,
@@ -1138,6 +1148,11 @@ const EventDataGrid = ({
                         createdBy: adminEvent.createdBy,
                         bookingWhen: adminEvent.bookingWhen,
                         bookingWhere: adminEvent.bookingWhere,
+                        payoutHandle:
+                            adminEvent.payoutHandle ||
+                            (adminEvent.confirmedArtist &&
+                                adminEvent.confirmedArtist.payoutHandle) ||
+                            '',
                     };
 
                     return eventRow;

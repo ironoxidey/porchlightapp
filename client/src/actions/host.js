@@ -16,6 +16,7 @@ import {
     CLEAR_HOST,
     USER_LOADED,
     TOGGLE_HOST_ACTIVE_STATUS,
+    TOGGLE_HOST_ADMIN_ACTIVE_STATUS,
 } from './types';
 
 //Get all users
@@ -234,6 +235,47 @@ export const agreeToHostTerms =
             //         dispatch(setAlert(error.msg, 'danger'))
             //     );
             // }
+            dispatch({
+                type: UPDATE_HOST_ERROR,
+                payload: {
+                    msg: err.response.statusText,
+                    status: err.response.status,
+                },
+            });
+            dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        }
+    };
+
+// Toggle Host Admin active status
+export const toggleHostAdminActiveStatus =
+    (formData, history, edit = false) =>
+    async (dispatch) => {
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            const formDataArray = [formData];
+            // console.log('formDataArray', formDataArray);
+            const res = await axios.post(
+                '/api/hosts/updateMe',
+                formDataArray,
+                config
+            );
+            // console.log('toggleHostActiveStatus res', res);
+            dispatch({
+                type: TOGGLE_HOST_ADMIN_ACTIVE_STATUS,
+                payload: res.data.host,
+            });
+        } catch (err) {
+            const errors = err.response.data.errors;
+            console.log('error: ' + err);
+            if (errors) {
+                errors.forEach((error) =>
+                    dispatch(setAlert(error.msg, 'danger'))
+                );
+            }
             dispatch({
                 type: UPDATE_HOST_ERROR,
                 payload: {

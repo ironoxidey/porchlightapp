@@ -893,7 +893,9 @@ const Dashboard = ({
                             )}
                             {/* End myHostEvents */}
                             {Array.isArray(user.role) &&
-                                user.role.indexOf('HOST') != -1 && (
+                                user.role.indexOf('HOST') != -1 &&
+                                host.me &&
+                                host.me.adminActive && (
                                     <Grid item sx={{ margin: '0 auto' }}>
                                         <AddHostEvent></AddHostEvent>
                                     </Grid>

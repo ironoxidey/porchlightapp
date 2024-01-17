@@ -309,14 +309,27 @@ const NearMeToHostEventCard = ({
                         )}
                     {!wantsToBook && (
                         <DialogActions>
-                            <Button
-                                btnwidth="280"
-                                onClick={(e) => {
-                                    setWantsToBook(true);
-                                }}
-                            >
-                                I want to host this show
-                            </Button>
+                            {host.me.adminActive != true ? (
+                                <p
+                                    style={{
+                                        textAlign: 'center',
+                                        width: '100%',
+                                    }}
+                                >
+                                    Your hosting account is pending activation.
+                                    A Porchlight representative should reach out
+                                    to you soon.
+                                </p>
+                            ) : (
+                                <Button
+                                    btnwidth="280"
+                                    onClick={(e) => {
+                                        setWantsToBook(true);
+                                    }}
+                                >
+                                    I want to host this show
+                                </Button>
+                            )}
                         </DialogActions>
                     )}
                 </Dialog>

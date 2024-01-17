@@ -310,6 +310,7 @@ router.post(
 
                 let host = await Host.findOne({
                     email: req.user.email.toLowerCase(),
+                    adminActive: true,
                 });
 
                 let event = await Event.findOneAndUpdate(
@@ -1098,7 +1099,10 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
         //console.log("User is HOST and can raise their hand to book shows.");
         try {
             //console.log('eventFields', eventFields);
-            let host = await Host.findOne({ email: req.user.email });
+            let host = await Host.findOne({
+                email: req.user.email,
+                adminActive: true,
+            });
 
             let eventDetails = await Event.findOneAndUpdate(
                 {
