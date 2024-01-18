@@ -32,6 +32,7 @@ import EventSpecificHostForm from '../events/EventSpecificHostForm';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FlareTwoToneIcon from '@mui/icons-material/FlareTwoTone';
+import HostAdminActiveFalse from '../hosts/HostAdminActiveFalse';
 
 //import ArtistTop from './ArtistTop';
 
@@ -310,16 +311,9 @@ const NearMeToHostEventCard = ({
                     {!wantsToBook && (
                         <DialogActions>
                             {host.me.adminActive != true ? (
-                                <p
-                                    style={{
-                                        textAlign: 'center',
-                                        width: '100%',
-                                    }}
-                                >
-                                    Your hosting account is pending activation.
-                                    A Porchlight representative should reach out
-                                    to you soon.
-                                </p>
+                                <Grid className="adminActiveFalse" container>
+                                    <HostAdminActiveFalse></HostAdminActiveFalse>
+                                </Grid>
                             ) : (
                                 <Button
                                     btnwidth="280"

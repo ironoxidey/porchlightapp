@@ -61,6 +61,8 @@ import { textAlign } from '@mui/system';
 import moment from 'moment';
 import ReactPlayer from 'react-player/lazy';
 
+import HostAdminActiveFalse from '../hosts/HostAdminActiveFalse';
+
 function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
@@ -1150,16 +1152,31 @@ const EditHostProfileForm = ({
                 hostMe.phone &&
                 hostMe.profileImg &&
                 (hostMe.streetAddress || hostMe.venueStreetAddress) ? (
-                    <Typography
-                        component="p"
-                        sx={{ textAlign: 'center', marginTop: '20px' }}
-                    >
-                        Thank you for taking the time to respond to them! Check
-                        out your profile to see how artists will see it. <br />{' '}
-                        (An artist will see your profile only after you make an
-                        offer to host their show. Even then, we don’t share much
-                        of your personal information with them.)
-                    </Typography>
+                    <>
+                        <Typography
+                            component="p"
+                            sx={{ textAlign: 'center', marginTop: '20px' }}
+                        >
+                            Thank you for taking the time to respond to them!
+                            Check out your profile to see how artists will see
+                            it. <br /> (An artist will see your profile only
+                            after you make an offer to host their show. Even
+                            then, we don’t share much of your personal
+                            information with them.)
+                        </Typography>
+                        {hostMe.adminActive != true && (
+                            <Grid
+                                className="adminActiveFalse"
+                                container
+                                sx={{
+                                    justifyContent: 'center',
+                                    margin: '20px auto',
+                                }}
+                            >
+                                <HostAdminActiveFalse></HostAdminActiveFalse>
+                            </Grid>
+                        )}
+                    </>
                 ) : (
                     <Typography
                         component="div"

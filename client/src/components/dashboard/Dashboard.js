@@ -28,6 +28,7 @@ import AddHostEvent from '../events/AddHostEvent';
 import AddArtistEvent from '../events/AddArtistEvent';
 import EditArtistEvent from '../events/EditArtistEvent';
 import HostDashboardEventCard from '../events/HostDashboardEventCard';
+import HostAdminActiveFalse from '../hosts/HostAdminActiveFalse';
 
 import {
     getMyArtistEventsOffers,
@@ -900,6 +901,15 @@ const Dashboard = ({
                                         <AddHostEvent></AddHostEvent>
                                     </Grid>
                                 )}
+                            {host && host.me && host.me.adminActive != true && (
+                                <Grid
+                                    className="adminActiveFalse"
+                                    container
+                                    sx={{ marginBottom: '16px' }}
+                                >
+                                    <HostAdminActiveFalse></HostAdminActiveFalse>
+                                </Grid>
+                            )}
                             {
                                 //(user.role.indexOf('ADMIN') > -1 ||
                                 //user.role.indexOf('BOOKING') > -1 ||

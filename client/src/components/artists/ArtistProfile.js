@@ -70,6 +70,7 @@ import {
 import { hostRaiseHand, getArtistBookingEvents } from '../../actions/event';
 import EventSpecificHostForm from '../events/EventSpecificHostForm';
 import ArtistTop from './ArtistTop';
+import HostAdminActiveFalse from '../hosts/HostAdminActiveFalse';
 
 const ArtistProfile = ({
     user,
@@ -349,17 +350,19 @@ const ArtistProfile = ({
                         )}
                     {!wantsToBook && (
                         <DialogActions>
-                            {host.me.adminActive != true ? (
-                                <p
-                                    style={{
-                                        textAlign: 'center',
-                                        width: '100%',
-                                    }}
+                            {host.me != null && host.me.adminActive != true ? (
+                                <Grid
+                                    className="adminActiveFalse"
+                                    container
+                                    sx={
+                                        {
+                                            // justifyContent: 'center',
+                                            // margin: '20px auto',
+                                        }
+                                    }
                                 >
-                                    Your hosting account is pending activation.
-                                    A Porchlight representative should reach out
-                                    to you soon.
-                                </p>
+                                    <HostAdminActiveFalse></HostAdminActiveFalse>
+                                </Grid>
                             ) : (
                                 <Button
                                     btnwidth="280"
