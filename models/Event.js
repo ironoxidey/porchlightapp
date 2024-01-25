@@ -1,4 +1,13 @@
 const mongoose = require('mongoose');
+const declinedHostSchema = new mongoose.Schema(
+    {
+        host: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'host',
+        },
+    },
+    { timestamps: true }
+);
 
 const EventSchema = new mongoose.Schema(
     {
@@ -53,6 +62,7 @@ const EventSchema = new mongoose.Schema(
                 },
             },
         ],
+        declinedHosts: [declinedHostSchema],
         offersFromHosts: [
             {
                 host: {
@@ -287,3 +297,4 @@ const EventSchema = new mongoose.Schema(
 );
 EventSchema.index({ latLong: '2dsphere' });
 module.exports = Event = mongoose.model('event', EventSchema);
+//module.exports = Event = mongoose.model('trash', EventSchema);

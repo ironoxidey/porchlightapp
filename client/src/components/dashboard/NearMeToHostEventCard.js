@@ -33,6 +33,7 @@ import EventSpecificHostForm from '../events/EventSpecificHostForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FlareTwoToneIcon from '@mui/icons-material/FlareTwoTone';
 import HostAdminActiveFalse from '../hosts/HostAdminActiveFalse';
+import HostDeclineBtn from '../hosts/HostDeclineBtn';
 
 //import ArtistTop from './ArtistTop';
 
@@ -60,6 +61,17 @@ const NearMeToHostEventCard = ({
     getEventByID,
 }) => {
     //console.log('NearMeToHostEventCard thisEvent:', thisEvent);
+
+    // const declined = thisEvent.declinedHosts.filter((declinedHost) => {
+    //     if (declinedHost.host && declinedHost.host === host.me._id) {
+    //         console.log('declined');
+    //         return 1;
+    //     } else {
+    //         console.log('not declined');
+    //         return 0;
+    //     }
+    // });
+    // console.log('declined', declined);
 
     //Booking Details Dialog Functions
     const [bookingDetailsDialogOpen, setBookingDetailsDialogOpen] =
@@ -486,9 +498,11 @@ const NearMeToHostEventCard = ({
                         </Grid>
 
                         <Grid
-                            item
+                            container
                             sx={{
                                 marginLeft: '8px',
+
+                                alignItems: 'center',
                             }}
                         >
                             <Button
@@ -499,6 +513,10 @@ const NearMeToHostEventCard = ({
                             >
                                 Hosting Details
                             </Button>
+
+                            <HostDeclineBtn
+                                thisEvent={thisEvent}
+                            ></HostDeclineBtn>
                         </Grid>
                     </Grid>
                 </Grid>

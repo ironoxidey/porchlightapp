@@ -2,6 +2,7 @@ import {
     EDIT_ARTIST_EVENT,
     EDIT_HOST_EVENT,
     HOST_RAISE_HAND,
+    HOST_DECLINES,
     HOST_PROPOSES,
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
@@ -152,6 +153,29 @@ export default function (state = initialState, action) {
 
                 loading: false,
             };
+        case HOST_DECLINES:
+            let newNearMeToHost2 = state.nearMeToHost.filter(
+                (eventNearMeToHost) => {
+                    if (eventNearMeToHost._id === payload._id) {
+                        eventNearMeToHost.declinedHosts = [
+                            {
+                                host: payload.hostID,
+                            },
+                        ];
+                        // eventNearMeToHost.artist.stageName = 'Rusty Test';
+                        return eventNearMeToHost;
+                    } else {
+                        return eventNearMeToHost;
+                    }
+                }
+            );
+            // console.log('newNearMeToHost', newNearMeToHost);
+            return {
+                ...state,
+                nearMeToHost: newNearMeToHost2,
+                loading: false,
+            };
+
         case HOST_PROPOSES:
             return {
                 ...state,

@@ -8,6 +8,7 @@ import {
     DELETE_HOST_EVENT,
     DELETE_ADMIN_EVENT,
     HOST_RAISE_HAND,
+    HOST_DECLINES,
     HOST_PROPOSES,
     UPDATE_EVENT_ERROR,
     GET_EVENTS_OFFERED_TO_HOST,
@@ -255,7 +256,7 @@ export const getEventByID = (eventID) => async (dispatch) => {
     }
 };
 
-// Get the events that I've offered to host
+// Get the events that are near me to host
 export const getEventsNearMeToHost = () => async (dispatch) => {
     try {
         const res = await axios.get(`/api/events/nearMeToHost`);
@@ -349,6 +350,60 @@ export const hostRaiseHand = (formData, history) => async (dispatch) => {
                         }
                     ) +
                     ' was submitted.',
+                'success'
+            )
+        ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+    } catch (err) {
+        console.log('error: ' + err);
+        const errors = err.response.data.errors;
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+        }
+        dispatch({
+            type: UPDATE_EVENT_ERROR,
+            payload: {
+                msg: err.response.statusText,
+                status: err.response.status,
+            },
+        });
+        dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+    }
+};
+// Offer to host a show
+export const hostDeclines = (hostMeID, theEvent) => async (dispatch) => {
+    try {
+        const formData = { hostMeID, theEvent };
+        // console.log('hostDeclines formData', formData);
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        const res = await axios.post(
+            `/api/events/hostDeclines/${theEvent._id}`,
+            formData,
+            config
+        );
+        console.log('hostDeclines hostRaiseHand res.data', res.data);
+        dispatch({
+            type: HOST_DECLINES,
+            payload: res.data,
+        });
+        dispatch(
+            setAlert(
+                'You declined to host the ' +
+                    theEvent.artist.stageName +
+                    ' show on ' +
+                    new Date(theEvent.bookingWhen).toLocaleDateString(
+                        undefined,
+                        {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
+                        }
+                    ) +
+                    '.',
                 'success'
             )
         ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
