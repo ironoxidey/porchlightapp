@@ -108,6 +108,20 @@ const ArtistDashboardEventCard = ({
         }
     }, [thisEvent.declinedArtists]);
 
+    const [hostsDeclined, setHostsDeclined] = useState(0);
+
+    useEffect(() => {
+        if (thisEvent.hostsInReach && thisEvent.hostsInReach.length > 0) {
+            setHostsDeclined(
+                thisEvent.hostsInReach.filter((hostInReach) => {
+                    if (hostInReach.declined) {
+                        return 1;
+                    } else return 0;
+                }).length
+            );
+        }
+    }, [thisEvent.hostsInReach]);
+
     return (
         <>
             <Tooltip
@@ -320,20 +334,99 @@ const ArtistDashboardEventCard = ({
                                     }}
                                 >
                                     <Grid
-                                        item
-                                        sx={{
-                                            fontSize: {
-                                                xs: '1.2em',
-                                                sm: '1.5em',
-                                            },
-                                            // marginLeft: '8px',
-                                            lineHeight: '1.5',
-                                        }}
+                                        container
+                                        sx={{ flexDirection: 'row' }}
                                     >
-                                        {thisEvent.bookingWhere.city +
-                                            ', ' +
-                                            thisEvent.bookingWhere.state}
+                                        <Grid
+                                            item
+                                            className="cityST"
+                                            sx={{
+                                                fontSize: {
+                                                    xs: '1.2em',
+                                                    sm: '1.5em',
+                                                },
+                                                // marginLeft: '8px',
+                                                lineHeight: '1.5',
+                                            }}
+                                        >
+                                            {thisEvent.bookingWhere.city +
+                                                ', ' +
+                                                thisEvent.bookingWhere.state}
+                                        </Grid>
+                                        {thisEvent.status === 'PENDING' &&
+                                            thisEvent.createdBy === 'ARTIST' &&
+                                            thisEvent.hostsInReach &&
+                                            thisEvent.hostsInReach.length >
+                                                0 && (
+                                                <>
+                                                    {thisEvent.hostsInReach
+                                                        .length === 1 ? (
+                                                        <Grid
+                                                            item
+                                                            className="hostsDeclined"
+                                                            sx={{
+                                                                fontSize: {
+                                                                    xs: '.8em',
+                                                                },
+                                                                margin: '6px 8px 0 8px',
+                                                                color: 'var(--primary-color)',
+                                                            }}
+                                                        >
+                                                            (
+                                                            {hostsDeclined === 1
+                                                                ? 'The only host in the area declined'
+                                                                : 'The host in the area hasn’t declined, yet'}
+                                                            )
+                                                        </Grid>
+                                                    ) : thisEvent.hostsInReach
+                                                          .length ===
+                                                      hostsDeclined ? (
+                                                        <Grid
+                                                            item
+                                                            className="hostsDeclined"
+                                                            sx={{
+                                                                fontSize: {
+                                                                    xs: '.8em',
+                                                                },
+                                                                margin: '6px 8px 0 8px',
+                                                                color: 'var(--primary-color)',
+                                                            }}
+                                                        >
+                                                            (Each of the{' '}
+                                                            {
+                                                                thisEvent
+                                                                    .hostsInReach
+                                                                    .length
+                                                            }{' '}
+                                                            hosts in the area
+                                                            declined)
+                                                        </Grid>
+                                                    ) : (
+                                                        <Grid
+                                                            item
+                                                            className="hostsDeclined"
+                                                            sx={{
+                                                                fontSize: {
+                                                                    xs: '.8em',
+                                                                },
+                                                                margin: '6px 8px 0 8px',
+                                                                color: 'var(--primary-color)',
+                                                            }}
+                                                        >
+                                                            ({hostsDeclined} of{' '}
+                                                            {
+                                                                thisEvent
+                                                                    .hostsInReach
+                                                                    .length
+                                                            }{' '}
+                                                            hosts in the area
+                                                            declined, so far)
+                                                        </Grid>
+                                                    )}
+                                                </>
+                                            )}
                                     </Grid>
+
                                     {thisEvent.createdBy === 'ARTIST' &&
                                     thisEvent.offersFromHosts &&
                                     thisEvent.offersFromHosts.length > 0 ? (

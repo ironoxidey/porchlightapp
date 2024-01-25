@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { Grid, Typography, FormGroup } from '@mui/material';
+import { Grid, Typography, FormGroup, Tooltip } from '@mui/material';
 
 import ThumbDownAltTwoToneIcon from '@mui/icons-material/ThumbDownAltTwoTone';
 
@@ -44,18 +44,24 @@ const HostDeclineBtn = ({ hostDeclines, hostMe, thisEvent, nearMeToHost }) => {
                 }}
             >
                 {showDeclineBtn ? ( //as long as the declinedHosts array is empty, or at least hostMe is not in the array, show the declineBtn
-                    <Button
-                        btnwidth="140"
-                        onClick={() => {
-                            hostDeclines(hostMe._id, thisEvent);
-                        }}
-                        sx={{ margin: '0px auto' }}
+                    <Tooltip
+                        title={`Declining gives the artist the opportunity to make other plans. NONE of your information is shared.`}
+                        sx={{ textAlign: 'center' }}
+                        arrow
                     >
-                        <ThumbDownAltTwoToneIcon
-                            sx={{ margin: '0px 8px 0 0!important' }}
-                        ></ThumbDownAltTwoToneIcon>
-                        Decline
-                    </Button>
+                        <Button
+                            btnwidth="140"
+                            onClick={() => {
+                                hostDeclines(hostMe._id, thisEvent);
+                            }}
+                            sx={{ margin: '0px auto' }}
+                        >
+                            <ThumbDownAltTwoToneIcon
+                                sx={{ margin: '0px 8px 0 0!important' }}
+                            ></ThumbDownAltTwoToneIcon>
+                            Decline
+                        </Button>
+                    </Tooltip>
                 ) : (
                     <Grid
                         container
