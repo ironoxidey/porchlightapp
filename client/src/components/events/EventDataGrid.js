@@ -852,8 +852,8 @@ const EventDataGrid = ({
 
         {
             field: 'hostReachRadius',
-            headerName: 'Reach Radius',
-            width: 100,
+            headerName: 'Radius',
+            width: 80,
             editable: false,
             type: 'string',
             valueFormatter: (params) => {
@@ -874,10 +874,17 @@ const EventDataGrid = ({
             sortable: true,
             sortComparator: lengthSort,
             renderCell: (params) => {
-                //console.log('hostsInReach params', params);
+                // console.log('hostsInReach params', params);
 
                 if (params.value && params.value.length > 0) {
                     let hostsInReach = params.value.map((hostInReach, i) => {
+                        const hostDeclined =
+                            params.row.theEvent.declinedHosts &&
+                            params.row.theEvent.declinedHosts.some(
+                                (declinedHost) =>
+                                    declinedHost.host === hostInReach.host._id
+                            );
+
                         const emailBody = `Hi ${
                             (hostInReach.host && hostInReach.host.firstName) ||
                             ''
@@ -914,15 +921,56 @@ const EventDataGrid = ({
                             <Grid
                                 container
                                 sx={{
+                                    position: 'relative',
                                     justifyContent: 'space-between',
                                     flexDirection: 'row',
                                     flexWrap: 'nowrap',
                                     alignItems: 'center',
                                     width: 'max-content',
+                                    '&::after': hostDeclined
+                                        ? {
+                                              content: '"Declined"',
+                                              position: 'absolute',
+                                              width: '100%',
+                                              color: 'var(--primary-color)',
+                                              zIndex: '100',
+                                              textAlign: 'center',
+                                              fontSize: '1.6em',
+                                              textShadow:
+                                                  '-1px -1px 3px rgba(0,0,0,.6), -1px 1px 3px rgba(0,0,0,.6), 1px -1px 3px rgba(0,0,0,.6), 1px 1px 3px rgba(0,0,0,.6)',
+                                          }
+                                        : {},
                                 }}
                             >
                                 {hostInReach && hostInReach.host && (
-                                    <>
+                                    <Grid
+                                        container
+                                        sx={{
+                                            position: 'relative',
+                                            justifyContent: 'space-between',
+                                            flexDirection: 'row',
+                                            flexWrap: 'nowrap',
+                                            alignItems: 'center',
+                                            width: 'max-content',
+                                            // filter: hostDeclined
+                                            //     ? 'blur(0.8px)'
+                                            //     : 'blur(0px)',
+                                            opacity: hostDeclined ? '0.6' : '1',
+                                            '&::after': hostDeclined
+                                                ? {
+                                                      content: '""',
+                                                      position: 'absolute',
+                                                      width: '100%',
+                                                      backgroundColor:
+                                                          'var(--primary-color)',
+                                                      zIndex: '99',
+                                                      height: '2px',
+                                                      boxShadow:
+                                                          '2px 1px 3px rgba(0,0,0,1), -2px 1px 3px rgba(0,0,0,.6), 2px -1px 3px rgba(0,0,0,.6), 2px 1px 3px rgba(0,0,0,.6)',
+                                                  }
+                                                : {},
+                                        }}
+                                    >
                                         <Grid
                                             item
                                             sx={{ padding: '4px 4px 4px 0px' }}
@@ -980,7 +1028,7 @@ const EventDataGrid = ({
                                                 {hostInReach.host.email}
                                             </a>
                                         </Grid>
-                                    </>
+                                    </Grid>
                                 )}
                             </Grid>
                             // </Tooltip>

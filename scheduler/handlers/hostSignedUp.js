@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const sendEmail = require('../../utils/email/sendEmail');
 const addressGeocode = require('../../utils/maps/geocoding');
 

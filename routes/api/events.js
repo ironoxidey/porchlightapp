@@ -215,6 +215,9 @@ router.post('/', [auth], async (req, res) => {
                     // );
 
                     let hostsInReach = await Host.find({
+                        adminActive: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "adminActive" field, but the ones that have been deactivated should
+                        active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
+
                         latLong: {
                             $near: {
                                 $maxDistance: event.hostReachRadius * 1609.35, //the distance is in meters, 1609.35m = 1 mile;
@@ -575,6 +578,9 @@ router.post(
                         // );
 
                         let hostsInReach = await Host.find({
+                            adminActive: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "adminActive" field, but the ones that have been deactivated out should
+                            active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
+
                             latLong: {
                                 $near: {
                                     $maxDistance:
@@ -638,6 +644,9 @@ router.post(
                         event.bookingWhere.zip
                     ) {
                         let hostsInReach = await Host.find({
+                            adminActive: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "adminActive" field, but the ones that have been deactivated out should
+                            active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
+
                             latLong: {
                                 $near: {
                                     $maxDistance:
@@ -1998,6 +2007,9 @@ router.get('/edit', [auth], async (req, res) => {
                     // eventDetails.markModified('latLong');
 
                     let hostsInReach = await Host.find({
+                        adminActive: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "adminActive" field, but the ones that have been deactivated out should
+                        active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
+
                         latLong: {
                             $near: {
                                 $maxDistance:
@@ -2047,7 +2059,9 @@ router.get('/edit', [auth], async (req, res) => {
                     //     eventDetails.hostsInReach.length <= 0)
                 ) {
                     let hostsInReach = await Host.find({
-                        // active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
+                        adminActive: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "adminActive" field, but the ones that have been deactivated out should
+                        active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
+
                         latLong: {
                             $near: {
                                 $maxDistance:
