@@ -369,11 +369,11 @@ export const hostRaiseHand = (formData, history) => async (dispatch) => {
         dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
     }
 };
-// Offer to host a show
+// Decline to host a show
 export const hostDeclines = (hostMeID, theEvent) => async (dispatch) => {
     try {
         const formData = { hostMeID, theEvent };
-        // console.log('hostDeclines formData', formData);
+        console.log('hostDeclines formData', formData);
         const config = {
             headers: {
                 'Content-Type': 'application/json',
@@ -384,7 +384,7 @@ export const hostDeclines = (hostMeID, theEvent) => async (dispatch) => {
             formData,
             config
         );
-        console.log('hostDeclines hostRaiseHand res.data', res.data);
+        console.log('hostDeclines res.data', res.data);
         dispatch({
             type: HOST_DECLINES,
             payload: res.data,

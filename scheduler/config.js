@@ -1,7 +1,7 @@
 module.exports = {
     hostDigest: {
         frequency: '0 11 * * *', //everyday at 11:00AM
-        //frequency: '13 21 * * *', //everyday at 2:01AM
+        // frequency: '45 00 * * *', //everyday at 2:01AM
         handler: __dirname + '/handlers/hostEmailDigest',
     },
     hostSignedUp: {

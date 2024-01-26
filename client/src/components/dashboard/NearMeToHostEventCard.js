@@ -59,6 +59,7 @@ const NearMeToHostEventCard = ({
     host,
     isAuthenticated,
     getEventByID,
+    hostID,
 }) => {
     //console.log('NearMeToHostEventCard thisEvent:', thisEvent);
 
@@ -361,35 +362,37 @@ const NearMeToHostEventCard = ({
                     position: 'relative',
                 }}
             >
-                {user.lastLastLogin < thisEvent.createdAt && (
-                    <Box
-                        className="createdAt"
-                        sx={{
-                            position: 'absolute',
-                            top: '8px',
-                            right: '8px',
-                        }}
-                    >
-                        {' '}
-                        <Typography
-                            component="p"
+                {user &&
+                    user.lastLastLogin &&
+                    user.lastLastLogin < thisEvent.createdAt && (
+                        <Box
+                            className="createdAt"
                             sx={{
-                                fontSize: '.7em',
-                                fontFamily: 'var(--secondary-font)',
-                                color:
-                                    user.lastLastLogin < thisEvent.createdAt
-                                        ? 'var(--link-color)'
-                                        : 'var(--dark-color)',
+                                position: 'absolute',
+                                top: '8px',
+                                right: '8px',
                             }}
                         >
-                            <FlareTwoToneIcon
-                                style={{ fontSize: '1.5em' }}
-                            ></FlareTwoToneIcon>{' '}
-                            NEW
-                            {/* Created On: {prettifyDate(thisEvent.createdAt) */}
-                        </Typography>
-                    </Box>
-                )}
+                            {' '}
+                            <Typography
+                                component="p"
+                                sx={{
+                                    fontSize: '.7em',
+                                    fontFamily: 'var(--secondary-font)',
+                                    color:
+                                        user.lastLastLogin < thisEvent.createdAt
+                                            ? 'var(--link-color)'
+                                            : 'var(--dark-color)',
+                                }}
+                            >
+                                <FlareTwoToneIcon
+                                    style={{ fontSize: '1.5em' }}
+                                ></FlareTwoToneIcon>{' '}
+                                NEW
+                                {/* Created On: {prettifyDate(thisEvent.createdAt) */}
+                            </Typography>
+                        </Box>
+                    )}
                 <Grid
                     item
                     className="feoyAvatarGridItem"
@@ -505,17 +508,22 @@ const NearMeToHostEventCard = ({
                                 alignItems: 'center',
                             }}
                         >
-                            <Button
-                                btnwidth="200"
-                                onClick={() => {
-                                    handleBookingDetailsBtnClick(thisEvent);
-                                }}
-                            >
-                                Hosting Details
-                            </Button>
+                            {host && host.me && host.me._id && (
+                                <Button
+                                    btnwidth="200"
+                                    onClick={() => {
+                                        handleBookingDetailsBtnClick(thisEvent);
+                                    }}
+                                >
+                                    Hosting Details
+                                </Button>
+                            )}
 
                             <HostDeclineBtn
                                 thisEvent={thisEvent}
+                                hostID={
+                                    (host && host.me && host.me._id) || hostID
+                                }
                             ></HostDeclineBtn>
                         </Grid>
                     </Grid>
@@ -527,11 +535,12 @@ const NearMeToHostEventCard = ({
 
 NearMeToHostEventCard.propTypes = {
     thisEvent: PropTypes.object.isRequired,
-    nearMeToHost: PropTypes.object.isRequired,
+    nearMeToHost: PropTypes.array.isRequired,
     user: PropTypes.object,
     host: PropTypes.object,
     isAuthenticated: PropTypes.bool,
     getEventByID: PropTypes.func.isRequired,
+    hostID: PropTypes.string,
 };
 
 const mapStateToProps = (state) => ({

@@ -12,18 +12,26 @@ import { hostDeclines } from '../../actions/event';
 
 import Button from '../layout/SvgButton';
 
-const HostDeclineBtn = ({ hostDeclines, hostMe, thisEvent, nearMeToHost }) => {
+const HostDeclineBtn = ({
+    hostDeclines,
+    hostMe,
+    thisEvent,
+    nearMeToHost,
+    hostID,
+}) => {
     const [showDeclineBtn, setShowDeclineBtn] = useState(false);
 
+    const theHostID = (hostMe && hostMe._id) || hostID;
+
     useEffect(() => {
-        console.log('declinedHosts useEffect triggered');
+        // console.log('declinedHosts useEffect triggered');
         if (
             !thisEvent.declinedHosts ||
             thisEvent.declinedHosts.length <= 0 ||
             (thisEvent.declinedHosts &&
                 thisEvent.declinedHosts.length > 0 &&
                 thisEvent.declinedHosts.filter((declinedHost) => {
-                    if (declinedHost.host && declinedHost.host === hostMe._id) {
+                    if (declinedHost.host && declinedHost.host === theHostID) {
                         return 1;
                     } else {
                         return 0; //don't return
@@ -83,9 +91,10 @@ const HostDeclineBtn = ({ hostDeclines, hostMe, thisEvent, nearMeToHost }) => {
 
 HostDeclineBtn.propTypes = {
     hostDeclines: PropTypes.func.isRequired,
-    hostMe: PropTypes.object.isRequired,
+    hostMe: PropTypes.object,
     thisEvent: PropTypes.object.isRequired,
     nearMeToHost: PropTypes.array,
+    hostID: PropTypes.string,
 };
 
 const mapStateToProps = (state) => ({

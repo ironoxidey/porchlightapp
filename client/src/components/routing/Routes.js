@@ -32,6 +32,7 @@ import ResetPassword from '../auth/ResetPassword';
 import ForgotPassword from '../auth/ForgotPassword';
 import EventDataGrid from '../events/EventDataGrid';
 import EditHostsMatrix from '../hosts/EditHostsMatrix';
+import HostDeclinesFromEmailDigest from '../events/HostDeclinesFromEmailDigest';
 
 import { useTransition, animated, config, useSpring } from '@react-spring/web';
 
@@ -107,6 +108,17 @@ const Routes = ({ app }) => {
                                 render={(props) => (
                                     <Page title="Unsubscribe">
                                         <UnsubscribeHostDigest {...props} />
+                                    </Page>
+                                )}
+                            />
+                            <Route
+                                exact
+                                path="/decline/:id"
+                                render={(props) => (
+                                    <Page title="Decline Event">
+                                        <HostDeclinesFromEmailDigest
+                                            {...props}
+                                        />
                                     </Page>
                                 )}
                             />

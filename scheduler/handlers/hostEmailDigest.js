@@ -171,6 +171,7 @@ module.exports = async () => {
                             },
                         },
                     });
+
                     //console.log(await hostsToContact);
                     const hostsIDToContact = hostsToContact.map(
                         async (hostToContact) => {
@@ -218,11 +219,11 @@ module.exports = async () => {
                                 newEventDetails = {
                                     ...eventDetails._doc,
                                     bookingWhenFormatted: theEventDate,
+                                    createdAtGetTime: new Date(
+                                        eventDetails.createdAt
+                                    ).getTime(),
                                 };
-                                // console.log(
-                                //     'newEventDetails',
-                                //     newEventDetails
-                                // );
+                                // console.log('newEventDetails', newEventDetails);
                                 if (
                                     !hostsToEmailArray.includes(
                                         hostToContact.email

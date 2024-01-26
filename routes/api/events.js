@@ -1067,6 +1067,7 @@ router.get('/event/:id', async (req, res) => {
 // @desc     Add Host id from email to Event "declinedHosts" using the event._id and date (when it was created) — assuming that the exact date and time that an event was created is never going to be perfectly known unless we send it in the emails (.getTime)
 // @access   Public
 router.post('/hostDeclines/:id', async (req, res) => {
+    // console.log('/hostDeclines/:id', req);
     try {
         const eventToDecline = await Event.findOneAndUpdate(
             {
@@ -1084,22 +1085,45 @@ router.post('/hostDeclines/:id', async (req, res) => {
             },
             { new: true }
         );
-        // console.log('hostDeclines eventToDecline', eventToDecline);
-        // console.log(
-        //     'new Date(eventToDecline.date).getTime()',
-        //     new Date(eventToDecline.date).getTime()
-        // );
-        // if (
-        //     new Date(eventToDecline.createdAt).getTime() ===
-        //     Number(req.body.getTime)
-        // ) {
-        res.json({ _id: eventToDecline._id, hostID: req.body.hostMeID });
-        // } else {
-        //     res.status(500).send(
-        //         'ERROR: Request didn’t meet the requirements to authorize this change. notificationFrequency = ' +
-        //             eventToDecline.notificationFrequency
-        //     );
-        // }
+        const eventDeclined = await Event.findOne({
+            _id: req.params.id,
+            createdAt: req.body.theEvent.createdAt,
+            'hostsInReach.host': req.body.hostMeID,
+            'declinedHosts.host': req.body.hostMeID,
+        })
+            .select(
+                '-artistUser -artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'
+            )
+            .populate(
+                'artist',
+                '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
+            )
+            .lean(); //.lean required to delete all other declinedHosts later -- Documents returned from queries with the lean option enabled are plain javascript objects, not Mongoose Documents. They have no save method, getters/setters, virtuals, or other Mongoose features. https://stackoverflow.com/a/71746004/3338608
+        // console.log('hostDeclines eventDeclined', eventDeclined);
+
+        if (eventDeclined) {
+            if (
+                eventDeclined.declinedHosts &&
+                eventDeclined.declinedHosts.length > 0
+            ) {
+                eventDeclined.declinedHosts.forEach((declinedHost) => {
+                    // console.log(
+                    //     'declinedHost.host ',
+                    //     declinedHost.host.toString(),
+                    //     ' vs. ',
+                    //     thisHost._id.toString()
+                    // );
+                    if (
+                        declinedHost.host.toString() ===
+                        req.body.hostMeID.toString()
+                    ) {
+                        // console.log('You declined this event');
+                    } else delete declinedHost.host;
+                });
+            }
+        }
+
+        res.json({ ...eventDeclined, hostID: req.body.hostMeID });
     } catch (err) {
         console.error(err.message);
         res.status(500).send(
@@ -1419,7 +1443,7 @@ router.get('/nearMeToHost', auth, async (req, res) => {
             bookingWhen: { $gt: new Date() }, // $gt means "Greater Than"
         })
             .select(
-                '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'
+                '-artistUser -artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'
             )
             .populate(
                 'artist',

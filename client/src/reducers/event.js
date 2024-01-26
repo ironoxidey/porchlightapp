@@ -154,27 +154,36 @@ export default function (state = initialState, action) {
                 loading: false,
             };
         case HOST_DECLINES:
-            let newNearMeToHost2 = state.nearMeToHost.filter(
-                (eventNearMeToHost) => {
-                    if (eventNearMeToHost._id === payload._id) {
-                        eventNearMeToHost.declinedHosts = [
-                            {
-                                host: payload.hostID,
-                            },
-                        ];
-                        // eventNearMeToHost.artist.stageName = 'Rusty Test';
-                        return eventNearMeToHost;
-                    } else {
-                        return eventNearMeToHost;
+            if (state.nearMeToHost) {
+                let newNearMeToHost2 = state.nearMeToHost.filter(
+                    (eventNearMeToHost) => {
+                        if (eventNearMeToHost._id === payload._id) {
+                            eventNearMeToHost.declinedHosts = [
+                                {
+                                    host: payload.hostID,
+                                },
+                            ];
+                            // eventNearMeToHost.artist.stageName = 'Rusty Test';
+                            return eventNearMeToHost;
+                        } else {
+                            return eventNearMeToHost;
+                        }
                     }
-                }
-            );
-            // console.log('newNearMeToHost', newNearMeToHost);
-            return {
-                ...state,
-                nearMeToHost: newNearMeToHost2,
-                loading: false,
-            };
+                );
+                // console.log('newNearMeToHost', newNearMeToHost);
+                return {
+                    ...state,
+                    nearMeToHost: newNearMeToHost2,
+                    loading: false,
+                };
+            } else {
+                //if we're not logged-in probably
+                return {
+                    ...state,
+                    nearMeToHost: [payload],
+                    loading: false,
+                };
+            }
 
         case HOST_PROPOSES:
             return {
