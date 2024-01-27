@@ -29,6 +29,7 @@ import AddArtistEvent from '../events/AddArtistEvent';
 import EditArtistEvent from '../events/EditArtistEvent';
 import HostDashboardEventCard from '../events/HostDashboardEventCard';
 import HostAdminActiveFalse from '../hosts/HostAdminActiveFalse';
+import PastArtistEvents from './PastArtistEvents';
 
 import {
     getMyArtistEventsOffers,
@@ -93,22 +94,28 @@ const Dashboard = ({
             ? false
             : true;
     const iConfirmed = (thisEvent) => {
-        console.log(
-            thisEvent.bookingWhen,
-            'iConfirmed = ',
+        // console.log(
+        //     thisEvent.bookingWhen,
+        //     'iConfirmed = ',
+        //     artist.me &&
+        //         thisEvent.confirmedArtist &&
+        //         thisEvent.confirmedArtist === artist.me._id
+        //         ? true
+        //         : false
+        // );
+        return (artist &&
             artist.me &&
-                thisEvent.confirmedArtist &&
-                thisEvent.confirmedArtist === artist.me._id
-                ? true
-                : false
-        );
-        return artist.me &&
+            thisEvent &&
             thisEvent.confirmedArtist &&
-            thisEvent.confirmedArtist === artist.me._id
+            thisEvent.confirmedArtist === artist.me._id) ||
+            (artist &&
+                artist.me &&
+                thisEvent &&
+                thisEvent.artist &&
+                thisEvent.artist === artist.me._id)
             ? true
             : false;
     };
-
     useEffect(() => {
         if (
             user &&
@@ -137,6 +144,11 @@ const Dashboard = ({
             }
         }
     }, [getCurrentHost, user]);
+
+    const dayBeforeYesterday = new Date();
+    dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
+    // console.log('dayBeforeYesterday', dayBeforeYesterday);
+
     return loading && user === null ? (
         <Spinner />
     ) : (
@@ -617,7 +629,9 @@ const Dashboard = ({
                                         (myEvent) =>
                                             myEvent.confirmedHost &&
                                             myEvent.status === 'CONFIRMED' &&
-                                            iConfirmed(myEvent)
+                                            iConfirmed(myEvent) &&
+                                            new Date(myEvent.bookingWhen) >
+                                                dayBeforeYesterday
                                     ).length > 0 && (
                                         <Grid
                                             container
@@ -631,7 +645,13 @@ const Dashboard = ({
                                                             myEvent.confirmedHost &&
                                                             myEvent.status ===
                                                                 'CONFIRMED' &&
-                                                            iConfirmed(myEvent)
+                                                            iConfirmed(
+                                                                myEvent
+                                                            ) &&
+                                                            new Date(
+                                                                myEvent.bookingWhen
+                                                            ) >
+                                                                dayBeforeYesterday
                                                     ).length > 1
                                                         ? `You booked these ${
                                                               myArtistEvents.filter(
@@ -639,10 +659,14 @@ const Dashboard = ({
                                                                       myEvent.confirmedHost &&
                                                                       iConfirmed(
                                                                           myEvent
-                                                                      )
+                                                                      ) &&
+                                                                      new Date(
+                                                                          myEvent.bookingWhen
+                                                                      ) >
+                                                                          dayBeforeYesterday
                                                               ).length
-                                                          } concerts`
-                                                        : `You booked this concert`}
+                                                          } upcoming concerts`
+                                                        : `You booked this upcoming concert`}
                                                     :
                                                 </Typography>
                                             </Grid>
@@ -665,7 +689,10 @@ const Dashboard = ({
                                                         myEvent.confirmedHost &&
                                                         myEvent.status ===
                                                             'CONFIRMED' &&
-                                                        iConfirmed(myEvent)
+                                                        iConfirmed(myEvent) &&
+                                                        new Date(
+                                                            myEvent.bookingWhen
+                                                        ) > dayBeforeYesterday
                                                 )
                                                 .map(
                                                     (thisEvent, idx) =>
@@ -688,7 +715,9 @@ const Dashboard = ({
                                         (myEvent) =>
                                             myEvent.confirmedHost &&
                                             myEvent.status === 'CONFIRMED' &&
-                                            !iConfirmed(myEvent)
+                                            !iConfirmed(myEvent) &&
+                                            new Date(myEvent.bookingWhen) >
+                                                dayBeforeYesterday
                                     ).length > 0 && (
                                         <Grid
                                             container
@@ -702,7 +731,13 @@ const Dashboard = ({
                                                             myEvent.confirmedHost &&
                                                             myEvent.status ===
                                                                 'CONFIRMED' &&
-                                                            !iConfirmed(myEvent)
+                                                            !iConfirmed(
+                                                                myEvent
+                                                            ) &&
+                                                            new Date(
+                                                                myEvent.bookingWhen
+                                                            ) >
+                                                                dayBeforeYesterday
                                                     ).length > 1
                                                         ? `These ${
                                                               myArtistEvents.filter(
@@ -710,7 +745,11 @@ const Dashboard = ({
                                                                       myEvent.confirmedHost &&
                                                                       !iConfirmed(
                                                                           myEvent
-                                                                      )
+                                                                      ) &&
+                                                                      new Date(
+                                                                          myEvent.bookingWhen
+                                                                      ) >
+                                                                          dayBeforeYesterday
                                                               ).length
                                                           } concerts were booked by another artist`
                                                         : `This concert was booked by another artist`}
@@ -736,7 +775,10 @@ const Dashboard = ({
                                                         myEvent.confirmedHost &&
                                                         myEvent.status ===
                                                             'CONFIRMED' &&
-                                                        !iConfirmed(myEvent)
+                                                        !iConfirmed(myEvent) &&
+                                                        new Date(
+                                                            myEvent.bookingWhen
+                                                        ) > dayBeforeYesterday
                                                 )
                                                 .map(
                                                     (thisEvent, idx) =>
@@ -824,6 +866,9 @@ const Dashboard = ({
                                                 )}
                                         </Grid>
                                     )}
+                                <PastArtistEvents
+                                    iConfirmed={iConfirmed}
+                                ></PastArtistEvents>
                                 <Grid item sx={{ margin: '0 auto' }}>
                                     <AddArtistEvent></AddArtistEvent>
                                 </Grid>

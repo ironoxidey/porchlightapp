@@ -682,7 +682,78 @@ const EventDataGrid = ({
         //https://codesandbox.io/s/e9o2j?file=/demo.js
         { field: 'index', headerName: 'Index', width: 10 },
         { field: 'createdBy', headerName: 'Created By', width: 90 },
-        { field: 'status', headerName: 'Status', width: 100 },
+        {
+            field: 'status',
+            headerName: 'Status',
+            width: 100,
+            editable: false,
+            type: 'string',
+            sortable: true,
+            sortComparator: (v1, v2) => {
+                if (v1 && v2) {
+                    if (Array.isArray(v1) && Array.isArray(v2)) {
+                        // console.log('lastEmailed: Both are arrays');
+                        if (v1[v1.length - 1] > v2[v2.length - 1]) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    } else if (Array.isArray(v1) && !Array.isArray(v2)) {
+                        // console.log('lastEmailed: v1 is the only array');
+                        if (v1[v1.length - 1] > v2) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    } else if (!Array.isArray(v1) && Array.isArray(v2)) {
+                        // console.log('lastEmailed: v2 in the only array');
+                        if (v1 > v2[v2.length - 1]) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    } else {
+                        // console.log('lastEmailed:neither are arrays');
+                        if (v1 > v2) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    }
+                } else if (v1 && !v2) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            },
+
+            renderCell: (params) => {
+                if (params.value === 'CONFIRMED') {
+                    let confirmedDate = params.row.theEvent.confirmedDate;
+                    return (
+                        <CustomWidthTooltip
+                            arrow={true}
+                            placement="bottom"
+                            title={<>{confirmedDate}</>}
+                        >
+                            <span
+                                style={{
+                                    // color: 'var(--link-color)',
+                                    borderBottom:
+                                        '1px dotted rgba(255,255,255,.4)',
+                                    display: 'block',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                {params.value}
+                            </span>
+                        </CustomWidthTooltip>
+                    );
+                } else {
+                    return;
+                }
+            },
+        },
         {
             field: 'artist' || 'preferredArtist',
             headerName: 'Artist',
