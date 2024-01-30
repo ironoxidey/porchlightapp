@@ -612,23 +612,39 @@ router.post(
                             }
                         );
 
-                        let savedDetails = await event.updateOne(
+                        // let savedDetails = await event.updateOne(
+                        //     {
+                        //         $set: {
+                        //             //$set added September 13, 20023
+                        //             hostsInReach: hostsIDInReach,
+                        //             'latLong.coordinates': geocodedAddress,
+                        //             geocodedBookingWhere: event.bookingWhere,
+                        //         },
+                        //     },
+                        //     { new: true }
+                        // );
+                        // if (savedDetails) {
+                        //     console.log(
+                        //         'artistEvent savedDetails',
+                        //         savedDetails
+                        //     );
+                        // }
+                        event = await Event.findOneAndUpdate(
+                            {
+                                artistEmail: req.user.email.toLowerCase(),
+                                bookingWhen: eventFields.bookingWhen,
+                                createdBy: 'ARTIST',
+                            },
                             {
                                 $set: {
                                     //$set added September 13, 20023
                                     hostsInReach: hostsIDInReach,
-                                    'latLong.coordinates': geocodedAddress,
-                                    geocodedBookingWhere: event.bookingWhere,
                                 },
                             },
                             { new: true }
-                        );
-                        // if (savedDetails) {
-                        //     console.log(
-                        //         'savedDetails:',
-                        //         savedDetails
-                        //     );
-                        // }
+                        )
+                            .select('-declinedHosts')
+                            .lean(); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
                     }
                     //end geocoding
                     else if (
@@ -684,7 +700,22 @@ router.post(
                             }
                         );
 
-                        let savedDetails = await event.updateOne(
+                        // let savedDetails = await event.updateOne(
+                        //     {
+                        //         $set: {
+                        //             //$set added September 13, 20023
+                        //             hostsInReach: hostsIDInReach,
+                        //         },
+                        //     },
+                        //     { new: true }
+                        // );
+                        // console.log('artistEvent savedDetails', savedDetails);
+                        event = await Event.findOneAndUpdate(
+                            {
+                                artistEmail: req.user.email.toLowerCase(),
+                                bookingWhen: eventFields.bookingWhen,
+                                createdBy: 'ARTIST',
+                            },
                             {
                                 $set: {
                                     //$set added September 13, 20023
@@ -692,7 +723,15 @@ router.post(
                                 },
                             },
                             { new: true }
-                        );
+                        )
+                            .select('-declinedHosts')
+                            .lean(); //https://www.mongodb.com/docs/manual/reference/method/cursor.sort/#:~:text=Ascending%2FDescending%20Sort,ascending%20or%20descending%20sort%20respectively.&text=When%20comparing%20values%20of%20different,MinKey%20(internal%20type)
+                    }
+
+                    if (event.hostsInReach && event.hostsInReach.length > 0) {
+                        event.hostsInReach.map((hostInReach) => {
+                            delete hostInReach.host;
+                        });
                     }
 
                     // console.log('event', event);
