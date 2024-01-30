@@ -1547,18 +1547,19 @@ router.get('/myArtistEvents', auth, async (req, res) => {
 
             if (myArtistEvents && myArtistEvents.length > 0) {
                 myArtistEvents.map((myArtistEvent) => {
-                    if (
-                        myArtistEvent.declinedHosts &&
-                        myArtistEvent.declinedHosts.length > 0
-                    ) {
-                        myArtistEvent.hostsInReach.map((hostInReach) => {
+                    myArtistEvent.hostsInReach.map((hostInReach) => {
+                        if (
+                            myArtistEvent.declinedHosts &&
+                            myArtistEvent.declinedHosts.length > 0
+                        ) {
                             hostDeclined = _.some(myArtistEvent.declinedHosts, {
                                 host: hostInReach.host,
                             });
                             hostInReach.declined = hostDeclined;
-                            delete hostInReach.host;
-                        });
-                    }
+                        }
+                        delete hostInReach.host;
+                    });
+
                     delete myArtistEvent.declinedHosts;
                     return myArtistEvent;
                 });
