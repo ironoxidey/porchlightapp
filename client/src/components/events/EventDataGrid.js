@@ -866,6 +866,7 @@ const EventDataGrid = ({
                                 theHost={hostOffer.host}
                                 theEvent={params.row.theEvent}
                                 theOffer={hostOffer}
+                                key={'hostOffer' + i}
                             >
                                 <ProfileAvatar
                                     firstName={hostOffer.host.firstName}

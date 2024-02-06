@@ -86,7 +86,7 @@ const HostProfile = ({
               user.role &&
               (user.role.indexOf('ADMIN') > -1 ||
                   user.role.indexOf('BOOKING') > -1) &&
-              theEvent &&
+              //   theEvent && //commented out on Feb 6, 2024 -- not sure I need it
               theHost.streetAddress
                 ? theHost.streetAddress +
                   ' ' +
@@ -100,7 +100,7 @@ const HostProfile = ({
               user.role &&
               (user.role.indexOf('ADMIN') > -1 ||
                   user.role.indexOf('BOOKING') > -1) &&
-              theEvent &&
+              //   theEvent && //commented out on Feb 6, 2024 -- not sure I need it
               theHost.venueStreetAddress //if not host's 'residence' display venue address
             ? theHost.venueStreetAddress +
               ' ' +

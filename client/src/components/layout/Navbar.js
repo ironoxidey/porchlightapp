@@ -34,8 +34,7 @@ import {
     Typography,
     ListItemIcon,
 } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
+
 import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
@@ -45,13 +44,10 @@ import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import DashboardTwoToneIcon from '@mui/icons-material/DashboardTwoTone';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-import MapTwoToneIcon from '@mui/icons-material/MapTwoTone';
-
 import Alert from '../layout/Alert';
 import ArtistTop from '../artists/ArtistTop';
 import EditHostSettings from '../hosts/EditHostSettings';
-
-import GoogleMapForHosts from '../layout/GoogleMapForHosts';
+import HostDataGridMap from '../hosts/HostDataGridMap';
 
 const Navbar = ({
     auth: { isAuthenticated, loading, user },
@@ -74,33 +70,6 @@ const Navbar = ({
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
     const [avatar, setAvatar] = useState();
-
-    const [theHosts, setTheHosts] = useState([]);
-
-    useEffect(() => {
-        if (host && host.hosts) {
-            setTheHosts(
-                host.hosts.filter((thisHost) => {
-                    if (
-                        thisHost.active === true &&
-                        thisHost.latLong &&
-                        thisHost.latLong.coordinates &&
-                        thisHost.latLong.coordinates.length === 2
-                    ) {
-                        // console.log('thisHost', thisHost);
-                        return thisHost;
-                    } else {
-                        // console.log('not thisHost', thisHost);
-                        return false;
-                    }
-                })
-            );
-        }
-    }, [host.hosts]);
-
-    useEffect(() => {
-        console.log('theHosts', theHosts);
-    }, [theHosts]);
 
     useEffect(() => {
         if (user && user.avatar) {
@@ -133,15 +102,6 @@ const Navbar = ({
             getEventsNearMeToHost();
         }
     }, [getCurrentHost, user]);
-
-    //Host Grid Map Dialog Functions
-    const [theMapDialogOpen, setTheMapDialogOpen] = useState(false);
-
-    const theMapDialogHandleClose = () => {
-        setTheMapDialogOpen(false);
-    };
-
-    //End of Dialog Functions
 
     const handleOpenNavMenu = (event) => {
         openNavDrawer();
@@ -389,52 +349,8 @@ const Navbar = ({
         return combinedLinks;
     };
 
-    const onAutocompleteTagChange = (e, theFieldName, val) => {
-        console.log('val', val);
-        //console.log(Object.keys(formGroups).length);
-        // changesMade.current = true;
-        // let targetValue = val;
-        // setFormData({ ...formData, [theFieldName]: targetValue });
-    };
-
     return (
         <>
-            {theMapDialogOpen && (
-                <Dialog
-                    open={() => setTheMapDialogOpen(true)}
-                    onClose={() => setTheMapDialogOpen(false)}
-                    // aria-labelledby="alert-dialog-title"
-                    // aria-describedby="alert-dialog-description"
-                    scroll="body"
-                    fullWidth
-                    maxWidth="lg"
-                    className="porchlightBG"
-                >
-                    {/* <DialogTitle id="alert-dialog-title"></DialogTitle> */}
-                    <DialogContent
-                        sx={{
-                            margin: '8px',
-                            border: '1px solid var(--primary-color)',
-                        }}
-                    >
-                        <Box className="feoyGoogleMap">
-                            <GoogleMapForHosts
-                                markers={theHosts}
-                                markerClick={onAutocompleteTagChange}
-                                // radius={Number(hostReachRadius)}
-                                circleCenter={{
-                                    coordinates: {
-                                        lat: 36.974,
-                                        lng: -97.03,
-                                    },
-                                }}
-                                preferredArtists={[]}
-                                zoom={4.25}
-                            />
-                        </Box>
-                    </DialogContent>
-                </Dialog>
-            )}
             <AppBar
                 position="sticky"
                 sx={{
@@ -467,18 +383,7 @@ const Navbar = ({
                             </IconButton>
                         </Box>
                         {pageURL === '/edit-hosts' && (
-                            <Box className="mapButton">
-                                <IconButton
-                                    size="large"
-                                    aria-label="account of current user"
-                                    aria-controls="menu-appbar"
-                                    aria-haspopup="true"
-                                    onClick={() => setTheMapDialogOpen(true)}
-                                    color="inherit"
-                                >
-                                    <MapTwoToneIcon />
-                                </IconButton>
-                            </Box>
+                            <HostDataGridMap></HostDataGridMap>
                         )}
                         <Typography
                             variant="h6"

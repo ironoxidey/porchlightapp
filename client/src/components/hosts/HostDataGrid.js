@@ -259,59 +259,59 @@ const HostDataGrid = ({
     //     return <AutocompleteEditInputCell {...params} />;
     // }
 
-    ProfileCell.propTypes = {
-        /**
-         * GridApi that let you manipulate the grid.
-         * @deprecated Use the `apiRef` returned by `useGridApiContext` or `useGridApiRef` (only available in `@mui/x-data-grid-pro`)
-         */
-        api: PropTypes.any.isRequired,
-        /**
-         * The column field of the cell that triggered the event.
-         */
-        field: PropTypes.string.isRequired,
-        /**
-         * The grid row id.
-         */
-        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-            .isRequired,
-        /**
-         * The cell value, but if the column has valueGetter, use getValue.
-         */
-        value: PropTypes.oneOfType([PropTypes.array, PropTypes.string])
-            .isRequired,
-    };
+    // ProfileCell.propTypes = {
+    //     /**
+    //      * GridApi that let you manipulate the grid.
+    //      * @deprecated Use the `apiRef` returned by `useGridApiContext` or `useGridApiRef` (only available in `@mui/x-data-grid-pro`)
+    //      */
+    //     api: PropTypes.any.isRequired,
+    //     /**
+    //      * The column field of the cell that triggered the event.
+    //      */
+    //     field: PropTypes.string.isRequired,
+    //     /**
+    //      * The grid row id.
+    //      */
+    //     id: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    //         .isRequired,
+    //     /**
+    //      * The cell value, but if the column has valueGetter, use getValue.
+    //      */
+    //     value: PropTypes.oneOfType([PropTypes.array, PropTypes.string])
+    //         .isRequired,
+    // };
 
-    function ProfileCell(props) {
-        const { id, value, api, field } = props;
-        //console.log('ProfileCell props', props);
-        const artistEmail = props.row.email;
+    // function ProfileCell(props) {
+    //     const { id, value, api, field } = props;
+    //     //console.log('ProfileCell props', props);
+    //     const artistEmail = props.row.email;
 
-        const [artistSlug, setArtistSlug] = useState('');
-        const [artistStageName, setArtistStageName] = useState('');
+    //     const [artistSlug, setArtistSlug] = useState('');
+    //     const [artistStageName, setArtistStageName] = useState('');
 
-        const getArtistSlug = async () => {
-            const gottenArtistSlug = value; //await getArtistByEmail(artistEmail);
-            setArtistSlug(gottenArtistSlug.slug);
-            setArtistStageName(gottenArtistSlug.stageName);
-        };
+    //     const getArtistSlug = async () => {
+    //         const gottenArtistSlug = value; //await getArtistByEmail(artistEmail);
+    //         setArtistSlug(gottenArtistSlug.slug);
+    //         setArtistStageName(gottenArtistSlug.stageName);
+    //     };
 
-        useEffect(() => {
-            getArtistSlug();
-        }, []);
+    //     useEffect(() => {
+    //         getArtistSlug();
+    //     }, []);
 
-        //console.log('artistSlug', artistSlug);
-        return (
-            <Fragment>
-                {artistSlug && (
-                    <Link to={'/artists/' + artistSlug}>{artistStageName}</Link>
-                )}
-            </Fragment>
-        );
-    }
+    //     //console.log('artistSlug', artistSlug);
+    //     return (
+    //         <Fragment>
+    //             {artistSlug && (
+    //                 <Link to={'/artists/' + artistSlug}>{artistStageName}</Link>
+    //             )}
+    //         </Fragment>
+    //     );
+    // }
 
-    function renderProfileCell(params) {
-        return <ProfileCell {...params}></ProfileCell>;
-    }
+    // function renderProfileCell(params) {
+    //     return <ProfileCell {...params}></ProfileCell>;
+    // }
 
     useEffect(() => {
         getAllHosts();
@@ -679,6 +679,7 @@ const HostDataGrid = ({
                                         );
                                     }
                                 )}
+                                key={'eventHosted' + i}
                             >
                                 <ProfileAvatar
                                     firstName={eventHosted.artist.stageName}
@@ -806,7 +807,7 @@ const HostDataGrid = ({
                 ) {
                     let emailHistory = params.value.map((emailedOn, i) => {
                         return (
-                            <div>
+                            <div key={'emailedOn' + i}>
                                 {new Date(emailedOn).toLocaleString('en-US')}
                             </div>
                         );
@@ -874,7 +875,11 @@ const HostDataGrid = ({
     ];
 
     useEffect(() => {
-        if (hosts) {
+        if (
+            hosts &&
+            hosts.length > 0 &&
+            hosts[0]._id //check to be sure we have the hosts in the state that are for admins (_id is not returned for anyone else)
+        ) {
             setHostRows(
                 hosts.map((host) => {
                     const hostRow = {
