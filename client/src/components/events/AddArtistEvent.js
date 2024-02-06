@@ -14,7 +14,7 @@ import {
     jumpTo,
     closeEventEditDrawer,
 } from '../../actions/app';
-import GoogleMap from '../layout/GoogleMap';
+// import GoogleMap from '../layout/GoogleMap';
 
 const AddArtistEvent = ({
     jumpTo,

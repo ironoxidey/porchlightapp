@@ -34,6 +34,8 @@ import {
     Typography,
     ListItemIcon,
 } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
 import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
@@ -43,9 +45,13 @@ import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import DashboardTwoToneIcon from '@mui/icons-material/DashboardTwoTone';
 import LogoutIcon from '@mui/icons-material/Logout';
 
+import MapTwoToneIcon from '@mui/icons-material/MapTwoTone';
+
 import Alert from '../layout/Alert';
 import ArtistTop from '../artists/ArtistTop';
 import EditHostSettings from '../hosts/EditHostSettings';
+
+import GoogleMapForHosts from '../layout/GoogleMapForHosts';
 
 const Navbar = ({
     auth: { isAuthenticated, loading, user },
@@ -60,7 +66,7 @@ const Navbar = ({
     getMyEventsOfferedToHost,
     getEventsNearMeToHost,
     getMyArtistEventsOffers,
-    app: { navDrawer, userDrawer, profileHat },
+    app: { navDrawer, userDrawer, profileHat, pageURL },
     artist,
     host,
     events: { myHostEvents, myArtistEvents },
@@ -68,6 +74,33 @@ const Navbar = ({
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
     const [avatar, setAvatar] = useState();
+
+    const [theHosts, setTheHosts] = useState([]);
+
+    useEffect(() => {
+        if (host && host.hosts) {
+            setTheHosts(
+                host.hosts.filter((thisHost) => {
+                    if (
+                        thisHost.active === true &&
+                        thisHost.latLong &&
+                        thisHost.latLong.coordinates &&
+                        thisHost.latLong.coordinates.length === 2
+                    ) {
+                        // console.log('thisHost', thisHost);
+                        return thisHost;
+                    } else {
+                        // console.log('not thisHost', thisHost);
+                        return false;
+                    }
+                })
+            );
+        }
+    }, [host.hosts]);
+
+    useEffect(() => {
+        console.log('theHosts', theHosts);
+    }, [theHosts]);
 
     useEffect(() => {
         if (user && user.avatar) {
@@ -101,13 +134,14 @@ const Navbar = ({
         }
     }, [getCurrentHost, user]);
 
-    //I'm not sure why I separated these from above ~commented out on May 31st,2022
-    // useEffect(() => {
-    //     if (isAuthenticated) {
-    //         getMyEventsOfferedToHost();
-    //         getMyArtistEventsOffers();
-    //     }
-    // }, [getCurrentHost, user]);
+    //Host Grid Map Dialog Functions
+    const [theMapDialogOpen, setTheMapDialogOpen] = useState(false);
+
+    const theMapDialogHandleClose = () => {
+        setTheMapDialogOpen(false);
+    };
+
+    //End of Dialog Functions
 
     const handleOpenNavMenu = (event) => {
         openNavDrawer();
@@ -355,60 +389,181 @@ const Navbar = ({
         return combinedLinks;
     };
 
-    return (
-        <AppBar
-            position="sticky"
-            sx={{
-                borderBottom: '1px solid var(--primary-color)',
-                backgroundImage: 'none',
-                backgroundColor: 'var(--secondary-dark-color)',
-            }}
-        >
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    <Box
-                        sx={{
-                            flexGrow: 1,
-                            display: { xs: 'flex', md: 'flex' },
-                        }}
-                    >
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={
-                                !navDrawer
-                                    ? handleOpenNavMenu
-                                    : handleCloseNavMenu
-                            }
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                    </Box>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="div"
-                        sx={{
-                            flexGrow: 1,
-                            display: { xs: 'flex', md: 'flex' },
-                        }}
-                    >
-                        <Alert />
-                    </Typography>
+    const onAutocompleteTagChange = (e, theFieldName, val) => {
+        console.log('val', val);
+        //console.log(Object.keys(formGroups).length);
+        // changesMade.current = true;
+        // let targetValue = val;
+        // setFormData({ ...formData, [theFieldName]: targetValue });
+    };
 
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Account Menu">
+    return (
+        <>
+            {theMapDialogOpen && (
+                <Dialog
+                    open={() => setTheMapDialogOpen(true)}
+                    onClose={() => setTheMapDialogOpen(false)}
+                    // aria-labelledby="alert-dialog-title"
+                    // aria-describedby="alert-dialog-description"
+                    scroll="body"
+                    fullWidth
+                    maxWidth="lg"
+                    className="porchlightBG"
+                >
+                    {/* <DialogTitle id="alert-dialog-title"></DialogTitle> */}
+                    <DialogContent
+                        sx={{
+                            margin: '8px',
+                            border: '1px solid var(--primary-color)',
+                        }}
+                    >
+                        <Box className="feoyGoogleMap">
+                            <GoogleMapForHosts
+                                markers={theHosts}
+                                markerClick={onAutocompleteTagChange}
+                                // radius={Number(hostReachRadius)}
+                                circleCenter={{
+                                    coordinates: {
+                                        lat: 36.974,
+                                        lng: -97.03,
+                                    },
+                                }}
+                                preferredArtists={[]}
+                                zoom={4.25}
+                            />
+                        </Box>
+                    </DialogContent>
+                </Dialog>
+            )}
+            <AppBar
+                position="sticky"
+                sx={{
+                    borderBottom: '1px solid var(--primary-color)',
+                    backgroundImage: 'none',
+                    backgroundColor: 'var(--secondary-dark-color)',
+                }}
+            >
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters>
+                        <Box
+                            sx={{
+                                flexGrow: 1,
+                                display: { xs: 'flex', md: 'flex' },
+                            }}
+                        >
                             <IconButton
-                                onClick={handleOpenUserMenu}
-                                sx={{ p: 0 }}
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={
+                                    !navDrawer
+                                        ? handleOpenNavMenu
+                                        : handleCloseNavMenu
+                                }
+                                color="inherit"
                             >
-                                {user && user.name && user.avatar !== null ? (
-                                    <Avatar
-                                        alt={`${
-                                            profileHat === 'HOST' &&
+                                <MenuIcon />
+                            </IconButton>
+                        </Box>
+                        {pageURL === '/edit-hosts' && (
+                            <Box className="mapButton">
+                                <IconButton
+                                    size="large"
+                                    aria-label="account of current user"
+                                    aria-controls="menu-appbar"
+                                    aria-haspopup="true"
+                                    onClick={() => setTheMapDialogOpen(true)}
+                                    color="inherit"
+                                >
+                                    <MapTwoToneIcon />
+                                </IconButton>
+                            </Box>
+                        )}
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="div"
+                            sx={{
+                                flexGrow: 1,
+                                display: { xs: 'flex', md: 'flex' },
+                            }}
+                        >
+                            <Alert />
+                        </Typography>
+
+                        <Box sx={{ flexGrow: 0 }}>
+                            <Tooltip title="Account Menu">
+                                <IconButton
+                                    onClick={handleOpenUserMenu}
+                                    sx={{ p: 0 }}
+                                >
+                                    {user &&
+                                    user.name &&
+                                    user.avatar !== null ? (
+                                        <Avatar
+                                            alt={`${
+                                                profileHat === 'HOST' &&
+                                                host &&
+                                                host.me
+                                                    ? host.me.firstName +
+                                                      ' ' +
+                                                      host.me.lastName
+                                                    : profileHat === 'ARTIST' &&
+                                                      artist &&
+                                                      artist.me
+                                                    ? artist.me.stageName
+                                                    : user.name
+                                            }`}
+                                            src={`${
+                                                profileHat === 'HOST' &&
+                                                host &&
+                                                host.me
+                                                    ? host.me.profileImg
+                                                    : profileHat === 'ARTIST' &&
+                                                      artist &&
+                                                      artist.me
+                                                    ? artist.me.squareImg
+                                                    : user.avatar
+                                            }`}
+                                        />
+                                    ) : (
+                                        <Avatar />
+                                    )}
+                                </IconButton>
+                            </Tooltip>
+                            <Menu
+                                sx={{ mt: '45px' }}
+                                id="menu-appbar"
+                                anchorEl={anchorElUser}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorElUser)}
+                                onClose={handleCloseUserMenu}
+                                onClick={handleCloseUserMenu}
+                            >
+                                {user && user.name && user.avatar !== null && (
+                                    <Box
+                                        key="nameEmail"
+                                        sx={{
+                                            width: '100%',
+                                            padding: '20px 20px 0px 20px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            flexDirection: 'column',
+                                        }}
+                                    >
+                                        <Typography
+                                            sx={{ textAlign: 'center' }}
+                                        >
+                                            {profileHat === 'HOST' &&
                                             host &&
                                             host.me
                                                 ? host.me.firstName +
@@ -418,90 +573,36 @@ const Navbar = ({
                                                   artist &&
                                                   artist.me
                                                 ? artist.me.stageName
-                                                : user.name
-                                        }`}
-                                        src={`${
-                                            profileHat === 'HOST' &&
-                                            host &&
-                                            host.me
-                                                ? host.me.profileImg
-                                                : profileHat === 'ARTIST' &&
-                                                  artist &&
-                                                  artist.me
-                                                ? artist.me.squareImg
-                                                : user.avatar
-                                        }`}
-                                    />
-                                ) : (
-                                    <Avatar />
+                                                : user && user.name
+                                                ? user.name
+                                                : ''}
+                                        </Typography>
+                                        <Typography
+                                            sx={{
+                                                opacity: 0.2,
+                                                fontSize: '.7em',
+                                            }}
+                                        >
+                                            ({user && user.email})
+                                        </Typography>
+                                    </Box>
                                 )}
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                            onClick={handleCloseUserMenu}
-                        >
-                            {user && user.name && user.avatar !== null && (
-                                <Box
-                                    key="nameEmail"
-                                    sx={{
-                                        width: '100%',
-                                        padding: '20px 20px 0px 20px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        flexDirection: 'column',
-                                    }}
-                                >
-                                    <Typography sx={{ textAlign: 'center' }}>
-                                        {profileHat === 'HOST' &&
-                                        host &&
-                                        host.me
-                                            ? host.me.firstName +
-                                              ' ' +
-                                              host.me.lastName
-                                            : profileHat === 'ARTIST' &&
-                                              artist &&
-                                              artist.me
-                                            ? artist.me.stageName
-                                            : user && user.name
-                                            ? user.name
-                                            : ''}
-                                    </Typography>
-                                    <Typography
-                                        sx={{ opacity: 0.2, fontSize: '.7em' }}
+                                {myNavLinks().map((userLink, index) => (
+                                    <MenuItem
+                                        key={userLink + index}
+                                        onClick={handleCloseNavMenu}
+                                        sx={{ padding: 0 }}
+                                        className="drawerListItems"
                                     >
-                                        ({user && user.email})
-                                    </Typography>
-                                </Box>
-                            )}
-                            {myNavLinks().map((userLink, index) => (
-                                <MenuItem
-                                    key={userLink + index}
-                                    onClick={handleCloseNavMenu}
-                                    sx={{ padding: 0 }}
-                                    className="drawerListItems"
-                                >
-                                    {userLink}
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
+                                        {userLink}
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                        </Box>
+                    </Toolbar>
+                </Container>
+            </AppBar>
+        </>
     );
 };
 

@@ -91,13 +91,18 @@ const MyMapComponent = ({
             window.google.maps.marker
         ) {
             const markersCoords = markers.map((marker, i) => {
+                // console.log('markersCoords marker', marker);
                 if (marker.latLong.coordinates.length === 2) {
                     const icon = document.createElement('div');
                     icon.className = 'markerGlyph';
-                    icon.innerHTML =
-                        '<img src=' +
-                        marker.squareImg +
-                        ' class="artistImg" style="border-radius:100%; width: 18px; height: 18px; margin-top: 4px;"></img>';
+                    {
+                        marker.squareImg || marker.profileImg
+                            ? (icon.innerHTML =
+                                  '<img src=' +
+                                  (marker.squareImg || marker.profileImg) +
+                                  ' class="artistImg" style="border-radius:100%; width: 18px; height: 18px; margin-top: 4px;"></img>')
+                            : (icon.innerHTML = '<i class="fa fa-home"></i>');
+                    }
 
                     if (
                         window.google &&
@@ -123,7 +128,11 @@ const MyMapComponent = ({
                                         lng: marker.latLong.coordinates[0],
                                     },
                                     content: pinGlyph && pinGlyph.element,
-                                    title: marker.stageName,
+                                    title:
+                                        marker.stageName ||
+                                        marker.firstName +
+                                            ' ' +
+                                            marker.lastName,
                                     // icon: 'pin.png',
                                 }
                             );
@@ -329,6 +338,7 @@ const GoogleMapForHosts = ({
     // radius,
     circleCenter,
     preferredArtists,
+    zoom,
 }) => {
     // useEffect(() => {
     //     console.log('markers', markers);
@@ -345,7 +355,7 @@ const GoogleMapForHosts = ({
                         lat: 36.974,
                         lng: -97.03,
                     }}
-                    zoom={6}
+                    zoom={zoom || 6}
                     markers={markers}
                     markerClick={markerClick}
                     // radius={radius}
@@ -363,6 +373,7 @@ GoogleMapForHosts.propTypes = {
     // radius: PropTypes.number,
     circleCenter: PropTypes.object,
     preferredArtists: PropTypes.array,
+    zoom: PropTypes.number,
 };
 
 export default GoogleMapForHosts;

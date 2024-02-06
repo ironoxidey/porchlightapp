@@ -17,6 +17,7 @@ import {
 const intialState = {
     navDrawer: false,
     //userDrawer: false,
+    pageURL: '',
     pageTitle: '',
     artistCardFlip: false,
     doneFlipped: true,
@@ -89,6 +90,7 @@ export default function (state = intialState, action) {
                     payload.pageTitle !== ''
                         ? payload.pageTitle + ' | Porchlight: Art + Hospitality'
                         : 'Porchlight: Art + Hospitality',
+                pageURL: payload.pageURL,
             };
         case LOGOUT:
         case ACCOUNT_DELETED:
