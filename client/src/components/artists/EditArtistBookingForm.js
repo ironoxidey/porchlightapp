@@ -1867,7 +1867,8 @@ const EditArtistBookingForm = ({
             opacity: 0,
             transform: `translateX(${formCardDirection * -60}vw)`,
         },
-        config: config.molasses,
+        // config: config.molasses,
+        config: { mass: 2, tension: 280, friction: 60 },
         // onRest: (_a, _b, item) => {
         //   if (formCardIndex === item) {
         //     set(cardIndex => (cardIndex + 1) % formGroups.length)

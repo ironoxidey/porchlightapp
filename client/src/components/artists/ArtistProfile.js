@@ -144,7 +144,8 @@ const ArtistProfile = ({
             opacity: 0,
             transform: `scale(0.9,0.9)`,
         },
-        config: config.molasses,
+        // config: config.molasses,
+        config: { mass: 2, tension: 280, friction: 60 },
         // onRest: (_a, _b, item) => {
         //   if (formCardIndex === item) {
         //     set(cardIndex => (cardIndex + 1) % formGroups.length)

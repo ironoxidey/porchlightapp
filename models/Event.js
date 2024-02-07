@@ -292,6 +292,10 @@ const EventSchema = new mongoose.Schema(
                 },
             },
         ],
+        artistReviewOfHost: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'artistreviewshost',
+        },
     },
     { timestamps: true }
 );

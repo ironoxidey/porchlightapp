@@ -32,6 +32,7 @@ import ArtistDashboardBookingOffers from './ArtistDashboardBookingOffers';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditArtistEvent from './EditArtistEvent';
+import ArtistReviewsHost from '../artists/ArtistReviewsHost';
 
 const ArtistDashboardEventCard = ({
     thisEvent,
@@ -488,6 +489,12 @@ const ArtistDashboardEventCard = ({
                                     <DeleteIcon></DeleteIcon>
                                 </IconButton>
                             </Grid>
+                        )}
+                    {thisEvent.status === 'CONFIRMED' &&
+                        new Date(thisEvent.bookingWhen) < new Date() && ( //bookingWhen is older than today
+                            <ArtistReviewsHost
+                                theEvent={thisEvent}
+                            ></ArtistReviewsHost>
                         )}
                 </Grid>
             </Tooltip>

@@ -7,6 +7,7 @@ const { check, validationResult, body } = require('express-validator');
 
 const User = require('../../models/User');
 const Artist = require('../../models/Artist');
+const ArtistReviewsHost = require('../../models/ArtistReviewsHost');
 const Event = require('../../models/Event');
 
 const addressGeocode = require('../../utils/maps/geocoding');
@@ -876,6 +877,84 @@ router.post('/updateMe', [auth], async (req, res) => {
         );
         //res.json(artistCount + " artist(s) submitted to the database."); //eventually remove this
     }
+});
+
+// @route    POST api/artists/artistReviewsHost
+// @desc     Artist reviews host
+// @access   Private
+router.post('/artistReviewsHost', [auth], async (req, res) => {
+    //console.log('artistReviewsHost req.body', req.body);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    let reviewFields = req.body;
+
+    const thisArtist = await Artist.findOne({
+        //artist associated with logged-in user's email address
+        email: req.user.email,
+    });
+
+    if (
+        req.user.role
+        // &&
+        // req.user.role.indexOf('ARTIST') > -1 &&
+        // reviewFields.artistId === thisArtist._id
+    ) {
+        try {
+            // console.log('artistReviewsHost reviewFields', reviewFields);
+
+            let theReview = await ArtistReviewsHost.findOneAndUpdate(
+                {
+                    // eventId: reviewFields.eventId,
+                    artistId: thisArtist._id,
+                    // hostId: reviewFields.hostId,
+                },
+                {
+                    ...reviewFields,
+                },
+                { new: true, upsert: true }
+            );
+
+            // console.log('theReview', theReview);
+
+            let theEventToUpdate = await Event.findOneAndUpdate(
+                //https://www.mongodb.com/docs/manual/reference/operator/projection/
+                {
+                    _id: reviewFields.eventId,
+                },
+                {
+                    $set: {
+                        artistReviewOfHost: theReview._id,
+                    },
+                },
+                { new: true }
+            );
+
+            // .select(
+            //     '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -declinedHosts'
+            // )
+            // .populate(
+            //     'offersFromHosts.host',
+            //     '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin -lastLastLogin -lastEmailed -everyTimeEmailed -notificationFrequency -date -createdAt'
+            // );
+            //console.log('eventDetails', eventDetails);
+            res.json(theReview);
+        } catch (err) {
+            //console.error(err.message);
+            res.status(500).send('Server Error: ' + err.message);
+        }
+    } else {
+        console.error(
+            req.user.email + " doesn't have authority to review this event."
+        );
+        res.status(500).send(
+            'User does not have authority to review this event.'
+        );
+    }
+
+    //res.json(eventCount + " event(s) submitted to the database."); //eventually remove this
 });
 
 // @route    GET api/artists

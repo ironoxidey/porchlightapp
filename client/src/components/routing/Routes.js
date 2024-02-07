@@ -47,7 +47,8 @@ const Routes = ({ app }) => {
 
     const [scrollY, setY] = useSpring(() => ({
         scrollTop: 0,
-        config: config.molasses,
+        // config: config.molasses,
+        config: { mass: 2, tension: 280, friction: 60 },
     }));
 
     useEffect(() => {
