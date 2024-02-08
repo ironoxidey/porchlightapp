@@ -176,7 +176,7 @@ export const artistReviewsHost =
     (formData, history, edit = false) =>
     async (dispatch) => {
         try {
-            console.log('formData', formData);
+            // console.log('formData to send', formData);
             const config = {
                 headers: {
                     'Content-Type': 'application/json',

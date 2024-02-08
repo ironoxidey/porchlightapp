@@ -896,18 +896,30 @@ router.post('/artistReviewsHost', [auth], async (req, res) => {
         email: req.user.email,
     });
 
+    // console.log(
+    //     'reviewFields',
+    //     reviewFields,
+    //     'reviewFields.artistId',
+    //     reviewFields.artistId,
+    //     'thisArtist._id',
+    //     thisArtist._id,
+    //     'thisArtist._id.equals(reviewFields.artistId)',
+    //     thisArtist._id.equals(reviewFields.artistId)
+    // );
     if (
-        req.user.role
-        // &&
-        // req.user.role.indexOf('ARTIST') > -1 &&
-        // reviewFields.artistId === thisArtist._id
+        req.user.role &&
+        req.user.role.indexOf('ARTIST') > -1 &&
+        thisArtist &&
+        thisArtist._id &&
+        reviewFields.artistId &&
+        thisArtist._id.equals(reviewFields.artistId) //compare ObjectIDs with the .equals() method.
     ) {
         try {
             // console.log('artistReviewsHost reviewFields', reviewFields);
 
             let theReview = await ArtistReviewsHost.findOneAndUpdate(
                 {
-                    // eventId: reviewFields.eventId,
+                    eventId: reviewFields.eventId,
                     artistId: thisArtist._id,
                     // hostId: reviewFields.hostId,
                 },
@@ -915,11 +927,11 @@ router.post('/artistReviewsHost', [auth], async (req, res) => {
                     ...reviewFields,
                 },
                 { new: true, upsert: true }
-            );
+            ).select('-hostId');
 
             // console.log('theReview', theReview);
 
-            let theEventToUpdate = await Event.findOneAndUpdate(
+            await Event.findOneAndUpdate(
                 //https://www.mongodb.com/docs/manual/reference/operator/projection/
                 {
                     _id: reviewFields.eventId,

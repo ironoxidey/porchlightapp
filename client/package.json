@@ -11,6 +11,8 @@
         "@fortawesome/react-fontawesome": "^0.1.16",
         "@googlemaps/markerclusterer": "^2.4.1",
         "@googlemaps/react-wrapper": "^1.1.35",
+        "@mui/base": "^5.0.0-beta.36",
+        "@mui/core": "^5.0.0-alpha.54",
         "@mui/icons-material": "^5.2.1",
         "@mui/lab": "^5.0.0-alpha.73",
         "@mui/material": "^5.10.6",

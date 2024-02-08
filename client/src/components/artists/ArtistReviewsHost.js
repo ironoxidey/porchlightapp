@@ -17,7 +17,6 @@ import {
     Box,
     Typography,
     Rating,
-    TextareaAutosize,
     Dialog,
     DialogContent,
 } from '@mui/material';
@@ -62,6 +61,7 @@ const ArtistReviewsHost = ({
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     // const dispatch = useDispatch();
 
+    const [theReview, setTheReview] = useState({});
     const [theOffer, setTheOffer] = useState({});
     const [theHost, setTheHost] = useState({});
 
@@ -78,7 +78,15 @@ const ArtistReviewsHost = ({
             console.log('theAcceptedOffer', theAcceptedOffer);
             setTheOffer(theAcceptedOffer);
         }
+        if (theEvent.artistReviewOfHost) {
+            setTheReview(theEvent.artistReviewOfHost);
+        }
     }, [theEvent]);
+    useEffect(() => {
+        if (theEvent.artistReviewOfHost) {
+            setTheReview(theEvent.artistReviewOfHost);
+        }
+    }, [theEvent.artistReviewOfHost]);
 
     useEffect(() => {
         if (theOffer && theOffer.host) {
@@ -118,7 +126,91 @@ const ArtistReviewsHost = ({
     });
 
     useEffect(() => {
-        if (theEvent._id) {
+        if (theEvent._id && theReview) {
+            setFormData({
+                eventId: loading || !theEvent._id ? '' : theEvent._id,
+                artistId: loading || !artistMe._id ? '' : artistMe._id,
+                hostId:
+                    loading ||
+                    !theOffer.host ||
+                    (theOffer.host && !theOffer.host._id)
+                        ? ''
+                        : theOffer.host._id,
+                bookingWhen:
+                    loading || !theEvent.bookingWhen
+                        ? ''
+                        : theEvent.bookingWhen,
+                bookingWhere:
+                    loading || !theEvent.bookingWhere
+                        ? {}
+                        : theEvent.bookingWhere,
+
+                communication:
+                    loading || !theReview.communication
+                        ? 0
+                        : theReview.communication,
+                promotion:
+                    loading || !theReview.promotion ? 0 : theReview.promotion,
+                tipsDonations:
+                    loading || !theReview.tipsDonations
+                        ? 0
+                        : theReview.tipsDonations,
+                merchSales:
+                    loading || !theReview.merchSales ? 0 : theReview.merchSales,
+                ticketSales:
+                    loading || !theReview.ticketSales
+                        ? 0
+                        : theReview.ticketSales,
+                revenueExpectations:
+                    loading || !theReview.revenueExpectations
+                        ? ''
+                        : theReview.revenueExpectations,
+                attendanceExpectations:
+                    loading || !theReview.attendanceExpectations
+                        ? ''
+                        : theReview.attendanceExpectations,
+                audienceQuality:
+                    loading || !theReview.audienceQuality
+                        ? ''
+                        : theReview.audienceQuality,
+                venueQuality:
+                    loading || !theReview.venueQuality
+                        ? 0
+                        : theReview.venueQuality,
+                everythingNeeded:
+                    loading || !theReview.everythingNeeded
+                        ? 0
+                        : theReview.everythingNeeded,
+                introductionByHost:
+                    loading || !theReview.introductionByHost
+                        ? 0
+                        : theReview.introductionByHost,
+                hostExample:
+                    loading || !theReview.hostExample
+                        ? 0
+                        : theReview.hostExample,
+                hostInteractions:
+                    loading || !theReview.hostInteractions
+                        ? 0
+                        : theReview.hostInteractions,
+                hostAccomodations:
+                    loading || !theReview.hostAccomodations
+                        ? 0
+                        : theReview.hostAccomodations,
+                hostCommitment:
+                    loading || !theReview.hostCommitment
+                        ? 0
+                        : theReview.hostCommitment,
+                recHostForRetreat:
+                    loading || !theReview.recHostForRetreat
+                        ? ''
+                        : theReview.recHostForRetreat,
+                artistNotes:
+                    loading || !theReview.artistNotes
+                        ? ''
+                        : theReview.artistNotes,
+            });
+        } else if (theEvent._id) {
             setFormData({
                 eventId: loading || !theEvent._id ? '' : theEvent._id,
                 artistId: loading || !artistMe._id ? '' : artistMe._id,
@@ -138,7 +230,7 @@ const ArtistReviewsHost = ({
                         : theEvent.bookingWhere,
             });
         }
-    }, [auth.loading, artistMe, theEvent, theOffer]);
+    }, [auth.loading, artistMe, theEvent, theOffer, theReview]);
 
     const {
         communication,
@@ -200,25 +292,48 @@ const ArtistReviewsHost = ({
         changesMade.current = false;
     };
 
-    const [open, setOpen] = useState(true);
-
     const formGroups = {
         communication: [
             [
+                <Box
+                    className="squareImgInACircle"
+                    sx={{
+                        height: '150px',
+                        width: '150px',
+                        maxHeight: '150px',
+                        maxWidth: '150px',
+                        borderRadius: '50%',
+                        overflow: 'hidden',
+                        backgroundImage: `url("${theHost.profileImg}")`,
+                        backgroundPosition: '50% 25%',
+                        backgroundSize: 'cover',
+                        padding: '4px',
+                        backgroundClip: 'content-box',
+                        //border: '1px solid var(--primary-color)',
+                        border: '1px solid var(--primary-color)',
+
+                        margin: '0 auto',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'end',
+                        aspectRatio: '1 / 1',
+                    }}
+                ></Box>,
                 <FormLabel component="legend">
                     How was your communication with{' '}
                     {theHost.firstName + ' ' + theHost.lastName}?
                 </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{ textAlign: 'center', display: 'block' }}
-                >
-                    1 is terrible, 5 is great!
-                </FormLabel>,
+                // <FormLabel
+                //     component="small"
+                //     sx={{ textAlign: 'center', display: 'block' }}
+                // >
+                //     (1 is terrible, 5 is great!)
+                // </FormLabel>,
             ],
             [
                 <FormControl component="fieldset">
                     <Rating
+                        size="large"
                         id="communication"
                         value={communication}
                         name="communication"
@@ -237,6 +352,7 @@ const ArtistReviewsHost = ({
             [
                 <FormControl component="fieldset">
                     <Rating
+                        size="large"
                         id="promotion"
                         value={promotion}
                         name="promotion"
@@ -461,6 +577,7 @@ const ArtistReviewsHost = ({
             [
                 <FormControl component="fieldset">
                     <Rating
+                        size="large"
                         id="venueQuality"
                         value={venueQuality}
                         name="venueQuality"
@@ -484,6 +601,7 @@ const ArtistReviewsHost = ({
             [
                 <FormControl component="fieldset">
                     <Rating
+                        size="large"
                         id="everythingNeeded"
                         value={everythingNeeded}
                         name="everythingNeeded"
@@ -501,6 +619,7 @@ const ArtistReviewsHost = ({
             [
                 <FormControl component="fieldset">
                     <Rating
+                        size="large"
                         id="introductionByHost"
                         value={introductionByHost}
                         name="introductionByHost"
@@ -525,6 +644,7 @@ const ArtistReviewsHost = ({
             [
                 <FormControl component="fieldset">
                     <Rating
+                        size="large"
                         id="hostExample"
                         value={hostExample}
                         name="hostExample"
@@ -542,6 +662,7 @@ const ArtistReviewsHost = ({
             [
                 <FormControl component="fieldset">
                     <Rating
+                        size="large"
                         id="hostInteractions"
                         value={hostInteractions}
                         name="hostInteractions"
@@ -560,6 +681,7 @@ const ArtistReviewsHost = ({
             [
                 <FormControl component="fieldset">
                     <Rating
+                        size="large"
                         id="hostAccomodations"
                         value={hostAccomodations}
                         name="hostAccomodations"
@@ -578,6 +700,7 @@ const ArtistReviewsHost = ({
             [
                 <FormControl component="fieldset">
                     <Rating
+                        size="large"
                         id="hostCommitment"
                         value={hostCommitment}
                         name="hostCommitment"
@@ -639,23 +762,33 @@ const ArtistReviewsHost = ({
         ],
 
         artistNotes: [
-            <FormLabel component="legend">
-                Was there anything about the show, venue, or host behavior you
-                think could have been improved?
-            </FormLabel>,
-            <FormLabel
-                component="small"
-                sx={{ textAlign: 'center', display: 'block' }}
-            >
-                Be as long or short as you would like, and the more specific
-                your feedback, the more helpful!
-            </FormLabel>,
             [
-                <Grid item xs={12} sx={{ width: '100%' }}>
-                    <TextareaAutosize
+                <FormLabel component="legend">
+                    Was there anything about the show, venue, or host behavior
+                    you think could have been improved?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    Be as long or short as you would like; the more specific
+                    your feedback, the more helpful!
+                </FormLabel>,
+            ],
+            [
+                <Grid
+                    item
+                    xs={12}
+                    sx={{ margin: '16px auto', width: '70%' }}
+                    className="artistNotes_textarea"
+                    justifyContent={'center'}
+                >
+                    <TextField
+                        multiline
                         variant="standard"
                         name="artistNotes"
                         id="artistNotes"
+                        label={'Notes'}
                         value={artistNotes}
                         onChange={(e) => onChange(e)}
                         sx={{ width: '100%' }}
@@ -665,92 +798,68 @@ const ArtistReviewsHost = ({
         ],
         endSlide: [
             [
-                <Typography component="h2" sx={{ textAlign: 'center' }}>
-                    That’s everything we think {artistMe.stageName} will need,
-                    in order to make a decision about this show.
+                <Typography
+                    component="h2"
+                    sx={{ fontSize: '2.2em!important', textAlign: 'center' }}
+                >
+                    Thanks so much!
+                </Typography>,
+                <Typography
+                    component="h2"
+                    sx={{ fontSize: '2.2em!important', textAlign: 'center' }}
+                >
+                    It helps more than you know...
                 </Typography>,
                 <>
                     <Typography
                         component="p"
                         sx={{
                             textAlign: 'center',
-                            marginTop: '20px',
+                            marginTop: '16px',
                         }}
                     >
-                        As soon as you submit this offer, a notification will be
-                        sent to {artistMe.stageName}, so that we can hopefully
-                        get this show booked for{' '}
-                        {new Date(theEvent.bookingWhen).toLocaleDateString(
-                            undefined,
-                            {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                                timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
-                            }
-                        )}{' '}
-                        near {theEvent.bookingWhere.city},{' '}
-                        {theEvent.bookingWhere.state}.
+                        The Porchlight community is constantly growing and
+                        learning, and your insight is essential as we develop a
+                        network of hosts who exemplify the heart of Jesus as we
+                        all care for attendees, artists, and culture.
                     </Typography>
 
                     <Typography
                         component="p"
                         sx={{
                             textAlign: 'center',
-                            marginTop: '20px',
+                            marginTop: '16px',
                         }}
                     >
-                        <em>
-                            {artistMe.stageName} will review this offer, and
-                            contact you by phone or email if it seems like a
-                            good fit.
-                        </em>
+                        Your collaboration and perspective is an essential part
+                        of this process.
+                    </Typography>
+                    <Typography
+                        component="p"
+                        sx={{
+                            textAlign: 'center',
+                            marginTop: '16px',
+                        }}
+                    >
+                        Thank you.
                     </Typography>
 
                     <Grid
                         item
                         container
                         justifyContent="center"
-                        sx={{ marginTop: '8px' }}
+                        sx={{ marginTop: '16px' }}
                     >
-                        <Button btnwidth="300" onClick={(e) => {}}>
-                            Submit My Offer To Host
+                        <Button
+                            btnwidth="300"
+                            onClick={() => {
+                                setDialogOpen(false);
+                            }}
+                        >
+                            Close This Window
                         </Button>
                     </Grid>
                 </>,
-                <Grid
-                    item
-                    container
-                    justifyContent="center"
-                    sx={{
-                        marginTop: 3,
-                        borderTop: 'dashed 2px var(--primary-color)',
-                    }}
-                >
-                    <Typography
-                        component="h2"
-                        sx={{
-                            paddingTop: 2,
-                            textAlign: 'center',
-                        }}
-                    >
-                        Below is what {artistMe.stageName} will see when
-                        reviewing your offer:
-                    </Typography>
-                </Grid>,
-                <Grid
-                    item
-                    container
-                    justifyContent="center"
-                    sx={{ marginTop: '8px' }}
-                >
-                    {/* <HostProfile
-                        theHost={host.me}
-                        theEvent={theEvent}
-                        theOffer={formData}
-                    ></HostProfile> */}
-                </Grid>,
             ],
         ],
     };
@@ -867,7 +976,7 @@ const ArtistReviewsHost = ({
                             direction="row"
                             alignItems="start"
                             justifyContent="center"
-                            height="60vh"
+                            height="65vh"
                             sx={{ padding: '20px!important' }}
                             key={`cardGrid` + theEvent._id + artistMe._id}
                         >
@@ -938,6 +1047,7 @@ const ArtistReviewsHost = ({
                                 key={'animatedFormGroup' + i}
                                 style={{
                                     ...style,
+                                    minHeight: 'inherit',
                                 }}
                             >
                                 <div
@@ -988,13 +1098,13 @@ const ArtistReviewsHost = ({
                     </form>
                 </DialogContent>
             </Dialog>
-            <Button
-                btnwidth="250"
-                onClick={() => setDialogOpen(true)}
-                style={{ margin: '8px auto' }}
-            >
-                Give Feedback
-            </Button>
+            <Grid item style={{ margin: '0 auto', alignSelf: 'center' }}>
+                <Button btnwidth="250" onClick={() => setDialogOpen(true)}>
+                    {theEvent.artistReviewOfHost
+                        ? 'Edit Review'
+                        : 'Review Your Experience'}
+                </Button>
+            </Grid>
         </Fragment>
     );
 };
