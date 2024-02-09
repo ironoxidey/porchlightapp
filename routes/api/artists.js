@@ -1004,174 +1004,174 @@ router.get('/artistReviewsOfHosts', [auth], async (req, res) => {
 // @route    POST api/artists/artistReviewsHostBatch
 // @desc     Artist reviews host
 // @access   Private
-router.post('/artistReviewsHostBatch', [auth], async (req, res) => {
-    //console.log('artistReviewsHost req.body', req.body);
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-    if (req.body instanceof Array) {
-        let reviewsCount = 0;
-        await Promise.all(
-            req.body.map(async (reviewFields) => {
-                let theEvent, theHost, theArtist;
+// router.post('/artistReviewsHostBatch', [auth], async (req, res) => {
+//     //console.log('artistReviewsHost req.body', req.body);
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//         return res.status(400).json({ errors: errors.array() });
+//     }
+//     if (req.body instanceof Array) {
+//         let reviewsCount = 0;
+//         await Promise.all(
+//             req.body.map(async (reviewFields) => {
+//                 let theEvent, theHost, theArtist;
 
-                if (reviewFields.eventId) {
-                    theEvent = await Event.findOne(
-                        //https://www.mongodb.com/docs/manual/reference/operator/projection/
-                        {
-                            _id: reviewFields.eventId,
-                        }
-                    );
+//                 if (reviewFields.eventId) {
+//                     theEvent = await Event.findOne(
+//                         //https://www.mongodb.com/docs/manual/reference/operator/projection/
+//                         {
+//                             _id: reviewFields.eventId,
+//                         }
+//                     );
 
-                    if (theEvent && theEvent._id) {
-                        theHost =
-                            theEvent.confirmedHost ||
-                            (theEvent.offersFromHosts &&
-                                theEvent.offersFromHosts.length > 0 &&
-                                theEvent.offersFromHosts.find(
-                                    (offerFromHost) => {
-                                        return (
-                                            offerFromHost.status === 'ACCEPTED'
-                                        );
-                                    }
-                                ).host);
-                        theArtist = theEvent.confirmedArtist || theEvent.artist;
-                    }
-                }
-                // if (reviewFields.hostName && !theHost) {
-                //     const hostFirstName = reviewFields.hostName.split(' ')[0];
-                //     const hostLastName = reviewFields.hostName.split(' ')[1];
-                //     const findTheHost = await Host.findOne(
-                //         //https://www.mongodb.com/docs/manual/reference/operator/projection/
-                //         {
-                //             firstName: hostFirstName,
-                //             lastName: hostLastName,
-                //         }
-                //     ).select('_id');
+//                     if (theEvent && theEvent._id) {
+//                         theHost =
+//                             theEvent.confirmedHost ||
+//                             (theEvent.offersFromHosts &&
+//                                 theEvent.offersFromHosts.length > 0 &&
+//                                 theEvent.offersFromHosts.find(
+//                                     (offerFromHost) => {
+//                                         return (
+//                                             offerFromHost.status === 'ACCEPTED'
+//                                         );
+//                                     }
+//                                 ).host);
+//                         theArtist = theEvent.confirmedArtist || theEvent.artist;
+//                     }
+//                 }
+//                 // if (reviewFields.hostName && !theHost) {
+//                 //     const hostFirstName = reviewFields.hostName.split(' ')[0];
+//                 //     const hostLastName = reviewFields.hostName.split(' ')[1];
+//                 //     const findTheHost = await Host.findOne(
+//                 //         //https://www.mongodb.com/docs/manual/reference/operator/projection/
+//                 //         {
+//                 //             firstName: hostFirstName,
+//                 //             lastName: hostLastName,
+//                 //         }
+//                 //     ).select('_id');
 
-                //     theHost = findTheHost?._id;
-                // }
-                // if (reviewFields.bandName && !theArtist) {
-                //     const findTheArtist = await Artist.findOne(
-                //         //https://www.mongodb.com/docs/manual/reference/operator/projection/
-                //         {
-                //             stageName: reviewFields.bandName,
-                //         }
-                //     ).select('_id');
+//                 //     theHost = findTheHost?._id;
+//                 // }
+//                 // if (reviewFields.bandName && !theArtist) {
+//                 //     const findTheArtist = await Artist.findOne(
+//                 //         //https://www.mongodb.com/docs/manual/reference/operator/projection/
+//                 //         {
+//                 //             stageName: reviewFields.bandName,
+//                 //         }
+//                 //     ).select('_id');
 
-                //     theArtist = findTheArtist?._id;
-                // }
+//                 //     theArtist = findTheArtist?._id;
+//                 // }
 
-                console.log(
-                    'reviewFields.bandName',
-                    reviewFields.bandName || '',
-                    ' | theEvent.artistSlug',
-                    theEvent && theEvent.artistSlug,
-                    ' | theArtist',
-                    theArtist,
-                    ' | hostName',
-                    reviewFields.hostName,
-                    ' | theHost',
-                    theHost,
-                    ' | bookingWhen',
-                    (theEvent && theEvent.bookingWhen) ||
-                        reviewFields.bookingWhen ||
-                        '',
-                    ' | reviewFields.address',
-                    reviewFields.address,
-                    ' | theEvent.bookingWhere',
-                    theEvent && theEvent.bookingWhere
-                );
+//                 console.log(
+//                     'reviewFields.bandName',
+//                     reviewFields.bandName || '',
+//                     ' | theEvent.artistSlug',
+//                     theEvent && theEvent.artistSlug,
+//                     ' | theArtist',
+//                     theArtist,
+//                     ' | hostName',
+//                     reviewFields.hostName,
+//                     ' | theHost',
+//                     theHost,
+//                     ' | bookingWhen',
+//                     (theEvent && theEvent.bookingWhen) ||
+//                         reviewFields.bookingWhen ||
+//                         '',
+//                     ' | reviewFields.address',
+//                     reviewFields.address,
+//                     ' | theEvent.bookingWhere',
+//                     theEvent && theEvent.bookingWhere
+//                 );
 
-                if (
-                    req.user.role &&
-                    req.user.role.indexOf('ADMIN') > -1 &&
-                    theArtist &&
-                    theHost
-                ) {
-                    try {
-                        // console.log('artistReviewsHost reviewFields', reviewFields);
+//                 if (
+//                     req.user.role &&
+//                     req.user.role.indexOf('ADMIN') > -1 &&
+//                     theArtist &&
+//                     theHost
+//                 ) {
+//                     try {
+//                         // console.log('artistReviewsHost reviewFields', reviewFields);
 
-                        let theReview =
-                            await ArtistReviewsHost.findOneAndUpdate(
-                                {
-                                    artistId: theArtist,
-                                    typeformSubmittedAt:
-                                        reviewFields.typeformSubmittedAt,
-                                    // hostId: reviewFields.hostId,
-                                },
-                                {
-                                    $set: {
-                                        ...reviewFields,
-                                        artistId: theArtist,
-                                        hostId: theHost,
-                                        eventId: theEvent && theEvent._id,
-                                        bookingWhen:
-                                            (theEvent &&
-                                                theEvent.bookingWhen) ||
-                                            reviewFields.bookingWhen ||
-                                            reviewFields.typeformSubmittedAt,
-                                        typeformAddress: reviewFields.address,
-                                        createdAt:
-                                            reviewFields.typeformSubmittedAt,
-                                    },
-                                },
-                                { new: true, upsert: true }
-                            ).select('-hostId');
+//                         let theReview =
+//                             await ArtistReviewsHost.findOneAndUpdate(
+//                                 {
+//                                     artistId: theArtist,
+//                                     typeformSubmittedAt:
+//                                         reviewFields.typeformSubmittedAt,
+//                                     // hostId: reviewFields.hostId,
+//                                 },
+//                                 {
+//                                     $set: {
+//                                         ...reviewFields,
+//                                         artistId: theArtist,
+//                                         hostId: theHost,
+//                                         eventId: theEvent && theEvent._id,
+//                                         bookingWhen:
+//                                             (theEvent &&
+//                                                 theEvent.bookingWhen) ||
+//                                             reviewFields.bookingWhen ||
+//                                             reviewFields.typeformSubmittedAt,
+//                                         typeformAddress: reviewFields.address,
+//                                         createdAt:
+//                                             reviewFields.typeformSubmittedAt,
+//                                     },
+//                                 },
+//                                 { new: true, upsert: true }
+//                             ).select('-hostId');
 
-                        // console.log('theReview', theReview);
+//                         // console.log('theReview', theReview);
 
-                        if (theEvent && theEvent._id) {
-                            let updatedEvent = await Event.findOneAndUpdate(
-                                //https://www.mongodb.com/docs/manual/reference/operator/projection/
-                                {
-                                    _id: theEvent._id,
-                                },
-                                {
-                                    $set: {
-                                        artistReviewOfHost: theReview._id,
-                                    },
-                                },
-                                { new: true }
-                            );
-                            console.log(
-                                'updatedEvent',
-                                updatedEvent._id,
-                                'hostName',
-                                reviewFields.hostName,
-                                'artist',
-                                reviewFields.bandName
-                            );
-                        }
+//                         if (theEvent && theEvent._id) {
+//                             let updatedEvent = await Event.findOneAndUpdate(
+//                                 //https://www.mongodb.com/docs/manual/reference/operator/projection/
+//                                 {
+//                                     _id: theEvent._id,
+//                                 },
+//                                 {
+//                                     $set: {
+//                                         artistReviewOfHost: theReview._id,
+//                                     },
+//                                 },
+//                                 { new: true }
+//                             );
+//                             console.log(
+//                                 'updatedEvent',
+//                                 updatedEvent._id,
+//                                 'hostName',
+//                                 reviewFields.hostName,
+//                                 'artist',
+//                                 reviewFields.bandName
+//                             );
+//                         }
 
-                        // .select(
-                        //     '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -declinedHosts'
-                        // )
-                        // .populate(
-                        //     'offersFromHosts.host',
-                        //     '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin -lastLastLogin -lastEmailed -everyTimeEmailed -notificationFrequency -date -createdAt'
-                        // );
-                        // res.json(theReview);
-                        reviewsCount++;
-                    } catch (err) {
-                        console.error(err.message);
-                        // res.status(500).send('Server Error: ' + err.message);
-                    }
-                }
-            })
-        );
-        res.json(reviewsCount + ' review(s) submitted to the database.'); //eventually remove this
-    } else {
-        console.error(
-            req.user.email +
-                " doesn't have authority to review this event. Or there’s not a proper theArtist or theHost."
-        );
-        res.status(500).send(
-            'User does not have authority to review this event. Or there’s not a proper theArtist or theHost.'
-        );
-    }
-});
+//                         // .select(
+//                         //     '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -declinedHosts'
+//                         // )
+//                         // .populate(
+//                         //     'offersFromHosts.host',
+//                         //     '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin -lastLastLogin -lastEmailed -everyTimeEmailed -notificationFrequency -date -createdAt'
+//                         // );
+//                         // res.json(theReview);
+//                         reviewsCount++;
+//                     } catch (err) {
+//                         console.error(err.message);
+//                         // res.status(500).send('Server Error: ' + err.message);
+//                     }
+//                 }
+//             })
+//         );
+//         res.json(reviewsCount + ' review(s) submitted to the database.'); //eventually remove this
+//     } else {
+//         console.error(
+//             req.user.email +
+//                 " doesn't have authority to review this event. Or there’s not a proper theArtist or theHost."
+//         );
+//         res.status(500).send(
+//             'User does not have authority to review this event. Or there’s not a proper theArtist or theHost.'
+//         );
+//     }
+// });
 
 // @route    GET api/artists
 // @desc     Get all active artists
