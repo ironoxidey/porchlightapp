@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Avatar, Tooltip } from '@mui/material';
 import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 //import { EventHostDialog } from '../../common/components';
@@ -29,8 +29,10 @@ const ProfileAvatar = ({
                             outline: `${
                                 hostOffer && !hostOffer.artistViewedOn
                                     ? '1px solid var(--primary-color)'
-                                    : hostOffer &&
-                                      hostOffer.status === 'ACCEPTED'
+                                    : (hostOffer &&
+                                          hostOffer.status === 'ACCEPTED') ||
+                                      (thisEvent &&
+                                          thisEvent.artistReviewOfHost)
                                     ? '1px solid var(--link-color)'
                                     : '1px solid transparent'
                             }`,

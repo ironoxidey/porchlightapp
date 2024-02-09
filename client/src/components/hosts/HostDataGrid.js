@@ -22,6 +22,7 @@ import {
     Switch,
     Tooltip,
     tooltipClasses,
+    Grid,
 } from '@mui/material';
 
 import { styled } from '@mui/material/styles';
@@ -36,6 +37,7 @@ import EventHostDialog from '../events/EventHostDialog';
 import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 
 import states from 'us-state-converter';
+import ArtistReviewsHostDisplay from '../artists/ArtistReviewsHostDisplay';
 
 const CustomWidthTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -686,7 +688,7 @@ const HostDataGrid = ({
                                     city={params.row.city}
                                     state={params.row.state}
                                     profileImg={eventHosted.artist.squareImg}
-                                    eventHosted={eventHosted}
+                                    thisEvent={eventHosted}
                                     tooltip={
                                         <>
                                             {/* <HostProfile
@@ -697,13 +699,24 @@ const HostDataGrid = ({
                                             //     eventDetailsDialogHandleClose
                                             // }
                                         ></HostProfile> */}
-                                            <div
-                                                style={{ textAlign: 'center' }}
-                                            >{`${eventHosted.artist.stageName}`}</div>
-                                            <div
-                                                style={{ textAlign: 'center' }}
+                                            <Grid
+                                                container
+                                                flexDirection="column"
                                             >
-                                                {/* <PlaceTwoToneIcon
+                                                <Grid item>
+                                                    <div
+                                                        style={{
+                                                            textAlign: 'center',
+                                                        }}
+                                                    >{`${eventHosted.artist.stageName}`}</div>
+                                                </Grid>
+                                                <Grid item>
+                                                    <div
+                                                        style={{
+                                                            textAlign: 'center',
+                                                        }}
+                                                    >
+                                                        {/* <PlaceTwoToneIcon
                                                     sx={{
                                                         marginRight: '2px',
                                                         fontSize: '1.4em',
@@ -711,19 +724,30 @@ const HostDataGrid = ({
                                                     }}
                                                 ></PlaceTwoToneIcon> */}
 
-                                                {`${new Date(
-                                                    eventHosted.bookingWhen
-                                                ).toLocaleDateString(
-                                                    undefined,
-                                                    {
-                                                        weekday: 'long',
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric',
-                                                        timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
-                                                    }
-                                                )}`}
-                                            </div>
+                                                        {`${new Date(
+                                                            eventHosted.bookingWhen
+                                                        ).toLocaleDateString(
+                                                            undefined,
+                                                            {
+                                                                weekday: 'long',
+                                                                year: 'numeric',
+                                                                month: 'long',
+                                                                day: 'numeric',
+                                                                timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
+                                                            }
+                                                        )}`}
+                                                    </div>
+                                                </Grid>
+                                                {eventHosted.artistReviewOfHost && (
+                                                    <Grid item>
+                                                        <ArtistReviewsHostDisplay
+                                                            theEvent={
+                                                                eventHosted
+                                                            }
+                                                        />
+                                                    </Grid>
+                                                )}
+                                            </Grid>
                                         </>
                                     }
                                 />

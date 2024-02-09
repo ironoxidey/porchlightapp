@@ -289,6 +289,25 @@ router.post(
         let eventFields = req.body;
         // console.log('eventFields', eventFields);
 
+        delete eventFields.artist;
+
+        delete eventFields.createdBy;
+        delete eventFields._id;
+        delete eventFields.createdAt;
+        delete eventFields.updatedAt;
+        delete eventFields.hostsOfferingToBook;
+        delete eventFields.hostsInReach;
+        delete eventFields.offersFromHosts;
+        delete eventFields.confirmedHost;
+        delete eventFields.confirmedHostUser;
+        delete eventFields.confirmedDate;
+        delete eventFields.hostUpdated;
+        delete eventFields.geocodedBookingWhere;
+        delete eventFields.latLong;
+        delete eventFields.confirmedArtist;
+        delete eventFields.declinedArtists;
+        delete eventFields.artistReviewOfHost;
+
         let userRole = req.user.role;
 
         if (userRole && userRole.indexOf('HOST') === -1) {
@@ -519,6 +538,25 @@ router.post(
         ) {
             //if eventFields.createdBy === 'ARTIST', delete "preferredArtists" because it could carry-over from an event they proposed as a HOST
             delete eventFields.preferredArtists;
+
+            delete eventFields.artist;
+
+            delete eventFields.createdBy;
+            delete eventFields._id;
+            delete eventFields.createdAt;
+            delete eventFields.updatedAt;
+            delete eventFields.hostsOfferingToBook;
+            delete eventFields.hostsInReach;
+            delete eventFields.offersFromHosts;
+            delete eventFields.confirmedHost;
+            delete eventFields.confirmedHostUser;
+            delete eventFields.confirmedDate;
+            delete eventFields.hostUpdated;
+            delete eventFields.geocodedBookingWhere;
+            delete eventFields.latLong;
+            delete eventFields.confirmedArtist;
+            delete eventFields.declinedArtists;
+            delete eventFields.artistReviewOfHost;
 
             try {
                 console.log('eventFields', eventFields);

@@ -13,6 +13,7 @@ const addressTimezone = require('../../utils/maps/timezone');
 
 const User = require('../../models/User');
 const Host = require('../../models/Host');
+const ArtistReviewsHost = require('../../models/ArtistReviewsHost');
 
 function convertToSlug(Text) {
     return Text.toLowerCase()
@@ -604,6 +605,22 @@ router.get('/edit', [auth], async (req, res) => {
                             {
                                 $unwind: '$artist',
                             },
+                            //we need to make sure this doesn't exclude any results that don't have reviews
+
+                            {
+                                $lookup: {
+                                    from: 'artistreviewshosts',
+                                    localField: 'artistReviewOfHost',
+                                    foreignField: '_id',
+                                    as: 'artistReviewOfHost',
+                                },
+                            },
+                            {
+                                $unwind: {
+                                    path: '$artistReviewOfHost',
+                                    preserveNullAndEmptyArrays: true,
+                                },
+                            },
                             {
                                 $sort: {
                                     bookingWhen: 1, // or -1 for descending order
@@ -614,11 +631,44 @@ router.get('/edit', [auth], async (req, res) => {
                     },
                 },
                 {
+                    $lookup: {
+                        from: 'artistreviewshosts',
+                        let: { hostId: '$_id' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ['$$hostId', '$hostId'],
+                                    },
+                                },
+                            },
+                            {
+                                $lookup: {
+                                    from: 'artists',
+                                    localField: 'artistId',
+                                    foreignField: '_id',
+                                    as: 'artist',
+                                },
+                            },
+                            {
+                                $unwind: '$artist',
+                            },
+                            {
+                                $sort: {
+                                    bookingWhen: 1, // or -1 for descending order
+                                },
+                            },
+                        ],
+                        as: 'reviews',
+                    },
+                },
+                {
                     $addFields: {
                         notificationFrequency: {
                             $ifNull: ['$notificationFrequency', 7],
                         },
-                        active: { $ifNull: ['$active', true] },
+                        // active: { $ifNull: ['$active', true] },
+                        active: { $ifNull: ['$active', false] },
                     },
                 },
             ]);
