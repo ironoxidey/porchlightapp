@@ -17,6 +17,7 @@ import {
     Box,
     Typography,
     IconButton,
+    Rating,
 } from '@mui/material';
 
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -1128,6 +1129,792 @@ const EventDataGrid = ({
                 }
             },
         },
+        {
+            field: 'artistReviewOfHost',
+            headerName: 'Artist Review',
+            width: 150,
+            editable: false,
+            type: 'string',
+            sortable: true,
+            sortComparator: lengthSort,
+            renderCell: (params) => {
+                console.log('artistReviewOfHost params', params);
+
+                if (params.value) {
+                    let artistReview = params.value;
+                    return (
+                        <CustomWidthTooltip
+                            arrow={true}
+                            placement="bottom"
+                            title={
+                                <>
+                                    <Grid
+                                        container
+                                        sx={{
+                                            position: 'relative',
+                                            // justifyContent: 'space-between',
+                                            flexDirection: 'column',
+                                            // flexWrap: 'nowrap',
+                                            alignItems: 'center',
+                                            width: 'max-content',
+                                        }}
+                                    >
+                                        {artistReview && artistReview._id && (
+                                            <>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Communication
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            // width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Rating
+                                                            size="small"
+                                                            name="read-only"
+                                                            value={
+                                                                artistReview.communication
+                                                            }
+                                                            readOnly
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Promotion
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Rating
+                                                            size="small"
+                                                            name="read-only"
+                                                            value={
+                                                                artistReview.promotion
+                                                            }
+                                                            readOnly
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Tips/Donations
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            $
+                                                            {
+                                                                artistReview.tipsDonations
+                                                            }
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Merch Sales
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            $
+                                                            {
+                                                                artistReview.merchSales
+                                                            }
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Ticket Sales
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            $
+                                                            {
+                                                                artistReview.ticketSales
+                                                            }
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Revenue Expectations
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            {
+                                                                artistReview.revenueExpectations
+                                                            }
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Attendance
+                                                            Expectations
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            {
+                                                                artistReview.attendanceExpectations
+                                                            }
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Audience Quality
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            {
+                                                                artistReview.audienceQuality
+                                                            }
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Venue Quality
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Rating
+                                                            size="small"
+                                                            name="read-only"
+                                                            value={
+                                                                artistReview.venueQuality
+                                                            }
+                                                            readOnly
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Everything Needed
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Rating
+                                                            size="small"
+                                                            name="read-only"
+                                                            value={
+                                                                artistReview.everythingNeeded
+                                                            }
+                                                            readOnly
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Introduction By Host
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Rating
+                                                            size="small"
+                                                            name="read-only"
+                                                            value={
+                                                                artistReview.introductionByHost
+                                                            }
+                                                            readOnly
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Host Example
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Rating
+                                                            size="small"
+                                                            name="read-only"
+                                                            value={
+                                                                artistReview.hostExample
+                                                            }
+                                                            readOnly
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Host Interactions
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Rating
+                                                            size="small"
+                                                            name="read-only"
+                                                            value={
+                                                                artistReview.hostInteractions
+                                                            }
+                                                            readOnly
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Host Accommodations
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Rating
+                                                            size="small"
+                                                            name="read-only"
+                                                            value={
+                                                                artistReview.hostAccommodations
+                                                            }
+                                                            readOnly
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Host Commitment
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Rating
+                                                            size="small"
+                                                            name="read-only"
+                                                            value={
+                                                                artistReview.hostCommitment
+                                                            }
+                                                            readOnly
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'nowrap',
+                                                        alignItems: 'flex-end',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Rec Host For Retreat
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 'auto',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            {
+                                                                artistReview.recHostForRetreat
+                                                            }
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid
+                                                    container
+                                                    sx={{
+                                                        position: 'relative',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        flexDirection: 'row',
+                                                        flexWrap: 'wrap',
+                                                        alignItems:
+                                                            'flex-start',
+                                                        width: 'max-content',
+                                                    }}
+                                                >
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            margin: '0 4px 0 0',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                        >
+                                                            Artist Notes:
+                                                        </Typography>
+                                                    </Grid>
+
+                                                    <Grid
+                                                        item
+                                                        sx={{
+                                                            display: 'inline',
+                                                            width: '300px',
+                                                        }}
+                                                    >
+                                                        <Typography
+                                                            component={'p'}
+                                                            sx={{
+                                                                display:
+                                                                    'inline',
+                                                                textWrap:
+                                                                    'wrap',
+                                                            }}
+                                                        >
+                                                            {
+                                                                artistReview.artistNotes
+                                                            }
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                            </>
+                                        )}
+                                    </Grid>
+                                </>
+                            }
+                        >
+                            <span
+                                style={{
+                                    color: 'var(--link-color)',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Artist Review
+                            </span>
+                        </CustomWidthTooltip>
+                    );
+                } else {
+                    return;
+                }
+            },
+        },
 
         {
             field: 'createdAt',
@@ -1273,6 +2060,7 @@ const EventDataGrid = ({
                             (adminEvent.confirmedArtist &&
                                 adminEvent.confirmedArtist.payoutHandle) ||
                             '',
+                        artistReviewOfHost: adminEvent.artistReviewOfHost,
                     };
 
                     return eventRow;

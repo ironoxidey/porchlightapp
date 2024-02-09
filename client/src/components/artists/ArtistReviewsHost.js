@@ -119,7 +119,7 @@ const ArtistReviewsHost = ({
         introductionByHost: 0,
         hostExample: 0,
         hostInteractions: 0,
-        hostAccomodations: 0,
+        hostAccommodations: 0,
         hostCommitment: 0,
         recHostForRetreat: '',
         artistNotes: '',
@@ -193,10 +193,10 @@ const ArtistReviewsHost = ({
                     loading || !theReview.hostInteractions
                         ? 0
                         : theReview.hostInteractions,
-                hostAccomodations:
-                    loading || !theReview.hostAccomodations
+                hostAccommodations:
+                    loading || !theReview.hostAccommodations
                         ? 0
-                        : theReview.hostAccomodations,
+                        : theReview.hostAccommodations,
                 hostCommitment:
                     loading || !theReview.hostCommitment
                         ? 0
@@ -246,7 +246,7 @@ const ArtistReviewsHost = ({
         introductionByHost,
         hostExample,
         hostInteractions,
-        hostAccomodations,
+        hostAccommodations,
         hostCommitment,
         recHostForRetreat,
         artistNotes,
@@ -671,7 +671,7 @@ const ArtistReviewsHost = ({
                 </FormControl>,
             ],
         ],
-        hostAccomodations: [
+        hostAccommodations: [
             [
                 <FormLabel component="legend">
                     If you ate with the hosts and/or stayed at their place, how
@@ -682,9 +682,9 @@ const ArtistReviewsHost = ({
                 <FormControl component="fieldset">
                     <Rating
                         size="large"
-                        id="hostAccomodations"
-                        value={hostAccomodations}
-                        name="hostAccomodations"
+                        id="hostAccommodations"
+                        value={hostAccommodations}
+                        name="hostAccommodations"
                         onChange={(e) => onChange(e)}
                     />
                 </FormControl>,

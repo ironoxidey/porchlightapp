@@ -59,7 +59,7 @@ const ArtistReviewsHostSchema = new mongoose.Schema(
         hostInteractions: {
             type: Number,
         },
-        hostAccomodations: {
+        hostAccommodations: {
             type: Number,
         },
         hostCommitment: {
@@ -69,6 +69,12 @@ const ArtistReviewsHostSchema = new mongoose.Schema(
             type: String,
         },
         artistNotes: {
+            type: String,
+        },
+        typeformSubmittedAt: {
+            type: Date,
+        },
+        typeformAddress: {
             type: String,
         },
     },

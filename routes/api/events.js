@@ -2008,7 +2008,8 @@ router.get('/edit', [auth], async (req, res) => {
                 .populate('offersFromHosts.host')
                 .populate('confirmedHost')
                 .populate('preferredArtists')
-                .populate('confirmedArtist');
+                .populate('confirmedArtist')
+                .populate('artistReviewOfHost');
 
             events.forEach(async (eventDetails) => {
                 if (
