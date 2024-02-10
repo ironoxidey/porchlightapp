@@ -1924,6 +1924,7 @@ const ArtistEventForm = ({
                 delete mostRecentlyUpdatedEventTrimmed.createdAt;
                 delete mostRecentlyUpdatedEventTrimmed.bookingWhen;
                 delete mostRecentlyUpdatedEventTrimmed.updatedAt;
+                delete mostRecentlyUpdatedEventTrimmed.hostsInReach;
                 delete mostRecentlyUpdatedEventTrimmed.hostsOfferingToBook;
                 delete mostRecentlyUpdatedEventTrimmed.offersFromHosts;
                 delete mostRecentlyUpdatedEventTrimmed.confirmedHost;

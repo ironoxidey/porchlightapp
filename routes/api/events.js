@@ -545,8 +545,8 @@ router.post(
             delete eventFields._id;
             delete eventFields.createdAt;
             delete eventFields.updatedAt;
-            delete eventFields.hostsOfferingToBook;
             delete eventFields.hostsInReach;
+            delete eventFields.hostsOfferingToBook;
             delete eventFields.offersFromHosts;
             delete eventFields.confirmedHost;
             delete eventFields.confirmedHostUser;

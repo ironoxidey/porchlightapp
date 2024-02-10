@@ -15,6 +15,27 @@ import Button from '../layout/SvgButton';
 const PastArtistEvents = ({ hostMe, myArtistEvents, iConfirmed }) => {
     const [showPastEvents, setShowPastEvents] = useState(false);
 
+    useEffect(() => {
+        if (myArtistEvents && myArtistEvents.length > 0) {
+            const unReviewedEvents = myArtistEvents.forEach((myArtistEvent) => {
+                if (
+                    myArtistEvents.filter(
+                        (myEvent) =>
+                            myEvent.confirmedHost &&
+                            myEvent.status === 'CONFIRMED' &&
+                            iConfirmed(myEvent) &&
+                            new Date(myEvent.bookingWhen) <
+                                dayBeforeYesterday &&
+                            (!myEvent.artistReviewOfHost ||
+                                !myEvent.artistReviewOfHost._id)
+                    ).length > 0
+                ) {
+                    setShowPastEvents(true);
+                }
+            });
+        }
+    }, [myArtistEvents]);
+
     const dayBeforeYesterday = new Date();
     dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
 
@@ -69,8 +90,8 @@ const PastArtistEvents = ({ hostMe, myArtistEvents, iConfirmed }) => {
                                                               myEvent.bookingWhen
                                                           ) < dayBeforeYesterday
                                                   ).length
-                                              } concerts, previously`
-                                            : `You booked this concert, previously`}
+                                              } concerts, in the past`
+                                            : `You booked this concert, in the past`}
                                         :
                                     </Typography>
                                 </Grid>

@@ -29,6 +29,7 @@ import HostProfile from '../hosts/HostProfile';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveTwoToneIcon from '@mui/icons-material/SaveTwoTone';
+import FlareTwoToneIcon from '@mui/icons-material/FlareTwoTone';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -1098,10 +1099,39 @@ const ArtistReviewsHost = ({
                     </form>
                 </DialogContent>
             </Dialog>
+            {(!theEvent.artistReviewOfHost ||
+                !theEvent.artistReviewOfHost._id) && (
+                <Box
+                    className="createdAt"
+                    sx={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                    }}
+                >
+                    {' '}
+                    <Typography
+                        component="p"
+                        sx={{
+                            fontSize: '.7em',
+                            fontFamily: 'var(--secondary-font)',
+                            color: 'var(--link-color)',
+                        }}
+                    >
+                        <FlareTwoToneIcon
+                            style={{ fontSize: '1.5em' }}
+                        ></FlareTwoToneIcon>{' '}
+                        Please consider reviewing your experience with{' '}
+                        {theHost.firstName} {theHost.lastName}.
+                        {/* Created On: {prettifyDate(thisEvent.createdAt) */}
+                    </Typography>
+                </Box>
+            )}
             <Grid item style={{ margin: '0 auto', alignSelf: 'center' }}>
                 <Button btnwidth="250" onClick={() => setDialogOpen(true)}>
-                    {theEvent.artistReviewOfHost
-                        ? 'Edit Review'
+                    {theEvent.artistReviewOfHost &&
+                    theEvent.artistReviewOfHost._id
+                        ? 'Edit Your Review'
                         : 'Review Your Experience'}
                 </Button>
             </Grid>
