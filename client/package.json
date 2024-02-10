@@ -41,7 +41,7 @@
         "redux-thunk": "^2.3.0",
         "spinners-react": "^1.0.6",
         "us-state-converter": "^1.0.6",
-        "uuid": "^8.3.0"
+        "uuid": "^9.0.1"
     },
     "scripts": {
         "start": "react-scripts start",
