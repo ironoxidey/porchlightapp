@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { Link, Redirect, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/auth';
@@ -44,12 +44,12 @@ const Login = ({ login, isAuthenticated, bookingDialog }) => {
         login(email, password);
     };
 
-    //Redirect if logged in
+    //Navigate if logged in
     if (isAuthenticated && !bookingDialog) {
         if (eventID) {
-            return <Redirect to={`/dashboard?eventID=` + eventID} />;
+            return <Navigate to={`/dashboard?eventID=` + eventID} />;
         } else {
-            return <Redirect to="/dashboard" />;
+            return <Navigate to="/dashboard" />;
         }
     }
 

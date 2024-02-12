@@ -2,7 +2,10 @@
 import states from 'us-state-converter';
 
 import React, { Fragment, useState, useEffect, useRef } from 'react';
-import { Link, withRouter, useLocation } from 'react-router-dom';
+import {
+    // Link, withRouter,
+    useLocation,
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
@@ -50,7 +53,8 @@ import SendIcon from '@mui/icons-material/Send';
 
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
-import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+// import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+import { DateCalendar } from '@mui/x-date-pickers';
 
 import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
@@ -559,7 +563,7 @@ const HostEventForm = ({
                 // 	  ))
                 // 	: '',
 
-                <MultipleDatesPicker
+                <DateCalendar
                     id="bookingWhen"
                     name="bookingWhen"
                     open={true}
@@ -585,6 +589,32 @@ const HostEventForm = ({
                     //onSubmit={dates => console.log('selected dates', dates)}
                     onChange={(target) => onCalendarChange(target)}
                 />,
+                // <MultipleDatesPicker
+                //     id="bookingWhen"
+                //     name="bookingWhen"
+                //     open={true}
+                //     //trying to figure out how to disable dates you've already picked ~Aug 26, 2022
+                //     disabledDates={
+                //         myHostEvents &&
+                //         myHostEvents
+                //             .filter((event) => {
+                //                 if (event.bookingWhen !== bookingWhen) {
+                //                     return true;
+                //                 } else {
+                //                     return false;
+                //                 }
+                //             })
+                //             .map((event) => {
+                //                 return event.bookingWhen;
+                //             })
+                //     }
+                //     //readOnly={bookingWhen ? true : false} //if there's a bookingWhen date, don't let people change it
+                //     selectedDates={bookingWhen ? [bookingWhen] : []}
+                //     //value={bookingWhen}
+                //     onCancel={() => setOpen(false)}
+                //     //onSubmit={dates => console.log('selected dates', dates)}
+                //     onChange={(target) => onCalendarChange(target)}
+                // />,
             ],
         ],
         preferredArtists: [
@@ -2063,4 +2093,5 @@ export default connect(mapStateToProps, {
     hostProposes,
     getHostsLocations,
     editHostEvent,
-})(withRouter(HostEventForm)); //withRouter allows us to pass history objects
+    // })(withRouter(HostEventForm)); //withRouter allows us to pass history objects
+})(HostEventForm);

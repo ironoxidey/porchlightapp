@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link, withRouter, useHistory } from 'react-router-dom';
+// import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import prependHttp from 'prepend-http';
@@ -78,7 +78,7 @@ const HostEventDetails = ({
     artist,
     jumpTo,
 }) => {
-    let history = useHistory();
+    // let history = useHistory();
 
     let isMe = false;
     if (
@@ -497,5 +497,6 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, { jumpTo })(
-    withRouter(HostEventDetails)
+    HostEventDetails
+    //withRouter(HostEventDetails)
 ); //withRouter allows us to pass history objects

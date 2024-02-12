@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { Link, withRouter } from 'react-router-dom';
+// import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import {
@@ -300,4 +300,5 @@ const mapStateToProps = (state) => ({
 //export default HostTermsAgreement;
 export default connect(mapStateToProps, {
     agreeToHostTerms,
-})(withRouter(HostTermsAgreement)); //withRouter allows us to pass history objects
+    // })(withRouter(HostTermsAgreement)); //withRouter allows us to pass history objects
+})(HostTermsAgreement); //withRouter allows us to pass history objects

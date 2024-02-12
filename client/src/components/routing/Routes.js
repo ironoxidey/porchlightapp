@@ -1,5 +1,10 @@
 import React, { useEffect } from 'react';
-import { Route, Switch, useLocation, withRouter } from 'react-router-dom';
+import {
+    Route,
+    Routes,
+    useLocation,
+    // withRouter
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Page from './Page';
@@ -36,7 +41,7 @@ import HostDeclinesFromEmailDigest from '../events/HostDeclinesFromEmailDigest';
 
 import { useTransition, animated, config, useSpring } from '@react-spring/web';
 
-const Routes = ({ app }) => {
+const TheRoutes = ({ app }) => {
     const theLocation = useLocation();
     const transitions = useTransition(theLocation, {
         from: { opacity: 0, transform: 'scale(1.02)' },
@@ -66,89 +71,87 @@ const Routes = ({ app }) => {
             {transitions((style, location) => {
                 return (
                     <animated.div style={style} className="animatedRoute">
-                        <Switch location={location}>
+                        <Routes>
                             <Route
                                 exact
                                 path="/"
-                                render={(props) => (
+                                element={
                                     <Page>
-                                        <Landing {...props} />
+                                        <Landing />
                                     </Page>
-                                )}
+                                }
                             />
                             <Route
                                 exact
                                 path="/register"
-                                render={(props) => (
+                                element={
                                     <Page title="Register">
-                                        <Register {...props} />
+                                        <Register />
                                     </Page>
-                                )}
+                                }
                             />
                             <Route
                                 exact
                                 path="/reset-password"
-                                render={(props) => (
+                                element={
                                     <Page title="Reset Password">
-                                        <ResetPassword {...props} />
+                                        <ResetPassword />
                                     </Page>
-                                )}
+                                }
                             />
                             <Route
                                 exact
                                 path="/forgot-password"
-                                render={(props) => (
+                                element={
                                     <Page title="Forgot Password">
-                                        <ForgotPassword {...props} />
+                                        <ForgotPassword />
                                     </Page>
-                                )}
+                                }
                             />
                             <Route
                                 exact
                                 path="/unsubscribe/:id"
-                                render={(props) => (
+                                element={
                                     <Page title="Unsubscribe">
-                                        <UnsubscribeHostDigest {...props} />
+                                        <UnsubscribeHostDigest />
                                     </Page>
-                                )}
+                                }
                             />
                             <Route
                                 exact
                                 path="/decline/:id"
-                                render={(props) => (
+                                element={
                                     <Page title="Decline Event">
-                                        <HostDeclinesFromEmailDigest
-                                            {...props}
-                                        />
+                                        <HostDeclinesFromEmailDigest />
                                     </Page>
-                                )}
+                                }
                             />
                             <Route
                                 exact
                                 path="/login"
-                                render={(props) => (
+                                element={
                                     <Page title="Login">
-                                        <Login {...props} />
+                                        <Login />
                                     </Page>
-                                )}
+                                }
                             />
                             <Route
                                 exact
                                 path="/profiles"
-                                render={(props) => (
+                                element={
                                     <Page title="Profiles">
-                                        <Profiles {...props} />
+                                        <Profiles />
                                     </Page>
-                                )}
+                                }
                             />
                             <Route
                                 exact
                                 path="/artists"
-                                render={(props) => (
+                                element={
                                     <Page title="Artists">
-                                        <Artists {...props} />
+                                        <Artists />
                                     </Page>
-                                )}
+                                }
                             />
                             <Route
                                 exact
@@ -158,105 +161,93 @@ const Routes = ({ app }) => {
                             <Route
                                 exact
                                 path="/profile/:id"
-                                render={(props) => (
+                                element={
                                     <Page title="Profile">
-                                        <Profile {...props} />
+                                        <Profile />
                                     </Page>
-                                )}
-                            />
-                            <PrivateRoute
-                                exact
-                                path="/dashboard"
-                                component={Dashboard}
-                                title="Dashboard"
-                            />
-                            <PrivateRoute
-                                exact
-                                path="/create-profile"
-                                component={CreateProfile}
-                                title="Create Your Profile"
-                            />
-                            <BookingPrivateRoute
-                                exact
-                                path="/edit-events"
-                                component={EventDataGrid}
-                                title="Edit Events"
-                            />
-                            <BookingPrivateRoute
-                                exact
-                                path="/edit-hosts"
-                                component={EditHostsMatrix}
-                                title="Edit Hosts"
-                            />
-                            <ArtistPrivateRoute
-                                exact
-                                path="/edit-artist-profile"
-                                component={EditMyArtistProfile}
-                                title="Edit Your Artist Profile"
-                            />
-                            {/* <ArtistPrivateRoute
-                                exact
-                                path="/edit-artist-booking"
-                                component={EditMyArtistBooking}
-                                title="Edit Your Artist Booking Info"
-                            /> */}
-                            <PrivateRoute
-                                exact
-                                path="/edit-host-profile"
-                                component={EditMyHostProfile}
-                                title="Edit Your Host Profile"
-                            />
-                            {/* <PrivateRoute
-                                exact
-                                path="/edit-profile"
-                                component={EditProfile}
-                                title="Edit Your Page"
-                            />
-
-                            <PrivateRoute
-                                exact
-                                path="/add-experience"
-                                component={AddExperience}
-                                title="Add Experience"
-                            />
-                            <PrivateRoute
-                                exact
-                                path="/add-education"
-                                component={AddEducation}
-                                title="Add Education"
-                            />
-                            <PrivateRoute
-                                exact
-                                path="/posts"
-                                component={Posts}
-                                title="Posts"
-                            />
-                            <PrivateRoute
-                                exact
-                                path="/posts/:id"
-                                component={Post}
-                                title="A Post"
-                            /> */}
-                            <AdminPrivateRoute
-                                exact
-                                path="/edit-artists"
-                                component={EditArtists}
-                                title="Edit Artists"
-                            />
-                            <AdminPrivateRoute
-                                exact
-                                path="/edit-users"
-                                component={EditUsers}
-                                title="Edit Users"
+                                }
                             />
                             <Route
-                                render={(props) => (
-                                    <Page title="Page Not Found">
-                                        <NotFound {...props} />
-                                    </Page>
-                                )}
+                                exact
+                                path="/dashboard"
+                                element={
+                                    <PrivateRoute title="Dashboard">
+                                        <Dashboard />
+                                    </PrivateRoute>
+                                }
                             />
-                        </Switch>
+                            <Route
+                                exact
+                                path="/create-profile"
+                                element={
+                                    <PrivateRoute title="Create Your Profile">
+                                        <CreateProfile />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                exact
+                                path="/edit-events"
+                                element={
+                                    <BookingPrivateRoute title="Edit Events">
+                                        <EventDataGrid />
+                                    </BookingPrivateRoute>
+                                }
+                            />
+                            <Route
+                                exact
+                                path="/edit-hosts"
+                                element={
+                                    <BookingPrivateRoute title="Edit Hosts">
+                                        <EditHostsMatrix />
+                                    </BookingPrivateRoute>
+                                }
+                            />
+                            <Route
+                                exact
+                                path="/edit-artist-profile"
+                                element={
+                                    <ArtistPrivateRoute title="Edit Your Artist Profile">
+                                        <EditMyArtistProfile />
+                                    </ArtistPrivateRoute>
+                                }
+                            />
+
+                            <Route
+                                exact
+                                path="/edit-host-profile"
+                                element={
+                                    <PrivateRoute title="Edit Your Host Profile">
+                                        <EditMyHostProfile />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route
+                                exact
+                                path="/edit-artists"
+                                element={
+                                    <AdminPrivateRoute title="Edit Artists">
+                                        <EditArtists />
+                                    </AdminPrivateRoute>
+                                }
+                            />
+                            <Route
+                                exact
+                                path="/edit-users"
+                                element={
+                                    <AdminPrivateRoute title="Edit Users">
+                                        <EditUsers />
+                                    </AdminPrivateRoute>
+                                }
+                            />
+                            <Route
+                                element={
+                                    <Page title="Page Not Found">
+                                        <NotFound />
+                                    </Page>
+                                }
+                            />
+                        </Routes>
                     </animated.div>
                 );
             })}
@@ -264,9 +255,9 @@ const Routes = ({ app }) => {
     );
 };
 
-// export default Routes;
+// export default TheRoutes;
 
-Routes.propTypes = {
+TheRoutes.propTypes = {
     app: PropTypes.object.isRequired,
 };
 
@@ -274,4 +265,5 @@ const mapStateToProps = (state) => ({
     app: state.app,
 });
 
-export default connect(mapStateToProps)(withRouter(Routes)); //withRouter allows us to pass history objects
+// export default connect(mapStateToProps)(withRouter(TheRoutes)); //withRouter allows us to pass history objects
+export default connect(mapStateToProps)(TheRoutes); //withRouter allows us to pass history objects

@@ -5,7 +5,7 @@ import { defaultUtils as utils } from './dateUtils';
 import CalendarToolbar from './CalendarToolbar';
 import CalendarButtons from './CalendarButtons';
 import DateDisplay from './DateDisplay';
-import makeStyles from '@mui/styles/makeStyles';
+// import makeStyles from '@mui/styles/makeStyles';
 
 // const Root = styled.div`
 //   color: rgba(0, 0, 0, 0.87);
@@ -24,27 +24,27 @@ import makeStyles from '@mui/styles/makeStyles';
 //   transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
 // `
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flex: '1',
-        display: 'flex',
-        maxHeight: '100%',
-        overflow: 'hidden',
-    },
-    selectorContainer: {
-        // marginTop: theme.spacing(2)
-        // boxShadow: 'inset 0 0 10px #000000'
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-    },
-    calendarContainer: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        flexDirection: 'column',
-        padding: `0 ${theme.spacing(1)}`,
-    },
-}));
+// const useStyles = makeStyles((theme) => ({
+//     root: {
+//         flex: '1',
+//         display: 'flex',
+//         maxHeight: '100%',
+//         overflow: 'hidden',
+//     },
+//     selectorContainer: {
+//         // marginTop: theme.spacing(2)
+//         // boxShadow: 'inset 0 0 10px #000000'
+//         display: 'flex',
+//         flexDirection: 'column',
+//         justifyContent: 'space-between',
+//     },
+//     calendarContainer: {
+//         display: 'flex',
+//         justifyContent: 'space-between',
+//         flexDirection: 'column',
+//         padding: `0 ${theme.spacing(1)}`,
+//     },
+// }));
 
 // const StyledCalendar = styled.div`
 //   display: flex;
@@ -67,7 +67,7 @@ const Calendar = ({
     selectedDatesTitle,
 }) => {
     const calendar = useRef(null);
-    const classes = useStyles();
+    // const classes = useStyles();
 
     const [displayDate, setDisplayDate] = useState(() =>
         utils.getFirstDayOfMonth(initialDate || new Date())
@@ -95,9 +95,35 @@ const Calendar = ({
     };
 
     return (
-        <div className={classes.root}>
-            <div className={classes.selectorContainer}>
-                <div className={classes.calendarContainer}>
+        <div
+            // className={classes.root}
+            className="calendarRoot"
+            style={{
+                flex: '1',
+                display: 'flex',
+                maxHeight: '100%',
+                overflow: 'hidden',
+            }}
+        >
+            <div
+                // className={classes.selectorContainer}
+                className="calendarSelectorContainer"
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                }}
+            >
+                <div
+                    // className={classes.calendarContainer}
+                    className="calendarContainer"
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        flexDirection: 'column',
+                        padding: `0 8px`,
+                    }}
+                >
                     <CalendarToolbar
                         displayDate={displayDate}
                         onMonthChange={handleMonthChange}

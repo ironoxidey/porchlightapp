@@ -1,9 +1,17 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import {
+    Link,
+    // withRouter
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { updateArtists } from '../../actions/artist';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {
+    createTheme,
+    ThemeProvider,
+    StyledEngineProvider,
+    // adaptV4Theme,
+} from '@mui/material/styles';
 import {
     Switch,
     FormGroup,
@@ -116,106 +124,113 @@ const EditArtistAdmin = ({
     };
 
     return (
-        <ThemeProvider theme={darkTheme}>
-            <Fragment>
-                <form className="form" onSubmit={(e) => onSubmit(e)}>
-                    <Grid container spacing={2}>
-                        <Grid item className="admin-form-group">
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        name="active"
-                                        checked={!!active}
-                                        onChange={(e) => {
-                                            onChange(e);
-                                        }}
-                                        value={active}
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={darkTheme}>
+                <Fragment>
+                    <form className="form" onSubmit={(e) => onSubmit(e)}>
+                        <Grid container spacing={2}>
+                            <Grid item className="admin-form-group">
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            name="active"
+                                            checked={!!active}
+                                            onChange={(e) => {
+                                                onChange(e);
+                                            }}
+                                            value={active}
+                                        />
+                                    }
+                                    label="Active"
+                                />
+                            </Grid>
+
+                            <Grid item className="admin-form-group">
+                                <TextField
+                                    name="typeformDate"
+                                    id="typeformDate"
+                                    label="Typeform Date"
+                                    //type='date'
+                                    //variant="filled"
+                                    value={typeformDate}
+                                    onChange={(e) => onChange(e)}
+                                />
+                            </Grid>
+
+                            <Grid item className="admin-form-group">
+                                <FormGroup>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                label="Had Zoom Meeting"
+                                                name="hadMeeting"
+                                                value={hadMeeting}
+                                                checked={!!hadMeeting}
+                                                onChange={(e) => onChange(e)}
+                                                inputProps={{
+                                                    'aria-label': 'controlled',
+                                                }}
+                                            />
+                                        }
+                                        label="Had Zoom Meeting"
                                     />
-                                }
-                                label="Active"
-                            />
-                        </Grid>
+                                </FormGroup>
+                            </Grid>
 
-                        <Grid item className="admin-form-group">
-                            <TextField
-                                name="typeformDate"
-                                id="typeformDate"
-                                label="Typeform Date"
-                                //type='date'
-                                //variant="filled"
-                                value={typeformDate}
-                                onChange={(e) => onChange(e)}
-                            />
-                        </Grid>
+                            <Grid item className="admin-form-group">
+                                <FormGroup>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                name="sentFollowUp"
+                                                value={sentFollowUp}
+                                                checked={!!sentFollowUp}
+                                                onChange={(e) => onChange(e)}
+                                                inputProps={{
+                                                    'aria-label': 'controlled',
+                                                }}
+                                            />
+                                        }
+                                        label="Sent Follow-up"
+                                    />
+                                </FormGroup>
+                            </Grid>
 
-                        <Grid item className="admin-form-group">
-                            <FormGroup>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            label="Had Zoom Meeting"
-                                            name="hadMeeting"
-                                            value={hadMeeting}
-                                            checked={!!hadMeeting}
-                                            onChange={(e) => onChange(e)}
-                                            inputProps={{
-                                                'aria-label': 'controlled',
-                                            }}
-                                        />
-                                    }
-                                    label="Had Zoom Meeting"
+                            <Grid item className="admin-form-group">
+                                <TextField
+                                    variant="standard"
+                                    name="notes"
+                                    multiline
+                                    id="notes"
+                                    label="Admin Notes"
+                                    value={notes}
+                                    onChange={(e) => onChange(e)}
+                                    sx={{ width: '100%' }}
                                 />
-                            </FormGroup>
-                        </Grid>
+                            </Grid>
 
-                        <Grid item className="admin-form-group">
-                            <FormGroup>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            name="sentFollowUp"
-                                            value={sentFollowUp}
-                                            checked={!!sentFollowUp}
-                                            onChange={(e) => onChange(e)}
-                                            inputProps={{
-                                                'aria-label': 'controlled',
-                                            }}
-                                        />
-                                    }
-                                    label="Sent Follow-up"
+                            <Grid item className="admin-form-group">
+                                <TextField
+                                    type="text"
+                                    placeholder="Onboard Date"
+                                    name="onboardDate"
+                                    value={onboardDate}
+                                    onChange={(e) => onChange(e)}
                                 />
-                            </FormGroup>
-                        </Grid>
+                                <small className="form-text">
+                                    Onboard Date
+                                </small>
+                            </Grid>
 
-                        <Grid item className="admin-form-group">
-                            <TextField
-                                variant="standard"
-                                name="notes"
-                                multiline
-                                id="notes"
-                                label="Admin Notes"
-                                value={notes}
-                                onChange={(e) => onChange(e)}
-                                sx={{ width: '100%' }}
+                            <input
+                                type="submit"
+                                className="btn btn-primary my-1"
                             />
                         </Grid>
-
-                        <Grid item className="admin-form-group">
-                            <TextField
-                                type="text"
-                                placeholder="Onboard Date"
-                                name="onboardDate"
-                                value={onboardDate}
-                                onChange={(e) => onChange(e)}
-                            />
-                            <small className="form-text">Onboard Date</small>
-                        </Grid>
-
-                        <input type="submit" className="btn btn-primary my-1" />
-                    </Grid>
-                </form>
-            </Fragment>
-        </ThemeProvider>
+                    </form>
+                </Fragment>
+            </ThemeProvider>
+        </StyledEngineProvider>
     );
 };
 
@@ -231,5 +246,6 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, { updateArtists })(
-    withRouter(EditArtistAdmin)
+    // withRouter(EditArtistAdmin)
+    EditArtistAdmin
 ); //withRouter allows us to pass history objects

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link, withRouter, useHistory } from 'react-router-dom';
+// import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Button from '../layout/SvgButton';
@@ -106,5 +106,6 @@ const mapStateToProps = (state) => ({
 
 //export default EditArtistEvent;
 export default connect(mapStateToProps, { jumpTo, closeEventEditDrawer })(
-    withRouter(EditArtistEvent)
+    // withRouter(EditArtistEvent)
+    EditArtistEvent
 ); //withRouter allows us to pass history objects

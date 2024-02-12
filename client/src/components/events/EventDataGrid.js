@@ -1266,7 +1266,7 @@ const EventDataGrid = ({
                                 setDeleteEventID(params.row.theEvent._id);
                                 // deleteAdminEvent(params.row.theEvent);
                             }}
-                        >
+                            size="large">
                             <DeleteIcon></DeleteIcon>
                         </IconButton>
                     </Grid>

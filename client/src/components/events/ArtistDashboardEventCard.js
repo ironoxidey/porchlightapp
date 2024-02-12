@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { Link, withRouter } from 'react-router-dom';
+// import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import {
@@ -485,6 +485,7 @@ const ArtistDashboardEventCard = ({
                                     onClick={(e) =>
                                         deleteArtistEvent(thisEvent._id)
                                     }
+                                    size="large"
                                 >
                                     <DeleteIcon></DeleteIcon>
                                 </IconButton>
@@ -519,4 +520,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
     artistViewedHostOffer,
     deleteArtistEvent,
-})(withRouter(ArtistDashboardEventCard)); //withRouter allows us to pass history objects
+    // })(withRouter(ArtistDashboardEventCard)); //withRouter allows us to pass history objects
+})(ArtistDashboardEventCard); //withRouter allows us to pass history objects

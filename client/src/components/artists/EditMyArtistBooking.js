@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+// import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getCurrentArtist } from '../../actions/artist';
@@ -49,5 +49,6 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, { getCurrentArtist })(
-    withRouter(EditMyArtistBooking)
+    // withRouter(EditMyArtistBooking)
+    EditMyArtistBooking
 ); //withRouter allows us to pass history objects

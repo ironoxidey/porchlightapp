@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link, withRouter, useHistory } from 'react-router-dom';
+import {
+    Link,
+    // withRouter,
+    // useHistory
+} from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Login from '../auth/Login';
@@ -53,7 +57,7 @@ import InterpreterModeTwoToneIcon from '@mui/icons-material/InterpreterModeTwoTo
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+// import MultipleDatesPicker from '../mui-multi-date-picker-lib';
 import ReactPlayer from 'react-player/lazy';
 
 import { useTransition, animated, config } from '@react-spring/web';
@@ -82,7 +86,7 @@ const ArtistProfile = ({
     getArtistBookingEvents,
     artist,
 }) => {
-    let history = useHistory();
+    // let history = useHistory();
 
     let isMe = false;
     if (me && me._id === artist._id) {
@@ -1361,4 +1365,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
     hostRaiseHand,
     getArtistBookingEvents,
-})(withRouter(ArtistProfile)); //withRouter allows us to pass history objects
+    // })(withRouter(ArtistProfile)); //withRouter allows us to pass history objects
+})(ArtistProfile);

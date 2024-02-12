@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+// import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getCurrentHost } from '../../actions/host';
@@ -51,5 +51,6 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, { getCurrentHost })(
-    withRouter(EditMyHostProfile)
+    // withRouter(EditMyHostProfile)
+    EditMyHostProfile
 ); //withRouter allows us to pass history objects

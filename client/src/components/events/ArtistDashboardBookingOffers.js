@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { Link, withRouter } from 'react-router-dom';
+// import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { Grid, Typography, Box, Avatar, Tooltip } from '@mui/material';
@@ -494,4 +494,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
     artistViewedHostOffer,
     artistDeclinedHostOffer,
-})(withRouter(ArtistDashboardBookingOffers)); //withRouter allows us to pass history objects
+    // })(withRouter(ArtistDashboardBookingOffers)); //withRouter allows us to pass history objects
+})(ArtistDashboardBookingOffers); //withRouter allows us to pass history objects

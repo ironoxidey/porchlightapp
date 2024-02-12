@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { Link, withRouter } from 'react-router-dom';
+// import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import {
@@ -303,4 +303,5 @@ const mapStateToProps = (state) => ({
 //export default ArtistTermsAgreement;
 export default connect(mapStateToProps, {
     agreeToArtistTerms,
-})(withRouter(ArtistTermsAgreement)); //withRouter allows us to pass history objects
+    // })(withRouter(ArtistTermsAgreement)); //withRouter allows us to pass history objects
+})(ArtistTermsAgreement); //withRouter allows us to pass history objects

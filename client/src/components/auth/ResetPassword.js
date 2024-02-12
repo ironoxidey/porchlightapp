@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { setAlert } from '../../actions/alert';
 import { resetPassword } from '../../actions/auth';
 import PropTypes from 'prop-types';
@@ -41,14 +41,14 @@ const ResetPassword = ({
         }
     };
 
-    //Redirect if logged in
+    //Navigate if logged in
     if (resetSuccess) {
-        return <Redirect to="/login" />;
+        return <Navigate to="/login" />;
     }
 
-    //Redirect if logged in
+    //Navigate if logged in
     if (isAuthenticated) {
-        return <Redirect to="/dashboard" />;
+        return <Navigate to="/dashboard" />;
     }
 
     return (

@@ -1,6 +1,9 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Link, withRouter, useHistory } from 'react-router-dom';
+import {
+    Link,
+    // withRouter
+} from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Button from '../layout/SvgButton';
@@ -32,7 +35,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import prependHttp from 'prepend-http';
 
-import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+// import MultipleDatesPicker from '../mui-multi-date-picker-lib';
 
 import {
     Grid,
@@ -542,4 +545,5 @@ const mapStateToProps = (state) => ({
     isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps, {})(withRouter(ArtistTop));
+// export default connect(mapStateToProps, {})(withRouter(ArtistTop));
+export default connect(mapStateToProps, {})(ArtistTop);

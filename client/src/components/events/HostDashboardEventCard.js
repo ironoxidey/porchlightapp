@@ -1,7 +1,10 @@
 import React, { Fragment, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { Link, withRouter } from 'react-router-dom';
+import {
+    Link,
+    // withRouter
+} from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import {
@@ -375,17 +378,17 @@ const HostDashboardEventCard = ({
                                                     arrow
                                                 >
                                                     {/* <Grid
-                                                        item
-                                                        sx={{
-                                                            // width: '100%',
-                                                            flexBasis: {
-                                                                xs: '80px',
-                                                                sm: '130px',
-                                                            },
-                                                            flexShrink: '3',
-                                                            flexGrow: '2',
-                                                        }}
-                                                    > */}
+                                                    item
+                                                    sx={{
+                                                        // width: '100%',
+                                                        flexBasis: {
+                                                            xs: '80px',
+                                                            sm: '130px',
+                                                        },
+                                                        flexShrink: '3',
+                                                        flexGrow: '2',
+                                                    }}
+                                                > */}
                                                     <Box
                                                         className="squareImgInACircle"
                                                         sx={{
@@ -679,22 +682,22 @@ const HostDashboardEventCard = ({
                         )
                     )}
                     {/* <Grid item xs={9} sx={{ margin: '8px 0 0' }}>
-                        <Grid
-                            item
-                            sx={{
-                                fontSize: '1.5em',
-                                marginLeft: '8px',
-                                lineHeight: '1.5',
-                            }}
-                        >
-                            {thisEvent.bookingWhere.city +
-                                ', ' +
-                                thisEvent.bookingWhere.state}
-                        </Grid> 
-                        {
-                            
-                        }
-                    </Grid>*/}
+                    <Grid
+                        item
+                        sx={{
+                            fontSize: '1.5em',
+                            marginLeft: '8px',
+                            lineHeight: '1.5',
+                        }}
+                    >
+                        {thisEvent.bookingWhere.city +
+                            ', ' +
+                            thisEvent.bookingWhere.state}
+                    </Grid> 
+                    {
+                        
+                    }
+                </Grid>*/}
                 </Grid>
                 {thisEvent.status === 'DRAFT' && !thisEvent.artist && (
                     <Grid
@@ -716,6 +719,7 @@ const HostDashboardEventCard = ({
                         >
                             <IconButton
                                 onClick={(e) => deleteHostEvent(thisEvent._id)}
+                                size="large"
                             >
                                 <DeleteIcon></DeleteIcon>
                             </IconButton>
@@ -782,4 +786,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
     artistViewedHostOffer,
     deleteHostEvent,
-})(withRouter(HostDashboardEventCard)); //withRouter allows us to pass history objects
+    // })(withRouter(HostDashboardEventCard)); //withRouter allows us to pass history objects
+})(HostDashboardEventCard);

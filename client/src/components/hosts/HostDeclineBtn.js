@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { Link, withRouter } from 'react-router-dom';
+// import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { Grid, Typography, FormGroup, Tooltip } from '@mui/material';
@@ -104,4 +104,5 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
     hostDeclines,
-})(withRouter(HostDeclineBtn)); //withRouter allows us to pass history objects
+    // })(withRouter(HostDeclineBtn)); //withRouter allows us to pass history objects
+})(HostDeclineBtn); //withRouter allows us to pass history objects

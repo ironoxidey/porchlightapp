@@ -1,6 +1,10 @@
 import axios from 'axios'; //only for uploads as of December 31st, 2021
 import React, { Fragment, useState, useEffect, useRef } from 'react';
-import { Link, withRouter, useLocation } from 'react-router-dom';
+import {
+    Link,
+    // withRouter,
+    useLocation,
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { artistReviewsHost } from '../../actions/artist';
@@ -20,7 +24,7 @@ import {
     Dialog,
     DialogContent,
 } from '@mui/material';
-import ReactPhoneInput from 'react-phone-input-mui';
+import { PhoneInput as ReactPhoneInput } from 'react-phone-input-2';
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
 
@@ -1153,4 +1157,5 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
     artistReviewsHost,
-})(withRouter(ArtistReviewsHost)); //withRouter allows us to pass history objects
+    // })(withRouter(ArtistReviewsHost)); //withRouter allows us to pass history objects
+})(ArtistReviewsHost);

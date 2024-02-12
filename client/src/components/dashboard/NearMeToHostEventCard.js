@@ -1,7 +1,11 @@
 import React, { Fragment, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { Link, withRouter, useLocation } from 'react-router-dom';
+import {
+    Link,
+    //  withRouter,
+    useLocation,
+} from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import {
@@ -552,5 +556,6 @@ const mapStateToProps = (state) => ({
 
 //export default NearMeToHostEventCard;
 export default connect(mapStateToProps, { getEventByID })(
-    withRouter(NearMeToHostEventCard)
+    // withRouter(NearMeToHostEventCard)
+    NearMeToHostEventCard
 ); //withRouter allows us to pass history objects

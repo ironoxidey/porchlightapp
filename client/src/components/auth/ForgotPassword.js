@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { forgotPassword } from '../../actions/auth';
@@ -9,7 +9,7 @@ import { TextField, Grid, Box, FormLabel, Typography } from '@mui/material';
 import Button from '../layout/SvgButton';
 
 const ForgotPassword = ({ forgotPassword, isAuthenticated, forgotSuccess }) => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
     });
@@ -23,12 +23,12 @@ const ForgotPassword = ({ forgotPassword, isAuthenticated, forgotSuccess }) => {
         e.preventDefault();
         const forgotThePassword = await forgotPassword({ email });
         console.log(forgotThePassword);
-        history.push('/login');
+        navigate('/login');
     };
 
-    //Redirect if logged in
+    //Navigate if logged in
     if (isAuthenticated) {
-        return <Redirect to="/dashboard" />;
+        return <Navigate to="/dashboard" />;
     }
 
     return (

@@ -1,6 +1,10 @@
 import axios from 'axios'; //only for uploads as of December 31st, 2021
 import React, { Fragment, useState, useEffect, useRef } from 'react';
-import { Link, withRouter, useLocation } from 'react-router-dom';
+import {
+    Link,
+    // withRouter,
+    useLocation,
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
@@ -44,7 +48,8 @@ import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
-import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+// import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+import { DateCalendar } from '@mui/x-date-pickers';
 
 import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
@@ -855,7 +860,17 @@ const EditArtistBookingForm = ({
                               )
                           )
                     : '',
-                <MultipleDatesPicker
+                // <MultipleDatesPicker
+                //     id="bookingWhen"
+                //     name="bookingWhen"
+                //     open={true}
+                //     selectedDates={bookingWhen}
+                //     value={bookingWhen}
+                //     onCancel={() => setOpen(false)}
+                //     //onSubmit={dates => console.log('selected dates', dates)}
+                //     onChange={(target) => onCalendarChange(target)}
+                // />,
+                <DateCalendar
                     id="bookingWhen"
                     name="bookingWhen"
                     open={true}
@@ -1459,6 +1474,7 @@ const EditArtistBookingForm = ({
                                               idx
                                           )
                                       }
+                                      size="large"
                                   >
                                       <DeleteIcon />
                                   </IconButton>
@@ -2016,4 +2032,5 @@ export default connect(mapStateToProps, {
     getHostsLocations,
     createMyArtist,
     updateUserAvatar,
-})(withRouter(EditArtistBookingForm)); //withRouter allows us to pass history objects
+    // })(withRouter(EditArtistBookingForm)); //withRouter allows us to pass history objects
+})(EditArtistBookingForm); //withRouter allows us to pass history objects

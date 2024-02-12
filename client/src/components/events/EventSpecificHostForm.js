@@ -1,6 +1,10 @@
 import axios from 'axios'; //only for uploads as of December 31st, 2021
 import React, { Fragment, useState, useEffect, useRef } from 'react';
-import { Link, withRouter, useLocation } from 'react-router-dom';
+import {
+    // Link,
+    // withRouter,
+    useLocation,
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
@@ -33,7 +37,7 @@ import {
     Divider,
     Tooltip,
 } from '@mui/material';
-import ReactPhoneInput from 'react-phone-input-mui';
+import { PhoneInput as ReactPhoneInput } from 'react-phone-input-2';
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
 
@@ -54,7 +58,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
-import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+// import MultipleDatesPicker from '../mui-multi-date-picker-lib';
 import { hostRaiseHand } from '../../actions/event';
 
 import { useTransition, animated, config } from '@react-spring/web';
@@ -1584,4 +1588,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
     hostRaiseHand,
     createMyHost,
-})(withRouter(EventSpecificHostForm)); //withRouter allows us to pass history objects
+    // })(withRouter(EventSpecificHostForm)); //withRouter allows us to pass history objects
+})(EventSpecificHostForm);

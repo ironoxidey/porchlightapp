@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Link, Redirect, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { hostDeclines } from '../../actions/event';
@@ -52,7 +52,7 @@ const HostDeclinesFromEmailDigest = ({
         }
     }, [nearMeToHost]);
 
-    // return <Redirect to="/dashboard" />;
+    // return <Navigate to="/dashboard" />;
     // console.log(event[0]);
     return (
         <>

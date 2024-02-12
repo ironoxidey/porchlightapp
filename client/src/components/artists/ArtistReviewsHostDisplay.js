@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
-import { Link, withRouter, useLocation } from 'react-router-dom';
+
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -18,7 +18,7 @@ import {
     Dialog,
     DialogContent,
 } from '@mui/material';
-import ReactPhoneInput from 'react-phone-input-mui';
+import { PhoneInput as ReactPhoneInput } from 'react-phone-input-2';
 import { styled } from '@mui/material/styles';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -29,7 +29,7 @@ Object.filter = (obj, predicate) =>
         .filter((key) => predicate(obj[key]))
         .reduce((res, key) => ((res[key] = obj[key]), res), []);
 
-const ArtistReviewsHostDisplay = ({ history, auth, theEvent }) => {
+const ArtistReviewsHostDisplay = ({ auth, theEvent }) => {
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     // const dispatch = useDispatch();
 
@@ -681,4 +681,4 @@ ArtistReviewsHostDisplay.propTypes = {
     auth: PropTypes.object.isRequired,
 };
 
-export default ArtistReviewsHostDisplay; //withRouter allows us to pass history objects
+export default ArtistReviewsHostDisplay;

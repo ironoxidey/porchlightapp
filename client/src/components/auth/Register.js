@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 import PropTypes from 'prop-types';
@@ -87,12 +87,12 @@ const Register = ({ setAlert, register, isAuthenticated, bookingDialog }) => {
         }
     };
 
-    //Redirect if logged in
+    //Navigate if logged in
     if (isAuthenticated && !bookingDialog) {
         if (urlForm === 'host') {
-            return <Redirect to="/edit-host-profile" />;
+            return <Navigate to="/edit-host-profile" />;
         } else {
-            return <Redirect to="/dashboard" />;
+            return <Navigate to="/dashboard" />;
         }
     }
 

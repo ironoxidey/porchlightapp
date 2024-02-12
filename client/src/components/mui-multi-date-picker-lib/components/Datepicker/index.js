@@ -13,7 +13,7 @@ import { makeStyles } from '@mui/styles';
 
 import { setSelectedDates } from '../../../../actions/types';
 
-import { withRouter } from 'react-router-dom';
+// import { withRouter } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
         minHeight: 482,
         maxHeight: 482,
         display: 'flex',
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down('lg')]: {
             margin: theme.spacing(1),
         },
     },
@@ -240,4 +240,5 @@ const mapStateToProps = (state) => ({
     datepicker: state.datepicker,
 });
 
-export default connect(mapStateToProps, {})(withRouter(DatePicker)); //withRouter allows us to pass history objects
+// export default connect(mapStateToProps, {})(withRouter(DatePicker)); //withRouter allows us to pass history objects
+export default connect(mapStateToProps, {})(DatePicker);

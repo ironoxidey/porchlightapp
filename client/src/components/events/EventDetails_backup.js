@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link, withRouter, useHistory } from 'react-router-dom';
+// import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import prependHttp from 'prepend-http';
@@ -75,7 +75,7 @@ const EventDetails = ({
     artist,
     jumpTo,
 }) => {
-    let history = useHistory();
+    // let history = useHistory();
 
     let isMe = false;
     if (me && (me._id === theEvent.artist || me._id === theEvent.artist._id)) {
@@ -306,23 +306,24 @@ const EventDetails = ({
                                         <Divider />
                                     </Grid>
                                 )}
-                            {theEvent.tourVibe && theEvent.tourVibe.length > 0 && (
-                                <Grid
-                                    item
-                                    sx={{
-                                        marginTop: '0',
-                                        cursor: isMe ? 'pointer' : 'auto',
-                                    }}
-                                    onClick={() => {
-                                        if (isMe) {
-                                            jumpTo('tourVibe');
-                                        }
-                                    }}
-                                    xs={12}
-                                    md={6}
-                                    className="tourVibe"
-                                >
-                                    {/* <Tooltip
+                            {theEvent.tourVibe &&
+                                theEvent.tourVibe.length > 0 && (
+                                    <Grid
+                                        item
+                                        sx={{
+                                            marginTop: '0',
+                                            cursor: isMe ? 'pointer' : 'auto',
+                                        }}
+                                        onClick={() => {
+                                            if (isMe) {
+                                                jumpTo('tourVibe');
+                                            }
+                                        }}
+                                        xs={12}
+                                        md={6}
+                                        className="tourVibe"
+                                    >
+                                        {/* <Tooltip
                                         arrow={true}
                                         disableHoverListener={!isMe}
                                         disableFocusListener={!isMe}
@@ -339,18 +340,18 @@ const EventDetails = ({
                                             </>
                                         }
                                     > */}
-                                    <GroupsTwoToneIcon></GroupsTwoToneIcon>
-                                    {/* </Tooltip> */}
-                                    {
-                                        ' Feels most comfortable performing for an audience who is: '
-                                    }
-                                    <strong>
-                                        {theEvent.tourVibe.join(', ')}
-                                    </strong>
+                                        <GroupsTwoToneIcon></GroupsTwoToneIcon>
+                                        {/* </Tooltip> */}
+                                        {
+                                            ' Feels most comfortable performing for an audience who is: '
+                                        }
+                                        <strong>
+                                            {theEvent.tourVibe.join(', ')}
+                                        </strong>
 
-                                    <Divider />
-                                </Grid>
-                            )}
+                                        <Divider />
+                                    </Grid>
+                                )}
                             {theEvent.showSchedule && (
                                 <Fragment>
                                     <Grid
@@ -1582,4 +1583,5 @@ const mapStateToProps = (state) => ({
     events: state.event.events,
 });
 
-export default connect(mapStateToProps, { jumpTo })(withRouter(EventDetails)); //withRouter allows us to pass history objects
+// export default connect(mapStateToProps, { jumpTo })(withRouter(EventDetails)); //withRouter allows us to pass history objects
+export default connect(mapStateToProps, { jumpTo })(EventDetails); //withRouter allows us to pass history objects

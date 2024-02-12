@@ -349,126 +349,62 @@ const Navbar = ({
         return combinedLinks;
     };
 
-    return (
-        <>
-            <AppBar
-                position="sticky"
-                sx={{
-                    borderBottom: '1px solid var(--primary-color)',
-                    backgroundImage: 'none',
-                    backgroundColor: 'var(--secondary-dark-color)',
-                }}
-            >
-                <Container maxWidth="xl">
-                    <Toolbar disableGutters>
-                        <Box
-                            sx={{
-                                flexGrow: 1,
-                                display: { xs: 'flex', md: 'flex' },
-                            }}
+    return <>
+        <AppBar
+            position="sticky"
+            sx={{
+                borderBottom: '1px solid var(--primary-color)',
+                backgroundImage: 'none',
+                backgroundColor: 'var(--secondary-dark-color)',
+            }}
+        >
+            <Container maxWidth="xl">
+                <Toolbar disableGutters>
+                    <Box
+                        sx={{
+                            flexGrow: 1,
+                            display: { xs: 'flex', md: 'flex' },
+                        }}
+                    >
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={
+                                !navDrawer
+                                    ? handleOpenNavMenu
+                                    : handleCloseNavMenu
+                            }
+                            color="inherit"
                         >
-                            <IconButton
-                                size="large"
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                onClick={
-                                    !navDrawer
-                                        ? handleOpenNavMenu
-                                        : handleCloseNavMenu
-                                }
-                                color="inherit"
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                        </Box>
-                        {pageURL === '/edit-hosts' && (
-                            <HostDataGridMap></HostDataGridMap>
-                        )}
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="div"
-                            sx={{
-                                flexGrow: 1,
-                                display: { xs: 'flex', md: 'flex' },
-                            }}
-                        >
-                            <Alert />
-                        </Typography>
+                            <MenuIcon />
+                        </IconButton>
+                    </Box>
+                    {pageURL === '/edit-hosts' && (
+                        <HostDataGridMap></HostDataGridMap>
+                    )}
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component="div"
+                        sx={{
+                            flexGrow: 1,
+                            display: { xs: 'flex', md: 'flex' },
+                        }}
+                    >
+                        <Alert />
+                    </Typography>
 
-                        <Box sx={{ flexGrow: 0 }}>
-                            <Tooltip title="Account Menu">
-                                <IconButton
-                                    onClick={handleOpenUserMenu}
-                                    sx={{ p: 0 }}
-                                >
-                                    {user &&
-                                    user.name &&
-                                    user.avatar !== null ? (
-                                        <Avatar
-                                            alt={`${
-                                                profileHat === 'HOST' &&
-                                                host &&
-                                                host.me
-                                                    ? host.me.firstName +
-                                                      ' ' +
-                                                      host.me.lastName
-                                                    : profileHat === 'ARTIST' &&
-                                                      artist &&
-                                                      artist.me
-                                                    ? artist.me.stageName
-                                                    : user.name
-                                            }`}
-                                            src={`${
-                                                profileHat === 'HOST' &&
-                                                host &&
-                                                host.me
-                                                    ? host.me.profileImg
-                                                    : profileHat === 'ARTIST' &&
-                                                      artist &&
-                                                      artist.me
-                                                    ? artist.me.squareImg
-                                                    : user.avatar
-                                            }`}
-                                        />
-                                    ) : (
-                                        <Avatar />
-                                    )}
-                                </IconButton>
-                            </Tooltip>
-                            <Menu
-                                sx={{ mt: '45px' }}
-                                id="menu-appbar"
-                                anchorEl={anchorElUser}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorElUser)}
-                                onClose={handleCloseUserMenu}
-                                onClick={handleCloseUserMenu}
-                            >
-                                {user && user.name && user.avatar !== null && (
-                                    <Box
-                                        key="nameEmail"
-                                        sx={{
-                                            width: '100%',
-                                            padding: '20px 20px 0px 20px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            flexDirection: 'column',
-                                        }}
-                                    >
-                                        <Typography
-                                            sx={{ textAlign: 'center' }}
-                                        >
-                                            {profileHat === 'HOST' &&
+                    <Box sx={{ flexGrow: 0 }}>
+                        <Tooltip title="Account Menu">
+                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }} size="large">
+                                {user &&
+                                user.name &&
+                                user.avatar !== null ? (
+                                    <Avatar
+                                        alt={`${
+                                            profileHat === 'HOST' &&
                                             host &&
                                             host.me
                                                 ? host.me.firstName +
@@ -478,37 +414,96 @@ const Navbar = ({
                                                   artist &&
                                                   artist.me
                                                 ? artist.me.stageName
-                                                : user && user.name
-                                                ? user.name
-                                                : ''}
-                                        </Typography>
-                                        <Typography
-                                            sx={{
-                                                opacity: 0.2,
-                                                fontSize: '.7em',
-                                            }}
-                                        >
-                                            ({user && user.email})
-                                        </Typography>
-                                    </Box>
+                                                : user.name
+                                        }`}
+                                        src={`${
+                                            profileHat === 'HOST' &&
+                                            host &&
+                                            host.me
+                                                ? host.me.profileImg
+                                                : profileHat === 'ARTIST' &&
+                                                  artist &&
+                                                  artist.me
+                                                ? artist.me.squareImg
+                                                : user.avatar
+                                        }`}
+                                    />
+                                ) : (
+                                    <Avatar />
                                 )}
-                                {myNavLinks().map((userLink, index) => (
-                                    <MenuItem
-                                        key={userLink + index}
-                                        onClick={handleCloseNavMenu}
-                                        sx={{ padding: 0 }}
-                                        className="drawerListItems"
+                            </IconButton>
+                        </Tooltip>
+                        <Menu
+                            sx={{ mt: '45px' }}
+                            id="menu-appbar"
+                            anchorEl={anchorElUser}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorElUser)}
+                            onClose={handleCloseUserMenu}
+                            onClick={handleCloseUserMenu}
+                        >
+                            {user && user.name && user.avatar !== null && (
+                                <Box
+                                    key="nameEmail"
+                                    sx={{
+                                        width: '100%',
+                                        padding: '20px 20px 0px 20px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        flexDirection: 'column',
+                                    }}
+                                >
+                                    <Typography
+                                        sx={{ textAlign: 'center' }}
                                     >
-                                        {userLink}
-                                    </MenuItem>
-                                ))}
-                            </Menu>
-                        </Box>
-                    </Toolbar>
-                </Container>
-            </AppBar>
-        </>
-    );
+                                        {profileHat === 'HOST' &&
+                                        host &&
+                                        host.me
+                                            ? host.me.firstName +
+                                              ' ' +
+                                              host.me.lastName
+                                            : profileHat === 'ARTIST' &&
+                                              artist &&
+                                              artist.me
+                                            ? artist.me.stageName
+                                            : user && user.name
+                                            ? user.name
+                                            : ''}
+                                    </Typography>
+                                    <Typography
+                                        sx={{
+                                            opacity: 0.2,
+                                            fontSize: '.7em',
+                                        }}
+                                    >
+                                        ({user && user.email})
+                                    </Typography>
+                                </Box>
+                            )}
+                            {myNavLinks().map((userLink, index) => (
+                                <MenuItem
+                                    key={userLink + index}
+                                    onClick={handleCloseNavMenu}
+                                    sx={{ padding: 0 }}
+                                    className="drawerListItems"
+                                >
+                                    {userLink}
+                                </MenuItem>
+                            ))}
+                        </Menu>
+                    </Box>
+                </Toolbar>
+            </Container>
+        </AppBar>
+    </>;
 };
 
 Navbar.propTypes = {

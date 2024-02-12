@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { Link, withRouter } from 'react-router-dom';
+import {
+    Link,
+    // withRouter
+} from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import {
@@ -1358,5 +1361,6 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, { artistAcceptOffer })(
-    withRouter(HostProfile)
+    // withRouter(HostProfile)
+    HostProfile
 ); //withRouter allows us to pass history objects

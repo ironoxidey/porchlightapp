@@ -4,9 +4,9 @@ import ButtonBase from '@mui/material/ButtonBase';
 // import ButtonUnstyled, {
 //     buttonUnstyledClasses,
 // } from '@mui/base/ButtonUnstyled';
-import ButtonUnstyled, {
-    buttonUnstyledClasses,
-} from '@mui/core/ButtonUnstyled';
+// import ButtonUnstyled, {
+//     buttonUnstyledClasses,
+// } from '@mui/core/ButtonUnstyled';
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -15,7 +15,7 @@ const ButtonRoot = React.forwardRef(function ButtonRoot(props, ref) {
     const { children, ...other } = props;
 
     const theme = useTheme();
-    const smallMediaBreakpoint = useMediaQuery(theme.breakpoints.down('sm')); //boolean
+    const smallMediaBreakpoint = useMediaQuery(theme.breakpoints.down('lg')); //boolean
     //const btnWidth = props.btnwidth || '200'; //I don't know why I did this, but the 'w' in Width is supposed to be lowercase, unless I go around and fix it everywhere
     const btnWidth =
         props.btnwidth && smallMediaBreakpoint
@@ -109,7 +109,7 @@ const CustomButtonRoot = styled(ButtonRoot)(
   }
 
   &:hover,
-  &.${buttonUnstyledClasses.focusVisible} {
+   {
     box-shadow: 0 0 5px var(--main-color);
     .borderEffect {
       stroke-dashoffset: -${(props.btnWidth || 200) * 4};
@@ -121,12 +121,12 @@ const CustomButtonRoot = styled(ButtonRoot)(
   }
 
   &:focus,
-  &.${buttonUnstyledClasses.focusVisible} {
+   {
     outline: none;
     outline-offset: 2px;
   }
-
-  &.${buttonUnstyledClasses.active} { 
+  &:active,
+  { 
     & .bg {
       fill: var(--active-color);
       transition: fill 300ms ease-out;
@@ -166,7 +166,8 @@ CustomButtonRoot.propTypes = {
 };
 
 const SvgButton = React.forwardRef(function SvgButton(props, ref) {
-    return <ButtonUnstyled {...props} component={CustomButtonRoot} ref={ref} />;
+    // return <ButtonUnstyled {...props} component={CustomButtonRoot} ref={ref} />;
+    return <ButtonBase {...props} component={CustomButtonRoot} ref={ref} />;
 });
 
 export default SvgButton;

@@ -1,5 +1,8 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import {
+    Link,
+    // withRouter
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 //import { createArtist } from '../../actions/artist';
@@ -156,4 +159,5 @@ EditArtistItem.propTypes = {
 
 const mapStateToProps = (state) => ({});
 
-export default connect(mapStateToProps, {})(withRouter(EditArtistItem)); //withRouter allows us to pass history objects
+// export default connect(mapStateToProps, {})(withRouter(EditArtistItem)); //withRouter allows us to pass history objects
+export default connect(mapStateToProps, {})(EditArtistItem); //withRouter allows us to pass history objects

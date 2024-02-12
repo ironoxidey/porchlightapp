@@ -1,6 +1,10 @@
 import axios from 'axios'; //only for uploads as of December 31st, 2021
 import React, { Fragment, useState, useEffect, useRef } from 'react';
-import { Link, withRouter, useLocation } from 'react-router-dom';
+import {
+    // Link,
+    // withRouter,
+    useLocation,
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { IMAGE_UPLOAD, UPDATE_ARTIST_ME } from '../../actions/types';
@@ -35,7 +39,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
-import ReactPhoneInput from 'react-phone-input-mui';
+// import PhoneInput from 'react-phone-input-2';
+import ReactPhoneInput from '../../common/components/ReactPhoneInput';
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
 
@@ -52,7 +57,7 @@ import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
-import MultipleDatesPicker from '../mui-multi-date-picker-lib';
+// import MultipleDatesPicker from '../mui-multi-date-picker-lib';
 
 import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
@@ -764,6 +769,26 @@ const EditHostProfileForm = ({
             ],
             [
                 <Grid item>
+                    {/* <PhoneInput
+                        country="us"
+                        // disableCountryCode="true"
+                        countryCodeEditable="false"
+                        value={phone}
+                        onChange={(val) => onPhoneChange('phone', val)}
+                        inputProps={{
+                            style: {
+                                height: '40px',
+                                padding: '0 10px',
+                                // border: 'none',
+                                borderBottom:
+                                    'solid 1px var(--light-color)!important',
+                                outline: 'none',
+                                boxShadow: 'none',
+                                color: 'white',
+                            },
+                        }}
+                        style={{ color: 'var(--light-color)' }}
+                    /> */}
                     <ReactPhoneInput
                         name="phone"
                         id="phone"
@@ -1609,4 +1634,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
     createMyHost,
     updateUserAvatar,
-})(withRouter(EditHostProfileForm)); //withRouter allows us to pass history objects
+    // })(withRouter(EditHostProfileForm)); //withRouter allows us to pass history objects
+})(EditHostProfileForm); //withRouter allows us to pass history objects

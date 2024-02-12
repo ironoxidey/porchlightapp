@@ -1,33 +1,22 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Navigate } from 'react-router-dom';
 import Page from './Page';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 const AdminPrivateRoute = ({
-    component: Component,
     title,
     auth: { isAuthenticated, loading, user },
-    ...rest
-}) => (
-    <Route
-        {...rest}
-        render={(props) =>
-            !isAuthenticated && !loading ? (
-                <Redirect to="/login" />
-            ) : // ) : user && user.role !== 'ADMIN' ? (
-            user &&
-              Array.isArray(user.role) &&
-              user.role.indexOf('ADMIN') > -1 ? (
-                <Page title={title}>
-                    <Component {...props} />
-                </Page>
-            ) : (
-                <Redirect to="/dashboard" />
-            )
-        }
-    />
-);
+    children,
+}) =>
+    !isAuthenticated && !loading ? (
+        <Navigate to="/login" />
+    ) : // ) : user && user.role !== 'ADMIN' ? (
+    user && Array.isArray(user.role) && user.role.indexOf('ADMIN') > -1 ? (
+        <Page title={title}>{children}</Page>
+    ) : (
+        <Navigate to="/dashboard" />
+    );
 
 AdminPrivateRoute.propTypes = {
     auth: PropTypes.object.isRequired,
