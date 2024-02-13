@@ -69,7 +69,7 @@ export const getArtists =
         try {
             if (host) {
                 const res = await axios.get(`/api/artists/fromHost`);
-                console.log('sort artists by distance from host');
+                // console.log('sort artists by distance from host');
                 dispatch({
                     type: GET_ARTISTS,
                     payload: res.data,

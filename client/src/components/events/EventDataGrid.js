@@ -1266,7 +1266,8 @@ const EventDataGrid = ({
                                 setDeleteEventID(params.row.theEvent._id);
                                 // deleteAdminEvent(params.row.theEvent);
                             }}
-                            size="large">
+                            size="large"
+                        >
                             <DeleteIcon></DeleteIcon>
                         </IconButton>
                     </Grid>
@@ -1334,6 +1335,7 @@ const EventDataGrid = ({
             user.role.indexOf('BOOKING') > -1) && (
             <Grid container direction="column" sx={{ height: '88vh' }}>
                 <DataGrid
+                    // sx={{ overflowX: 'scroll' }}
                     rows={eventRows}
                     columns={eventColumns}
                     pageSize={100}
@@ -1348,6 +1350,7 @@ const EventDataGrid = ({
                     components={{
                         Toolbar: GridToolbar,
                     }}
+                    sx={{ width: '100%' }}
                 />
             </Grid>
         )

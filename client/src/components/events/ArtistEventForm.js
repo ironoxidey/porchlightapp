@@ -49,7 +49,9 @@ import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
 // import MultipleDatesPicker from '../mui-multi-date-picker-lib';
-import { DateCalendar } from '@mui/x-date-pickers';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
@@ -569,14 +571,46 @@ const ArtistEventForm = ({
         }
     }, [bookingWhere]);
 
-    const onCalendarChange = (target) => {
-        changesMade.current = true;
-        let targetValue = target.value;
-        let targetValueDated = targetValue.map((date) => {
-            return new Date(date).toISOString();
-        });
+    const [disabledDates, setDisabledDates] = useState([]);
 
-        setFormData({ ...formData, [target.name]: targetValueDated });
+    useEffect(() => {
+        if (myArtistEvents && myArtistEvents.length > 0) {
+            setDisabledDates(
+                myArtistEvents &&
+                    myArtistEvents
+                        .filter((event) => {
+                            if (event.bookingWhen !== bookingWhen) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        })
+                        .map((event) => {
+                            return event.bookingWhen;
+                        })
+            );
+        }
+    }, [myArtistEvents]);
+    useEffect(() => {
+        if (disabledDates) {
+            // console.log('the disabledDates', disabledDates);
+        }
+    }, [disabledDates]);
+
+    const onCalendarChange = (target) => {
+        // console.log('bookingWhen onCalendarChange target,', target);
+        changesMade.current = true;
+        let targetValue = target;
+        let targetValueDated = new Date(targetValue).toISOString();
+        // console.log(
+        //     'bookingWhen onCalendarChange targetValueDated,',
+        //     targetValueDated
+        // );
+        // let targetValueDated = targetValue.map((date) => {
+        //     return new Date(date).toISOString();
+        // });
+
+        setFormData({ ...formData, bookingWhen: [targetValueDated] });
     };
 
     const handleAddMultiTextField = (targetName, theFieldObj) => {
@@ -660,32 +694,26 @@ const ArtistEventForm = ({
                 //     //onSubmit={dates => console.log('selected dates', dates)}
                 //     onChange={(target) => onCalendarChange(target)}
                 // />,
-                <DateCalendar
-                    id="bookingWhen"
-                    name="bookingWhen"
-                    open={true}
-                    //trying to figure out how to disable dates you've already picked ~Aug 26, 2022
-                    disabledDates={
-                        myArtistEvents &&
-                        myArtistEvents
-                            .filter((event) => {
-                                if (event.bookingWhen !== bookingWhen) {
-                                    return true;
-                                } else {
-                                    return false;
-                                }
-                            })
-                            .map((event) => {
-                                return event.bookingWhen;
-                            })
-                    }
-                    //readOnly={bookingWhen ? true : false} //if there's a bookingWhen date, don't let people change it
-                    selectedDates={bookingWhen ? [bookingWhen] : []}
-                    //value={bookingWhen}
-                    onCancel={() => setOpen(false)}
-                    //onSubmit={dates => console.log('selected dates', dates)}
-                    onChange={(target) => onCalendarChange(target)}
-                />,
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateCalendar
+                        id="bookingWhen"
+                        name="bookingWhen"
+                        open={true}
+                        disablePast="true"
+                        //trying to figure out how to disable dates you've already picked ~Aug 26, 2022
+                        shouldDisableDate={(date) => {
+                            //loops through every date in the calendar (for about 3 months, I think) and checks to see if that date is included in the disabledDates array
+                            const formattedDate = new Date(date).toISOString();
+                            return disabledDates.includes(formattedDate);
+                        }}
+                        //readOnly={bookingWhen ? true : false} //if there's a bookingWhen date, don't let people change it
+                        // selectedDates={bookingWhen ? [bookingWhen] : []}
+                        //value={bookingWhen}
+                        onCancel={() => setOpen(false)}
+                        //onSubmit={dates => console.log('selected dates', dates)}
+                        onChange={(target) => onCalendarChange(target)}
+                    />
+                </LocalizationProvider>,
             ],
         ],
         bookingWhere: [
@@ -1929,7 +1957,7 @@ const ArtistEventForm = ({
     }, []);
 
     useEffect(() => {
-        //console.log('jumpToState ArtistEventForm', jumpToState);
+        // console.log('jumpToState ArtistEventForm', jumpToState);
         if (bookingWhen && jumpToState === '') {
             //triggers the form to go to the next slide when a bookingWhen is selected and pulls in the most recently created event's details, but doesn't affect the "Edit Concert Details"
             setDirection(1);
@@ -1937,9 +1965,9 @@ const ArtistEventForm = ({
                 (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length
             );
             if (Array.isArray(myArtistEvents) && myArtistEvents.length > 0) {
-                const mostRecentlyUpdatedEvent = myArtistEvents.reduce((a, b) =>
-                    a.updatedAt > b.updatedAt ? a : b
-                );
+                const mostRecentlyUpdatedEvent = myArtistEvents
+                    .filter((theEvent) => theEvent.createdBy === 'ARTIST')
+                    .reduce((a, b) => (a.updatedAt > b.updatedAt ? a : b));
                 // console.log(
                 //     'host mostRecentlyUpdatedEvent',
                 //     mostRecentlyUpdatedEvent
@@ -1971,6 +1999,8 @@ const ArtistEventForm = ({
                 delete mostRecentlyUpdatedEventTrimmed.preferredArtists;
                 delete mostRecentlyUpdatedEventTrimmed.declinedArtists;
                 delete mostRecentlyUpdatedEventTrimmed.artistReviewOfHost;
+
+                delete mostRecentlyUpdatedEventTrimmed.showSchedule;
 
                 setFormData({
                     ...formData,

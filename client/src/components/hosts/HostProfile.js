@@ -531,7 +531,7 @@ const HostProfile = ({
                                             theEvent.showSchedule.setupTime ? (
                                                 <>
                                                     {`said setup should instead be at `}
-                                                    <span class="diffTime">
+                                                    <span className="diffTime">
                                                         {convert24HourTime(
                                                             theOffer
                                                                 .showSchedule
@@ -539,18 +539,21 @@ const HostProfile = ({
                                                         )}
                                                     </span>
                                                 </>
-                                            ) : (
+                                            ) : theOffer.showSchedule
+                                                  .setupTime ? (
                                                 ` said setup could be at ` +
                                                 convert24HourTime(
                                                     theOffer.showSchedule
                                                         .setupTime
                                                 )
+                                            ) : (
+                                                ''
                                             )}
                                             {theOffer.showSchedule.doorsOpen !==
                                             theEvent.showSchedule.doorsOpen ? (
                                                 <>
                                                     {`, doors should instead open at `}
-                                                    <span class="diffTime">
+                                                    <span className="diffTime">
                                                         {convert24HourTime(
                                                             theOffer
                                                                 .showSchedule
@@ -558,18 +561,21 @@ const HostProfile = ({
                                                         )}
                                                     </span>
                                                 </>
-                                            ) : (
+                                            ) : theOffer.showSchedule
+                                                  .doorsOpen ? (
                                                 `, doors could open at ` +
                                                 convert24HourTime(
                                                     theOffer.showSchedule
                                                         .doorsOpen
                                                 )
+                                            ) : (
+                                                ''
                                             )}
                                             {theOffer.showSchedule.startTime !==
                                             theEvent.showSchedule.startTime ? (
                                                 <>
                                                     {`, for the show instead to start at `}
-                                                    <span class="diffTime">
+                                                    <span className="diffTime">
                                                         {convert24HourTime(
                                                             theOffer
                                                                 .showSchedule
@@ -577,18 +583,21 @@ const HostProfile = ({
                                                         )}
                                                     </span>
                                                 </>
-                                            ) : (
+                                            ) : theOffer.showSchedule
+                                                  .startTime ? (
                                                 `, for the show to start at ` +
                                                 convert24HourTime(
                                                     theOffer.showSchedule
                                                         .startTime
                                                 )
+                                            ) : (
+                                                ''
                                             )}
                                             {theOffer.showSchedule.hardWrap !==
                                             theEvent.showSchedule.hardWrap ? (
                                                 <>
                                                     {`, and a hard wrap instead at about `}
-                                                    <span class="diffTime">
+                                                    <span className="diffTime">
                                                         {convert24HourTime(
                                                             theOffer
                                                                 .showSchedule
@@ -597,13 +606,16 @@ const HostProfile = ({
                                                     </span>
                                                     {`.`}
                                                 </>
-                                            ) : (
+                                            ) : theOffer.showSchedule
+                                                  .hardWrap ? (
                                                 `, and a hard wrap at about ` +
                                                 convert24HourTime(
                                                     theOffer.showSchedule
                                                         .hardWrap
                                                 ) +
                                                 `.`
+                                            ) : (
+                                                ''
                                             )}
                                         </Typography>
                                     </Grid>

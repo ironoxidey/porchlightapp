@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 import { PAGE_LOAD } from '../../actions/types';
 import Spinner from '../layout/Spinner';
@@ -13,6 +13,7 @@ import { getArtistBySlug } from '../../actions/artist';
 import { Grid, Box } from '@mui/material';
 
 const Artist = ({
+    theSlug,
     getArtistBySlug,
     artist: { artist, loading },
     auth,
@@ -22,6 +23,8 @@ const Artist = ({
     const dispatch = useDispatch();
 
     const [artistTitle, setArtistTitle] = useState('');
+
+    const { slug } = useParams();
 
     useEffect(() => {
         //this is only really to trigger the PAGE_LOAD so that the page title will update
@@ -37,14 +40,15 @@ const Artist = ({
                 payload: { pageTitle: artist.stageName },
             });
         } else {
-            getArtistBySlug(match.params.slug);
+            getArtistBySlug(slug);
         }
         //}, [artist, dispatch]);
     }, [artistTitle]);
 
     useEffect(() => {
-        getArtistBySlug(match.params.slug);
-    }, [getArtistBySlug, match.params.slug]);
+        console.log('slug', slug);
+        getArtistBySlug(slug);
+    }, [getArtistBySlug, slug]);
 
     return (
         <Fragment>
@@ -84,6 +88,7 @@ Artist.propTypes = {
     artist: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     app: PropTypes.object.isRequired,
+    theSlug: PropTypes.string,
 };
 const mapStateToProps = (state) => ({
     artist: state.artist,

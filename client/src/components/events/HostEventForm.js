@@ -54,12 +54,13 @@ import SendIcon from '@mui/icons-material/Send';
 //import { DateRangePicker, DateRange } from "materialui-daterange-picker";
 //import MultipleDatesPicker from '@randex/material-ui-multiple-dates-picker';
 // import MultipleDatesPicker from '../mui-multi-date-picker-lib';
-import { DateCalendar } from '@mui/x-date-pickers';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
 import { textAlign } from '@mui/system';
-
 import {
     getFontAwesomeIcon,
     sortDates,
@@ -479,14 +480,46 @@ const HostEventForm = ({
     //     }
     // }, [bookingWhere]);
 
-    const onCalendarChange = (target) => {
-        changesMade.current = true;
-        let targetValue = target.value;
-        let targetValueDated = targetValue.map((date) => {
-            return new Date(date).toISOString();
-        });
+    const [disabledDates, setDisabledDates] = useState([]);
 
-        setFormData({ ...formData, [target.name]: targetValueDated });
+    useEffect(() => {
+        if (myHostEvents && myHostEvents.length > 0) {
+            setDisabledDates(
+                myHostEvents &&
+                    myHostEvents
+                        .filter((event) => {
+                            if (event.bookingWhen !== bookingWhen) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        })
+                        .map((event) => {
+                            return event.bookingWhen;
+                        })
+            );
+        }
+    }, [myHostEvents]);
+    // useEffect(() => {
+    //     if (disabledDates) {
+    //         console.log('the disabledDates', disabledDates);
+    //     }
+    // }, [disabledDates]);
+
+    const onCalendarChange = (target) => {
+        // console.log('bookingWhen onCalendarChange target,', target);
+        changesMade.current = true;
+        let targetValue = target;
+        let targetValueDated = new Date(targetValue).toISOString();
+        // console.log(
+        //     'bookingWhen onCalendarChange targetValueDated,',
+        //     targetValueDated
+        // );
+        // let targetValueDated = targetValue.map((date) => {
+        //     return new Date(date).toISOString();
+        // });
+
+        setFormData({ ...formData, bookingWhen: [targetValueDated] });
     };
 
     const handleAddMultiTextField = (targetName, theFieldObj) => {
@@ -562,33 +595,20 @@ const HostEventForm = ({
                 // 		handleAddMultiInput('bookingWhenWhere',bookingWhenWhere, whenBooking)
                 // 	  ))
                 // 	: '',
-
-                <DateCalendar
-                    id="bookingWhen"
-                    name="bookingWhen"
-                    open={true}
-                    //trying to figure out how to disable dates you've already picked ~Aug 26, 2022
-                    disabledDates={
-                        myHostEvents &&
-                        myHostEvents
-                            .filter((event) => {
-                                if (event.bookingWhen !== bookingWhen) {
-                                    return true;
-                                } else {
-                                    return false;
-                                }
-                            })
-                            .map((event) => {
-                                return event.bookingWhen;
-                            })
-                    }
-                    //readOnly={bookingWhen ? true : false} //if there's a bookingWhen date, don't let people change it
-                    selectedDates={bookingWhen ? [bookingWhen] : []}
-                    //value={bookingWhen}
-                    onCancel={() => setOpen(false)}
-                    //onSubmit={dates => console.log('selected dates', dates)}
-                    onChange={(target) => onCalendarChange(target)}
-                />,
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateCalendar
+                        id="bookingWhen"
+                        name="bookingWhen"
+                        open={true}
+                        disablePast="true"
+                        shouldDisableDate={(date) => {
+                            //loops through every date in the calendar (for about 3 months, I think) and checks to see if that date is included in the disabledDates array
+                            const formattedDate = new Date(date).toISOString();
+                            return disabledDates.includes(formattedDate);
+                        }}
+                        onChange={(target) => onCalendarChange(target)}
+                    />
+                </LocalizationProvider>,
                 // <MultipleDatesPicker
                 //     id="bookingWhen"
                 //     name="bookingWhen"
@@ -1838,6 +1858,8 @@ const HostEventForm = ({
                 delete mostRecentlyUpdatedEventTrimmed.confirmedArtist;
                 delete mostRecentlyUpdatedEventTrimmed.declinedArtists;
                 delete mostRecentlyUpdatedEventTrimmed.artistReviewOfHost;
+
+                delete mostRecentlyUpdatedEventTrimmed.showSchedule;
 
                 setFormData({
                     ...formData,

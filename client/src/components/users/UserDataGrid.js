@@ -421,6 +421,7 @@ const UserDataGrid = ({
                         sortModel: [{ field: 'lastLogin', sort: 'desc' }],
                     },
                 }}
+                sx={{ width: '100%' }}
             />
         )
     );

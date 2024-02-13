@@ -4,10 +4,8 @@ import debounce from 'lodash.debounce';
 import memoize from 'lodash.memoize';
 import reduce from 'lodash.reduce';
 import classNames from 'classnames';
-// import TextField from '@material-ui/core/TextField';
 
 import countryData from './country_data.js';
-// import './styles.less';
 
 class ReactPhoneInput extends React.Component {
     static propTypes = {
@@ -1050,9 +1048,9 @@ class ReactPhoneInput extends React.Component {
                     placeholder={this.props.placeholder}
                     disabled={this.props.disabled}
                     fullWidth
-                    error={
-                        !this.props.isValid(formattedNumber.replace(/\D/g, ''))
-                    }
+                    // error={
+                    //     !this.props.isValid(formattedNumber.replace(/\D/g, ''))
+                    // }
                     type="tel"
                     {...this.props.inputExtraProps}
                 />
@@ -1090,5 +1088,3 @@ class ReactPhoneInput extends React.Component {
 }
 
 export default ReactPhoneInput;
-
-// if (__DEV__) require('./demo.js');

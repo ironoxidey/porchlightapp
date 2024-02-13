@@ -291,7 +291,6 @@ router.post(
 
         delete eventFields.artist;
 
-        delete eventFields.createdBy;
         delete eventFields._id;
         delete eventFields.createdAt;
         delete eventFields.updatedAt;
@@ -315,7 +314,7 @@ router.post(
             let user = await User.findOne({ email: req.user.email }).select(
                 'role'
             );
-            //console.log('User has these roles: ', user);
+            // console.log('User has these roles: ', user);
             userRole = user.role;
         }
         //if (req.user.role === 'ADMIN' && eventFields.email !== '') {
@@ -326,9 +325,9 @@ router.post(
             eventFields.bookingWhen &&
             eventFields.bookingWhere
         ) {
-            //console.log("User is HOST and can raise their hand to book shows.");
+            // console.log('User is HOST and can propose shows.');
             try {
-                //console.log('eventFields', eventFields);
+                // console.log('eventFields', eventFields);
 
                 let host = await Host.findOne({
                     email: req.user.email.toLowerCase(),
@@ -471,7 +470,6 @@ router.post(
                             req.user.email,
                     });
                 }
-
                 res.json(myHostEvents);
             } catch (err) {
                 console.error(err.message);

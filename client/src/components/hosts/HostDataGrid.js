@@ -960,6 +960,7 @@ const HostDataGrid = ({
                         sortModel: [{ field: 'lastLogin', sort: 'desc' }],
                     },
                 }}
+                sx={{ width: '100%' }}
             />
         )
     );

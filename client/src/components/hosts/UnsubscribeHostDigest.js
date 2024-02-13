@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { unsubscribeHostDigest } from '../../actions/host';
@@ -17,9 +17,11 @@ const UnsubscribeHostDigest = ({ unsubscribeHostDigest, match }) => {
     let query = useQuery();
     const getTime = query.get('t');
 
+    const { id } = useParams();
+
     useEffect(() => {
-        console.log('match.params.id:', match.params.id, 'getTime:', getTime);
-        unsubscribeHostDigest(match.params.id, getTime);
+        console.log('useParams()', id, 'getTime:', getTime);
+        unsubscribeHostDigest(id, getTime);
     }, []);
 
     return (
@@ -33,7 +35,10 @@ const UnsubscribeHostDigest = ({ unsubscribeHostDigest, match }) => {
                     padding: '20px',
                 }}
             >
-                <Typography>This is the unsubscribe page.</Typography>
+                <Typography>
+                    You should now be unsubscribed from the Porchlight Host
+                    Email Digest.
+                </Typography>
             </Box>
         </Fragment>
     );

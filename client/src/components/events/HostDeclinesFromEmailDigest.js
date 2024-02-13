@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { hostDeclines } from '../../actions/event';
@@ -23,6 +23,8 @@ const HostDeclinesFromEmailDigest = ({
     //link should look like: https://app.porchlight.art/decline/65b2a6fb9fe6649974b24946?t=
     let query = useQuery();
 
+    const { id } = useParams();
+
     const getTime = query.get('t');
     var d = new Date();
     d.setTime(getTime);
@@ -31,7 +33,7 @@ const HostDeclinesFromEmailDigest = ({
     const hostID = query.get('h');
 
     const theEvent = {
-        _id: match.params.id,
+        _id: id,
         createdAt: dateString,
     };
 
@@ -71,7 +73,17 @@ const HostDeclinesFromEmailDigest = ({
                         hostID={hostID}
                     ></NearMeToHostEventCard>
                 ) : (
-                    <Typography>This is the decline page.</Typography>
+                    <>
+                        <Typography component={'h2'}>
+                            This event no longer exists.
+                        </Typography>
+                        <Typography
+                            component={'p'}
+                            sx={{ margin: '8px 0 0 0' }}
+                        >
+                            Thank you, anyway, though!
+                        </Typography>
+                    </>
                 )}
             </Box>
         </>

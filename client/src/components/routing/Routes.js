@@ -47,33 +47,37 @@ const TheRoutes = ({ app }) => {
         from: { opacity: 0, transform: 'scale(1.02)' },
         enter: { opacity: 1, transform: 'scale(1)' },
         leave: { opacity: 0, transform: 'scale(0.98)' },
-        config: config.stiff,
+        // config: config.stiff,
+        config: { mass: 2, tension: 280, friction: 60 },
     });
 
-    const [scrollY, setY] = useSpring(() => ({
-        scrollTop: 0,
-        // config: config.molasses,
-        config: { mass: 2, tension: 280, friction: 60 },
-    }));
+    // const [scrollY, setY] = useSpring(() => ({
+    //     scrollTop: 0,
+    //     // config: config.molasses,
+    //     config: { mass: 2, tension: 280, friction: 60 },
+    // }));
 
-    useEffect(() => {
-        document.title = app.pageTitle;
+    // useEffect(() => {
+    //     document.title = app.pageTitle;
 
-        document.getElementById('root').scrollTop = scrollY;
-        setY({
-            onFrame: (props) =>
-                document.getElementById('root').scroll(0, props.scrollTop),
-        }); //scroll to the top if the page title changes
-    }, [app.pageTitle]);
+    //     document.getElementById('root').scrollTop = scrollY;
+    //     setY({
+    //         onFrame: (props) =>
+    //             document.getElementById('root').scroll(0, props.scrollTop),
+    //     }); //scroll to the top if the page title changes
+    // }, [app.pageTitle]);
 
     return (
         <section className="container">
-            {transitions((style, location) => {
+            {transitions((style, theLocation) => {
+                // console.log('theLocation', theLocation);
                 return (
                     <animated.div style={style} className="animatedRoute">
-                        <Routes>
+                        <Routes
+                            location={theLocation}
+                            key={theLocation.pathname}
+                        >
                             <Route
-                                exact
                                 path="/"
                                 element={
                                     <Page>
@@ -82,7 +86,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/register"
                                 element={
                                     <Page title="Register">
@@ -91,7 +94,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/reset-password"
                                 element={
                                     <Page title="Reset Password">
@@ -100,7 +102,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/forgot-password"
                                 element={
                                     <Page title="Forgot Password">
@@ -109,7 +110,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/unsubscribe/:id"
                                 element={
                                     <Page title="Unsubscribe">
@@ -118,7 +118,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/decline/:id"
                                 element={
                                     <Page title="Decline Event">
@@ -127,7 +126,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/login"
                                 element={
                                     <Page title="Login">
@@ -136,7 +134,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/profiles"
                                 element={
                                     <Page title="Profiles">
@@ -145,21 +142,34 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/artists"
                                 element={
                                     <Page title="Artists">
                                         <Artists />
                                     </Page>
                                 }
-                            />
+                            ></Route>
                             <Route
-                                exact
+                                path="/artists/:slug"
+                                // component={Artist}
+                                element={
+                                    <Page title="Artist">
+                                        <Artist />
+                                    </Page>
+                                }
+                            />
+                            {/* <Route
+                                
                                 path="/artists/:slug"
                                 component={Artist}
-                            />
+                                // element={
+                                //     <Page title="Profile">
+                                //         <Artist />
+                                //     </Page>
+                                // }
+                            /> */}
+
                             <Route
-                                exact
                                 path="/profile/:id"
                                 element={
                                     <Page title="Profile">
@@ -168,7 +178,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/dashboard"
                                 element={
                                     <PrivateRoute title="Dashboard">
@@ -177,7 +186,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/create-profile"
                                 element={
                                     <PrivateRoute title="Create Your Profile">
@@ -186,7 +194,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/edit-events"
                                 element={
                                     <BookingPrivateRoute title="Edit Events">
@@ -195,7 +202,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/edit-hosts"
                                 element={
                                     <BookingPrivateRoute title="Edit Hosts">
@@ -204,7 +210,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/edit-artist-profile"
                                 element={
                                     <ArtistPrivateRoute title="Edit Your Artist Profile">
@@ -214,7 +219,6 @@ const TheRoutes = ({ app }) => {
                             />
 
                             <Route
-                                exact
                                 path="/edit-host-profile"
                                 element={
                                     <PrivateRoute title="Edit Your Host Profile">
@@ -223,7 +227,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/edit-artists"
                                 element={
                                     <AdminPrivateRoute title="Edit Artists">
@@ -232,7 +235,6 @@ const TheRoutes = ({ app }) => {
                                 }
                             />
                             <Route
-                                exact
                                 path="/edit-users"
                                 element={
                                     <AdminPrivateRoute title="Edit Users">

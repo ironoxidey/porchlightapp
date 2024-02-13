@@ -18,12 +18,16 @@ const ButtonRoot = React.forwardRef(function ButtonRoot(props, ref) {
     const smallMediaBreakpoint = useMediaQuery(theme.breakpoints.down('lg')); //boolean
     //const btnWidth = props.btnwidth || '200'; //I don't know why I did this, but the 'w' in Width is supposed to be lowercase, unless I go around and fix it everywhere
     const btnWidth =
-        props.btnwidth && smallMediaBreakpoint
-            ? props.btnwidth - 50
-            : props.btnwidth || '200'; //I don't know why I did this, but the 'w' in Width is supposed to be lowercase, unless I go around and fix it everywhere
+        // props.btnwidth && smallMediaBreakpoint
+        //     ? props.btnwidth - 50
+        //     :
+        props.btnwidth || '200'; //I don't know why I did this, but the 'w' in Width is supposed to be lowercase, unless I go around and fix it everywhere
     const btnHeight = '50';
     return (
-        <ButtonBase style={{ color: 'var(--light-color)' }}>
+        <ButtonBase
+            style={{ color: 'var(--light-color)', width: btnWidth + 'px' }}
+            width={btnWidth + 'px'}
+        >
             <svg width={btnWidth} height={btnHeight} {...other} ref={ref}>
                 <polygon
                     points={
@@ -108,7 +112,7 @@ const CustomButtonRoot = styled(ButtonRoot)(
     fill: transparent;
   }
 
-  &:hover,
+  &:hover
    {
     box-shadow: 0 0 5px var(--main-color);
     .borderEffect {
@@ -125,7 +129,7 @@ const CustomButtonRoot = styled(ButtonRoot)(
     outline: none;
     outline-offset: 2px;
   }
-  &:active,
+  &:active
   { 
     & .bg {
       fill: var(--active-color);

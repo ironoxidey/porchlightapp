@@ -37,7 +37,7 @@ import {
     Divider,
     Tooltip,
 } from '@mui/material';
-import { PhoneInput as ReactPhoneInput } from 'react-phone-input-2';
+// import { PhoneInput as ReactPhoneInput } from 'react-phone-input-2';
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
 
@@ -92,7 +92,7 @@ const EventSpecificHostForm = ({
     host,
     inDialog, //passed in from EditMyHostProfile.js
     createMyHost,
-    history,
+    // history,
     auth,
     theEvent,
     hostRaiseHand,
@@ -103,11 +103,11 @@ const EventSpecificHostForm = ({
 
     const [formData, setFormData] = useState({
         showSchedule: {
-            setupTime: '17:45',
-            startTime: '19:00',
-            doorsOpen: '18:30',
-            hardWrap: '21:00',
-            flexible: true,
+            // setupTime: '17:45',
+            // startTime: '19:00',
+            // doorsOpen: '18:30',
+            // hardWrap: '21:00',
+            // flexible: true,
         },
         //refreshments: [],
         refreshments: '',
@@ -226,7 +226,7 @@ const EventSpecificHostForm = ({
                         : host.me.primarySpace,
             });
         }
-    }, [auth.loading, createMyHost, host.me]);
+    }, [auth.loading, createMyHost, host.me, theEvent]);
 
     const {
         showSchedule,

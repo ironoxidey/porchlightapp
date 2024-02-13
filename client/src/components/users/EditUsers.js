@@ -16,7 +16,13 @@ const EditUsers = ({ auth: { loading, referralLink }, generateReferral }) => {
             {loading ? (
                 <Spinner></Spinner>
             ) : (
-                <Grid container direction="column" sx={{ height: '88vh' }}>
+                <Grid
+                    container
+                    direction="column"
+                    sx={{
+                        height: '88vh',
+                    }}
+                >
                     <UserDataGrid></UserDataGrid>
                     <Grid
                         container

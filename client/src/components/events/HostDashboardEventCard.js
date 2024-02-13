@@ -143,7 +143,7 @@ const HostDashboardEventCard = ({
                             : 'none',
                     border:
                         thisEvent.status === 'DRAFT'
-                            ? '4px dashed var(--primary-color)'
+                            ? '4px dashed var(--primary-color)!important'
                             : '1px solid transparent',
                     opacity: thisEvent.status === 'DRAFT' ? '0.7' : '1',
                 }}

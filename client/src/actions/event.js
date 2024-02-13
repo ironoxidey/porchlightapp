@@ -409,18 +409,15 @@ export const hostDeclines = (hostMeID, theEvent) => async (dispatch) => {
         ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
     } catch (err) {
         console.log('error: ' + err);
-        const errors = err.response.data.errors;
-        if (errors) {
-            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+        if (err) {
+            dispatch({
+                type: UPDATE_EVENT_ERROR,
+                payload: {
+                    msg: err,
+                },
+            });
+            // dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
         }
-        dispatch({
-            type: UPDATE_EVENT_ERROR,
-            payload: {
-                msg: err.response.statusText,
-                status: err.response.status,
-            },
-        });
-        dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
     }
 };
 

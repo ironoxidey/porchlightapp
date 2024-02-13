@@ -39,7 +39,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
-// import PhoneInput from 'react-phone-input-2';
 import ReactPhoneInput from '../../common/components/ReactPhoneInput';
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
