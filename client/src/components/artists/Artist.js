@@ -46,7 +46,7 @@ const Artist = ({
     }, [artistTitle]);
 
     useEffect(() => {
-        console.log('slug', slug);
+        // console.log('slug', slug);
         getArtistBySlug(slug);
     }, [getArtistBySlug, slug]);
 

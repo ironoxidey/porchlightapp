@@ -51,21 +51,31 @@ const TheRoutes = ({ app }) => {
         config: { mass: 2, tension: 280, friction: 60 },
     });
 
+    const [scrollY, setY] = useSpring(() => ({ y: 0 }));
     // const [scrollY, setY] = useSpring(() => ({
     //     scrollTop: 0,
     //     // config: config.molasses,
     //     config: { mass: 2, tension: 280, friction: 60 },
     // }));
 
-    // useEffect(() => {
-    //     document.title = app.pageTitle;
+    useEffect(() => {
+        document.title = app.pageTitle;
 
-    //     document.getElementById('root').scrollTop = scrollY;
-    //     setY({
-    //         onFrame: (props) =>
-    //             document.getElementById('root').scroll(0, props.scrollTop),
-    //     }); //scroll to the top if the page title changes
-    // }, [app.pageTitle]);
+        // document.getElementById('root').scrollTop = scrollY;
+        console.log('scrollY', scrollY);
+        setY({
+            y: 0,
+            reset: true,
+            from: { y: document.getElementById('root').scrollTop },
+            onChange: (props) => {
+                document.getElementById('root').scroll(0, props.value.y);
+            },
+        });
+        // setY({
+        //     onFrame: (props) =>
+        //         document.getElementById('root').scroll(0, props.scrollTop),
+        // }); //scroll to the top if the page title changes
+    }, [app.pageTitle]);
 
     return (
         <section className="container">
