@@ -130,6 +130,10 @@ const HostProfile = ({
               theOffer.zipCode
             : null;
 
+    useEffect(() => {
+        console.log('theOffer', theOffer);
+    }, [theOffer]);
+
     return (
         <>
             <Grid
@@ -527,8 +531,10 @@ const HostProfile = ({
                                                 ></AccessTimeTwoToneIcon>
                                             </Tooltip>
                                             {theHost.firstName}{' '}
-                                            {theOffer.showSchedule.setupTime !==
-                                            theEvent.showSchedule.setupTime ? (
+                                            {theOffer.showSchedule.setupTime &&
+                                            theOffer.showSchedule.setupTime !==
+                                                theEvent.showSchedule
+                                                    .setupTime ? (
                                                 <>
                                                     {`said setup should instead be at `}
                                                     <span className="diffTime">
@@ -539,18 +545,20 @@ const HostProfile = ({
                                                         )}
                                                     </span>
                                                 </>
-                                            ) : theOffer.showSchedule
+                                            ) : theEvent.showSchedule
                                                   .setupTime ? (
                                                 ` said setup could be at ` +
                                                 convert24HourTime(
-                                                    theOffer.showSchedule
+                                                    theEvent.showSchedule
                                                         .setupTime
                                                 )
                                             ) : (
                                                 ''
                                             )}
-                                            {theOffer.showSchedule.doorsOpen !==
-                                            theEvent.showSchedule.doorsOpen ? (
+                                            {theOffer.showSchedule.doorsOpen &&
+                                            theOffer.showSchedule.doorsOpen !==
+                                                theEvent.showSchedule
+                                                    .doorsOpen ? (
                                                 <>
                                                     {`, doors should instead open at `}
                                                     <span className="diffTime">
@@ -561,18 +569,20 @@ const HostProfile = ({
                                                         )}
                                                     </span>
                                                 </>
-                                            ) : theOffer.showSchedule
+                                            ) : theEvent.showSchedule
                                                   .doorsOpen ? (
                                                 `, doors could open at ` +
                                                 convert24HourTime(
-                                                    theOffer.showSchedule
+                                                    theEvent.showSchedule
                                                         .doorsOpen
                                                 )
                                             ) : (
                                                 ''
                                             )}
-                                            {theOffer.showSchedule.startTime !==
-                                            theEvent.showSchedule.startTime ? (
+                                            {theOffer.showSchedule.startTime &&
+                                            theOffer.showSchedule.startTime !==
+                                                theEvent.showSchedule
+                                                    .startTime ? (
                                                 <>
                                                     {`, for the show instead to start at `}
                                                     <span className="diffTime">
@@ -583,18 +593,20 @@ const HostProfile = ({
                                                         )}
                                                     </span>
                                                 </>
-                                            ) : theOffer.showSchedule
+                                            ) : theEvent.showSchedule
                                                   .startTime ? (
                                                 `, for the show to start at ` +
                                                 convert24HourTime(
-                                                    theOffer.showSchedule
+                                                    theEvent.showSchedule
                                                         .startTime
                                                 )
                                             ) : (
                                                 ''
                                             )}
-                                            {theOffer.showSchedule.hardWrap !==
-                                            theEvent.showSchedule.hardWrap ? (
+                                            {theOffer.showSchedule.hardWrap &&
+                                            theOffer.showSchedule.hardWrap !==
+                                                theEvent.showSchedule
+                                                    .hardWrap ? (
                                                 <>
                                                     {`, and a hard wrap instead at about `}
                                                     <span className="diffTime">
@@ -606,11 +618,11 @@ const HostProfile = ({
                                                     </span>
                                                     {`.`}
                                                 </>
-                                            ) : theOffer.showSchedule
+                                            ) : theEvent.showSchedule
                                                   .hardWrap ? (
                                                 `, and a hard wrap at about ` +
                                                 convert24HourTime(
-                                                    theOffer.showSchedule
+                                                    theEvent.showSchedule
                                                         .hardWrap
                                                 ) +
                                                 `.`
