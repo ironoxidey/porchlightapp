@@ -24,7 +24,8 @@ jobs:
             #   run: npm test
 
             - name: Install Client Dependencies
-              run: npm ci --legacy-peer-deps
+              # run: npm ci --legacy-peer-deps
+              run: npm ci
               working-directory: ./client
 
     restart_server:
