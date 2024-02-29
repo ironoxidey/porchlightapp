@@ -606,194 +606,194 @@ router.post('/updateMe', [auth], async (req, res) => {
 
                         //console.log('artistEventsDates', artistEventsDates);
 
-                        if (
-                            artistFields.bookingWhenWhere &&
-                            artistFields.bookingWhenWhere.length > 0
-                        ) {
-                            const artistBookingDates = await Promise.all(
-                                artistFields.bookingWhenWhere.map(
-                                    async (bookingInfo) => {
-                                        if (
-                                            bookingInfo.where &&
-                                            bookingInfo.where != ''
-                                        ) {
-                                            // geocoding like this seems too expensive! Maybe geocode them when they're pull from the database, only if they don't have latLong.coordinates
-                                            // const address =
-                                            //     bookingInfo.where.city +
-                                            //     ', ' +
-                                            //     bookingInfo.where.state +
-                                            //     ' ' +
-                                            //     bookingInfo.where.zip;
-                                            // const geocodedAddress =
-                                            //     await addressGeocode(address);
-                                            // console.log(
-                                            //     address + ' => ',
-                                            //     geocodedAddress
-                                            // );
+                        // if (
+                        //     artistFields.bookingWhenWhere &&
+                        //     artistFields.bookingWhenWhere.length > 0
+                        // ) {
+                        //     const artistBookingDates = await Promise.all(
+                        //         artistFields.bookingWhenWhere.map(
+                        //             async (bookingInfo) => {
+                        //                 if (
+                        //                     bookingInfo.where &&
+                        //                     bookingInfo.where != ''
+                        //                 ) {
+                        //                     // geocoding like this seems too expensive! Maybe geocode them when they're pull from the database, only if they don't have latLong.coordinates
+                        //                     // const address =
+                        //                     //     bookingInfo.where.city +
+                        //                     //     ', ' +
+                        //                     //     bookingInfo.where.state +
+                        //                     //     ' ' +
+                        //                     //     bookingInfo.where.zip;
+                        //                     // const geocodedAddress =
+                        //                     //     await addressGeocode(address);
+                        //                     // console.log(
+                        //                     //     address + ' => ',
+                        //                     //     geocodedAddress
+                        //                     // );
 
-                                            let event =
-                                                await Event.findOneAndUpdate(
-                                                    {
-                                                        artistEmail:
-                                                            artistFields.email.toLowerCase(),
-                                                        bookingWhen:
-                                                            bookingInfo.when,
-                                                    },
-                                                    {
-                                                        $set: artistFields,
-                                                        artist: artist.id,
-                                                        artistSlug: artist.slug,
-                                                        artistUser: user.id,
-                                                        artistEmail:
-                                                            artistFields.email,
-                                                        bookingWhen:
-                                                            bookingInfo.when,
-                                                        bookingWhere:
-                                                            bookingInfo.where,
-                                                    },
-                                                    { new: true, upsert: true }
-                                                );
+                        //                     let event =
+                        //                         await Event.findOneAndUpdate(
+                        //                             {
+                        //                                 artistEmail:
+                        //                                     artistFields.email.toLowerCase(),
+                        //                                 bookingWhen:
+                        //                                     bookingInfo.when,
+                        //                             },
+                        //                             {
+                        //                                 $set: artistFields,
+                        //                                 artist: artist.id,
+                        //                                 artistSlug: artist.slug,
+                        //                                 artistUser: user.id,
+                        //                                 artistEmail:
+                        //                                     artistFields.email,
+                        //                                 bookingWhen:
+                        //                                     bookingInfo.when,
+                        //                                 bookingWhere:
+                        //                                     bookingInfo.where,
+                        //                             },
+                        //                             { new: true, upsert: true }
+                        //                         );
 
-                                            //Geocode the event — pulled from events.js line 399 ~ June 4th,2022
-                                            if (
-                                                ((event.latLong &&
-                                                    event.latLong.coordinates &&
-                                                    event.latLong.coordinates
-                                                        .length == 0) || //if there is no latLong OR
-                                                    !event.geocodedBookingWhere || //if there is no geocodedBookingWhere OR
-                                                    (event.geocodedBookingWhere && //if there IS a geocodedBookingWhere AND
-                                                        event.bookingWhere
-                                                            .zip !==
-                                                            event
-                                                                .geocodedBookingWhere
-                                                                .zip)) && // the zip doesn't match the bookingWhere.zip, then the location has changed since last geocoded
-                                                event.bookingWhere &&
-                                                event.bookingWhere.city &&
-                                                event.bookingWhere.state &&
-                                                event.bookingWhere.zip
-                                            ) {
-                                                //if the event doesn't yet have a latLong attached to it, make one based on just the city, state zip they selected
-                                                const address =
-                                                    event.bookingWhere.city +
-                                                    ', ' +
-                                                    event.bookingWhere.state +
-                                                    ' ' +
-                                                    event.bookingWhere.zip;
-                                                const geocodedAddress =
-                                                    await addressGeocode(
-                                                        address
-                                                    );
-                                                // console.log(
-                                                //     updatedEvents +
-                                                //         ') ' +
-                                                //         event.artist.stageName +
-                                                //         ' wants to play a concert near ' +
-                                                //         address +
-                                                //         ': ',
-                                                //     geocodedAddress
-                                                // );
+                        //                     //Geocode the event — pulled from events.js line 399 ~ June 4th,2022
+                        //                     if (
+                        //                         ((event.latLong &&
+                        //                             event.latLong.coordinates &&
+                        //                             event.latLong.coordinates
+                        //                                 .length == 0) || //if there is no latLong OR
+                        //                             !event.geocodedBookingWhere || //if there is no geocodedBookingWhere OR
+                        //                             (event.geocodedBookingWhere && //if there IS a geocodedBookingWhere AND
+                        //                                 event.bookingWhere
+                        //                                     .zip !==
+                        //                                     event
+                        //                                         .geocodedBookingWhere
+                        //                                         .zip)) && // the zip doesn't match the bookingWhere.zip, then the location has changed since last geocoded
+                        //                         event.bookingWhere &&
+                        //                         event.bookingWhere.city &&
+                        //                         event.bookingWhere.state &&
+                        //                         event.bookingWhere.zip
+                        //                     ) {
+                        //                         //if the event doesn't yet have a latLong attached to it, make one based on just the city, state zip they selected
+                        //                         const address =
+                        //                             event.bookingWhere.city +
+                        //                             ', ' +
+                        //                             event.bookingWhere.state +
+                        //                             ' ' +
+                        //                             event.bookingWhere.zip;
+                        //                         const geocodedAddress =
+                        //                             await addressGeocode(
+                        //                                 address
+                        //                             );
+                        //                         // console.log(
+                        //                         //     updatedEvents +
+                        //                         //         ') ' +
+                        //                         //         event.artist.stageName +
+                        //                         //         ' wants to play a concert near ' +
+                        //                         //         address +
+                        //                         //         ': ',
+                        //                         //     geocodedAddress
+                        //                         // );
 
-                                                let hostsInReach =
-                                                    await Host.find({
-                                                        latLong: {
-                                                            $near: {
-                                                                $maxDistance:
-                                                                    event.hostReachRadius *
-                                                                    1609.35, //the distance is in meters, 1609.35m = 1 mile;
-                                                                $geometry: {
-                                                                    type: 'Point',
-                                                                    coordinates:
-                                                                        geocodedAddress,
-                                                                },
-                                                            },
-                                                        },
-                                                    });
-                                                //console.log(await hostsInReach);
-                                                const hostsIDInReach =
-                                                    hostsInReach.map(
-                                                        (hostInReach) => {
-                                                            //console.log('hostInReach._id', hostInReach._id);
-                                                            return {
-                                                                host: hostInReach._id,
-                                                            };
-                                                        }
-                                                    );
+                        //                         let hostsInReach =
+                        //                             await Host.find({
+                        //                                 latLong: {
+                        //                                     $near: {
+                        //                                         $maxDistance:
+                        //                                             event.hostReachRadius *
+                        //                                             1609.35, //the distance is in meters, 1609.35m = 1 mile;
+                        //                                         $geometry: {
+                        //                                             type: 'Point',
+                        //                                             coordinates:
+                        //                                                 geocodedAddress,
+                        //                                         },
+                        //                                     },
+                        //                                 },
+                        //                             });
+                        //                         //console.log(await hostsInReach);
+                        //                         const hostsIDInReach =
+                        //                             hostsInReach.map(
+                        //                                 (hostInReach) => {
+                        //                                     //console.log('hostInReach._id', hostInReach._id);
+                        //                                     return {
+                        //                                         host: hostInReach._id,
+                        //                                     };
+                        //                                 }
+                        //                             );
 
-                                                let savedDetails =
-                                                    await event.updateOne(
-                                                        {
-                                                            $set: {
-                                                                //$set added September 13, 20023
-                                                                hostsInReach:
-                                                                    hostsIDInReach,
-                                                                'latLong.coordinates':
-                                                                    geocodedAddress,
-                                                                geocodedBookingWhere:
-                                                                    event.bookingWhere,
-                                                            },
-                                                        },
-                                                        { new: true }
-                                                    );
-                                                // if (savedDetails) {
-                                                //     console.log(
-                                                //         'savedDetails:',
-                                                //         savedDetails
-                                                //     );
-                                                // }
-                                            }
-                                            //end geocoding
+                        //                         let savedDetails =
+                        //                             await event.updateOne(
+                        //                                 {
+                        //                                     $set: {
+                        //                                         //$set added September 13, 20023
+                        //                                         hostsInReach:
+                        //                                             hostsIDInReach,
+                        //                                         'latLong.coordinates':
+                        //                                             geocodedAddress,
+                        //                                         geocodedBookingWhere:
+                        //                                             event.bookingWhere,
+                        //                                     },
+                        //                                 },
+                        //                                 { new: true }
+                        //                             );
+                        //                         // if (savedDetails) {
+                        //                         //     console.log(
+                        //                         //         'savedDetails:',
+                        //                         //         savedDetails
+                        //                         //     );
+                        //                         // }
+                        //                     }
+                        //                     //end geocoding
 
-                                            return new Date(
-                                                bookingInfo.when
-                                            ).toISOString();
-                                        }
-                                    }
-                                )
-                            );
+                        //                     return new Date(
+                        //                         bookingInfo.when
+                        //                     ).toISOString();
+                        //                 }
+                        //             }
+                        //         )
+                        //     );
 
-                            // console.log(
-                            //     'artistBookingDates',
-                            //     artistBookingDates
-                            // );
-                            leftOverArtistEventsDates =
-                                artistEventsDates.filter(function (eventDate) {
-                                    if (
-                                        artistBookingDates.indexOf(
-                                            new Date(eventDate).toISOString()
-                                        ) === -1
-                                    ) {
-                                        //return eventDates only if they don't match a date in the artistBookingDates---later we'll remove any dates from the Events collection that are still in this array
-                                        return eventDate;
-                                    }
-                                });
-                            // console.log(
-                            //     'leftOverArtistEventsDates',
-                            //     leftOverArtistEventsDates
-                            // );
+                        //     // console.log(
+                        //     //     'artistBookingDates',
+                        //     //     artistBookingDates
+                        //     // );
+                        //     leftOverArtistEventsDates =
+                        //         artistEventsDates.filter(function (eventDate) {
+                        //             if (
+                        //                 artistBookingDates.indexOf(
+                        //                     new Date(eventDate).toISOString()
+                        //                 ) === -1
+                        //             ) {
+                        //                 //return eventDates only if they don't match a date in the artistBookingDates---later we'll remove any dates from the Events collection that are still in this array
+                        //                 return eventDate;
+                        //             }
+                        //         });
+                        //     // console.log(
+                        //     //     'leftOverArtistEventsDates',
+                        //     //     leftOverArtistEventsDates
+                        //     // );
 
-                            leftOverArtistEventsDates.forEach(
-                                async (leftOverEventDate) => {
-                                    let removeEvent = await Event.deleteOne({
-                                        artistEmail:
-                                            artistFields.email.toLowerCase(),
-                                        bookingWhen: leftOverEventDate,
-                                        status: 'PENDING',
-                                    });
-                                }
-                            );
-                        } else if (artistEventsDates.length > 0) {
-                            //if there aren't any bookingWhenWheres, delete any PENDING event dates for that artist
-                            artistEventsDates.forEach(
-                                async (leftOverEventDate) => {
-                                    let removeEvent = await Event.deleteOne({
-                                        artistEmail:
-                                            artistFields.email.toLowerCase(),
-                                        bookingWhen: leftOverEventDate,
-                                        status: 'PENDING',
-                                    });
-                                }
-                            );
-                        }
+                        //     leftOverArtistEventsDates.forEach(
+                        //         async (leftOverEventDate) => {
+                        //             let removeEvent = await Event.deleteOne({
+                        //                 artistEmail:
+                        //                     artistFields.email.toLowerCase(),
+                        //                 bookingWhen: leftOverEventDate,
+                        //                 status: 'PENDING',
+                        //             });
+                        //         }
+                        //     );
+                        // } else if (artistEventsDates.length > 0) {
+                        //     //if there aren't any bookingWhenWheres, delete any PENDING event dates for that artist
+                        //     artistEventsDates.forEach(
+                        //         async (leftOverEventDate) => {
+                        //             let removeEvent = await Event.deleteOne({
+                        //                 artistEmail:
+                        //                     artistFields.email.toLowerCase(),
+                        //                 bookingWhen: leftOverEventDate,
+                        //                 status: 'PENDING',
+                        //             });
+                        //         }
+                        //     );
+                        // }
 
                         artistCount++;
                         res.json(artist);

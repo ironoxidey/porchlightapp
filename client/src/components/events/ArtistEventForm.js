@@ -1133,7 +1133,7 @@ const ArtistEventForm = ({
         ],
         familyFriendly: [
             <FormLabel component="legend">
-                Would these shows be family-friendly?
+                Would this show be family-friendly?
             </FormLabel>,
             [
                 <FormControl component="fieldset">
@@ -1185,7 +1185,7 @@ const ArtistEventForm = ({
         ],
         soundSystem: [
             <FormLabel component="legend">
-                Are you bringing your own sound system for these shows?
+                Are you bringing your own sound system for this show?
             </FormLabel>,
             [
                 <FormControl component="fieldset">
@@ -1965,50 +1965,71 @@ const ArtistEventForm = ({
                 (cardIndex) => (cardIndex + 1) % Object.keys(formGroups).length
             );
             if (Array.isArray(myArtistEvents) && myArtistEvents.length > 0) {
-                const mostRecentlyUpdatedEvent = myArtistEvents
-                    .filter((theEvent) => theEvent.createdBy === 'ARTIST')
-                    .reduce((a, b) => (a.updatedAt > b.updatedAt ? a : b));
+                const mostRecentlyUpdatedEvent = myArtistEvents.filter(
+                    (theEvent) => theEvent.createdBy === 'ARTIST'
+                );
+
                 // console.log(
-                //     'host mostRecentlyUpdatedEvent',
+                //     'mostRecentlyUpdatedEvent',
                 //     mostRecentlyUpdatedEvent
                 // );
+                if (mostRecentlyUpdatedEvent.length > 0) {
+                    const mostRecentlyUpdatedEventReduced =
+                        mostRecentlyUpdatedEvent.reduce((a, b) =>
+                            a.updatedAt > b.updatedAt ? a : b
+                        );
 
-                const mostRecentlyUpdatedEventTrimmed = {
-                    //this solved the issue where, if a HOST picked a date and then closed the drawer without saving, it would make a random event, they'd offered to host, disappear from their dashboard
-                    ...mostRecentlyUpdatedEvent,
-                };
+                    // console.log(
+                    //     'artist mostRecentlyUpdatedEventReduced',
+                    //     mostRecentlyUpdatedEventReduced
+                    // );
 
-                //remove the fields we don't want to copy from mostRecentlyUpdatedEvent
-                delete mostRecentlyUpdatedEventTrimmed.createdBy;
-                delete mostRecentlyUpdatedEventTrimmed._id;
-                delete mostRecentlyUpdatedEventTrimmed.createdAt;
-                delete mostRecentlyUpdatedEventTrimmed.bookingWhen;
-                delete mostRecentlyUpdatedEventTrimmed.updatedAt;
-                delete mostRecentlyUpdatedEventTrimmed.hostsInReach;
-                delete mostRecentlyUpdatedEventTrimmed.hostsOfferingToBook;
-                delete mostRecentlyUpdatedEventTrimmed.offersFromHosts;
-                delete mostRecentlyUpdatedEventTrimmed.confirmedHost;
-                delete mostRecentlyUpdatedEventTrimmed.confirmedHostUser;
-                delete mostRecentlyUpdatedEventTrimmed.confirmedDate;
-                delete mostRecentlyUpdatedEventTrimmed.status;
+                    const mostRecentlyUpdatedEventTrimmed = {
+                        //this solved the issue where, if a HOST picked a date and then closed the drawer without saving, it would make a random event, they'd offered to host, disappear from their dashboard
+                        ...mostRecentlyUpdatedEventReduced,
+                    };
 
-                delete mostRecentlyUpdatedEventTrimmed.updatedAt;
-                delete mostRecentlyUpdatedEventTrimmed.geocodedBookingWhere;
-                delete mostRecentlyUpdatedEventTrimmed.latLong;
+                    //remove the fields we don't want to copy from mostRecentlyUpdatedEvent
+                    delete mostRecentlyUpdatedEventTrimmed.createdBy;
+                    delete mostRecentlyUpdatedEventTrimmed._id;
+                    delete mostRecentlyUpdatedEventTrimmed.createdAt;
+                    delete mostRecentlyUpdatedEventTrimmed.bookingWhen;
+                    delete mostRecentlyUpdatedEventTrimmed.updatedAt;
+                    delete mostRecentlyUpdatedEventTrimmed.hostsInReach;
+                    delete mostRecentlyUpdatedEventTrimmed.hostsOfferingToBook;
+                    delete mostRecentlyUpdatedEventTrimmed.offersFromHosts;
+                    delete mostRecentlyUpdatedEventTrimmed.confirmedHost;
+                    delete mostRecentlyUpdatedEventTrimmed.confirmedHostUser;
+                    delete mostRecentlyUpdatedEventTrimmed.confirmedDate;
+                    delete mostRecentlyUpdatedEventTrimmed.status;
 
-                delete mostRecentlyUpdatedEventTrimmed.preferredArtists;
-                delete mostRecentlyUpdatedEventTrimmed.declinedArtists;
-                delete mostRecentlyUpdatedEventTrimmed.artistReviewOfHost;
+                    delete mostRecentlyUpdatedEventTrimmed.updatedAt;
+                    delete mostRecentlyUpdatedEventTrimmed.geocodedBookingWhere;
+                    delete mostRecentlyUpdatedEventTrimmed.latLong;
 
-                delete mostRecentlyUpdatedEventTrimmed.showSchedule;
+                    delete mostRecentlyUpdatedEventTrimmed.preferredArtists;
+                    delete mostRecentlyUpdatedEventTrimmed.declinedArtists;
+                    delete mostRecentlyUpdatedEventTrimmed.artistReviewOfHost;
 
-                setFormData({
-                    ...formData,
-                    ...mostRecentlyUpdatedEventTrimmed,
-                });
+                    delete mostRecentlyUpdatedEventTrimmed.showSchedule;
+
+                    // console.log(
+                    //     'artist mostRecentlyUpdatedEventTrimmed',
+                    //     mostRecentlyUpdatedEventTrimmed
+                    // );
+
+                    setFormData({
+                        ...formData,
+                        ...mostRecentlyUpdatedEventTrimmed,
+                    });
+                }
             }
         }
     }, [bookingWhen]);
+
+    // useEffect(() => {
+    //     console.log('formData changed:', formData);
+    // }, [formData]);
 
     const transitions = useTransition(formCardIndex, {
         key: formCardIndex,

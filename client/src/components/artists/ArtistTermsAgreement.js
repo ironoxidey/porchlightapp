@@ -22,8 +22,6 @@ import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 
 import { agreeToArtistTerms } from '../../actions/artist';
 
-// import HostEventDetails from './HostEventDetails';
-
 import Button from '../layout/SvgButton';
 import { relativeTimeRounding } from 'moment';
 

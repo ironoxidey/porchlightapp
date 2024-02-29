@@ -1828,10 +1828,10 @@ const HostEventForm = ({
                 const mostRecentlyUpdatedEvent = myHostEvents.reduce((a, b) =>
                     a.updatedAt > b.updatedAt ? a : b
                 );
-                // console.log(
-                //     'host mostRecentlyUpdatedEvent before:',
-                //     mostRecentlyUpdatedEvent
-                // );
+                console.log(
+                    'host mostRecentlyUpdatedEvent before:',
+                    mostRecentlyUpdatedEvent
+                );
 
                 const mostRecentlyUpdatedEventTrimmed = {
                     //this solved the issue where, if a HOST picked a date and then closed the drawer without saving, it would make a random event, they'd offered to host, disappear from their dashboard

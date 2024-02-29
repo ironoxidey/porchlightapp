@@ -444,7 +444,7 @@ const HostEventDetails = ({
                                 </EventDetailsCard>
 
                                 {/* showSchedule */}
-                                <EventDetailsCard
+                                {/* <EventDetailsCard
                                     fieldName="showSchedule"
                                     isMe={isMe}
                                     jumpTo={jumpTo}
@@ -477,7 +477,7 @@ const HostEventDetails = ({
                                             )}
                                         </strong>
                                     </>
-                                </EventDetailsCard>
+                                </EventDetailsCard> */}
 
                                 {/* hostNotes */}
                                 <EventDetailsCard
