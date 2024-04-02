@@ -18,9 +18,20 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import SettingsIcon from '@mui/icons-material/Settings';
 
-import { createMyHost, getCurrentHost } from '../../actions/host';
+import HostAdminActiveFalse from '../hosts/HostAdminActiveFalse';
 
-const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
+import {
+    createMyHost,
+    getCurrentHost,
+    toggleMyHostActiveStatus,
+} from '../../actions/host';
+
+const EditHostSettings = ({
+    createMyHost,
+    hostMe,
+    getCurrentHost,
+    toggleMyHostActiveStatus,
+}) => {
     useEffect(() => {
         getCurrentHost();
     }, [getCurrentHost]);
@@ -30,12 +41,14 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
     const [formData, setFormData] = useState({
         email: '',
         notificationFrequency: 7, //default to 7 days
+        active: false,
     });
 
     useEffect(() => {
         if (hostMe) {
             setFormData({
                 email: !hostMe.email ? '' : hostMe.email,
+                active: !hostMe.active ? false : hostMe.active,
                 notificationFrequency:
                     !hostMe.notificationFrequency &&
                     hostMe.notificationFrequency !== 0
@@ -81,7 +94,7 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
         });
     };
 
-    const { notificationFrequency } = formData;
+    const { notificationFrequency, active } = formData;
 
     //Booking Details Dialog Functions
     const [editSettingsDialogOpen, setEditSettingsDialogOpen] = useState(false);
@@ -102,13 +115,90 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
                 maxWidth={'sm'}
                 className="porchlightBG"
             >
-                <DialogTitle id="alert-dialog-title">
-                    Notification Settings
-                </DialogTitle>
+                <DialogTitle id="alert-dialog-title">Settings</DialogTitle>
                 <DialogContent>
+                    {hostMe.adminActive !== true && (
+                        <HostAdminActiveFalse></HostAdminActiveFalse>
+                    )}
                     <FormGroup
                         sx={{
                             alignItems: 'center',
+                            marginTop: hostMe.adminActive !== true ? '16px' : 0,
+                        }}
+                    >
+                        <Grid item>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={active}
+                                        onChange={() =>
+                                            toggleMyHostActiveStatus({
+                                                active: !hostMe.active,
+                                                notificationFrequency:
+                                                    !hostMe.active ? 7 : 0,
+                                            })
+                                        }
+                                        disabled={!hostMe.adminActive}
+                                    />
+                                }
+                                label={
+                                    <Typography
+                                        component={'p'}
+                                        sx={{
+                                            width: '100%',
+                                            lineHeight: '1.3',
+                                            display: 'inline-block',
+                                        }}
+                                    >
+                                        {active ? (
+                                            <>
+                                                I want to be an Active Host on
+                                                the Porchlight network.{' '}
+                                                <span
+                                                    style={{
+                                                        fontSize: '.8em',
+                                                        display: 'block',
+                                                        color: 'var(--primary-color)',
+                                                    }}
+                                                >
+                                                    Represent me on the map, and
+                                                    show on my dashboard when an
+                                                    artist is looking to book in
+                                                    my area.
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                Deactive my account, for now.{' '}
+                                                <span
+                                                    style={{
+                                                        fontSize: '.8em',
+                                                        display: 'block',
+                                                        color: 'var(--primary-color)',
+                                                    }}
+                                                >
+                                                    Don’t represent me on the
+                                                    map, nor consider me a host
+                                                    on the Porchlight network.
+                                                </span>
+                                            </>
+                                        )}
+                                    </Typography>
+                                }
+                                sx={{
+                                    // display: '',
+                                    margin: '0',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                }}
+                            ></FormControlLabel>
+                        </Grid>
+                    </FormGroup>
+                    <FormGroup
+                        sx={{
+                            alignItems: 'center',
+                            marginTop: '16px',
                         }}
                     >
                         <Grid item>
@@ -117,6 +207,7 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
                                     <Switch
                                         checked={notificationFrequency != 0}
                                         onChange={handleSwitchOnChange}
+                                        disabled={!active}
                                     />
                                 }
                                 label={
@@ -147,7 +238,7 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
                                         value={notificationFrequency}
                                         onChange={(e) => handleOnChange(e)}
                                         onBlur={(e) => onHandleBlur(e)}
-                                        autocomplete="none"
+                                        // autocomplete="none"
                                         type="number"
                                         // InputProps={{
                                         //     endAdornment: (
@@ -164,6 +255,25 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
                                         {notificationFrequency > 1
                                             ? 'days.'
                                             : 'day.'}{' '}
+                                        <span
+                                            style={{
+                                                fontSize: '.8em',
+                                                display: 'block',
+                                                color: 'var(--primary-color)',
+                                            }}
+                                        >
+                                            (When an artist proposes a concert
+                                            in my area, don’t email me about it
+                                            if you’ve emailed me about another
+                                            proposal in the last{' '}
+                                            {notificationFrequency > 1
+                                                ? notificationFrequency +
+                                                  ' days. '
+                                                : ' day. '}
+                                            Multiple proposals will be batched
+                                            and sent together in one email
+                                            notification.)
+                                        </span>
                                     </Typography>
                                 </>
                             )}
@@ -187,13 +297,14 @@ const EditHostSettings = ({ createMyHost, hostMe, getCurrentHost }) => {
                 >
                     <SettingsIcon></SettingsIcon>
                 </ListItemIcon>{' '}
-                Notification Settings
+                Settings
             </div>
         </>
     );
 };
 
 EditHostSettings.propTypes = {
+    toggleMyHostActiveStatus: PropTypes.func.isRequired,
     getCurrentHost: PropTypes.func.isRequired,
     createMyHost: PropTypes.func.isRequired,
     hostMe: PropTypes.object,
@@ -204,6 +315,8 @@ const mapStateToProps = (state) => ({
 });
 
 //export default EditHostSettings;
-export default connect(mapStateToProps, { createMyHost, getCurrentHost })(
-    EditHostSettings
-); //withRouter allows us to pass history objects
+export default connect(mapStateToProps, {
+    createMyHost,
+    getCurrentHost,
+    toggleMyHostActiveStatus,
+})(EditHostSettings); //withRouter allows us to pass history objects

@@ -241,7 +241,7 @@ router.post('/updateMe', [auth], async (req, res) => {
                 ) {
                     //console.log("User is ADMIN and has authority to update all other users.");
                     try {
-                        console.log(hostFields);
+                        // console.log(hostFields);
                         // Using upsert option (creates new doc if no match is found):
                         if (
                             req.user.email.toLowerCase() ===
@@ -530,6 +530,46 @@ router.get('/', async (req, res) => {
             active: { $ne: false }, // $ne means "Not Equal" — I'm not sure every host has an "active" field, but the ones that have opted out should
         }).select(['city', 'state', 'zipCode', 'anonLatLong']);
         res.json(hosts);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+// @route    POST api/hosts/toggleMyActivation/
+// @desc     Toggle Host from email using their id and date (when their host profile was created) — assuming that the exact date and time that a host created their profile is never going to be perfectly known unless we send it in their emails (.getTime)
+// @access   Private
+router.post('/toggleMyActivation/', [auth], async (req, res) => {
+    try {
+        const hostToToggle = await Host.findOne({
+            email: req.user.email,
+        });
+        // console.log('hostToToggle', hostToToggle);
+        if (hostToToggle && hostToToggle.adminActive !== false) {
+            //make sure the host is even allowed to activate themselves
+            hostToToggle.active = req.body.active;
+            hostToToggle.markModified('active');
+            hostToToggle.notificationFrequency = req.body.notificationFrequency;
+            hostToToggle.markModified('notificationFrequency');
+            hostToToggle.save();
+            // console.log(
+            //     'That seemed to work! hostToToggle.active = ' +
+            //         hostToToggle.active +
+            //         ' | notificationFrequency = ' +
+            //         hostToToggle.notificationFrequency
+            // );
+            res.json({ host: hostToToggle, user: req.user });
+            // res.json(
+            //     'That seemed to work! hostToToggle.active = ' +
+            //         hostToToggle.active +
+            //         ' | notificationFrequency = ' +
+            //         hostToToggle.notificationFrequency
+            // );
+        } else {
+            res.status(500).send(
+                'ERROR: Something wen wrong hostToToggle: ' + hostToToggle
+            );
+        }
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');

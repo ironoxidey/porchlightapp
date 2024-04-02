@@ -2,6 +2,7 @@ import {
     GET_ALL_HOSTS_EDIT,
     TOGGLE_HOST_ADMIN_ACTIVE_STATUS,
     TOGGLE_HOST_ACTIVE_STATUS,
+    TOGGLE_MY_HOST_ACTIVE_STATUS,
     GET_HOST_ME,
     GET_HOSTS,
     UPDATE_HOST_ME,
@@ -25,6 +26,8 @@ export default function (state = initialState, action) {
     switch (type) {
         case GET_HOST_ME:
         case UPDATE_HOST_ME:
+
+        case TOGGLE_MY_HOST_ACTIVE_STATUS:
             return {
                 ...state,
                 me: payload,
@@ -47,6 +50,7 @@ export default function (state = initialState, action) {
                 hosts: payload,
                 loading: false,
             };
+
         case TOGGLE_HOST_ACTIVE_STATUS:
         case TOGGLE_HOST_ADMIN_ACTIVE_STATUS:
             return {

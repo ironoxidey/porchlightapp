@@ -86,6 +86,8 @@ const HostAdminActiveFalse = ({ host }) => {
                             sx={{
                                 textAlign: 'center',
                                 color: 'var(--primary-color)',
+
+                                textWrap: 'balance',
                             }}
                         >
                             At the moment, your hosting account is pending
