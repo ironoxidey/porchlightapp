@@ -115,15 +115,18 @@ const EditHostSettings = ({
                 maxWidth={'sm'}
                 className="porchlightBG"
             >
-                <DialogTitle id="alert-dialog-title">Settings</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Host Settings</DialogTitle>
                 <DialogContent>
-                    {hostMe.adminActive !== true && (
+                    {hostMe && hostMe.adminActive !== true && (
                         <HostAdminActiveFalse></HostAdminActiveFalse>
                     )}
                     <FormGroup
                         sx={{
                             alignItems: 'center',
-                            marginTop: hostMe.adminActive !== true ? '16px' : 0,
+                            marginTop:
+                                hostMe && hostMe.adminActive !== true
+                                    ? '16px'
+                                    : 0,
                         }}
                     >
                         <Grid item>
@@ -138,7 +141,7 @@ const EditHostSettings = ({
                                                     !hostMe.active ? 7 : 0,
                                             })
                                         }
-                                        disabled={!hostMe.adminActive}
+                                        disabled={hostMe && !hostMe.adminActive}
                                     />
                                 }
                                 label={
@@ -297,7 +300,7 @@ const EditHostSettings = ({
                 >
                     <SettingsIcon></SettingsIcon>
                 </ListItemIcon>{' '}
-                Settings
+                Host Settings
             </div>
         </>
     );
