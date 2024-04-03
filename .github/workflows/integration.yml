@@ -15,7 +15,8 @@ jobs:
                   node-version: '20.x'
 
             - name: Fix permissions
-              run: sudo chmod u+w /var/www/app.porchlight.art/html/_work/porchlightapp/porchlightapp/client/build/asset-manifest.json
+              run: whoami
+                  sudo chmod u+w /var/www/app.porchlight.art/html/_work/porchlightapp/porchlightapp/client/build/asset-manifest.json
 
             - name: Checkout main branch
               uses: actions/checkout@v4
