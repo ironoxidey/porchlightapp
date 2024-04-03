@@ -9,9 +9,6 @@ jobs:
     installation:
         runs-on: self-hosted
         steps:
-            - name: Checkout main branch
-              uses: actions/checkout@v4
-
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
@@ -20,15 +17,18 @@ jobs:
             - name: Fix permissions
               run: sudo chmod u+w /var/www/app.porchlight.art/html/_work/porchlightapp/porchlightapp/client/build/asset-manifest.json
 
+            - name: Checkout main branch
+              uses: actions/checkout@v4
+
             - name: Install Server Dependencies
-              run: sudo npm ci
+              run: npm ci
 
             # - name: Test application
             #   run: npm test
 
             - name: Install Client Dependencies
               # run: npm ci --legacy-peer-deps
-              run: sudo npm ci
+              run: npm ci
               working-directory: ./client
 
     restart_server:
