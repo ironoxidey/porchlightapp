@@ -9,19 +9,13 @@ jobs:
     installation:
         runs-on: self-hosted
         steps:
+            - name: Checkout main branch
+              uses: actions/checkout@v4
+
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
                   node-version: '20.x'
-
-            - name: Who the Eff Am I
-              run: whoami
-
-            - name: Fix permissions
-              run: sudo chmod u+w /var/www/app.porchlight.art/html/_work/porchlightapp/porchlightapp/client/build/asset-manifest.json
-
-            - name: Checkout main branch
-              uses: actions/checkout@v4
 
             - name: Install Server Dependencies
               run: npm ci
