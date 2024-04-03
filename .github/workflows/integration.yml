@@ -20,6 +20,8 @@ jobs:
             - name: Install Server Dependencies
               run: npm ci
 
+            # Removed the permissions thing from here
+
             # - name: Test application
             #   run: npm test
 
