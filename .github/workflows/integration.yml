@@ -18,17 +18,17 @@ jobs:
                   node-version: '20.x'
 
             - name: Fix permissions
-              run: sudo chmod u+w /var/www/app.porchlight.art/html/_work/porchlightapp/porchlightapp/client/build
+              run: sudo chmod u+w /var/www/app.porchlight.art/html/_work/porchlightapp/porchlightapp/client/build/asset-manifest.json
 
             - name: Install Server Dependencies
-              run: npm ci
+              run: sudo npm ci
 
             # - name: Test application
             #   run: npm test
 
             - name: Install Client Dependencies
               # run: npm ci --legacy-peer-deps
-              run: npm ci
+              run: sudo npm ci
               working-directory: ./client
 
     restart_server:
