@@ -124,7 +124,21 @@ const ArtistDashboardBookingOffers = ({
                             )} */}
 
                         {thisEvent.createdBy === 'ARTIST' && (
-                            <Box sx={{ marginTop: '16px' }}>
+                            <Box
+                                sx={{
+                                    marginTop: '16px',
+                                    border: 'double 5px var(--primary-color)',
+                                }}
+                            >
+                                <Typography
+                                    component={'h2'}
+                                    sx={{
+                                        marginBottom: '4px',
+                                        paddingTop: '8px',
+                                    }}
+                                >
+                                    This was your proposal:
+                                </Typography>
                                 <EventDetails
                                     theEvent={{
                                         ...thisEvent,
