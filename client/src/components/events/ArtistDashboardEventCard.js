@@ -153,7 +153,7 @@ const ArtistDashboardEventCard = ({
                             : 'bookingWhen'
                     }
                     key={thisEvent._id}
-                    direction="row"
+                    // direction="row"
                     sm={5.5}
                     xs={12}
                     ref={dashboardEventCardRef}
@@ -179,6 +179,7 @@ const ArtistDashboardEventCard = ({
                         //         : ' 0 0 0 0 transparent',
                         position: 'relative',
                         filter: iDeclined ? 'grayscale(100%)' : '',
+                        flexDirection: { xs: 'column', sm: 'row' },
                     }}
                 >
                     <svg
@@ -224,7 +225,10 @@ const ArtistDashboardEventCard = ({
                         direction="row"
                         alignItems="center"
                         className="dateLocationForBookingWrapper"
-                        // sx={{ flexWrap: 'nowrap' }}
+                        sx={{
+                            // flexWrap: 'nowrap'
+                            margin: { xs: '10px auto', sm: '0px auto' },
+                        }}
                         xs={12}
                     >
                         {thisEvent.createdBy === 'HOST' &&

@@ -73,15 +73,17 @@ const HostDeclineBtn = ({
                 ) : (
                     <Grid
                         container
+                        className="declined-container"
                         sx={{
                             flexDirection: 'row',
                             color: 'var(--primary-color)',
+                            margin: '10px',
                         }}
                     >
                         <ThumbDownAltTwoToneIcon
                             sx={{ margin: '0px 8px 0 8px!important' }}
                         ></ThumbDownAltTwoToneIcon>
-                        <Typography component="p">You Declined</Typography>
+                        <Typography component="p">You declined</Typography>
                     </Grid>
                 )}
             </Grid>

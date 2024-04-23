@@ -383,7 +383,7 @@ export const unsubscribeHostDigest = (hostID, getTime) => async (dispatch) => {
             config
         );
 
-        console.log('DISPATCH:', res);
+        // console.log('DISPATCH:', res);
         // dispatch({
         //     type: UPDATE_HOST_ME,
         //     payload: res.data.host,

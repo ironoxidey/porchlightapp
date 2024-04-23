@@ -2013,6 +2013,8 @@ const ArtistEventForm = ({
 
                     delete mostRecentlyUpdatedEventTrimmed.showSchedule;
 
+                    delete mostRecentlyUpdatedEventTrimmed.hostNotes; //this was getting carried over from HOST created events for awhile!
+
                     // console.log(
                     //     'artist mostRecentlyUpdatedEventTrimmed',
                     //     mostRecentlyUpdatedEventTrimmed

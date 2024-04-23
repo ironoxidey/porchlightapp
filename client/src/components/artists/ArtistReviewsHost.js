@@ -80,7 +80,7 @@ const ArtistReviewsHost = ({
                     } else return thisOffer;
                 }
             )[0];
-            console.log('theAcceptedOffer', theAcceptedOffer);
+            // console.log('theAcceptedOffer', theAcceptedOffer);
             setTheOffer(theAcceptedOffer);
         }
         if (theEvent.artistReviewOfHost) {

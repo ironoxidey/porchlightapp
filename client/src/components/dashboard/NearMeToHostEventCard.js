@@ -405,6 +405,10 @@ const NearMeToHostEventCard = ({
                         flexBasis: { xs: '80px', sm: '130px' },
                         flexShrink: '3',
                         flexGrow: '2',
+                        justifyContent: {
+                            xs: 'center',
+                            sm: 'flex-start',
+                        },
                     }}
                 >
                     <Link to={'/artists/' + thisEvent.artist.slug}>
@@ -425,7 +429,7 @@ const NearMeToHostEventCard = ({
                                 padding: '4px',
                                 backgroundClip: 'content-box',
                                 border: '1px solid var(--primary-color)',
-                                margin: '0 8px 0 0',
+                                margin: { xs: '0 auto', sm: '0 8px 0 0' },
                                 aspectRatio: '1 / 1',
                             }}
                         ></Box>
@@ -440,8 +444,13 @@ const NearMeToHostEventCard = ({
                     className="dateLocationForBooking"
                     sx={{
                         flexBasis: {
-                            xs: 'calc(100% - 80px)',
+                            // xs: 'calc(100% - 80px)',
+                            xs: 'none',
                             sm: 'calc(100% - 130px)',
+                        },
+                        justifyContent: {
+                            xs: 'center',
+                            sm: 'flex-start',
                         },
                         flexGrow: '1',
                     }}
@@ -454,7 +463,16 @@ const NearMeToHostEventCard = ({
                         alignItems="start"
                         direction={'column'}
                     >
-                        <Grid item>
+                        <Grid
+                            item
+                            className="artistName"
+                            sx={{
+                                width: {
+                                    xs: '100%',
+                                    sm: 'auto',
+                                },
+                            }}
+                        >
                             <Link to={'/artists/' + thisEvent.artist.slug}>
                                 <Typography component="h2">
                                     {thisEvent.artist.stageName}
@@ -464,7 +482,17 @@ const NearMeToHostEventCard = ({
                         {thisEvent.artist.genres &&
                             thisEvent.artist.genres.constructor.name ===
                                 'Array' && (
-                                <Grid item>
+                                <Grid
+                                    container
+                                    item
+                                    className="genreChips"
+                                    sx={{
+                                        justifyContent: {
+                                            xs: 'center',
+                                            sm: 'flex-start',
+                                        },
+                                    }}
+                                >
                                     {thisEvent.artist.genres.map(
                                         (genre, key) => (
                                             <Chip

@@ -7,7 +7,7 @@ import Button from '../layout/SvgButton';
 
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import ArtistEventForm from './ArtistEventForm';
-import { Grid } from '@mui/material';
+import { Grid, Tooltip } from '@mui/material';
 
 import {
     StackDateforDisplay,
@@ -20,6 +20,7 @@ const AddArtistEvent = ({
     jumpTo,
     myArtistEvents, //for determining the most recently updated event and passing it to the closeEventEditDrawer()
     closeEventEditDrawer,
+    iConfirmed,
 }) => {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -37,6 +38,36 @@ const AddArtistEvent = ({
             // console.log('mostRecentlyUpdatedEvent', mostRecentlyUpdatedEvent);
         }
     }, [myArtistEvents]);
+
+    //Disable Propose Button until Artist reviews all past shows — same logic as setShowPastEvents from PastArtistEvents.js
+
+    const [showPastEvents, setShowPastEvents] = useState(false);
+    const dayBeforeYesterday = new Date();
+    dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
+
+    useEffect(() => {
+        console.log('myArtistEvents updated');
+        if (myArtistEvents && myArtistEvents.length > 0) {
+            // const unReviewedEvents = myArtistEvents.forEach((myArtistEvent) => {
+            if (
+                myArtistEvents.filter(
+                    (myEvent) =>
+                        myEvent.confirmedHost &&
+                        myEvent.status === 'CONFIRMED' &&
+                        iConfirmed(myEvent) &&
+                        new Date(myEvent.bookingWhen) < dayBeforeYesterday &&
+                        (!myEvent.artistReviewOfHost ||
+                            !myEvent.artistReviewOfHost._id)
+                ).length > 0
+            ) {
+                setShowPastEvents(true);
+            } else {
+                setShowPastEvents(false);
+            }
+            // });
+        }
+    }, [myArtistEvents]);
+
     return (
         <>
             <SwipeableDrawer
@@ -59,9 +90,23 @@ const AddArtistEvent = ({
                 </Grid>
             </SwipeableDrawer>
 
-            <Button btnwidth="250" onClick={() => setDrawerOpen(true)}>
-                Propose a New Concert
-            </Button>
+            <Tooltip
+                arrow={true}
+                disableHoverListener={!showPastEvents}
+                disableFocusListener={!showPastEvents}
+                disableTouchListener={!showPastEvents}
+                title="Please review all your past experiences first."
+            >
+                <span>
+                    <Button
+                        disabled={showPastEvents} //same condition that defaults Hide Past Events
+                        btnwidth="250"
+                        onClick={() => setDrawerOpen(true)}
+                    >
+                        Propose a New Concert
+                    </Button>
+                </span>
+            </Tooltip>
         </>
     );
 };

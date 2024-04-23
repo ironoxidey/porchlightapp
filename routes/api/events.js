@@ -1167,7 +1167,7 @@ router.post('/hostDeclines/:id', async (req, res) => {
             'declinedHosts.host': req.body.hostMeID,
         })
             .select(
-                '-artistUser -artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'
+                '-artistUser -artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle -hostNotes -declinedArtists'
             )
             .populate(
                 'artist',
@@ -1193,7 +1193,7 @@ router.post('/hostDeclines/:id', async (req, res) => {
                         req.body.hostMeID.toString()
                     ) {
                         // console.log('You declined this event');
-                    } else delete declinedHost.host;
+                    } else delete declinedHost.host; //delete any other host ID from the return
                 });
             }
         }

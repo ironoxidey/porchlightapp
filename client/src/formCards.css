@@ -44,6 +44,15 @@ legend.MuiFormLabel-root::before {
 }
 
 .MuiButtonBase-root.Mui-disabled {
+    opacity: 0.5;
+}
+
+.MuiButtonBase-root.Mui-disabled + .MuiTouchRipple-root {
+    display: none;
+    opacity: 0;
+}
+
+.MuiPickersDay-root.MuiButtonBase-root.Mui-disabled {
     /* trying to style disable calendar dates */
     background-color: #7a949229;
     border: 1px dotted var(--primary-color);

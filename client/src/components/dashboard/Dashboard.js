@@ -870,7 +870,9 @@ const Dashboard = ({
                                     iConfirmed={iConfirmed}
                                 ></PastArtistEvents>
                                 <Grid item sx={{ margin: '0 auto' }}>
-                                    <AddArtistEvent></AddArtistEvent>
+                                    <AddArtistEvent
+                                        iConfirmed={iConfirmed}
+                                    ></AddArtistEvent>
                                 </Grid>
                             </Grid>
                         </Grid>
