@@ -21,6 +21,7 @@ jobs:
               run: npm ci
 
             # Removed the permissions thing from here
+            # Trying to figure out the CI/CD errors
 
             # - name: Test application
             #   run: npm test
