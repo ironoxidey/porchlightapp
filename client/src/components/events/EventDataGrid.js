@@ -1213,30 +1213,103 @@ const EventDataGrid = ({
                                 <DialogTitle id="alert-dialog-title"></DialogTitle>
                                 <DialogContent>
                                     <DialogContentText id="alert-dialog-description">
-                                        You are about to delete the event on{' '}
-                                        {new Date(
-                                            params.row.theEvent.bookingWhen
-                                        ).toLocaleDateString(undefined, {
-                                            weekday: 'long',
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                            timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
-                                        })}{' '}
-                                        created by{' '}
-                                        {params.row.theEvent.createdBy ===
-                                        'ARTIST'
-                                            ? params.row.theEvent.artist
-                                                  .stageName
-                                            : params.row.theEvent
-                                                  .offersFromHosts[0].host
-                                                  .firstName +
-                                              ' ' +
-                                              params.row.theEvent
-                                                  .offersFromHosts[0].host
-                                                  .lastName}
-                                        . Are you sure you mean to do that?
-                                        (There's no undoing this!)
+                                        <Avatar
+                                            // firstName={
+                                            //     params.row.theEvent
+                                            //         .createdBy === 'ARTIST'
+                                            //         ? params.row.theEvent.artist
+                                            //               .firstName
+                                            //         : params.row.theEvent
+                                            //               .offersFromHosts[0]
+                                            //               .host.firstName
+                                            // }
+                                            // lastName={
+                                            //     params.row.theEvent
+                                            //         .createdBy === 'ARTIST'
+                                            //         ? params.row.theEvent.artist
+                                            //               .lastName
+                                            //         : params.row.theEvent
+                                            //               .offersFromHosts[0]
+                                            //               .host.lastName
+                                            // }
+                                            sx={{
+                                                width: '150px',
+                                                height: '150px',
+                                                margin: '0 auto 20px',
+                                            }}
+                                            src={
+                                                params.row.theEvent
+                                                    .createdBy === 'ARTIST'
+                                                    ? params.row.theEvent.artist
+                                                          .squareImg
+                                                    : params.row.theEvent
+                                                          .offersFromHosts[0]
+                                                          .host.profileImg
+                                            }
+                                            // tooltip={
+                                            //     <>
+                                            //         <div>{`${
+                                            //             params.row.theEvent
+                                            //                 .createdBy ===
+                                            //             'ARTIST'
+                                            //                 ? params.row
+                                            //                       .theEvent
+                                            //                       .artist
+                                            //                       .stageName
+                                            //                 : params.row
+                                            //                       .theEvent
+                                            //                       .offersFromHosts[0]
+                                            //                       .host
+                                            //                       .firstName +
+                                            //                   ' ' +
+                                            //                   params.row
+                                            //                       .theEvent
+                                            //                       .offersFromHosts[0]
+                                            //                       .host.lastName
+                                            //         }`}</div>
+                                            //     </>
+                                            // }
+                                        />
+                                        <Typography
+                                            component="h2"
+                                            sx={{ textWrap: 'balance' }}
+                                        >
+                                            You are about to delete the event on{' '}
+                                            {new Date(
+                                                params.row.theEvent.bookingWhen
+                                            ).toLocaleDateString(undefined, {
+                                                weekday: 'long',
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                timeZone: 'UTC', //fixes timezone issues where users see the date a day off sometimes
+                                            })}{' '}
+                                            created by (
+                                            {params.row.theEvent.createdBy}){' '}
+                                            {params.row.theEvent.createdBy ===
+                                            'ARTIST'
+                                                ? params.row.theEvent.artist
+                                                      .stageName
+                                                : params.row.theEvent
+                                                      .offersFromHosts[0].host
+                                                      .firstName +
+                                                  ' ' +
+                                                  params.row.theEvent
+                                                      .offersFromHosts[0].host
+                                                      .lastName}
+                                            .
+                                        </Typography>{' '}
+                                        <Typography
+                                            component={'p'}
+                                            sx={{
+                                                textAlign: 'center',
+                                                marginTop: '10px',
+                                            }}
+                                        >
+                                            Are you sure you mean to do this?
+                                            <br />
+                                            (There's no undoing this!)
+                                        </Typography>
                                     </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>
