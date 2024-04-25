@@ -186,7 +186,6 @@ const Register = ({ setAlert, register, isAuthenticated, bookingDialog }) => {
                                 name="firstName"
                                 value={firstName}
                                 onChange={(e) => onChange(e)} //call seperate onChange function above
-                                required
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -199,7 +198,6 @@ const Register = ({ setAlert, register, isAuthenticated, bookingDialog }) => {
                                 name="lastName"
                                 value={lastName}
                                 onChange={(e) => onChange(e)} //call seperate onChange function above
-                                required
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -213,7 +211,6 @@ const Register = ({ setAlert, register, isAuthenticated, bookingDialog }) => {
                                 name="email"
                                 value={email}
                                 onChange={(e) => onChange(e)} //call seperate onChange function above
-                                required
                             />
                         </Grid>
                         <Grid item xs={12}>
