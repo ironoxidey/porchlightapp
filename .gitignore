@@ -3,4 +3,4 @@ config/default.json
 client/node_modules/
 client/src/components/artists/artistReviewsOfHosts-typeform.json
 client/package copy.json
-client/build
+# client/build
