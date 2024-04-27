@@ -43,6 +43,8 @@ import EditHostEvent from './EditHostEvent';
 import EventHostDialog from './EventHostDialog';
 import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 
+import HostReviewsEvent from '../hosts/HostReviewsEvent';
+
 const HostDashboardEventCard = ({
     thisEvent,
     artistViewedHostOffer,
@@ -90,6 +92,8 @@ const HostDashboardEventCard = ({
     useEffect(() => {
         setHeight(dashboardEventCardRef.current.offsetHeight);
         setWidth(dashboardEventCardRef.current.offsetWidth);
+
+        console.log('HostDashboardEventCard thisEvent', thisEvent);
     }, []);
 
     useEffect(() => {
@@ -763,6 +767,9 @@ const HostDashboardEventCard = ({
                             </Tooltip>
                         </Grid>
                     </Grid>
+                )}
+                {thisEvent.status === 'CONFIRMED' && (
+                    <HostReviewsEvent theEvent={thisEvent}></HostReviewsEvent>
                 )}
             </Grid>
         </>

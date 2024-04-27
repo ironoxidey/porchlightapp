@@ -18,6 +18,7 @@ import {
     TOGGLE_HOST_ACTIVE_STATUS,
     TOGGLE_MY_HOST_ACTIVE_STATUS,
     TOGGLE_HOST_ADMIN_ACTIVE_STATUS,
+    HOST_REVIEWS_EVENT,
 } from './types';
 
 //Get all users
@@ -409,3 +410,43 @@ export const unsubscribeHostDigest = (hostID, getTime) => async (dispatch) => {
         dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
     }
 };
+
+// Host Reviews Event
+export const hostReviewsEvent =
+    (formData, history, edit = false) =>
+    async (dispatch) => {
+        try {
+            // console.log('formData to send', formData);
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            const res = await axios.post(
+                '/api/artists/hostReviewsEvent',
+                formData,
+                config
+            );
+            dispatch({
+                type: HOST_REVIEWS_EVENT,
+                payload: res.data,
+            });
+            //dispatch(setAlert(edit ? 'Artist Updated' : 'Artist Created', 'success')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        } catch (err) {
+            const errors = err.response.data.errors;
+            console.log('error: ' + err);
+            if (errors) {
+                errors.forEach((error) =>
+                    dispatch(setAlert(error.msg, 'danger'))
+                );
+            }
+            dispatch({
+                type: HOST_ERROR,
+                payload: {
+                    msg: err.response.statusText,
+                    status: err.response.status,
+                },
+            });
+            dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        }
+    };

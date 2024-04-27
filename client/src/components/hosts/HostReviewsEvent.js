@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { artistReviewsHost } from '../../actions/artist';
+import { hostReviewsEvent } from '../../actions/host';
 import {
     TextField,
     //Button,
@@ -56,12 +56,12 @@ const UploadInput = styled('input')({
     display: 'none',
 });
 
-const ArtistReviewsHost = ({
-    artistMe,
+const HostReviewsEvent = ({
+    hostMe,
     history,
     auth,
     theEvent,
-    artistReviewsHost,
+    hostReviewsEvent,
 }) => {
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     // const dispatch = useDispatch();
@@ -69,7 +69,9 @@ const ArtistReviewsHost = ({
     const [theReview, setTheReview] = useState({});
     const [theOffer, setTheOffer] = useState({});
     const [theHost, setTheHost] = useState({});
+    const [theArtist, setTheArtist] = useState({});
 
+    console.log('HostReviewsEvent theEvent', theEvent);
     useEffect(() => {
         if (theEvent && theEvent._id) {
             const theAcceptedOffer = theEvent.offersFromHosts.filter(
@@ -86,12 +88,25 @@ const ArtistReviewsHost = ({
         if (theEvent.artistReviewOfHost) {
             setTheReview(theEvent.artistReviewOfHost);
         }
+        if (theEvent.artist) {
+            setTheArtist(theEvent.artist);
+        } else if (
+            theEvent.confirmedArtist &&
+            theEvent.preferredArtists &&
+            theEvent.preferredArtists.length > 0
+        ) {
+            theEvent.preferredArtists.map((prefArtist) => {
+                if (prefArtist._id === theEvent.confirmedArtist) {
+                    setTheArtist(prefArtist);
+                }
+            });
+        }
     }, [theEvent]);
     useEffect(() => {
         if (theEvent.artistReviewOfHost) {
             setTheReview(theEvent.artistReviewOfHost);
         }
-    }, [theEvent.artistReviewOfHost]);
+    }, [theEvent?.artistReviewOfHost]);
 
     useEffect(() => {
         if (theOffer && theOffer.host) {
@@ -134,13 +149,14 @@ const ArtistReviewsHost = ({
         if (theEvent._id && theReview) {
             setFormData({
                 eventId: loading || !theEvent._id ? '' : theEvent._id,
-                artistId: loading || !artistMe._id ? '' : artistMe._id,
-                hostId:
-                    loading ||
-                    !theOffer.host ||
-                    (theOffer.host && !theOffer.host._id)
-                        ? ''
-                        : theOffer.host._id,
+                artistId: loading || !theArtist._id ? '' : theArtist._id,
+                hostId: loading || !hostMe._id ? '' : hostMe._id,
+                // hostId:
+                //     loading ||
+                //     !theOffer.host ||
+                //     (theOffer.host && !theOffer.host._id)
+                //         ? ''
+                //         : theOffer.host._id,
                 bookingWhen:
                     loading || !theEvent.bookingWhen
                         ? ''
@@ -218,13 +234,14 @@ const ArtistReviewsHost = ({
         } else if (theEvent._id) {
             setFormData({
                 eventId: loading || !theEvent._id ? '' : theEvent._id,
-                artistId: loading || !artistMe._id ? '' : artistMe._id,
-                hostId:
-                    loading ||
-                    !theOffer.host ||
-                    (theOffer.host && !theOffer.host._id)
-                        ? ''
-                        : theOffer.host._id,
+                artistId: loading || !theArtist._id ? '' : theArtist._id,
+                hostId: loading || !hostMe._id ? '' : hostMe._id,
+                // hostId:
+                //     loading ||
+                //     !theOffer.host ||
+                //     (theOffer.host && !theOffer.host._id)
+                //         ? ''
+                //         : theOffer.host._id,
                 bookingWhen:
                     loading || !theEvent.bookingWhen
                         ? ''
@@ -235,7 +252,7 @@ const ArtistReviewsHost = ({
                         : theEvent.bookingWhere,
             });
         }
-    }, [auth.loading, artistMe, theEvent, theOffer, theReview]);
+    }, [auth.loading, theArtist, theEvent, theOffer, theReview]);
 
     const {
         communication,
@@ -293,7 +310,7 @@ const ArtistReviewsHost = ({
     const onSubmit = (e) => {
         e.preventDefault();
         //console.log('Submitting...');
-        artistReviewsHost(formData, history, true);
+        hostReviewsEvent(formData, history, true);
         changesMade.current = false;
     };
 
@@ -946,7 +963,7 @@ const ArtistReviewsHost = ({
     const [dialogOpen, setDialogOpen] = useState(false);
 
     return (
-        <Fragment key={`Fragment` + theEvent._id + artistMe._id}>
+        <Fragment key={`Fragment` + theEvent._id + theArtist._id}>
             <Dialog
                 open={dialogOpen}
                 onClose={() => setDialogOpen(false)}
@@ -973,7 +990,7 @@ const ArtistReviewsHost = ({
                         }}
                     >
                         <StackDateforDisplay
-                            date={theEvent.bookingWhen}
+                            date={theEvent?.bookingWhen}
                         ></StackDateforDisplay>
                     </Box>
                     <form className="form" onSubmit={(e) => onSubmit(e)}>
@@ -984,7 +1001,7 @@ const ArtistReviewsHost = ({
                             justifyContent="center"
                             height="65vh"
                             sx={{ padding: '20px!important' }}
-                            key={`cardGrid` + theEvent._id + artistMe._id}
+                            key={`cardGrid` + theEvent._id + theArtist._id}
                         >
                             <Grid
                                 container
@@ -1128,13 +1145,13 @@ const ArtistReviewsHost = ({
                         ></FlareTwoToneIcon>{' '}
                         Please consider reviewing your experience with{' '}
                         {theHost.firstName} {theHost.lastName}.
-                        {/* Created On: {prettifyDate(thisEvent.createdAt) */}
                     </Typography>
                 </Box>
             )}
             <Grid item style={{ margin: '20px auto 0', alignSelf: 'center' }}>
                 <Button btnwidth="250" onClick={() => setDialogOpen(true)}>
-                    {theEvent.artistReviewOfHost &&
+                    {theEvent &&
+                    theEvent.artistReviewOfHost &&
                     theEvent.artistReviewOfHost._id
                         ? 'Edit Your Review'
                         : 'Review Your Experience'}
@@ -1144,19 +1161,19 @@ const ArtistReviewsHost = ({
     );
 };
 
-ArtistReviewsHost.propTypes = {
-    artistMe: PropTypes.object.isRequired,
+HostReviewsEvent.propTypes = {
+    hostMe: PropTypes.object.isRequired,
     theEvent: PropTypes.object,
     auth: PropTypes.object.isRequired,
-    artistReviewsHost: PropTypes.func.isRequired,
+    hostReviewsEvent: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
     auth: state.auth,
-    artistMe: state.artist.me,
+    hostMe: state.host.me,
 });
 
 export default connect(mapStateToProps, {
-    artistReviewsHost,
-    // })(withRouter(ArtistReviewsHost)); //withRouter allows us to pass history objects
-})(ArtistReviewsHost);
+    hostReviewsEvent,
+    // })(withRouter(HostReviewsEvent)); //withRouter allows us to pass history objects
+})(HostReviewsEvent);

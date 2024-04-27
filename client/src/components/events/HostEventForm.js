@@ -1374,22 +1374,22 @@ const HostEventForm = ({
         ],
         guaranteeHonorarium: [
             [
-                <FormLabel component="h3">
-                    You mentioned before that you might be able to draw{' '}
-                    {hostMe.numDraw} people to a show.
-                    {/* Considering that we’re{' '}
-                    {theEvent.costStructure === 'ticket'
-                        ? 'selling tickets for '
-                        : 'hoping for individual donations of '}{' '}
-                    ${theEvent.namedPrice}, the artist is looking at maybe
-                    making $
-                    {Math.round(
-                        (hostMe.numDraw * theEvent.namedPrice +
-                            Number.EPSILON) *
-                            100
-                    ) / 100}
-                    . */}
-                </FormLabel>,
+                // <FormLabel component="h3">
+                //     You mentioned before that you might be able to draw{' '}
+                //     {hostMe.numDraw} people to a show.
+                //     {/* Considering that we’re{' '}
+                //     {theEvent.costStructure === 'ticket'
+                //         ? 'selling tickets for '
+                //         : 'hoping for individual donations of '}{' '}
+                //     ${theEvent.namedPrice}, the artist is looking at maybe
+                //     making $
+                //     {Math.round(
+                //         (hostMe.numDraw * theEvent.namedPrice +
+                //             Number.EPSILON) *
+                //             100
+                //     ) / 100}
+                //     . */}
+                // </FormLabel>,
                 <FormLabel component="legend">
                     If the band comes up short of their hoped-for $
                     {/* {theEvent.financialHopes}  */}

@@ -179,7 +179,8 @@ const ArtistDashboardEventCard = ({
                         //         : ' 0 0 0 0 transparent',
                         position: 'relative',
                         filter: iDeclined ? 'grayscale(100%)' : '',
-                        flexDirection: { xs: 'column', sm: 'row' },
+                        // flexDirection: { xs: 'column', sm: 'row' },
+                        flexDirection: 'column',
                     }}
                 >
                     <svg

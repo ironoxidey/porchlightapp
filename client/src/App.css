@@ -42,6 +42,12 @@ input:-webkit-autofill {
     font-family: var(--primary-font) !important;
 }
 
+legend,
+small {
+    text-wrap: balance;
+    display: block;
+}
+
 h2.MuiTypography-root {
     text-align: center;
     font-size: 1.5em;
