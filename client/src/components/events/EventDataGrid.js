@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 
 import { getAllEvents, deleteAdminEvent } from '../../actions/event';
 
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+// import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
 import {
     Avatar,
     Autocomplete,
@@ -254,15 +255,18 @@ const EventDataGrid = ({
     function ProfileCell(props) {
         const { id, value, api, field } = props;
         // console.log('ProfileCell props', props);
+        // console.log('ProfileCell value', value);
         const artistEmail = props.row.email;
 
         const [artistSlug, setArtistSlug] = useState('');
         const [artistStageName, setArtistStageName] = useState('');
 
         const getArtistSlug = async () => {
-            const gottenArtistSlug = value || { slug: '', stageName: '' }; //await getArtistByEmail(artistEmail);
-            setArtistSlug(gottenArtistSlug.slug);
-            setArtistStageName(gottenArtistSlug.stageName);
+            if (value) {
+                const gottenArtistSlug = value || { slug: '', stageName: '' }; //await getArtistByEmail(artistEmail);
+                setArtistSlug(gottenArtistSlug.slug);
+                setArtistStageName(gottenArtistSlug.stageName);
+            }
         };
 
         useEffect(() => {
@@ -416,7 +420,7 @@ const EventDataGrid = ({
                                     flexWrap: 'wrap',
                                     flexDirection: 'row',
                                     // margin: '0 8px 0 0',
-                                    margin: '0 4px',
+                                    margin: 'auto 4px',
                                     justifyContent: 'space-around',
                                     // alignItems: 'space-between',
                                     alignContent: 'space-evenly',
@@ -758,6 +762,7 @@ const EventDataGrid = ({
         },
         {
             field: 'artist' || 'preferredArtist',
+            cellClassName: 'profileCell',
             headerName: 'Artist',
             width: 75,
             sortable: false,
@@ -819,8 +824,9 @@ const EventDataGrid = ({
             editable: false,
             type: 'date',
             valueFormatter: (params) => {
-                if (params.value) {
-                    return prettifyDate(params.value);
+                // if (params.value) {
+                if (params) {
+                    return prettifyDate(params);
                     // return new Date(params.value).toLocaleDateString(
                     //     undefined,
                     //     {
@@ -846,6 +852,8 @@ const EventDataGrid = ({
             valueFormatter: (params) => {
                 if (params.value && params.value.city && params.value.state) {
                     return params.value.city + ', ' + params.value.state;
+                } else if (params.city && params.state) {
+                    return params.city + ', ' + params.state;
                 } else {
                     return;
                 }
@@ -854,6 +862,7 @@ const EventDataGrid = ({
         {
             field: 'offersFromHosts',
             headerName: 'Offers from Hosts',
+            cellClassName: 'profileCell',
             width: 240,
             editable: false,
             type: 'string',
@@ -931,8 +940,9 @@ const EventDataGrid = ({
             editable: false,
             type: 'string',
             valueFormatter: (params) => {
-                if (params.value) {
-                    return params.value + ' miles';
+                // if (params.value) {
+                if (params) {
+                    return params + ' miles';
                 } else {
                     return;
                 }
@@ -1178,8 +1188,9 @@ const EventDataGrid = ({
             editable: false,
             type: 'dateTime',
             valueFormatter: (params) => {
-                if (params.value) {
-                    return new Date(params.value).toLocaleString('en-US');
+                // if (params.value) {
+                if (params) {
+                    return new Date(params).toLocaleString('en-US');
                 } else {
                     return;
                 }
@@ -1407,7 +1418,7 @@ const EventDataGrid = ({
         (user.role.indexOf('ADMIN') > -1 ||
             user.role.indexOf('BOOKING') > -1) && (
             <Grid container direction="column" sx={{ height: '88vh' }}>
-                <DataGrid
+                <DataGridPro
                     // sx={{ overflowX: 'scroll' }}
                     rows={eventRows}
                     columns={eventColumns}
@@ -1420,8 +1431,8 @@ const EventDataGrid = ({
                             sortModel: [{ field: 'createdAt', sort: 'desc' }],
                         },
                     }}
-                    components={{
-                        Toolbar: GridToolbar,
+                    slots={{
+                        toolbar: GridToolbar,
                     }}
                     sx={{ width: '100%' }}
                 />

@@ -342,6 +342,14 @@ img {
     box-shadow: 0 0 5px 0px var(--dark-color);
 }
 
+/* Data Grid */
+.profileCell,
+.profileCell.MuiDataGrid-cell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 /* Utilities */
 .container {
     /* max-width: 1100px; */

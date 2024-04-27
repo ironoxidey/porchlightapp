@@ -112,7 +112,7 @@ const EventHostDialog = (props) => {
                                             }}
                                         >
                                             {props.theEvent.preferredArtists.map(
-                                                (prefArtist) => {
+                                                (prefArtist, index) => {
                                                     let confirmed = false;
 
                                                     if (
@@ -159,6 +159,10 @@ const EventHostDialog = (props) => {
                                                     return (
                                                         <>
                                                             <Grid
+                                                                key={
+                                                                    prefArtist._id +
+                                                                    index
+                                                                }
                                                                 item
                                                                 container
                                                                 sx={{

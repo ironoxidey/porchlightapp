@@ -31,6 +31,13 @@ import {
     faExternalLinkAlt,
     faBook,
 } from '@fortawesome/free-solid-svg-icons';
+
+import { LicenseInfo } from '@mui/x-license';
+
+LicenseInfo.setLicenseKey(
+    'be0a5656909f29aa64a8bb425191b715Tz04NjcyNCxFPTE3NDI0MTg3NjEwMDAsUz1wcm8sTE09c3Vic2NyaXB0aW9uLEtWPTI='
+);
+
 library.add(
     fab,
     faGlobeAmericas,
