@@ -1,6 +1,7 @@
 const cors = require('cors');
 
 const express = require('express');
+const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
 const path = require('path');
 
@@ -13,6 +14,9 @@ const app = express();
 
 //Connect Database
 connectDB();
+
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 //Init Middleware
 app.use(express.json({ extended: false }));
@@ -44,7 +48,7 @@ app.use('/api/posts', require('./routes/api/posts'));
 app.use('/api/artists', require('./routes/api/artists'));
 app.use('/api/hosts', require('./routes/api/hosts'));
 app.use('/api/events', require('./routes/api/events'));
-//app.use('/api/uploads', require('./routes/api/uploads'));
+app.use('/api/uploads', require('./routes/api/uploads'));
 app.use('/api/cloudinary', require('./routes/api/cloudinary'));
 
 app.use(express.static('client/build'));

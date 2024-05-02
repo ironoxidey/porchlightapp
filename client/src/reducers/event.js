@@ -20,6 +20,7 @@ import {
     DELETE_HOST_EVENT,
     DELETE_ADMIN_EVENT,
     ARTIST_REVIEWS_HOST,
+    HOST_REVIEWS_EVENT,
 } from '../actions/types';
 
 const initialState = {
@@ -110,6 +111,20 @@ export default function (state = initialState, action) {
                         return myArtistEvent;
                     } else {
                         return myArtistEvent;
+                    }
+                }),
+                loading: false,
+            };
+        case HOST_REVIEWS_EVENT:
+            // console.log('payload', payload);
+            return {
+                ...state,
+                myHostEvents: state.myHostEvents.map((myHostEvent) => {
+                    if (myHostEvent._id === payload.eventId) {
+                        myHostEvent.hostReviewOfEvent = { ...payload };
+                        return myHostEvent;
+                    } else {
+                        return myHostEvent;
                     }
                 }),
                 loading: false,

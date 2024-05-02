@@ -9,6 +9,7 @@ module.exports = function (req, res, next) {
 
     //Check if no token
     if (!token) {
+        // console.log('No token, authorization denied.');
         return res.status(401).json({ msg: 'No token, authorization denied.' });
     }
 
@@ -18,8 +19,10 @@ module.exports = function (req, res, next) {
         //const decoded = jwt.verify(token, process.env.jwtSecret);
 
         req.user = decoded.user;
+        // console.log('Access granted');
         next();
     } catch (err) {
+        // console.log('Token is not valid.');
         res.status(401).json({ msg: 'Token is not valid.' });
     }
 };

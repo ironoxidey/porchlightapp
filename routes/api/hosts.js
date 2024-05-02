@@ -14,6 +14,7 @@ const addressTimezone = require('../../utils/maps/timezone');
 const User = require('../../models/User');
 const Host = require('../../models/Host');
 const ArtistReviewsHost = require('../../models/ArtistReviewsHost');
+const HostReviewsEvent = require('../../models/HostReviewsEvent');
 
 function convertToSlug(Text) {
     return Text.toLowerCase()
@@ -449,6 +450,96 @@ router.post('/updateMe', [auth], async (req, res) => {
         );
         //res.json(hostCount + " host(s) submitted to the database."); //eventually remove this
     }
+});
+
+// @route    POST api/artists/hostReviewsEvent
+// @desc     Host reviews event
+// @access   Private
+router.post('/hostReviewsEvent', [auth], async (req, res) => {
+    //console.log('hostReviewsEvent req.body', req.body);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    let reviewFields = req.body;
+
+    const thisHost = await Host.findOne({
+        //artist associated with logged-in user's email address
+        email: req.user.email,
+    });
+
+    // console.log(
+    //     'reviewFields',
+    //     reviewFields,
+    //     'reviewFields.artistId',
+    //     reviewFields.artistId,
+    //     'thisHost._id',
+    //     thisHost._id,
+    //     'thisHost._id.equals(reviewFields.artistId)',
+    //     thisHost._id.equals(reviewFields.artistId)
+    // );
+    if (
+        req.user.role &&
+        req.user.role.indexOf('HOST') > -1 &&
+        thisHost &&
+        thisHost._id &&
+        reviewFields.hostId &&
+        thisHost._id.equals(reviewFields.hostId) //compare ObjectIDs with the .equals() method. Make sure that the requesting user is the host they are attempting to review as, frontend and backend
+    ) {
+        try {
+            // console.log('hostReviewsEvent reviewFields', reviewFields);
+
+            let theReview = await HostReviewsEvent.findOneAndUpdate(
+                {
+                    eventId: reviewFields.eventId,
+                    hostId: thisHost._id,
+                    // hostId: reviewFields.hostId,
+                },
+                {
+                    ...reviewFields,
+                },
+                { new: true, upsert: true }
+            ).select('-hostId');
+
+            // console.log('theReview', theReview);
+
+            await Event.findOneAndUpdate(
+                //https://www.mongodb.com/docs/manual/reference/operator/projection/
+                {
+                    _id: reviewFields.eventId,
+                },
+                {
+                    $set: {
+                        hostReviewOfEvent: theReview._id,
+                    },
+                },
+                { new: true }
+            );
+
+            // .select(
+            //     '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -declinedHosts'
+            // )
+            // .populate(
+            //     'offersFromHosts.host',
+            //     '-user -streetAddress -mailChimped -geocodedStreetAddress -latLong -latitude -longitude -connectionToUs -specificBand -venueStreetAddress -venueNickname -specialNavDirections -lastLogin -lastLastLogin -lastEmailed -everyTimeEmailed -notificationFrequency -date -createdAt'
+            // );
+            //console.log('eventDetails', eventDetails);
+            res.json(theReview);
+        } catch (err) {
+            //console.error(err.message);
+            res.status(500).send('Server Error: ' + err.message);
+        }
+    } else {
+        console.error(
+            req.user.email + " doesn't have authority to review this event."
+        );
+        res.status(500).send(
+            'User does not have authority to review this event.'
+        );
+    }
+
+    //res.json(eventCount + " event(s) submitted to the database."); //eventually remove this
 });
 
 // @route    POST api/hosts/termsAgreement

@@ -423,7 +423,7 @@ export const hostReviewsEvent =
                 },
             };
             const res = await axios.post(
-                '/api/artists/hostReviewsEvent',
+                '/api/hosts/hostReviewsEvent',
                 formData,
                 config
             );

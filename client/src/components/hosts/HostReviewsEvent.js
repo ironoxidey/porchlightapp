@@ -41,6 +41,7 @@ import { useTransition, animated, config } from '@react-spring/web';
 import styles from '../../formCards.css';
 
 import { toTitleCase, StackDateforDisplay } from '../../actions/app';
+import FileUploader from '../../common/components/FileUploader';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -114,10 +115,12 @@ const HostReviewsEvent = ({
 
             // console.log('the ACCEPTED Offer theOffer.host', theOffer.host);
         }
-
+        if (hostMe) {
+            setTheHost(hostMe);
+        }
         // console.log('the ACCEPTED Offer', theOffer);
         // console.log('the ACCEPTED Offer Host', theHost);
-    }, [theOffer]);
+    }, [theOffer, hostMe]);
 
     const [formData, setFormData] = useState({
         eventId: '',
@@ -126,23 +129,31 @@ const HostReviewsEvent = ({
         bookingWhen: '',
         bookingWhere: {},
 
-        communication: 0,
-        promotion: 0,
-        tipsDonations: 0,
-        merchSales: 0,
-        ticketSales: 0,
-        revenueExpectations: '',
+        //hostReviewsEvent
+        processOfConnecting: 0,
+        curationSuggestions: '',
+        howMuchAttentionToGuide: '',
+        howHelpfulWasGuide: 0,
+        guideSuggestions: '',
+        eventbriteExperience: 0,
+        eventbriteSuggestions: '',
+        porchlightCommunications: 0,
+        artistCommunications: 0,
         attendanceExpectations: '',
-        audienceQuality: '',
-        venueQuality: 0,
-        everythingNeeded: 0,
-        introductionByHost: 0,
-        hostExample: 0,
-        hostInteractions: 0,
-        hostAccommodations: 0,
-        hostCommitment: 0,
-        recHostForRetreat: '',
-        artistNotes: '',
+        promotionInsight: '',
+        experienceMeetingArtist: '',
+        audienceInteraction: '',
+        artistVibe: 0,
+        artistMusicalSkill: 0,
+        artistVocalSkill: 0,
+        artistSongwritingSkill: 0,
+        overnightExperience: 0,
+        critiqueOfArtist: '',
+        critiqueOfPorchlight: '',
+        experienceWithPorchlight: '',
+        mediaContent: [], //list of URLs — maybe Google Drive links
+        testimonial: '',
+        willingToShareMore: '',
     });
 
     useEffect(() => {
@@ -150,7 +161,7 @@ const HostReviewsEvent = ({
             setFormData({
                 eventId: loading || !theEvent._id ? '' : theEvent._id,
                 artistId: loading || !theArtist._id ? '' : theArtist._id,
-                hostId: loading || !hostMe._id ? '' : hostMe._id,
+                hostId: loading || !theHost._id ? '' : theHost._id,
                 // hostId:
                 //     loading ||
                 //     !theOffer.host ||
@@ -166,70 +177,100 @@ const HostReviewsEvent = ({
                         ? {}
                         : theEvent.bookingWhere,
 
-                communication:
-                    loading || !theReview.communication
+                processOfConnecting:
+                    loading || !theReview.processOfConnecting
                         ? 0
-                        : theReview.communication,
-                promotion:
-                    loading || !theReview.promotion ? 0 : theReview.promotion,
-                tipsDonations:
-                    loading || !theReview.tipsDonations
-                        ? 0
-                        : theReview.tipsDonations,
-                merchSales:
-                    loading || !theReview.merchSales ? 0 : theReview.merchSales,
-                ticketSales:
-                    loading || !theReview.ticketSales
-                        ? 0
-                        : theReview.ticketSales,
-                revenueExpectations:
-                    loading || !theReview.revenueExpectations
+                        : theReview.processOfConnecting,
+                curationSuggestions:
+                    loading || !theReview.curationSuggestions
                         ? ''
-                        : theReview.revenueExpectations,
+                        : theReview.curationSuggestions,
+                howMuchAttentionToGuide:
+                    loading || !theReview.howMuchAttentionToGuide
+                        ? ''
+                        : theReview.howMuchAttentionToGuide,
+                howHelpfulWasGuide:
+                    loading || !theReview.howHelpfulWasGuide
+                        ? 0
+                        : theReview.howHelpfulWasGuide,
+                guideSuggestions:
+                    loading || !theReview.guideSuggestions
+                        ? ''
+                        : theReview.guideSuggestions,
+                eventbriteExperience:
+                    loading || !theReview.eventbriteExperience
+                        ? 0
+                        : theReview.eventbriteExperience,
+                eventbriteSuggestions:
+                    loading || !theReview.eventbriteSuggestions
+                        ? ''
+                        : theReview.eventbriteSuggestions,
+                porchlightCommunications:
+                    loading || !theReview.porchlightCommunications
+                        ? 0
+                        : theReview.porchlightCommunications,
+                artistCommunications:
+                    loading || !theReview.artistCommunications
+                        ? 0
+                        : theReview.artistCommunications,
                 attendanceExpectations:
                     loading || !theReview.attendanceExpectations
                         ? ''
                         : theReview.attendanceExpectations,
-                audienceQuality:
-                    loading || !theReview.audienceQuality
+                promotionInsight:
+                    loading || !theReview.promotionInsight
                         ? ''
-                        : theReview.audienceQuality,
-                venueQuality:
-                    loading || !theReview.venueQuality
-                        ? 0
-                        : theReview.venueQuality,
-                everythingNeeded:
-                    loading || !theReview.everythingNeeded
-                        ? 0
-                        : theReview.everythingNeeded,
-                introductionByHost:
-                    loading || !theReview.introductionByHost
-                        ? 0
-                        : theReview.introductionByHost,
-                hostExample:
-                    loading || !theReview.hostExample
-                        ? 0
-                        : theReview.hostExample,
-                hostInteractions:
-                    loading || !theReview.hostInteractions
-                        ? 0
-                        : theReview.hostInteractions,
-                hostAccommodations:
-                    loading || !theReview.hostAccommodations
-                        ? 0
-                        : theReview.hostAccommodations,
-                hostCommitment:
-                    loading || !theReview.hostCommitment
-                        ? 0
-                        : theReview.hostCommitment,
-                recHostForRetreat:
-                    loading || !theReview.recHostForRetreat
+                        : theReview.promotionInsight,
+                experienceMeetingArtist:
+                    loading || !theReview.experienceMeetingArtist
                         ? ''
-                        : theReview.recHostForRetreat,
-                artistNotes:
-                    loading || !theReview.artistNotes
+                        : theReview.experienceMeetingArtist,
+                audienceInteraction:
+                    loading || !theReview.audienceInteraction
                         ? ''
-                        : theReview.artistNotes,
+                        : theReview.audienceInteraction,
+                artistVibe:
+                    loading || !theReview.artistVibe ? 0 : theReview.artistVibe,
+                artistMusicalSkill:
+                    loading || !theReview.artistMusicalSkill
+                        ? 0
+                        : theReview.artistMusicalSkill,
+                artistVocalSkill:
+                    loading || !theReview.artistVocalSkill
+                        ? 0
+                        : theReview.artistVocalSkill,
+                artistSongwritingSkill:
+                    loading || !theReview.artistSongwritingSkill
+                        ? 0
+                        : theReview.artistSongwritingSkill,
+                overnightExperience:
+                    loading || !theReview.overnightExperience
+                        ? 0
+                        : theReview.overnightExperience,
+                critiqueOfArtist:
+                    loading || !theReview.critiqueOfArtist
+                        ? ''
+                        : theReview.critiqueOfArtist,
+                critiqueOfPorchlight:
+                    loading || !theReview.critiqueOfPorchlight
+                        ? ''
+                        : theReview.critiqueOfPorchlight,
+                experienceWithPorchlight:
+                    loading || !theReview.experienceWithPorchlight
+                        ? ''
+                        : theReview.experienceWithPorchlight,
+                mediaContent:
+                    loading || !theReview.mediaContent
+                        ? []
+                        : theReview.mediaContent,
+                testimonial:
+                    loading || !theReview.testimonial
+                        ? ''
+                        : theReview.testimonial,
+                willingToShareMore:
+                    loading || !theReview.willingToShareMore
+                        ? ''
+                        : theReview.willingToShareMore,
             });
         } else if (theEvent._id) {
             setFormData({
@@ -255,23 +296,30 @@ const HostReviewsEvent = ({
     }, [auth.loading, theArtist, theEvent, theOffer, theReview]);
 
     const {
-        communication,
-        promotion,
-        tipsDonations,
-        merchSales,
-        ticketSales,
-        revenueExpectations,
+        processOfConnecting,
+        curationSuggestions,
+        howMuchAttentionToGuide,
+        howHelpfulWasGuide,
+        guideSuggestions,
+        eventbriteExperience,
+        eventbriteSuggestions,
+        porchlightCommunications,
+        artistCommunications,
         attendanceExpectations,
-        audienceQuality,
-        venueQuality,
-        everythingNeeded,
-        introductionByHost,
-        hostExample,
-        hostInteractions,
-        hostAccommodations,
-        hostCommitment,
-        recHostForRetreat,
-        artistNotes,
+        promotionInsight,
+        experienceMeetingArtist,
+        audienceInteraction,
+        artistVibe,
+        artistMusicalSkill,
+        artistVocalSkill,
+        artistSongwritingSkill,
+        overnightExperience,
+        critiqueOfArtist,
+        critiqueOfPorchlight,
+        experienceWithPorchlight,
+        mediaContent, //list of URLs — maybe Google Drive links
+        testimonial,
+        willingToShareMore,
     } = formData;
 
     const onChange = (e) => {
@@ -315,7 +363,338 @@ const HostReviewsEvent = ({
     };
 
     const formGroups = {
-        communication: [
+        titleCard: [
+            [
+                <FormLabel component="legend">
+                    Thank you for taking a moment to review the Porchlight
+                    booking and show advancement process.
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    Let's get started!
+                </FormLabel>,
+            ],
+        ],
+        processOfConnecting: [
+            [
+                <FormLabel component="legend">
+                    How would you rate Porchlight's process of connecting you
+                    with available musicians?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    1 star being worst, 5 stars being best.
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <Rating
+                        size="large"
+                        id="processOfConnecting"
+                        value={processOfConnecting}
+                        name="processOfConnecting"
+                        onChange={(e) => onChange(e)}
+                    />
+                </FormControl>,
+            ],
+        ],
+        curationSuggestions: [
+            [
+                <FormLabel component="legend">
+                    Do you have any suggested changes for how we curate
+                    musicians for you, and go about booking?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    If so, let us know what they are! If not, feel free to skip.
+                </FormLabel>,
+            ],
+            [
+                <Grid
+                    item
+                    xs={12}
+                    sx={{ margin: '16px auto', width: '70%' }}
+                    className="artistNotes_textarea"
+                    justifyContent={'center'}
+                >
+                    <TextField
+                        multiline
+                        variant="standard"
+                        name="curationSuggestions"
+                        id="curationSuggestions"
+                        placeholder={'Type your response here'}
+                        value={curationSuggestions}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        howMuchAttentionToGuide: [
+            <FormLabel component="legend">
+                How much attention did you pay to the Hosting Guide?
+            </FormLabel>,
+            [
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        id="howMuchAttentionToGuide"
+                        value={howMuchAttentionToGuide}
+                        name="howMuchAttentionToGuide"
+                        onChange={(e) => onChange(e)}
+                    >
+                        <FormControlLabel
+                            value="neverLookedAtIt"
+                            control={<Radio />}
+                            label={`I never looked at the Hosting Guide.`}
+                        />
+                        <FormControlLabel
+                            value="glancedAtIt"
+                            control={<Radio />}
+                            label="I glanced at the Hosting Guide."
+                        />
+                        <FormControlLabel
+                            value="skimmedIt"
+                            control={<Radio />}
+                            label="I skimmed the Hosting Guide."
+                        />
+                        <FormControlLabel
+                            value="readIt"
+                            control={<Radio />}
+                            label="I read the Hosting Guide."
+                        />
+                        <FormControlLabel
+                            value="thoroughlyReadAndAppliedIt"
+                            control={<Radio />}
+                            label="I thoroughly read and applied the Hosting Guide."
+                        />
+                    </RadioGroup>
+                </FormControl>,
+            ],
+        ],
+        howHelpfulWasGuide: [
+            [
+                <FormLabel component="legend">
+                    How helpful was the Hosting Guide?
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <Rating
+                        size="large"
+                        id="howHelpfulWasGuide"
+                        value={howHelpfulWasGuide}
+                        name="howHelpfulWasGuide"
+                        onChange={(e) => onChange(e)}
+                    />
+                </FormControl>,
+            ],
+        ],
+        guideSuggestions: [
+            [
+                <FormLabel component="legend">
+                    Do you have any suggested edits for the Hosting Guide?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    If so, let us know what they are! If not, feel free to skip.
+                </FormLabel>,
+            ],
+            [
+                <Grid
+                    item
+                    xs={12}
+                    sx={{ margin: '16px auto', width: '70%' }}
+                    className="artistNotes_textarea"
+                    justifyContent={'center'}
+                >
+                    <TextField
+                        multiline
+                        variant="standard"
+                        name="guideSuggestions"
+                        id="guideSuggestions"
+                        placeholder={'Type your response here'}
+                        value={guideSuggestions}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        eventbriteExperience: [
+            [
+                <FormLabel component="legend">
+                    How was your experience using Eventbrite?
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <Rating
+                        size="large"
+                        id="eventbriteExperience"
+                        value={eventbriteExperience}
+                        name="eventbriteExperience"
+                        onChange={(e) => onChange(e)}
+                    />
+                </FormControl>,
+            ],
+        ],
+        eventbriteSuggestions: [
+            [
+                <FormLabel component="legend">
+                    Do you have any suggestions on how Porchlight uses the
+                    Eventbrite platform?
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    If so, let us know what they are! If not, feel free to skip.
+                </FormLabel>,
+            ],
+            [
+                <Grid
+                    item
+                    xs={12}
+                    sx={{ margin: '16px auto', width: '70%' }}
+                    className="artistNotes_textarea"
+                    justifyContent={'center'}
+                >
+                    <TextField
+                        multiline
+                        variant="standard"
+                        name="eventbriteSuggestions"
+                        id="eventbriteSuggestions"
+                        placeholder={'Type your response here'}
+                        value={eventbriteSuggestions}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        porchlightCommunications: [
+            [
+                <FormLabel component="legend">
+                    Leading up to the show, were communications from Porchlight
+                    timely, efficient, and personable?
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <Rating
+                        size="large"
+                        id="porchlightCommunications"
+                        value={porchlightCommunications}
+                        name="porchlightCommunications"
+                        onChange={(e) => onChange(e)}
+                    />
+                </FormControl>,
+            ],
+        ],
+        artistCommunications: [
+            [
+                <FormLabel component="legend">
+                    Leading up to the show, were communications from{' '}
+                    {theArtist.stageName} timely, efficient, and personable?
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <Rating
+                        size="large"
+                        id="artistCommunications"
+                        value={artistCommunications}
+                        name="artistCommunications"
+                        onChange={(e) => onChange(e)}
+                    />
+                </FormControl>,
+            ],
+        ],
+        attendanceExpectations: [
+            <FormLabel component="legend">
+                Did crowd size meet your expectations?
+            </FormLabel>,
+            [
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        id="attendanceExpectations"
+                        value={attendanceExpectations}
+                        name="attendanceExpectations"
+                        onChange={(e) => onChange(e)}
+                    >
+                        <FormControlLabel
+                            value="muchSmallerThanAnticipated"
+                            control={<Radio />}
+                            label={`No, crowd was much smaller than I anticipated`}
+                        />
+                        <FormControlLabel
+                            value="littleSmallerThanAnticipated"
+                            control={<Radio />}
+                            label={`No, crowd was just a little smaller than I anticipated`}
+                        />
+                        <FormControlLabel
+                            value="metAnticipations"
+                            control={<Radio />}
+                            label="Yes, crowd size was about what I anticipated"
+                        />
+                        <FormControlLabel
+                            value="largerThanAnticipated"
+                            control={<Radio />}
+                            label="Crowd size was larger than I anticipated"
+                        />
+                        <FormControlLabel
+                            value="muchLargerThanAnticipated"
+                            control={<Radio />}
+                            label="Crowd size was much larger than I anticipated"
+                        />
+                    </RadioGroup>
+                </FormControl>,
+            ],
+        ],
+        promotionInsight: [
+            [
+                <FormLabel component="legend">
+                    Tell us about your experience promoting this Porchlight
+                    event.
+                </FormLabel>,
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    Do you have any advice (either for yourself or other hosts)
+                    on how you might promote an event like this in the future?
+                </FormLabel>,
+            ],
+            [
+                <Grid
+                    item
+                    xs={12}
+                    sx={{ margin: '16px auto', width: '70%' }}
+                    className="artistNotes_textarea"
+                    justifyContent={'center'}
+                >
+                    <TextField
+                        multiline
+                        variant="standard"
+                        name="promotionInsight"
+                        id="promotionInsight"
+                        placeholder={'Type your response here'}
+                        value={promotionInsight}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        experienceMeetingArtist: [
             [
                 <Box
                     className="squareImgInACircle"
@@ -326,7 +705,7 @@ const HostReviewsEvent = ({
                         maxWidth: '150px',
                         borderRadius: '50%',
                         overflow: 'hidden',
-                        backgroundImage: `url("${theHost.profileImg}")`,
+                        backgroundImage: `url("${theArtist.squareImg}")`,
                         backgroundPosition: '50% 25%',
                         backgroundSize: 'cover',
                         padding: '4px',
@@ -342,459 +721,7 @@ const HostReviewsEvent = ({
                     }}
                 ></Box>,
                 <FormLabel component="legend">
-                    How was your communication with{' '}
-                    {theHost.firstName + ' ' + theHost.lastName}?
-                </FormLabel>,
-                // <FormLabel
-                //     component="small"
-                //     sx={{ textAlign: 'center', display: 'block' }}
-                // >
-                //     (1 is terrible, 5 is great!)
-                // </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <Rating
-                        size="large"
-                        id="communication"
-                        value={communication}
-                        name="communication"
-                        onChange={(e) => onChange(e)}
-                    />
-                </FormControl>,
-            ],
-        ],
-        promotion: [
-            [
-                <FormLabel component="legend">
-                    Did you feel like {theHost.firstName} tried to promote the
-                    show?
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <Rating
-                        size="large"
-                        id="promotion"
-                        value={promotion}
-                        name="promotion"
-                        onChange={(e) => onChange(e)}
-                    />
-                </FormControl>,
-            ],
-        ],
-        tipsDonations: [
-            [
-                <FormLabel component="legend">
-                    How much did you make in tips/donations?
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <TextField
-                        variant="standard"
-                        name="tipsDonations"
-                        id="tipsDonations"
-                        // label={
-                        //     costStructure == 'donation'
-                        //         ? "I'd suggest a donation of"
-                        //         : 'Tickets should cost'
-                        // }
-                        value={tipsDonations}
-                        onChange={(e) => onChange(e)}
-                        type="number"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    $
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                </FormControl>,
-            ],
-        ],
-        merchSales: [
-            [
-                <FormLabel component="legend">
-                    How much did you make in merch?
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <TextField
-                        variant="standard"
-                        name="merchSales"
-                        id="merchSales"
-                        // label={
-                        //     costStructure == 'donation'
-                        //         ? "I'd suggest a donation of"
-                        //         : 'Tickets should cost'
-                        // }
-                        value={merchSales}
-                        onChange={(e) => onChange(e)}
-                        type="number"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    $
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                </FormControl>,
-            ],
-        ],
-        ticketSales: [
-            [
-                <FormLabel component="legend">
-                    How much did you make in ticket sales?
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <TextField
-                        variant="standard"
-                        name="ticketSales"
-                        id="ticketSales"
-                        // label={
-                        //     costStructure == 'donation'
-                        //         ? "I'd suggest a donation of"
-                        //         : 'Tickets should cost'
-                        // }
-                        value={ticketSales}
-                        onChange={(e) => onChange(e)}
-                        type="number"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    $
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                </FormControl>,
-            ],
-        ],
-
-        revenueExpectations: [
-            <FormLabel component="legend">
-                Did this revenue live up to your expectations?
-            </FormLabel>,
-            [
-                <FormControl component="fieldset">
-                    <RadioGroup
-                        id="revenueExpectations"
-                        value={revenueExpectations}
-                        name="revenueExpectations"
-                        onChange={(e) => onChange(e)}
-                    >
-                        <FormControlLabel
-                            value="fellShort"
-                            control={<Radio />}
-                            label={`No, this revenue fell short of my expectations`}
-                        />
-                        <FormControlLabel
-                            value="met"
-                            control={<Radio />}
-                            label="Yes, this revenue met my expectations."
-                        />
-                        <FormControlLabel
-                            value="exceeded"
-                            control={<Radio />}
-                            label="Did it ever?! This revenue exceeded my expectations!"
-                        />
-                    </RadioGroup>
-                </FormControl>,
-            ],
-        ],
-        attendanceExpectations: [
-            <FormLabel component="legend">
-                Did the show meet your expectations in terms of the number of
-                attendees?
-            </FormLabel>,
-            [
-                <FormControl component="fieldset">
-                    <RadioGroup
-                        id="attendanceExpectations"
-                        value={attendanceExpectations}
-                        name="attendanceExpectations"
-                        onChange={(e) => onChange(e)}
-                    >
-                        <FormControlLabel
-                            value="fellShort"
-                            control={<Radio />}
-                            label={`No, the number of
-                            attendees fell short of my expectations`}
-                        />
-                        <FormControlLabel
-                            value="met"
-                            control={<Radio />}
-                            label="Yes, the number of
-                            attendees met my expectations."
-                        />
-                        <FormControlLabel
-                            value="exceeded"
-                            control={<Radio />}
-                            label="Did it ever?! The number of
-                            attendees exceeded my expectations!"
-                        />
-                    </RadioGroup>
-                </FormControl>,
-            ],
-        ],
-        audienceQuality: [
-            [
-                <FormLabel component="legend">
-                    Did the show meet your expectations in terms of the quality
-                    of their attendance?
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{ textAlign: 'center', display: 'block' }}
-                >
-                    How <i>good</i> of an audience were they?
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <RadioGroup
-                        id="audienceQuality"
-                        value={audienceQuality}
-                        name="audienceQuality"
-                        onChange={(e) => onChange(e)}
-                    >
-                        <FormControlLabel
-                            value="fellShort"
-                            control={<Radio />}
-                            label={`No, the audience quality fell short of my expectations`}
-                        />
-                        <FormControlLabel
-                            value="met"
-                            control={<Radio />}
-                            label="Yes, the audience quality met my expectations."
-                        />
-                        <FormControlLabel
-                            value="exceeded"
-                            control={<Radio />}
-                            label="Did it ever?! The audience quality exceeded my expectations!"
-                        />
-                    </RadioGroup>
-                </FormControl>,
-            ],
-        ],
-
-        venueQuality: [
-            [
-                <FormLabel component="legend">
-                    Was the venue welcoming?
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{ textAlign: 'center', display: 'block' }}
-                >
-                    Did it look good?
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <Rating
-                        size="large"
-                        id="venueQuality"
-                        value={venueQuality}
-                        name="venueQuality"
-                        onChange={(e) => onChange(e)}
-                    />
-                </FormControl>,
-            ],
-        ],
-        everythingNeeded: [
-            [
-                <FormLabel component="legend">
-                    Did the hosts prepare the space for you well?
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{ textAlign: 'center', display: 'block' }}
-                >
-                    Was everything there that you needed?
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <Rating
-                        size="large"
-                        id="everythingNeeded"
-                        value={everythingNeeded}
-                        name="everythingNeeded"
-                        onChange={(e) => onChange(e)}
-                    />
-                </FormControl>,
-            ],
-        ],
-        introductionByHost: [
-            [
-                <FormLabel component="legend">
-                    Did the hosts do a good job introducing you to the stage?
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <Rating
-                        size="large"
-                        id="introductionByHost"
-                        value={introductionByHost}
-                        name="introductionByHost"
-                        onChange={(e) => onChange(e)}
-                    />
-                </FormControl>,
-            ],
-        ],
-        hostExample: [
-            [
-                <FormLabel component="legend">
-                    Did the hosts set the example of model attendees during the
-                    show?
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{ textAlign: 'center', display: 'block' }}
-                >
-                    (As much as is possible for hosts...)
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <Rating
-                        size="large"
-                        id="hostExample"
-                        value={hostExample}
-                        name="hostExample"
-                        onChange={(e) => onChange(e)}
-                    />
-                </FormControl>,
-            ],
-        ],
-        hostInteractions: [
-            [
-                <FormLabel component="legend">
-                    Were your interactions with the hosts pleasant?
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <Rating
-                        size="large"
-                        id="hostInteractions"
-                        value={hostInteractions}
-                        name="hostInteractions"
-                        onChange={(e) => onChange(e)}
-                    />
-                </FormControl>,
-            ],
-        ],
-        hostAccommodations: [
-            [
-                <FormLabel component="legend">
-                    If you ate with the hosts and/or stayed at their place, how
-                    were those accommodations?
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <Rating
-                        size="large"
-                        id="hostAccommodations"
-                        value={hostAccommodations}
-                        name="hostAccommodations"
-                        onChange={(e) => onChange(e)}
-                    />
-                </FormControl>,
-            ],
-        ],
-        hostCommitment: [
-            [
-                <FormLabel component="legend">
-                    Do you feel like the hosts did everything they committed to
-                    do to make this show a success?
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <Rating
-                        size="large"
-                        id="hostCommitment"
-                        value={hostCommitment}
-                        name="hostCommitment"
-                        onChange={(e) => onChange(e)}
-                    />
-                </FormControl>,
-            ],
-        ],
-        recHostForRetreat: [
-            [
-                <FormLabel component="legend">
-                    Do you recommend this host as a songwriter retreat host?
-                    Feel free to skip if you’ve already answered about this
-                    host, or if you have no opinion.
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{ textAlign: 'center', display: 'block' }}
-                >
-                    These retreats would be held in the host’s space, and only
-                    for a weekend. Just a few musicians would be invited for
-                    each of these intimate, collaborative songwriting retreats.
-                    The capstone event for each retreat would be a songwriter’s
-                    round with a small audience, culminating in sharing any
-                    worthwhile new material.
-                </FormLabel>,
-            ],
-            [
-                <FormControl component="fieldset">
-                    <RadioGroup
-                        id="recHostForRetreat"
-                        value={recHostForRetreat}
-                        name="recHostForRetreat"
-                        onChange={(e) => onChange(e)}
-                    >
-                        <FormControlLabel
-                            value="yesAndYes"
-                            control={<Radio />}
-                            label={`Yes, ${theHost.firstName} ${theHost.lastName} is an ideal choice, and I would like to be involved!`}
-                        />
-                        <FormControlLabel
-                            value="yesAndNo"
-                            control={<Radio />}
-                            label={`Yes, ${theHost.firstName} ${theHost.lastName} is an ideal choice, but I’m probably not the best fit.`}
-                        />
-                        <FormControlLabel
-                            value="no"
-                            control={<Radio />}
-                            label="No, this host is not ideal for a micro-retreat."
-                        />
-                        <FormControlLabel
-                            value="other"
-                            control={<Radio />}
-                            label="Other."
-                        />
-                    </RadioGroup>
-                </FormControl>,
-            ],
-        ],
-
-        artistNotes: [
-            [
-                <FormLabel component="legend">
-                    Was there anything about the show, venue, or host behavior
-                    you think could have been improved?
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{ textAlign: 'center', display: 'block' }}
-                >
-                    Be as long or short as you would like; the more specific
-                    your feedback, the more helpful!
+                    What was your experience like meeting {theArtist.stageName}?
                 </FormLabel>,
             ],
             [
@@ -808,14 +735,301 @@ const HostReviewsEvent = ({
                     <TextField
                         multiline
                         variant="standard"
-                        name="artistNotes"
-                        id="artistNotes"
-                        label={'Notes'}
-                        value={artistNotes}
+                        name="experienceMeetingArtist"
+                        id="experienceMeetingArtist"
+                        placeholder={'Type your response here'}
+                        value={experienceMeetingArtist}
                         onChange={(e) => onChange(e)}
                         sx={{ width: '100%' }}
                     />
                 </Grid>,
+            ],
+        ],
+        audienceInteraction: [
+            [
+                <FormLabel component="legend">
+                    How would you describe the audience and their interaction
+                    with {theArtist.stageName}?
+                </FormLabel>,
+            ],
+            [
+                <Grid
+                    item
+                    xs={12}
+                    sx={{ margin: '16px auto', width: '70%' }}
+                    className="artistNotes_textarea"
+                    justifyContent={'center'}
+                >
+                    <TextField
+                        multiline
+                        variant="standard"
+                        name="audienceInteraction"
+                        id="audienceInteraction"
+                        placeholder={'Type your response here'}
+                        value={audienceInteraction}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        artistVibe: [
+            [
+                <FormLabel component="legend">
+                    Did {theArtist.stageName} come across as friendly, engaged,
+                    grateful and helpful?
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <Rating
+                        size="large"
+                        id="artistVibe"
+                        value={artistVibe}
+                        name="artistVibe"
+                        onChange={(e) => onChange(e)}
+                    />
+                </FormControl>,
+            ],
+        ],
+        artistMusicalSkill: [
+            [
+                <FormLabel component="legend">
+                    How would you rate {theArtist.stageName}’s
+                    technical/instrumental/musical ability?
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <Rating
+                        size="large"
+                        id="artistMusicalSkill"
+                        value={artistMusicalSkill}
+                        name="artistMusicalSkill"
+                        onChange={(e) => onChange(e)}
+                    />
+                </FormControl>,
+            ],
+        ],
+        artistVocalSkill: [
+            [
+                <FormLabel component="legend">
+                    How would you rate {theArtist.stageName}’s vocal ability?
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <Rating
+                        size="large"
+                        id="artistVocalSkill"
+                        value={artistVocalSkill}
+                        name="artistVocalSkill"
+                        onChange={(e) => onChange(e)}
+                    />
+                </FormControl>,
+            ],
+        ],
+        artistSongwritingSkill: [
+            [
+                <FormLabel component="legend">
+                    How would you rate {theArtist.stageName}’s songwriting and
+                    original content?
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <Rating
+                        size="large"
+                        id="artistSongwritingSkill"
+                        value={artistSongwritingSkill}
+                        name="artistSongwritingSkill"
+                        onChange={(e) => onChange(e)}
+                    />
+                </FormControl>,
+            ],
+        ],
+        overnightExperience: [
+            [
+                <FormLabel component="legend">
+                    If you hosted {theArtist.stageName} overnight, how would you
+                    rate that experience?
+                </FormLabel>,
+            ],
+            [
+                <FormControl component="fieldset">
+                    <Rating
+                        size="large"
+                        id="overnightExperience"
+                        value={overnightExperience}
+                        name="overnightExperience"
+                        onChange={(e) => onChange(e)}
+                    />
+                </FormControl>,
+            ],
+        ],
+        critiqueOfArtist: [
+            [
+                <FormLabel component="legend">
+                    Could {theArtist.stageName} have done anything differently
+                    to make the show better?
+                </FormLabel>,
+            ],
+            [
+                <Grid
+                    item
+                    xs={12}
+                    sx={{ margin: '16px auto', width: '70%' }}
+                    className="artistNotes_textarea"
+                    justifyContent={'center'}
+                >
+                    <TextField
+                        multiline
+                        variant="standard"
+                        name="critiqueOfArtist"
+                        id="critiqueOfArtist"
+                        placeholder={'Type your response here'}
+                        value={critiqueOfArtist}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        critiqueOfPorchlight: [
+            [
+                <FormLabel component="legend">
+                    Could Porchlight have done anything more or differently to
+                    help you host?
+                </FormLabel>,
+            ],
+            [
+                <Grid
+                    item
+                    xs={12}
+                    sx={{ margin: '16px auto', width: '70%' }}
+                    className="artistNotes_textarea"
+                    justifyContent={'center'}
+                >
+                    <TextField
+                        multiline
+                        variant="standard"
+                        name="critiqueOfPorchlight"
+                        id="critiqueOfPorchlight"
+                        placeholder={'Type your response here'}
+                        value={critiqueOfPorchlight}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        experienceWithPorchlight: [
+            [
+                <FormLabel component="legend">
+                    Feel free to tell us more about your overall experience with
+                    the Porchlight Network.
+                </FormLabel>,
+
+                <FormLabel
+                    component="small"
+                    sx={{ textAlign: 'center', display: 'block' }}
+                >
+                    If you had a particularly good experience, we’d love a few
+                    of your words we can share with others in a testimonial
+                    format. If you have constructive criticism, we’d love even
+                    more words - our desire is to get better at what we do.
+                    Thank you in advance for your response and care.
+                </FormLabel>,
+            ],
+            [
+                <Grid
+                    item
+                    xs={12}
+                    sx={{ margin: '16px auto', width: '70%' }}
+                    className="artistNotes_textarea"
+                    justifyContent={'center'}
+                >
+                    <TextField
+                        multiline
+                        variant="standard"
+                        name="experienceWithPorchlight"
+                        id="experienceWithPorchlight"
+                        placeholder={'Type your response here'}
+                        value={experienceWithPorchlight}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        mediaContent: [
+            //23
+            [
+                <FormLabel component="legend">
+                    Please share any photo/video content you’d be willing for us
+                    to share in our newsletters/social media!
+                </FormLabel>,
+            ],
+            [<FileUploader></FileUploader>],
+        ],
+        testimonial: [
+            [
+                <FormLabel component="legend">
+                    Testimonial moment! Please highlight anything about the
+                    event or artist that stood out to you and you’d like to
+                    share with others publicly.
+                </FormLabel>,
+            ],
+            [
+                <Grid
+                    item
+                    xs={12}
+                    sx={{ margin: '16px auto', width: '70%' }}
+                    className="artistNotes_textarea"
+                    justifyContent={'center'}
+                >
+                    <TextField
+                        multiline
+                        variant="standard"
+                        name="testimonial"
+                        id="testimonial"
+                        placeholder={'Type your response here'}
+                        value={testimonial}
+                        onChange={(e) => onChange(e)}
+                        sx={{ width: '100%' }}
+                    />
+                </Grid>,
+            ],
+        ],
+        willingToShareMore: [
+            <FormLabel component="legend">
+                Did this revenue live up to your expectations?
+            </FormLabel>,
+            [
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        id="willingToShareMore"
+                        value={willingToShareMore}
+                        name="willingToShareMore"
+                        onChange={(e) => onChange(e)}
+                    >
+                        <FormControlLabel
+                            value="noThanks"
+                            control={<Radio />}
+                            label={`No, thank you`}
+                        />
+                        <FormControlLabel
+                            value="yesEmail"
+                            control={<Radio />}
+                            label="Yes, I'd prefer to share via an email interview"
+                        />
+                        <FormControlLabel
+                            value="yesPhoneOrZoom"
+                            control={<Radio />}
+                            label="Yes, I'd prefer share over phone or Zoom"
+                        />
+                    </RadioGroup>
+                </FormControl>,
             ],
         ],
         endSlide: [
@@ -844,7 +1058,7 @@ const HostReviewsEvent = ({
                         The Porchlight community is constantly growing and
                         learning, and your insight is essential as we develop a
                         network of hosts who exemplify the heart of Jesus as we
-                        all care for attendees, artists, and culture.
+                        all care for attendees, artists, hosts, and culture.
                     </Typography>
 
                     <Typography
@@ -900,7 +1114,8 @@ const HostReviewsEvent = ({
     }
 
     //// CARD INDEX ///////
-    const [formCardIndex, setIndex] = useState(formStartIndex);
+    // const [formCardIndex, setIndex] = useState(formStartIndex);
+    const [formCardIndex, setIndex] = useState(22);
 
     const cardIndex = formCardIndex;
 
@@ -1143,8 +1358,8 @@ const HostReviewsEvent = ({
                         <FlareTwoToneIcon
                             style={{ fontSize: '1.5em' }}
                         ></FlareTwoToneIcon>{' '}
-                        Please consider reviewing your experience with{' '}
-                        {theHost.firstName} {theHost.lastName}.
+                        Please consider reviewing your experience hosting{' '}
+                        {theArtist.stageName}.
                     </Typography>
                 </Box>
             )}
