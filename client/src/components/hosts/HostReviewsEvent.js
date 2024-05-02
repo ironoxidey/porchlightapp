@@ -970,7 +970,7 @@ const HostReviewsEvent = ({
                     to share in our newsletters/social media!
                 </FormLabel>,
             ],
-            [<FileUploader></FileUploader>],
+            [<FileUploader thisEvent={theEvent}></FileUploader>],
         ],
         testimonial: [
             [

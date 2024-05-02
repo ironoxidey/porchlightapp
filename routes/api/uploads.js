@@ -15,6 +15,9 @@ const upload = multer({ storage });
 const stream = require('stream');
 
 const router = express.Router();
+const Event = require('../../models/Event');
+const Artist = require('../../models/Artist');
+const Host = require('../../models/Host');
 
 async function authorize() {
     const jwtClient = new google.auth.JWT(
@@ -30,39 +33,96 @@ async function authorize() {
     return jwtClient;
 }
 
-async function uploadFile(authClient, file) {
+async function uploadFile(authClient, req, theEvent) {
     // console.log('uploadFile authClient', authClient);
-    console.log('uploadFile file', file);
+    const file = req.file;
+    // console.log('uploadFile file', file);
     const fileToUpload = file.buffer;
-    console.log('fileToUpload', fileToUpload);
+    // console.log('fileToUpload', fileToUpload);
     const bufferStream = new stream.PassThrough();
     bufferStream.end(file.buffer);
-    return new Promise((resolve, rejected) => {
-        const drive = google.drive({ version: 'v3', auth: authClient });
+    const drive = google.drive({ version: 'v3', auth: authClient });
 
-        drive.files.create(
-            {
+    if (!theEvent.driveFolderID && theEvent.bookingWhen) {
+        try {
+            const uploadFolder = await drive.files.create({
                 resource: {
-                    name: file.originalname,
-                    parents: ['1YbUXYyijMsXObU-qSOcDOQUDSjGsbJ5o'],
-                },
-                media: {
-                    body: bufferStream,
-                    mimeType: file.mimeType,
+                    name:
+                        theEvent?.bookingWhen?.toString().slice(0, 10) +
+                        ' — ' +
+                        // 'Concert' +
+                        (theEvent?.artist?.stageName ||
+                            theEvent?.confirmedArtist?.stageName) +
+                        ' in ' +
+                        theEvent?.bookingWhere?.city +
+                        ', ' +
+                        theEvent?.bookingWhere?.state,
+                    mimeType: 'application/vnd.google-apps.folder',
+                    parents: ['1YbUXYyijMsXObU-qSOcDOQUDSjGsbJ5o'], //Porchlight App Uploads
                 },
                 fields: 'id',
-            },
-            function (err, file) {
-                if (err) {
-                    console.log('error', err);
-                    rejected(err);
-                } else {
-                    console.log('file', file);
-                    resolve(file);
-                }
+            });
+            theEvent.driveFolderID = uploadFolder.data.id;
+            theEvent.markModified('driveFolderID');
+            await theEvent.save();
+            console.log('uploadFolder', uploadFolder);
+            if (uploadFolder && uploadFolder.data && uploadFolder.data.id) {
+                return new Promise((resolve, rejected) => {
+                    drive.files.create(
+                        {
+                            resource: {
+                                name: file.originalname,
+                                parents: [uploadFolder.data.id],
+                            },
+                            media: {
+                                body: bufferStream,
+                                mimeType: file.mimeType,
+                            },
+                            fields: 'id',
+                        },
+                        function (err, file) {
+                            if (err) {
+                                console.log('error', err);
+                                rejected(err);
+                            } else {
+                                console.log('file', file);
+                                resolve(file);
+                            }
+                        }
+                    );
+                });
             }
-        );
-    });
+        } catch (err) {
+            // TODO(developer) - Handle error
+            console.log('error', err);
+            throw err;
+        }
+    } else {
+        return new Promise((resolve, rejected) => {
+            drive.files.create(
+                {
+                    resource: {
+                        name: file.originalname,
+                        parents: [theEvent.driveFolderID], //inside Porchlight App Uploads
+                    },
+                    media: {
+                        body: bufferStream,
+                        mimeType: file.mimeType,
+                    },
+                    fields: 'id',
+                },
+                function (err, file) {
+                    if (err) {
+                        console.log('error', err);
+                        rejected(err);
+                    } else {
+                        console.log('file', file);
+                        resolve(file);
+                    }
+                }
+            );
+        });
+    }
 }
 
 // const Artist = require('../../models/Artist');
@@ -77,37 +137,43 @@ async function uploadFile(authClient, file) {
 // @desc     Upload File
 // @access   Private
 router.post('/upload', auth, upload.single('imageUpload'), async (req, res) => {
-    //I CAN'T FIGURE OUT WHERE THE FILE IS --- doesn't seem to come over from FileUploader uppy XHR
-
-    // console.log('req: ', req);
+    console.log('initial req: ', req);
     try {
+        if (req.file == undefined) {
+            return res.status(400).json({ msg: 'Please upload a file!' });
+        }
         // console.log('req: ', req);
 
-        // const hostMe = await Host.findOne({
-        //     email: req.user.email,
-        // }); //ADD .select('-field'); to exclude [field] from the response
-        // if (!hostMe) {
-        //     return res
-        //         .status(400)
-        //         .json({ msg: 'There is no host for this email' });
-        // }
-        // console.log('hostMe: ' + HostMe);
+        const hostMe = await Host.findOne({
+            email: req.user.email,
+        }); //ADD .select('-field'); to exclude [field] from the response
+        if (!hostMe) {
+            return res
+                .status(400)
+                .json({ msg: 'There is no host for this email' });
+        }
+        console.log('hostMe: ' + hostMe);
 
-        if (req.file && req.file.buffer) {
-            console.log('req.file', req.file);
+        const theEvent = await Event.findOne({
+            _id: req.body.thisEvent,
+            confirmedHost: hostMe._id,
+        })
+            .populate('artist')
+            .populate('confirmedArtist');
+
+        console.log('theEvent: ', theEvent);
+
+        // const theArtist = await Artist.findOne({
+        //     _id: req.body.artist,
+        // });
+        // req.body.artist = theArtist; //replace the artistID with the whole artist document
+
+        if (req.file && req.file.buffer && theEvent) {
+            // console.log('req.file', req.file);
             authorize()
-                .then((res) => uploadFile(res, req.file))
+                .then((result) => uploadFile(result, req, theEvent))
                 .catch('error');
         }
-
-        // req.artistSlug = artistSlug.slug;
-        // req.artistID = artistSlug._id;
-
-        // await uploadFile(req, res);
-
-        // if (req.file == undefined) {
-        //     return res.status(400).json({ msg: 'Please upload a file!' });
-        // }
 
         res.status(200).json({
             msg: 'Uploaded the file successfully ', //+ req.file.originalname,

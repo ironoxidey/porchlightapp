@@ -300,6 +300,13 @@ const EventSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'hostreviewsevent',
         },
+        driveFolderID: { type: String },
+        uploadedImages: [
+            {
+                url: { type: String },
+                driveID: { type: String },
+            },
+        ],
     },
     { timestamps: true }
 );

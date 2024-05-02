@@ -19,7 +19,7 @@ import '@uppy/drag-drop/dist/style.css';
 import '@uppy/file-input/dist/style.css';
 import '@uppy/progress-bar/dist/style.css';
 
-const FileUploader = ({}) => {
+const FileUploader = ({ thisEvent }) => {
     if (localStorage.token) {
         const uppy = new Uppy({
             id: 'uppity',
@@ -28,6 +28,17 @@ const FileUploader = ({}) => {
             allowedFileTypes: ['image/*'],
             formData: true,
             theme: 'dark',
+            meta: {
+                // bookingWhen: thisEvent.bookingWhen.slice(0, 10),
+                // artist: thisEvent.confirmedArtist || thisEvent.artist,
+                // host: thisEvent.confirmedHost,
+                thisEvent: thisEvent._id,
+                // driveFolderID: thisEvent.driveFolderID,
+                // location:
+                //     thisEvent.bookingWhere.city +
+                //     ', ' +
+                //     thisEvent.bookingWhere.state,
+            },
         })
             // .use(Tus, { endpoint: 'https://tusd.tusdemo.net/files/' });
             .use(XHR, {
@@ -45,19 +56,19 @@ const FileUploader = ({}) => {
                 // withCredentials: true,
             });
 
-        const handleFileAdded = (file) => {
-            console.log('added file: ', file);
-            uppy.addFile({
-                name: file.name,
-                type: file.type,
-                data: file,
-            });
-        };
+        // const handleFileAdded = (file) => {
+        //     console.log('added file: ', file);
+        //     uppy.addFile({
+        //         name: file.name,
+        //         type: file.type,
+        //         data: file,
+        //     });
+        // };
         return (
             <>
                 <Dashboard
                     uppy={uppy}
-                    onFilesAdded={(files) => files.forEach(handleFileAdded)}
+                    // onFilesAdded={(files) => files.forEach(handleFileAdded)}
                 />
             </>
         );
