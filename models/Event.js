@@ -303,6 +303,7 @@ const EventSchema = new mongoose.Schema(
         driveFolderID: { type: String },
         uploadedImages: [
             {
+                name: { type: String },
                 url: { type: String },
                 driveID: { type: String },
             },

@@ -80,12 +80,12 @@ const createFolder = async (req, theEvent, hostMe) => {
     // })
     //     .populate('artist')
     //     .populate('confirmedArtist');
-    console.log(
-        'theEvent.bookingWhen:',
-        theEvent.bookingWhen,
-        theEvent.artist?.stageName || theEvent.confirmedArtist?.stageName,
-        theEvent.bookingWhere.city + ', ' + theEvent.bookingWhere.state
-    );
+    // console.log(
+    //     'theEvent.bookingWhen:',
+    //     theEvent.bookingWhen,
+    //     theEvent.artist?.stageName || theEvent.confirmedArtist?.stageName,
+    //     theEvent.bookingWhere.city + ', ' + theEvent.bookingWhere.state
+    // );
 
     const authClient = await authorize();
     const drive = google.drive({ version: 'v3', auth: authClient });
@@ -100,6 +100,7 @@ const createFolder = async (req, theEvent, hostMe) => {
         ', ' +
         theEvent?.bookingWhere?.state;
 
+    //https://developers.google.com/drive/api/guides/search-files
     const googleDriveFolderSearch = await drive.files.list({
         q: `'1YbUXYyijMsXObU-qSOcDOQUDSjGsbJ5o' in parents and mimeType = 'application/vnd.google-apps.folder' and name = '${uploadFolderName}' and trashed = false`,
         fields: 'nextPageToken, files(id, name)',
@@ -148,12 +149,12 @@ const createFolder = async (req, theEvent, hostMe) => {
             theEvent.driveFolderID = uploadFolder.data.id;
             theEvent.markModified('driveFolderID');
             await theEvent.save();
-            console.log(
-                'uploadFolder.config.data.name',
-                uploadFolder.config.data.name,
-                'uploadFolder.data.id',
-                uploadFolder.data.id
-            );
+            // console.log(
+            //     'uploadFolder.config.data.name',
+            //     uploadFolder.config.data.name,
+            //     'uploadFolder.data.id',
+            //     uploadFolder.data.id
+            // );
         }
     } catch (err) {
         // TODO(developer) - Handle error
@@ -162,8 +163,7 @@ const createFolder = async (req, theEvent, hostMe) => {
     }
 };
 
-// async function uploadFile(authClient, req, theEvent, drive) {
-function uploadFile(authClient, req, theEvent, drive, filesIndex) {
+async function uploadFile(authClient, req, theEvent, drive, filesIndex) {
     // console.log('uploadFile authClient', authClient);
     const file = req.files[filesIndex];
     // console.log('uploadFile file', file);
@@ -173,10 +173,10 @@ function uploadFile(authClient, req, theEvent, drive, filesIndex) {
     bufferStream.end(file.buffer);
     // const drive = google.drive({ version: 'v3', auth: authClient });
 
-    console.log(
-        'uploadFile req.session.driveFolderID',
-        req.session.driveFolderID
-    );
+    // console.log(
+    //     'uploadFile req.session.driveFolderID',
+    //     req.session.driveFolderID
+    // );
     return new Promise((resolve, rejected) => {
         drive.files.create(
             {
@@ -209,11 +209,6 @@ function uploadFile(authClient, req, theEvent, drive, filesIndex) {
     });
 }
 
-// const Artist = require('../../models/Artist');
-
-// const fs = require('fs');
-// const uploadFile = require('../../middleware/upload');
-
 // //Image Upload stuff - https://www.geeksforgeeks.org/node-js-image-upload-processing-and-resizing-using-sharp-package/
 // //AND https://www.bezkoder.com/node-js-express-file-upload/#Define_Route_for_uploading_file
 
@@ -229,7 +224,7 @@ router.post(
         console.log('initial req.files: ', req.files);
 
         if (req.files && req.files.length > 0) {
-            req.files.forEach(async (theFile, filesIndex) => {
+            const promises = req.files.map(async (theFile, filesIndex) => {
                 try {
                     if (theFile == undefined) {
                         return res
@@ -237,10 +232,10 @@ router.post(
                             .json({ msg: 'Please upload a file!' });
                     }
                     console.log('upload initiating...');
-                    console.log(
-                        `req.session.driveFolderID`,
-                        req.session.driveFolderID
-                    );
+                    // console.log(
+                    //     `req.session.driveFolderID`,
+                    //     req.session.driveFolderID
+                    // );
 
                     const hostMe = await Host.findOne({
                         email: req.user.email,
@@ -260,10 +255,10 @@ router.post(
                         .populate('confirmedArtist');
 
                     console.log('theEvent.bookingWhen: ', theEvent.bookingWhen);
-                    console.log(
-                        `req.session.driveFolderID`,
-                        req.session.driveFolderID
-                    );
+                    // console.log(
+                    //     `req.session.driveFolderID`,
+                    //     req.session.driveFolderID
+                    // );
 
                     const uploadFolderName =
                         theEvent?.bookingWhen.toISOString().substring(0, 10) +
@@ -282,84 +277,51 @@ router.post(
                     // req.body.artist = theArtist; //replace the artistID with the whole artist document
 
                     if (theEvent.bookingWhen) {
-                        authorize()
+                        const googleDriveUpload = authorize()
                             .then(async (authClient) => {
                                 const drive = google.drive({
                                     version: 'v3',
                                     auth: authClient,
                                 });
-                                // if (!req.session.driveFolderID) {
-                                // }
-                                // else if (
-                                //     !theEvent.driveFolderID ||
-                                //     theEvent.driveFolderID !== req.session.driveFolderID
-                                // ) {
-                                //     theEvent.driveFolderID = req.session.driveFolderID;
-                                //     theEvent.driveFolderID = uploadFolder.data.id;
-                                //     theEvent.markModified('driveFolderID');
-                                //     await theEvent.save();
-                                // }
-                                // if (
-                                //     !theEvent.driveFolderID &&
-                                //     req.session.driveFolderID !== undefined
-                                // ) {
-                                //     theEvent.driveFolderID = req.session.driveFolderID;
-                                //     theEvent.markModified('driveFolderID');
-                                //     await theEvent.save();
-                                // } else if (
-                                //     !theEvent.driveFolderID &&
-                                //     req.session.driveFolderID === undefined
-                                // ) {
-                                //     try {
-                                //         const uploadFolder = await drive.files.create({
-                                //             resource: {
-                                //                 name: uploadFolderName,
-                                //                 mimeType:
-                                //                     'application/vnd.google-apps.folder',
-                                //                 parents: [
-                                //                     '1YbUXYyijMsXObU-qSOcDOQUDSjGsbJ5o',
-                                //                 ], //Porchlight App Uploads
-                                //             },
-                                //             fields: 'id',
-                                //         });
-                                //         theEvent.driveFolderID = uploadFolder.data.id;
-                                //         // driveFolderID = uploadFolder.data.id;
-                                //         req.session.driveFolderID = uploadFolder.data.id;
-                                //         theEvent.markModified('driveFolderID');
-                                //         await theEvent.save();
-                                //         console.log(
-                                //             'uploadFolder.config.data.name',
-                                //             uploadFolder.config.data.name,
-                                //             'uploadFolder.data.id',
-                                //             uploadFolder.data.id
-                                //         );
-                                //     } catch (err) {
-                                //         // TODO(developer) - Handle error
-                                //         console.log('error', err);
-                                //         throw err;
-                                //     }
-                                // }
-                                console.log(
-                                    `req.session.driveFolderID`,
-                                    req.session.driveFolderID
-                                );
                                 if (
                                     theFile &&
                                     theFile.buffer &&
-                                    // theEvent.driveFolderID &&
-                                    req.session.driveFolderID
+                                    theEvent.driveFolderID
+                                    // &&
+                                    // req.session.driveFolderID
                                 ) {
                                     // console.log('req.file', req.file);
-                                    uploadFile(
+                                    const uploadRes = await uploadFile(
                                         authClient,
                                         req,
                                         theEvent,
                                         drive,
                                         filesIndex
+                                    ).then((result) => {
+                                        // console.log(
+                                        //     'uploadFile result.data',
+                                        //     result.data
+                                        // );
+                                        return result.data;
+                                    });
+                                    console.log(
+                                        'uploadFile uploadRes.name and id',
+                                        uploadRes.name,
+                                        uploadRes.id
                                     );
+
+                                    if (uploadRes.id !== undefined) {
+                                        uploadRes.url = `https://drive.usercontent.google.com/download?id=${uploadRes.id}`;
+                                        uploadRes.driveID = uploadRes.id;
+                                        theEvent.uploadedImages.push(uploadRes);
+                                        theEvent.markModified('uploadedImages');
+                                        await theEvent.save();
+                                    }
+                                    return uploadRes;
                                 }
                             })
                             .catch('error');
+                        return googleDriveUpload;
                     }
                 } catch (err) {
                     //console.log('Upload error: ' + err);
@@ -375,9 +337,23 @@ router.post(
                 }
             });
 
-            res.status(200).json({
-                msg: 'Uploaded the files successfully ', //+ req.file.originalname,
-            });
+            Promise.all(promises)
+                .then((results) => {
+                    console.log(`Uploaded ${results.length} files):`, results);
+
+                    res.status(200).json({
+                        url: results[0].url, //it wants a url here...
+                        msg: `Uploaded ${results.length} files successfully!`, //+ req.file.originalname,
+                        files: results,
+                    });
+                })
+                .catch((err) => {
+                    console.log(`Could not upload the files. ${err}`);
+                    res.status(500).json({
+                        msg: `Could not upload the files. ${err}`,
+                    });
+                });
+            // uploadedImages = results.filter((result) => result !== undefined);
         } else {
             res.status(500).json({
                 msg: `No files found in req. ${err}`,
