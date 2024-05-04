@@ -50,6 +50,8 @@ const FileUploader = ({ thisEvent }) => {
                     // 'Content-Type': 'application/json',
                 },
                 fieldName: 'imageUpload',
+                bundle: true,
+                formData: true,
                 // onBeforeSend: (files, xhr) => {
                 //     xhr.upload = files;
                 // },

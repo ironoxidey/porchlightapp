@@ -23,6 +23,7 @@
         "config": "^3.3.1",
         "cors": "^2.8.5",
         "express": "^4.17.1",
+        "express-session": "^1.18.0",
         "express-validator": "^6.6.1",
         "formidable": "^3.5.1",
         "googleapis": "^135.0.0",
