@@ -42,86 +42,90 @@ const FileUploader = ({ thisEvent }) => {
                 //     ', ' +
                 //     thisEvent.bookingWhere.state,
             },
-        })
-            // .use(Tus, { endpoint: 'https://tusd.tusdemo.net/files/' });
-            .use(XHR, {
-                id: 'XHRUpload',
-                endpoint: '/api/uploads/upload',
-                method: 'post',
-                headers: {
-                    'x-auth-token': localStorage.token,
-                    // 'Content-Type': 'application/json',
-                },
-                fieldName: 'imageUpload',
-                bundle: true,
-                formData: true,
-                getResponseData: (responseText, response) => {
-                    // Parse the response data and return it
-                    // This allows Uppy to get the uploaded file URLs
-                    const data = JSON.parse(responseText);
-                    console.log('getResponseData data', data);
-                    uppy.info({
-                        message: `${data.msg} Thank you so much!`,
-                        duration: 8000,
-                    });
-                    return {
-                        url: data.url,
-                    };
-                },
-                getResponseError: (responseText, response) => {
-                    console.log('getResponseError responseText', responseText);
-                    uppy.info({
-                        message: `Something went wrong. Please refresh and try again.`,
-                        type: 'error',
-                        duration: 8000,
-                    });
-                    // return new Error(JSON.parse(responseText).message);
-                },
-                validateStatus: (status, responseData) => {
-                    if (status >= 400) {
-                        // Extract error information from the response data
-                        let errorMessage =
-                            responseData && responseData.error
-                                ? responseData.error
-                                : 'An error occurred during upload';
-                        let errorDetails =
-                            responseData && responseData.details
-                                ? responseData.details
-                                : null;
+        }).use(Tus, {
+            endpoint: '/api/uploads/file',
+            headers: {
+                'x-auth-token': localStorage.token,
+            },
+        });
+        // .use(XHR, {
+        //     id: 'XHRUpload',
+        //     endpoint: '/api/uploads/upload',
+        //     method: 'post',
+        //     headers: {
+        //         'x-auth-token': localStorage.token,
+        //         // 'Content-Type': 'application/json',
+        //     },
+        //     fieldName: 'imageUpload',
+        //     bundle: true,
+        //     formData: true,
+        //     getResponseData: (responseText, response) => {
+        //         // Parse the response data and return it
+        //         // This allows Uppy to get the uploaded file URLs
+        //         const data = JSON.parse(responseText);
+        //         console.log('getResponseData data', data);
+        //         uppy.info({
+        //             message: `${data.msg} Thank you so much!`,
+        //             duration: 8000,
+        //         });
+        //         return {
+        //             url: data.url,
+        //         };
+        //     },
+        //     getResponseError: (responseText, response) => {
+        //         console.log('getResponseError responseText', responseText);
+        //         uppy.info({
+        //             message: `Something went wrong. Please refresh and try again.`,
+        //             type: 'error',
+        //             duration: 8000,
+        //         });
+        //         // return new Error(JSON.parse(responseText).message);
+        //     },
+        //     validateStatus: (status, responseData) => {
+        //         if (status >= 400) {
+        //             // Extract error information from the response data
+        //             let errorMessage =
+        //                 responseData && responseData.error
+        //                     ? responseData.error
+        //                     : 'An error occurred during upload';
+        //             let errorDetails =
+        //                 responseData && responseData.details
+        //                     ? responseData.details
+        //                     : null;
 
-                        // Log the error
-                        console.error(`Upload failed: ${errorMessage}`);
-                        if (errorDetails) {
-                            console.error('Error details:', errorDetails);
-                        }
+        //             // Log the error
+        //             console.error(`Upload failed: ${errorMessage}`);
+        //             if (errorDetails) {
+        //                 console.error('Error details:', errorDetails);
+        //             }
 
-                        // Display an error notification to the user
-                        uppy.info({
-                            message: errorMessage,
-                            type: 'error',
-                            duration: 8000,
-                        });
+        //             // Display an error notification to the user
+        //             uppy.info({
+        //                 message: errorMessage,
+        //                 type: 'error',
+        //                 duration: 8000,
+        //             });
 
-                        // Optionally, you can retry the upload or perform other actions based on the error
-                        if (status === 429) {
-                            // Too Many Requests
-                            // Implement retry logic here
-                        } else if (status === 401) {
-                            // Unauthorized
-                            // Handle authentication errors
-                        }
+        //             // Optionally, you can retry the upload or perform other actions based on the error
+        //             if (status === 429) {
+        //                 // Too Many Requests
+        //                 // Implement retry logic here
+        //             } else if (status === 401) {
+        //                 // Unauthorized
+        //                 // Handle authentication errors
+        //             }
 
-                        return false; // Indicate failed upload
-                    }
-                    console.log('Uppy responseData', responseData);
+        //             return false; // Indicate failed upload
+        //         }
+        //         console.log('Uppy responseData', responseData);
 
-                    return true;
-                },
-                // onBeforeSend: (files, xhr) => {
-                //     xhr.upload = files;
-                // },
-                // withCredentials: true,
-            });
+        //         return true;
+        //     },
+        //     // onBeforeSend: (files, xhr) => {
+        //     //     xhr.upload = files;
+        //     // },
+        //     // withCredentials: true,
+        // });
 
         // const handleFileAdded = (file) => {
         //     console.log('added file: ', file);

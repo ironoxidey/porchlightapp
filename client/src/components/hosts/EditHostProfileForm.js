@@ -318,6 +318,10 @@ const EditHostProfileForm = ({
         mailChimped,
     } = formData;
 
+    useEffect(() => {
+        console.log('hostMe.venueStreetAddress', hostMe.venueStreetAddress);
+    }, [hostMe]);
+
     const onChange = (e) => {
         //console.log(e);
         //console.log(Object.keys(formGroups).length);
@@ -1175,6 +1179,9 @@ const EditHostProfileForm = ({
                 hostMe.lastName &&
                 hostMe.phone &&
                 hostMe.profileImg &&
+                // ((hostMe.streetAddress && hostMe.streetAddress != '') ||
+                //     (hostMe.venueStreetAddress &&
+                //         hostMe.venueStreetAddress != ''))
                 (hostMe.streetAddress || hostMe.venueStreetAddress) ? (
                     <>
                         <Typography

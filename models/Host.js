@@ -58,7 +58,6 @@ const HostSchema = new mongoose.Schema(
         },
         streetAddress: {
             type: String,
-            required: true,
         },
         geocodedStreetAddress: {
             type: String,
