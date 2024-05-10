@@ -1,11 +1,11 @@
 const express = require('express');
-const cors = require('cors');
+// const cors = require('cors');
 // var session = require('express-session');
 const config = !process.env.NODE_ENV ? require('config') : process.env;
 
 const auth = require('../../middleware/auth');
 
-// const fs = require('fs');
+const fs = require('fs');
 const { google } = require('googleapis');
 
 const apikeys = config['googleDriveApiKey'];
@@ -29,7 +29,18 @@ const { Metadata, ERRORS } = require('@tus/utils');
 const tusServer = new Server({
     path: '/api/uploads/file',
     datastore: new FileStore({ directory: './uploads' }),
+
     // https://www.npmjs.com/package/@tus/server#example-validate-metadata-when-an-upload-is-created
+    async onUploadCreate(req, res, upload) {
+        console.log('tusServer setup onUploadCreate req.body', req.body);
+        console.log('tusServer setup onUploadCreate upload', upload);
+        return { res, metadata: { ...upload.metadata } };
+        // You can optionally return metadata to override the upload metadata,
+        // such as `{ storagePath: "/upload/123abc..." }`
+        // const extraMeta = {}
+
+        // return { res, metadata: { ...upload.metadata, ...extraMeta } };
+    },
     // async onUploadCreate(req, res, upload) {
     //     const { ok, expected, received } = validateMetadata(upload); // your logic
     //     if (!ok) {
@@ -76,7 +87,7 @@ async function authorize() {
     return jwtClient;
 }
 
-router.use(cors());
+// router.use(cors());
 
 // router.use(
 //     session({
@@ -120,16 +131,6 @@ const createFolderMiddleWare = async (req, res, next) => {
         }
     }
 
-    // let metadata;
-    // try {
-    //     metadata = JSON.parse(req.header['upload-metadata']);
-    //     // metadata = Metadata.parse(reqHeaders['upload-metadata']);
-    //     console.log('createFolderMiddleWare metadata: ', metadata);
-    // } catch {
-    //     console.log('error parsing upload metadata');
-    //     // throw ERRORS.INVALID_METADATA;
-    // }
-
     if (req.body?.thisEvent) {
         const hostMe = await Host.findOne({
             email: req.user.email,
@@ -141,17 +142,30 @@ const createFolderMiddleWare = async (req, res, next) => {
         }
         console.log('hostMe.firstName: ' + hostMe.firstName);
         console.log('req.body', req.body);
-        const theEvent = await Event.findOne({
-            _id: req.body.thisEvent,
-            confirmedHost: hostMe._id, // I don't think we need this again, if it already passed before
-        })
-            .populate('artist')
-            .populate('confirmedArtist');
 
-        // if (!req.session.driveFolderID) {
-        if (!theEvent.driveFolderID) {
-            await createFolder(req, theEvent, hostMe);
-        }
+        await setTimeout(async () => {
+            const theEvent = await Event.findOne({
+                _id: req.body.thisEvent,
+                confirmedHost: hostMe._id, // I don't think we need this again, if it already passed before
+            })
+                .populate('artist')
+                .populate('confirmedArtist');
+
+            // if (!req.session.driveFolderID) {
+            if (!theEvent.driveFolderID) {
+                console.log(
+                    '**** createFolder for event on',
+                    theEvent?.bookingWhen.toISOString().substring(0, 10)
+                );
+                req.body.driveFolderID = await createFolder(
+                    req,
+                    theEvent,
+                    hostMe
+                );
+            } else {
+                req.body.driveFolderID = theEvent.driveFolderID;
+            }
+        }, Math.random() * 1000); //I need it to check at different times, so that hopefully it won't create multiple folders at the same time
     } else {
         console.log('No event found at req.body.thisEvent');
     }
@@ -181,7 +195,13 @@ const createFolder = async (req, theEvent, hostMe) => {
     // );
 
     const authClient = await authorize();
-    const drive = google.drive({ version: 'v3', auth: authClient });
+    const drive = google.drive({
+        version: 'v3',
+        auth: authClient,
+        // protocol: 'resumable',
+        upload_protocol: 'resumable',
+        uploadType: 'multipart',
+    });
 
     const uploadFolderName =
         theEvent?.bookingWhen.toISOString().substring(0, 10) +
@@ -204,14 +224,19 @@ const createFolder = async (req, theEvent, hostMe) => {
         googleDriveFolderSearch.data.files
     );
     try {
+        let theFolderIdToReturn;
         if (googleDriveFolderSearch.data.files.length > 0) {
             //there's a folder in the Google Drive
-            theEvent.driveFolderID =
+            const theDriveFolderId =
                 googleDriveFolderSearch.data.files[
                     googleDriveFolderSearch.data.files.length - 1
                 ].id;
+            // req.body.driveFolderID = theDriveFolderId;
+            theFolderIdToReturn = theDriveFolderId;
+            theEvent.driveFolderID = theDriveFolderId;
             theEvent.markModified('driveFolderID');
             await theEvent.save();
+            console.log('driveFolderId: ' + theDriveFolderId);
             // req.session.driveFolderID =
             //     googleDriveFolderSearch.data.files[
             //         googleDriveFolderSearch.data.files.length - 1
@@ -222,9 +247,9 @@ const createFolder = async (req, theEvent, hostMe) => {
         } else {
             //there's no folder in the Google Drive
             // delete req.session.driveFolderID;
-            if (theEvent.driveFolderID) {
-                delete theEvent.driveFolderID;
-            }
+            // if (theEvent.driveFolderID) {
+            //     delete theEvent.driveFolderID;
+            // }
 
             const uploadFolder = await drive.files.create({
                 resource: {
@@ -239,9 +264,12 @@ const createFolder = async (req, theEvent, hostMe) => {
             //     // session saved
             // });
             // driveFolderID = uploadFolder.data.id;
+            // req.body.driveFolderID = uploadFolder.data.id;
+            theFolderIdToReturn = uploadFolder.data.id;
             theEvent.driveFolderID = uploadFolder.data.id;
             theEvent.markModified('driveFolderID');
             await theEvent.save();
+            console.log('driveFolderId: ' + uploadFolder.data.id);
             // console.log(
             //     'uploadFolder.config.data.name',
             //     uploadFolder.config.data.name,
@@ -249,6 +277,7 @@ const createFolder = async (req, theEvent, hostMe) => {
             //     uploadFolder.data.id
             // );
         }
+        return theFolderIdToReturn;
     } catch (err) {
         // TODO(developer) - Handle error
         console.log('error', err);
@@ -256,15 +285,17 @@ const createFolder = async (req, theEvent, hostMe) => {
     }
 };
 
-async function uploadFile(authClient, req, theEvent, drive, filesIndex) {
+async function uploadFile(req, res, upload, theEvent) {
     // console.log('uploadFile authClient', authClient);
-    const file = req.files[filesIndex];
     // console.log('uploadFile file', file);
-    const fileToUpload = file.buffer;
-    // console.log('fileToUpload', fileToUpload);
-    const bufferStream = new stream.PassThrough();
-    bufferStream.end(file.buffer);
-    // const drive = google.drive({ version: 'v3', auth: authClient });
+    console.log('uploadFile req.body', req.body);
+    console.log('uploadFile res', res);
+
+    // console.log('upload', upload);
+    // const bufferStream = new stream.PassThrough();
+    // bufferStream.end(file.buffer);
+    const authClient = await authorize();
+    const drive = google.drive({ version: 'v3', auth: authClient });
 
     // console.log(
     //     'uploadFile req.session.driveFolderID',
@@ -274,13 +305,13 @@ async function uploadFile(authClient, req, theEvent, drive, filesIndex) {
         drive.files.create(
             {
                 resource: {
-                    name: file.originalname,
-                    parents: [theEvent.driveFolderID], //should be inside Porchlight App Uploads on Google Drive
+                    name: upload.metadata.filename,
+                    parents: [req.body.driveFolderID], //should be inside Porchlight App Uploads on Google Drive
                     // parents: [req.session.driveFolderID], //should be inside Porchlight App Uploads on Google Drive
                 },
                 media: {
-                    body: bufferStream,
-                    mimeType: file.mimeType,
+                    body: fs.createReadStream(`./uploads/${upload.id}`),
+                    mimeType: upload.metadata.filetype,
                 },
                 fields: 'id,name',
             },
@@ -310,36 +341,58 @@ async function uploadFile(authClient, req, theEvent, drive, filesIndex) {
 //     // console.log('tussing handler: ', handler);
 // });
 
-//tusServer path '/api/uploads/file'
-router.get('/file/:id', auth, createFolderMiddleWare, (req, res) => {
+// tusServer path '/api/uploads/file'
+router.get('/file/:id', (req, res) => {
     console.log('get req.params.id: ', req.params.id);
-    console.log('get req: ', req);
+    console.log('get req.body: ', req.body);
     tusServer.handle(req, res);
     // handler(req, res);
-    tusServer.on(EVENTS.POST_FINISH, (req, res, upload) => {
-        console.log('get tusServer EVENTS.POST_FINISH uploaded');
-        console.log('get tusServer upload', upload);
-    });
+    // tusServer.on(EVENTS.POST_FINISH, (req, res, upload) => {
+    //     console.log('get tusServer EVENTS.POST_FINISH uploaded');
+    //     console.log('get tusServer upload', upload);
+    // });
 });
 router.patch('/file/:id', auth, createFolderMiddleWare, (req, res) => {
     console.log('patch req.params.id: ', req.params.id);
-    console.log('patch req: ', req);
+    console.log('patch req.body: ', req.body);
+    tusServer.handle(req, res);
+    // handler(req, res);
+    // tusServer.on(EVENTS.POST_FINISH, (req, res, upload) => {
+    //     console.log('patch tusServer EVENTS.POST_FINISH uploaded');
+    //     console.log('patch tusServer upload', upload);
+    // });
+});
+router.post('/file', auth, createFolderMiddleWare, (req, res) => {
+    // console.log('patch req.params.id: ', req.params.id);
+    console.log('post req.body: ', req.body);
     tusServer.handle(req, res);
     // handler(req, res);
     tusServer.on(EVENTS.POST_FINISH, (req, res, upload) => {
-        console.log('patch tusServer EVENTS.POST_FINISH uploaded');
-        console.log('patch tusServer upload', upload);
+        console.log('post tusServer EVENTS.POST_FINISH uploaded');
+        console.log('post tusServer upload', upload);
+
+        uploadFile(req, res, upload);
     });
 });
-router.all('*', auth, createFolderMiddleWare, async (req, res) => {
-    console.log('tussing req: ', req);
-    tusServer.handle(req, res);
+router.all('*', auth, createFolderMiddleWare, (req, res) => {
+    // console.log('patch req.params.id: ', req.params.id);
+    console.log('all req: ', req);
+    //tusServer.handle(req, res);
     // handler(req, res);
     tusServer.on(EVENTS.POST_FINISH, (req, res, upload) => {
-        console.log('tusServer EVENTS.POST_FINISH uploaded');
-        console.log('tusServer upload', upload);
+        console.log('all tusServer EVENTS.POST_FINISH uploaded');
+        console.log('all tusServer upload', upload);
     });
 });
+// router.all('*', auth, createFolderMiddleWare, async (req, res) => {
+//     console.log('tussing req: ', req);
+//     tusServer.handle(req, res);
+//     // handler(req, res);
+//     tusServer.on(EVENTS.POST_FINISH, (req, res, upload) => {
+//         console.log('tusServer EVENTS.POST_FINISH uploaded');
+//         console.log('tusServer upload', upload);
+//     });
+// });
 
 // //Image Upload stuff - https://www.geeksforgeeks.org/node-js-image-upload-processing-and-resizing-using-sharp-package/
 // //AND https://www.bezkoder.com/node-js-express-file-upload/#Define_Route_for_uploading_file
@@ -498,56 +551,5 @@ router.all('*', auth, createFolderMiddleWare, async (req, res) => {
 //         }
 //     }
 // );
-
-// // @route    GET api/uploads/files
-// // @desc     Get List of Files in User's directory
-// // @access   Private
-// router.get('/files', auth, async (req, res) => {
-// 	const artistSlug = await Artist.findOne({
-// 		email: req.user.email,
-// 	}).select('slug'); //ADD .select('-field'); to exclude [field] from the response
-// 	if (!artistSlug) {
-// 		return res.status(400).json({ msg: 'There is no slug for this user' });
-// 	}
-
-// 	const directoryPath = `../porchlight-uploads/${artistSlug.slug}/`;
-
-// 	//console.log(directoryPath);
-
-// 	fs.readdir(directoryPath, function (err, files) {
-// 		if (err) {
-// 			res.status(500).json({
-// 				msg: 'Unable to scan files!',
-// 			});
-// 		}
-
-// 		let fileInfos = [];
-
-// 		files.forEach((file) => {
-// 			fileInfos.push({
-// 				name: file,
-// 				url: directoryPath + file,
-// 			});
-// 		});
-
-// 		res.status(200).send(fileInfos);
-// 	});
-// });
-
-// // @route    GET api/uploads/:slug/:name
-// // @desc     Get specific file
-// // @access   Public
-// router.get('/:slug/:file', (req, res) => {
-// 	const fileName = req.params.file;
-// 	const directoryPath = `../porchlight-uploads/${req.params.slug}/`;
-
-// 	res.download(directoryPath + fileName, fileName, (err) => {
-// 		if (err) {
-// 			res.status(500).json({
-// 				msg: 'Could not download the file. ' + err,
-// 			});
-// 		}
-// 	});
-// });
 
 module.exports = router;

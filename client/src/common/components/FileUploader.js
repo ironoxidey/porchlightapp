@@ -47,6 +47,9 @@ const FileUploader = ({ thisEvent }) => {
             headers: {
                 'x-auth-token': localStorage.token,
             },
+            // onBeforeRequest: (req, file) => {
+
+            // }
         });
         // .use(XHR, {
         //     id: 'XHRUpload',
