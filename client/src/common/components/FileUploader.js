@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import Uppy from '@uppy/core';
 import Tus from '@uppy/tus';
@@ -21,6 +22,7 @@ import '@uppy/progress-bar/dist/style.css';
 
 const FileUploader = ({ thisEvent }) => {
     if (localStorage.token) {
+        let numRequests = 0;
         const uppy = new Uppy({
             id: 'uppity',
             // autoProceed: true,
@@ -47,9 +49,67 @@ const FileUploader = ({ thisEvent }) => {
             headers: {
                 'x-auth-token': localStorage.token,
             },
-            // onBeforeRequest: (req, file) => {
-
-            // }
+            onBeforeRequest: async (req, file) => {
+                // make sure it has a Google Drive Folder to go into
+                // console.log('onBeforeRequest req', req);
+                console.log('onBeforeRequest file', file);
+                if (numRequests === 0) {
+                    //only make the folder once (we don't need a bunch of empty folders in the Drive)
+                    try {
+                        numRequests++;
+                        const config = {
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        };
+                        const res = await axios.post(
+                            '/api/uploads/createDriveFolder',
+                            { thisEvent: file.meta.thisEvent },
+                            config
+                        );
+                        console.log(
+                            `/api/uploads/createDriveFolder res index(${numRequests})`,
+                            res
+                        );
+                        // dispatch({
+                        //     type: EDIT_HOST_EVENT,
+                        //     payload: res.data,
+                        // });
+                        // dispatch(
+                        //     setAlert(
+                        //         'Your offer to host the show on ' +
+                        //             new Date(formData.bookingWhen).toLocaleDateString(
+                        //                 undefined,
+                        //                 {
+                        //                     weekday: 'long',
+                        //                     year: 'numeric',
+                        //                     month: 'long',
+                        //                     day: 'numeric',
+                        //                 }
+                        //             ) +
+                        //             ' was submitted.',
+                        //         'success'
+                        //     )
+                        // ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+                    } catch (err) {
+                        console.log('error: ' + err);
+                        // const errors = err.response.data.errors;
+                        // if (errors) {
+                        //     errors.forEach((error) =>
+                        //         dispatch(setAlert(error.msg, 'danger'))
+                        //     );
+                        // }
+                        // dispatch({
+                        //     type: UPDATE_EVENT_ERROR,
+                        //     payload: {
+                        //         msg: err.response.statusText,
+                        //         status: err.response.status,
+                        //     },
+                        // });
+                        // dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+                    }
+                }
+            },
         });
         // .use(XHR, {
         //     id: 'XHRUpload',
