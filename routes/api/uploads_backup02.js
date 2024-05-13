@@ -1,4 +1,6 @@
 const express = require('express');
+// const cors = require('cors');
+var session = require('express-session');
 const config = !process.env.NODE_ENV ? require('config') : process.env;
 
 const auth = require('../../middleware/auth');
@@ -8,8 +10,15 @@ const { google } = require('googleapis');
 
 const apikeys = config['googleDriveApiKey'];
 
+// const multer = require('multer');
+
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage });
+const stream = require('stream');
+
 const router = express.Router();
 const Event = require('../../models/Event');
+// const Artist = require('../../models/Artist');
 const Host = require('../../models/Host');
 
 const { Server, EVENTS } = require('@tus/server');
@@ -18,66 +27,16 @@ const { FileStore } = require('@tus/file-store');
 const { Metadata, ERRORS } = require('@tus/utils');
 
 const uploadFolderName = (theEvent) => {
-    if (theEvent?.bookingWhen) {
-        return (
-            theEvent?.bookingWhen.toISOString().substring(0, 10) +
-            ' — ' +
-            // 'Concert' +
-            (theEvent?.artist?.stageName ||
-                theEvent?.confirmedArtist?.stageName) +
-            ' in ' +
-            theEvent?.bookingWhere?.city +
-            ', ' +
-            theEvent?.bookingWhere?.state
-        );
-    }
-};
-
-const searchForFolderInGoogleDrive = async (theEvent) => {
-    const authClient = await authorize();
-    const drive = google.drive({
-        version: 'v3',
-        auth: authClient,
-        // protocol: 'resumable',
-        upload_protocol: 'resumable',
-        uploadType: 'multipart',
-    });
-    const googleDriveFolderSearch = await drive.files.list({
-        q: `'1YbUXYyijMsXObU-qSOcDOQUDSjGsbJ5o' in parents and mimeType = 'application/vnd.google-apps.folder' and name = '${uploadFolderName(
-            theEvent
-        )}' and trashed = false`,
-        fields: 'nextPageToken, files(id, name)',
-        spaces: 'drive',
-    });
-    console.log(
-        'googleDriveFolderSearch.data.files',
-        googleDriveFolderSearch.data.files
+    return (
+        theEvent?.bookingWhen.toISOString().substring(0, 10) +
+        ' — ' +
+        // 'Concert' +
+        (theEvent?.artist?.stageName || theEvent?.confirmedArtist?.stageName) +
+        ' in ' +
+        theEvent?.bookingWhere?.city +
+        ', ' +
+        theEvent?.bookingWhere?.state
     );
-
-    try {
-        if (googleDriveFolderSearch.data.files.length > 0) {
-            //there's a folder in the Google Drive
-            theEvent.driveFolderID =
-                googleDriveFolderSearch.data.files[
-                    googleDriveFolderSearch.data.files.length - 1
-                ].id;
-            theEvent.markModified('driveFolderID');
-            console.log(
-                'searchForFolderInGoogleDrive found theEvent.driveFolderID:',
-                theEvent.driveFolderID
-            );
-            await theEvent.save();
-            return googleDriveFolderSearch.data.files[
-                googleDriveFolderSearch.data.files.length - 1
-            ].id;
-        }
-    } catch (err) {
-        // TODO(developer) - Handle error
-        console.log('error', err);
-        throw err;
-    }
-
-    return googleDriveFolderSearch;
 };
 
 const tusServer = new Server({
@@ -86,52 +45,47 @@ const tusServer = new Server({
 
     async onUploadFinish(req, res, upload) {
         console.log('onUploadFinish upload', upload);
-        // uploadFile(req, res, upload);
-
-        const uploadRes = await uploadFile(req, res, upload).then((result) => {
-            return result.data;
-        });
-        console.log(
-            'uploadFile uploadRes.name and id',
-            uploadRes.name,
-            uploadRes.id
-        );
-
-        if (uploadRes.id !== undefined) {
-            const theEvent = await Event.findOne({
-                _id: upload.metadata.thisEvent,
-            });
-
-            uploadRes.url = `https://drive.usercontent.google.com/download?id=${uploadRes.id}`;
-            uploadRes.driveID = uploadRes.id;
-            theEvent.uploadedImages.push(uploadRes);
-            theEvent.markModified('uploadedImages');
-            await theEvent.save();
-        }
-        return uploadRes;
+        uploadFile(req, res, upload);
     },
     // https://www.npmjs.com/package/@tus/server#example-validate-metadata-when-an-upload-is-created
     async onUploadCreate(req, res, upload) {
         console.log('tusServer setup onUploadCreate req.user', req.user);
         console.log('tusServer setup onUploadCreate req.body', req.body);
         console.log('tusServer setup onUploadCreate upload', upload);
+        console.log('tusServer setup onUploadCreate req.session', req.session);
 
         if (req.body.thisEvent) {
             const hostMe = await Host.findOne({
                 email: req.user.email,
             }); //ADD .select('-field'); to exclude [field] from the response
             if (!hostMe) {
-                return res.status(400).json({
-                    msg: 'There is no host for this email: ' + req.user.email,
-                });
+                return res
+                    .status(400)
+                    .json({ msg: 'There is no host for this email' });
             }
+            console.log(
+                'tusServer setup onUploadCreate  hostMe.firstName: ' +
+                    hostMe.firstName
+            );
 
             const theEvent = await Event.findOne({
                 _id: req.body.thisEvent,
-                confirmedHost: hostMe._id,
-            }).select('driveFolderID');
+                confirmedHost: hostMe._id, // I don't think we need this again, if it already passed before
+            });
+            // .populate('artist')
+            // .populate('confirmedArtist');
 
-            if (!theEvent.driveFolderID) {
+            // if (!req.session.driveFolderID) {
+
+            if (req.session.driveFolderID && !theEvent.driveFolderID) {
+                return {
+                    res,
+                    metadata: {
+                        ...upload.metadata,
+                        driveFolderID: req.session.driveFolderID,
+                    },
+                };
+            } else if (!theEvent.driveFolderID) {
                 console.log(
                     'tusServer setup onUploadCreate THERE’S STILL NO theEvent.driveFolderID ?!?!',
                     theEvent?.bookingWhen.toISOString().substring(0, 10)
@@ -142,6 +96,10 @@ const tusServer = new Server({
                     `tusServer setup onUploadCreate theEvent.driveFolderID`,
                     theEvent.driveFolderID
                 );
+                req.session.driveFolderID = theEvent.driveFolderID;
+                req.session.save(function (err) {
+                    // session saved
+                });
                 return {
                     res,
                     metadata: {
@@ -204,6 +162,17 @@ async function authorize() {
     return jwtClient;
 }
 
+// router.use(cors());
+
+router.use(
+    session({
+        secret: 'I hope this doesnt need to be too super secure... Im only planning to store driveFolderIDs in here',
+        resave: false,
+        saveUninitialized: false,
+        // unset: 'destroy',
+    })
+);
+
 const createFolderMiddleWare = async (req, res, next) => {
     // const reqHeaders = req.header('upload-metadata');
     // console.log('createFolderMiddleWare req', req);
@@ -258,6 +227,7 @@ const createFolderMiddleWare = async (req, res, next) => {
             .populate('artist')
             .populate('confirmedArtist');
 
+        // if (!req.session.driveFolderID) {
         if (!theEvent.driveFolderID) {
             console.log(
                 '**** !theEvent.driveFolderID for event on',
@@ -283,7 +253,10 @@ const createFolderMiddleWare = async (req, res, next) => {
             //     theEvent.driveFolderID
             // );
             req.body.driveFolderID = theEvent.driveFolderID;
-
+            req.session.driveFolderID = theEvent.driveFolderID;
+            req.session.save(function (err) {
+                // session saved
+            });
             // console.log(
             //     `setTimeout ${randTime} theEvent.driveFolderID req.body`,
             //     req.body
@@ -300,69 +273,45 @@ const createFolderMiddleWare = async (req, res, next) => {
 };
 
 const createFolder = async (req, theEvent, hostMe) => {
+    // console.log('createFolder req', req);
+    // const hostMe = await Host.findOne({
+    //     email: req.user.email,
+    // }); //ADD .select('-field'); to exclude [field] from the response
+    // if (!hostMe) {
+    //     return res.status(400).json({ msg: 'There is no host for this email' });
+    // }
+    // console.log('hostMe.firstName: ' + hostMe.firstName);
+    // const theEvent = await Event.findOne({
+    //     _id: req.body.thisEvent,
+    //     confirmedHost: hostMe._id, // I don't think we need this again, if it already passed before
+    // })
+    //     .populate('artist')
+    //     .populate('confirmedArtist');
+    // console.log(
+    //     'theEvent.bookingWhen:',
+    //     theEvent.bookingWhen,
+    //     theEvent.artist?.stageName || theEvent.confirmedArtist?.stageName,
+    //     theEvent.bookingWhere.city + ', ' + theEvent.bookingWhere.state
+    // );
+
     const authClient = await authorize();
     const drive = google.drive({
         version: 'v3',
         auth: authClient,
+        // protocol: 'resumable',
+        upload_protocol: 'resumable',
+        uploadType: 'multipart',
     });
 
-    const googleDriveEmptiesFolder = await drive.files.list({
-        q: `'1YbUXYyijMsXObU-qSOcDOQUDSjGsbJ5o' in parents and mimeType = 'application/vnd.google-apps.folder' and name = 'empties' and trashed = false`,
-        fields: 'nextPageToken, files(id, name)',
-        spaces: 'drive',
-    });
-
-    let theEmptiesFolderId;
-
-    try {
-        if (googleDriveEmptiesFolder.data.files.length > 0) {
-            //there's a folder in the Google Drive
-            const theDriveFolderId =
-                googleDriveEmptiesFolder.data.files[
-                    googleDriveEmptiesFolder.data.files.length - 1
-                ].id;
-            // req.body.driveFolderID = theDriveFolderId;
-            theEmptiesFolderId = theDriveFolderId;
-            theEvent.driveFolderID = theDriveFolderId;
-            theEvent.markModified('driveFolderID');
-            await theEvent.save();
-            console.log('driveFolderID: ' + theDriveFolderId);
-        } else {
-            // there's no folder in the Google Drive
-
-            const uploadFolder = await drive.files.create({
-                resource: {
-                    name: 'empties',
-                    mimeType: 'application/vnd.google-apps.folder',
-                    parents: ['1YbUXYyijMsXObU-qSOcDOQUDSjGsbJ5o'], //Porchlight App Uploads
-                },
-                fields: 'id',
-            });
-
-            // driveFolderID = uploadFolder.data.id;
-            // req.body.driveFolderID = uploadFolder.data.id;
-            theEmptiesFolderId = await uploadFolder.data.id;
-            theEvent.driveFolderID = uploadFolder.data.id;
-            theEvent.markModified('driveFolderID');
-            await theEvent.save();
-            console.log('driveFolderID: ' + uploadFolder.data.id);
-            // console.log(
-            //     'uploadFolder.config.data.name',
-            //     uploadFolder.config.data.name,
-            //     'uploadFolder.data.id',
-            //     uploadFolder.data.id
-            // );
-        }
-        console.log(
-            'createFolder theEmptiesFolderId',
-            await theEmptiesFolderId
-        );
-        //return await theEmptiesFolderId;
-    } catch (err) {
-        // TODO(developer) - Handle error
-        console.log('error', err);
-        throw err;
-    }
+    // const uploadFolderName =
+    //     theEvent?.bookingWhen.toISOString().substring(0, 10) +
+    //     ' — ' +
+    //     // 'Concert' +
+    //     (theEvent?.artist?.stageName || theEvent?.confirmedArtist?.stageName) +
+    //     ' in ' +
+    //     theEvent?.bookingWhere?.city +
+    //     ', ' +
+    //     theEvent?.bookingWhere?.state;
 
     //https://developers.google.com/drive/api/guides/search-files
     const googleDriveFolderSearch = await drive.files.list({
@@ -390,18 +339,32 @@ const createFolder = async (req, theEvent, hostMe) => {
             theEvent.markModified('driveFolderID');
             await theEvent.save();
             console.log('driveFolderID: ' + theDriveFolderId);
+            req.session.driveFolderID =
+                googleDriveFolderSearch.data.files[
+                    googleDriveFolderSearch.data.files.length - 1
+                ].id;
+            req.session.save(function (err) {
+                // session saved
+            });
         } else {
             // there's no folder in the Google Drive
+            delete req.session.driveFolderID;
+            // if (theEvent.driveFolderID) {
+            //     delete theEvent.driveFolderID;
+            // }
 
             const uploadFolder = await drive.files.create({
                 resource: {
-                    name: uploadFolderName(theEvent),
+                    name: uploadFolderName,
                     mimeType: 'application/vnd.google-apps.folder',
-                    parents: [theEmptiesFolderId], //Porchlight App Uploads
+                    parents: ['1YbUXYyijMsXObU-qSOcDOQUDSjGsbJ5o'], //Porchlight App Uploads
                 },
                 fields: 'id',
             });
-
+            req.session.driveFolderID = uploadFolder.data.id;
+            req.session.save(function (err) {
+                // session saved
+            });
             // driveFolderID = uploadFolder.data.id;
             // req.body.driveFolderID = uploadFolder.data.id;
             theFolderIdToReturn = await uploadFolder.data.id;
@@ -436,90 +399,143 @@ async function uploadFile(req, res, upload) {
 
     console.log('uploadFile req.user', req.user);
 
-    // const uploadMetaData = upload.metadata;
-    // console.log('uploadFile uploadMetaData', uploadMetaData);
+    const uploadMetaData = upload.metadata;
+    console.log('uploadFile uploadMetaData', uploadMetaData);
 
-    if (upload?.metadata?.driveFolderID) {
-        // const hostMe = await Host.findOne({
-        //     email: req.user.email,
-        // }); //ADD .select('-field'); to exclude [field] from the response
-        // if (!hostMe) {
-        //     return res
-        //         .status(400)
-        //         .json({ msg: 'There is no host for this email' });
-        // }
-        // console.log('hostMe.firstName: ' + hostMe.firstName);
+    if (uploadMetaData.thisEvent) {
+        const hostMe = await Host.findOne({
+            email: req.user.email,
+        }); //ADD .select('-field'); to exclude [field] from the response
+        if (!hostMe) {
+            return res
+                .status(400)
+                .json({ msg: 'There is no host for this email' });
+        }
+        console.log('hostMe.firstName: ' + hostMe.firstName);
 
-        // let theEvent = await Event.findOne({
-        //     _id: uploadMetaData.thisEvent,
-        //     confirmedHost: hostMe._id, // I don't think we need this again, if it already passed before
-        // })
-        //     .populate('artist')
-        //     .populate('confirmedArtist');
-        // console.log(
-        //     `uploadFile theEvent.driveFolderID`,
-        //     theEvent.driveFolderID
-        // );
+        let theEvent = await Event.findOne({
+            _id: uploadMetaData.thisEvent,
+            confirmedHost: hostMe._id, // I don't think we need this again, if it already passed before
+        })
+            .populate('artist')
+            .populate('confirmedArtist');
+        console.log(
+            `uploadFile theEvent.driveFolderID`,
+            theEvent.driveFolderID
+        );
+        console.log('uploadFile req.session', req.session);
 
         const authClient = await authorize();
         const drive = google.drive({ version: 'v3', auth: authClient });
-        return new Promise((resolve, rejected) => {
-            drive.files.create(
-                {
-                    resource: {
-                        name: upload.metadata.filename,
-                        parents: [upload.metadata.driveFolderID], //should be inside Porchlight App Uploads on Google Drive
-                    },
-                    media: {
-                        body: fs.createReadStream(`./uploads/${upload.id}`),
-                        mimeType: upload.metadata.filetype,
-                    },
-                    fields: 'id,name',
-                },
-                async function (err, file) {
-                    if (err) {
-                        console.log('error', err);
-                        rejected(err);
-                    } else {
-                        //get parents of eventFolder in reloacte it if necessary
-                        const eventFolder = await drive.files.get({
-                            fileId: upload.metadata.driveFolderID,
-                            fields: 'parents',
-                        });
 
-                        console.log('uploadFile eventFolder', eventFolder);
+        if (!req.session.driveFolderID) {
+            const uploadFolderName =
+                theEvent?.bookingWhen.toISOString().substring(0, 10) +
+                ' — ' +
+                // 'Concert' +
+                (theEvent?.artist?.stageName ||
+                    theEvent?.confirmedArtist?.stageName) +
+                ' in ' +
+                theEvent?.bookingWhere?.city +
+                ', ' +
+                theEvent?.bookingWhere?.state;
 
-                        if (
-                            eventFolder.data.parents.indexOf(
-                                '1YbUXYyijMsXObU-qSOcDOQUDSjGsbJ5o'
-                            ) < 0
-                        ) {
-                            //if root Drive folder is not an index of parents,
-                            //move event folder to root from 'empties'
-                            const movedEventFolder = await drive.files.update({
-                                fileId: upload.metadata.driveFolderID,
-                                addParents: '1YbUXYyijMsXObU-qSOcDOQUDSjGsbJ5o',
-                                removeParents:
-                                    eventFolder.data.parents.join(','),
-                                fields: 'id, parents',
-                            });
-                            console.log(
-                                'uploadFile movedEventFolder',
-                                movedEventFolder
-                            );
-                        }
-
-                        console.log(
-                            'file.data.name:',
-                            file.data.name,
-                            ' file.data.id:',
-                            file.data.id
-                        );
-                        resolve(file);
-                    }
-                }
+            //https://developers.google.com/drive/api/guides/search-files
+            const googleDriveFolderSearch = await drive.files.list({
+                q: `'1YbUXYyijMsXObU-qSOcDOQUDSjGsbJ5o' in parents and mimeType = 'application/vnd.google-apps.folder' and name = '${uploadFolderName}' and trashed = false`,
+                fields: 'nextPageToken, files(id, name)',
+                spaces: 'drive',
+            });
+            console.log(
+                'googleDriveFolderSearch.data.files',
+                googleDriveFolderSearch.data.files
             );
-        });
+            try {
+                if (googleDriveFolderSearch.data.files.length > 0) {
+                    //there's a folder in the Google Drive
+                    theEvent.driveFolderID =
+                        googleDriveFolderSearch.data.files[
+                            googleDriveFolderSearch.data.files.length - 1
+                        ].id;
+                    theEvent.markModified('driveFolderID');
+                    await theEvent.save();
+                    req.session.driveFolderID =
+                        googleDriveFolderSearch.data.files[
+                            googleDriveFolderSearch.data.files.length - 1
+                        ].id;
+                    req.session.save(function (err) {
+                        // session saved
+                    });
+                }
+            } catch (err) {
+                // TODO(developer) - Handle error
+                console.log('error', err);
+                throw err;
+            }
+        }
+
+        if (!theEvent.driveFolderID) {
+            console.log(
+                'uploadFile THERE’S STILL NO theEvent.driveFolderID ?!?!',
+                theEvent?.bookingWhen.toISOString().substring(0, 10)
+            );
+            while (!theEvent.driveFolderID) {
+                console.log('!!! No theEvent.driveFolderID !!!');
+
+                googleDriveFolderSearch = await drive.files.list({
+                    q: `'1YbUXYyijMsXObU-qSOcDOQUDSjGsbJ5o' in parents and mimeType = 'application/vnd.google-apps.folder' and name = '${uploadFolderName}' and trashed = false`,
+                    fields: 'nextPageToken, files(id, name)',
+                    spaces: 'drive',
+                });
+
+                // setTimeout(async () => {
+                //     theEvent = await Event.findOne({
+                //         _id: uploadMetaData.thisEvent,
+                //         confirmedHost: hostMe._id, // I don't think we need this again, if it already passed before
+                //     })
+                //         .populate('artist')
+                //         .populate('confirmedArtist');
+                // }, 500); //keep checking the database every half second... hopefully this isn't a TERRIBLE idea
+            }
+        } else {
+            // console.log('upload', upload);
+            // const bufferStream = new stream.PassThrough();
+            // bufferStream.end(file.buffer);
+
+            return new Promise((resolve, rejected) => {
+                drive.files.create(
+                    {
+                        resource: {
+                            name: upload.metadata.filename,
+                            parents: [
+                                theEvent.driveFolderID ||
+                                    req.session.driveFolderID,
+                            ], //should be inside Porchlight App Uploads on Google Drive
+                            // parents: [req.session.driveFolderID], //should be inside Porchlight App Uploads on Google Drive
+                        },
+                        media: {
+                            body: fs.createReadStream(`./uploads/${upload.id}`),
+                            mimeType: upload.metadata.filetype,
+                        },
+                        fields: 'id,name',
+                    },
+                    function (err, file) {
+                        if (err) {
+                            console.log('error', err);
+                            rejected(err);
+                        } else {
+                            console.log(
+                                'file.data.name:',
+                                file.data.name,
+                                ' file.data.id:',
+                                file.data.id
+                            );
+                            resolve(file);
+                        }
+                    }
+                );
+            });
+        }
     } else {
         console.log('No event found at uploadMetaData.thisEvent');
         return res.status(400).json({
@@ -548,6 +564,8 @@ router.get('/file/:id', (req, res) => {
     // });
 });
 router.patch('/file/:id', auth, createFolderMiddleWare, (req, res) => {
+    console.log('patch req.session', req.session);
+
     console.log('patch req.params.id: ', req.params.id);
     console.log('patch req.body: ', req.body);
     tusServer.handle(req, res);
@@ -559,6 +577,7 @@ router.patch('/file/:id', auth, createFolderMiddleWare, (req, res) => {
 });
 router.post('/file', auth, createFolderMiddleWare, (req, res) => {
     // console.log('patch req.params.id: ', req.params.id);
+    console.log('post req.session', req.session);
 
     console.log('post req.body: ', req.body);
     // const uploadMetaData = req.body;
@@ -576,6 +595,10 @@ router.post('/file', auth, createFolderMiddleWare, (req, res) => {
 router.post('/createDriveFolder', auth, async (req, res) => {
     console.log('createDriveFolder req.body', req.body);
     if (req.body?.thisEvent) {
+        req.session.thisEvent = req.body.thisEvent;
+        req.session.save(function (err) {
+            // session saved
+        });
         const hostMe = await Host.findOne({
             email: req.user.email,
         }); //ADD .select('-field'); to exclude [field] from the response
@@ -605,7 +628,10 @@ router.post('/createDriveFolder', auth, async (req, res) => {
             // );
 
             req.body.driveFolderID = theDriveFolderId;
-
+            req.session.driveFolderID = theDriveFolderId;
+            req.session.save(function (err) {
+                // session saved
+            });
             theEvent.driveFolderID = theDriveFolderId;
             theEvent.markModified('driveFolderID');
             await theEvent.save();
@@ -621,7 +647,10 @@ router.post('/createDriveFolder', auth, async (req, res) => {
             //     theEvent.driveFolderID
             // );
             req.body.driveFolderID = theEvent.driveFolderID;
-
+            req.session.driveFolderID = theEvent.driveFolderID;
+            req.session.save(function (err) {
+                // session saved
+            });
             // console.log(
             //     `setTimeout ${randTime} theEvent.driveFolderID req.body`,
             //     req.body

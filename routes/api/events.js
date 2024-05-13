@@ -1088,6 +1088,12 @@ router.get('/getArtistBooking/:slug', async (req, res) => {
                 'travelingCompanions.email': 0,
                 hostsInReach: 0,
                 declinedHosts: 0,
+
+                declinedArtists: 0, //not that there would be
+                preferredArtists: 0, //not that there would be
+                hostReviewOfEvent: 0,
+                driveFolderID: 0,
+                uploadedImages: 0,
             } //don't return these fields
         )
             .populate(
@@ -1125,6 +1131,12 @@ router.get('/event/:id', async (req, res) => {
                 confirmedHostEmail: 0,
                 confirmedHostUser: 0,
                 declinedHosts: 0,
+
+                declinedArtists: 0,
+                preferredArtists: 0,
+                hostReviewOfEvent: 0,
+                driveFolderID: 0,
+                uploadedImages: 0,
             } //don't return these fields
         ).populate(
             'artist',
@@ -1167,7 +1179,7 @@ router.post('/hostDeclines/:id', async (req, res) => {
             'declinedHosts.host': req.body.hostMeID,
         })
             .select(
-                '-artistUser -artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle -hostNotes -declinedArtists'
+                '-artistUser -artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle -hostNotes -declinedArtists -driveFolderID -uploadedImages'
             )
             .populate(
                 'artist',
@@ -1255,7 +1267,7 @@ router.post('/hostRaiseHand', [auth], async (req, res) => {
             )
                 .select(
                     //'-artistEmail -agreeToPayAdminFee -payoutHandle -offersFromHosts -hostsOfferingToBook'
-                    '-agreeToPayAdminFee -payoutHandle -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -declinedHosts'
+                    '-agreeToPayAdminFee -payoutHandle -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -declinedHosts -driveFolderID -uploadedImages'
                 )
                 .populate(
                     'artist',
@@ -1349,7 +1361,7 @@ router.post('/hostProposes', [auth], async (req, res) => {
                 { new: true }
             )
                 .select(
-                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -agreeToPayAdminFee -payoutHandle -declinedHosts'
+                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -agreeToPayAdminFee -payoutHandle -declinedHosts -driveFolderID -uploadedImages'
                 )
                 .populate(
                     'artist',
@@ -1518,7 +1530,7 @@ router.get('/nearMeToHost', auth, async (req, res) => {
             bookingWhen: { $gt: new Date() }, // $gt means "Greater Than"
         })
             .select(
-                '-artistUser -artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle'
+                '-artistUser -artistEmail -hostsOfferingToBook -latLong -hostsInReach -offersFromHosts -agreeToPayAdminFee -payoutHandle -driveFolderID -uploadedImages'
             )
             .populate(
                 'artist',
@@ -1659,7 +1671,7 @@ router.get('/myArtistEvents', auth, async (req, res) => {
                 // }
             )
                 .select(
-                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -preferredArtists -declinedArtists -declinedHosts'
+                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -preferredArtists -declinedArtists -declinedHosts -driveFolderID -uploadedImages'
                 )
                 .populate(
                     'offersFromHosts.host',
@@ -1758,7 +1770,7 @@ router.post('/artistViewedHostOffer', [auth], async (req, res) => {
                 { new: true }
             )
                 .select(
-                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -declinedHosts'
+                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -declinedHosts -driveFolderID -uploadedImages'
                 )
                 .populate(
                     'offersFromHosts.host',
@@ -1948,7 +1960,7 @@ router.post('/artistDeclineOffer', [auth], async (req, res) => {
                 { new: true }
             )
                 .select(
-                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -declinedHosts'
+                    '-artistEmail -hostsOfferingToBook -latLong -hostsInReach -declinedHosts -driveFolderID -uploadedImages'
                 )
                 .populate(
                     'confirmedHost',

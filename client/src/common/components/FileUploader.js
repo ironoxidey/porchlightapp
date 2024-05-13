@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Uppy from '@uppy/core';
 import Tus from '@uppy/tus';
 import XHR from '@uppy/xhr-upload';
@@ -21,6 +21,50 @@ import '@uppy/file-input/dist/style.css';
 import '@uppy/progress-bar/dist/style.css';
 
 const FileUploader = ({ thisEvent }) => {
+    useEffect(async () => {
+        // if (numRequests === 0) {
+        //only make the folder once (we don't need a bunch of empty folders in the Drive)
+        try {
+            // numRequests++;
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+            const res = await axios.post(
+                '/api/uploads/createDriveFolder',
+                { thisEvent: thisEvent },
+                config
+            );
+            console.log(
+                `/api/uploads/createDriveFolder res`,
+                // `/api/uploads/createDriveFolder res index(${numRequests})`,
+                res
+            );
+            // dispatch({
+            //     type: EDIT_HOST_EVENT,
+            //     payload: res.data,
+            // });
+            // dispatch(
+            //     setAlert(
+            //         'Your offer to host the show on ' +
+            //             new Date(formData.bookingWhen).toLocaleDateString(
+            //                 undefined,
+            //                 {
+            //                     weekday: 'long',
+            //                     year: 'numeric',
+            //                     month: 'long',
+            //                     day: 'numeric',
+            //                 }
+            //             ) +
+            //             ' was submitted.',
+            //         'success'
+            //     )
+            // ); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+        } catch (err) {
+            console.log('error: ' + err);
+        }
+    }, []);
     if (localStorage.token) {
         let numRequests = 0;
         const uppy = new Uppy({
@@ -67,10 +111,10 @@ const FileUploader = ({ thisEvent }) => {
                             { thisEvent: file.meta.thisEvent },
                             config
                         );
-                        console.log(
-                            `/api/uploads/createDriveFolder res index(${numRequests})`,
-                            res
-                        );
+                        // console.log(
+                        //     `/api/uploads/createDriveFolder res index(${numRequests})`,
+                        //     res
+                        // );
                         // dispatch({
                         //     type: EDIT_HOST_EVENT,
                         //     payload: res.data,

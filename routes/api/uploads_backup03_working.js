@@ -8,6 +8,8 @@ const { google } = require('googleapis');
 
 const apikeys = config['googleDriveApiKey'];
 
+// const stream = require('stream');
+
 const router = express.Router();
 const Event = require('../../models/Event');
 const Host = require('../../models/Host');
@@ -89,6 +91,10 @@ const tusServer = new Server({
         // uploadFile(req, res, upload);
 
         const uploadRes = await uploadFile(req, res, upload).then((result) => {
+            // console.log(
+            //     'uploadFile result.data',
+            //     result.data
+            // );
             return result.data;
         });
         console.log(
@@ -121,15 +127,21 @@ const tusServer = new Server({
                 email: req.user.email,
             }); //ADD .select('-field'); to exclude [field] from the response
             if (!hostMe) {
-                return res.status(400).json({
-                    msg: 'There is no host for this email: ' + req.user.email,
-                });
+                return res
+                    .status(400)
+                    .json({ msg: 'There is no host for this email' });
             }
+            console.log(
+                'tusServer setup onUploadCreate  hostMe.firstName: ' +
+                    hostMe.firstName
+            );
 
             const theEvent = await Event.findOne({
                 _id: req.body.thisEvent,
-                confirmedHost: hostMe._id,
-            }).select('driveFolderID');
+                confirmedHost: hostMe._id, // I don't think we need this again, if it already passed before
+            });
+            // .populate('artist')
+            // .populate('confirmedArtist');
 
             if (!theEvent.driveFolderID) {
                 console.log(
