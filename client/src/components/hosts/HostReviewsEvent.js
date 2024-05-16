@@ -970,7 +970,68 @@ const HostReviewsEvent = ({
                     to share in our newsletters/social media!
                 </FormLabel>,
             ],
-            [<FileUploader thisEvent={theEvent}></FileUploader>],
+            [
+                <FileUploader thisEvent={theEvent}></FileUploader>,
+                <>
+                    {theEvent.uploadedImages &&
+                        theEvent.uploadedImages.length > 0 && (
+                            <Grid
+                                container
+                                xs={12}
+                                sx={{ margin: '16px auto', width: '95%' }}
+                                className="uploadedImages"
+                                justifyContent={'center'}
+                            >
+                                <Typography
+                                    component="h2"
+                                    sx={{ width: '100%' }}
+                                >
+                                    {theEvent.uploadedImages.length > 1
+                                        ? 'These files are'
+                                        : 'This file is'}{' '}
+                                    attached to this event:
+                                </Typography>
+                                {theEvent.uploadedImages.map((image, idx) => (
+                                    <Grid
+                                        item
+                                        key={idx}
+                                        sx={{
+                                            width: '100px',
+                                            margin: '10px',
+                                            overflowWrap: 'break-word',
+                                            textAlign: 'center',
+                                            fontSize: '.75em',
+                                        }}
+                                    >
+                                        <a href={image.url} target="_blank">
+                                            <img
+                                                src={
+                                                    'https://lh3.googleusercontent.com/d/' +
+                                                    image.driveID
+                                                }
+                                                style={{
+                                                    width: '100px',
+                                                    padding: '3px',
+                                                    border: '1px solid var(--primary-color)',
+                                                }}
+                                            />
+
+                                            {image.name}
+                                        </a>
+                                    </Grid>
+                                    // <img
+                                    //     src={
+                                    //         'https://drive.google.com/file/d/' +
+                                    //         image.driveID +
+                                    //         '/uc?export=view'
+                                    //     }
+                                    //     alt="Image Description"
+                                    // ></img>
+                                ))}
+                            </Grid>
+                        )}
+                </>,
+            ],
         ],
         testimonial: [
             [

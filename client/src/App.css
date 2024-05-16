@@ -75,6 +75,112 @@ h2.MuiTypography-root {
     display: flex;
 }
 
+.uppy-Container {
+    max-width: 100%;
+}
+.uppy-DashboardContent-bar,
+.uppy-StatusBar:not([aria-hidden='true']).is-waiting,
+.uppy-StatusBar.is-waiting .uppy-StatusBar-actions {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.5);
+}
+
+.uppy-DashboardContent-addMore,
+.uppy-DashboardContent-back,
+.uppy-DashboardContent-save {
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1) 0.05s;
+    color: var(--link-color);
+}
+.uppy-DashboardContent-addMore:focus,
+.uppy-DashboardContent-back:focus,
+.uppy-DashboardContent-save:focus {
+    background-color: transparent;
+}
+.uppy-DashboardContent-addMore:hover,
+.uppy-DashboardContent-back:hover,
+.uppy-DashboardContent-save:hover {
+    color: var(--link-color);
+    transform: scale(1.1);
+}
+.uppy-StatusBar {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.5);
+}
+.uppy-StatusBar-status {
+    font-family: var(--primary-font);
+    color: var(--primary-color);
+}
+.uppy-StatusBar::before {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+.uppy-StatusBar-actionBtn--done {
+    color: var(--link-color);
+    font-family: var(--primary-font);
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1) 0.05s;
+    background-color: transparent;
+}
+.uppy-StatusBar-actionBtn--done:hover {
+    color: var(--link-color);
+    transform: scale(1.1);
+}
+.uppy-StatusBar-actionBtn--done:focus {
+    background-color: transparent !important;
+}
+.uppy-Dashboard-inner {
+    max-height: 350px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: none;
+
+    color: var(--primary-color);
+    font-family: var(--primary-font);
+}
+[data-uppy-drag-drop-supported='true'] .uppy-Dashboard-AddFiles {
+    border: 2px dashed var(--primary-color);
+}
+.uppy-Dashboard-AddFiles-title {
+    color: var(--primary-color);
+}
+/* .uppy-u-reset,
+.uppy-c-btn, */
+.uppy-Dashboard-browse {
+    color: var(--link-color);
+}
+.uppy-Dashboard-browse:hover,
+.uppy-Dashboard-browse:focus {
+    border-bottom: 1px solid var(--link-color);
+}
+
+.uppy-DashboardTab-iconMyDevice,
+.uppy-DashboardTab-iconDropbox {
+    color: var(--link-color);
+}
+
+.uppy-Dashboard-AddFilesPanel {
+    background: linear-gradient(
+        0deg,
+        rgba(20, 22, 21, 0.95) 35%,
+        rgba(20, 22, 21, 0.85) 100%
+    );
+}
+
+.uppy-Dashboard-AddFiles-list {
+    flex: none;
+}
+.uppy-Dashboard-AddFiles .uppy-Dashboard-AddFiles-info {
+    position: absolute;
+    right: 0;
+    bottom: 25px;
+    left: 0;
+    padding-top: 30px;
+    padding-bottom: 0;
+}
+
+.uppy-Dashboard-Item-errorDetails {
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI',
+        'Segoe UI Symbol', 'Segoe UI Emoji', 'Apple Color Emoji', Roboto,
+        Helvetica, Arial, sans-serif;
+}
+
 .squareGrid {
     /* The content width you use on your website */
     --content-width: 80vw;
