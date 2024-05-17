@@ -109,39 +109,65 @@ const tusServer = new Server({
             }
         };
 
-        if (req.body.thisEvent && uploadFileTypePassed()) {
-            const hostMe = await Host.findOne({
-                email: req.user.email,
-            }); //ADD .select('-field'); to exclude [field] from the response
-            if (!hostMe) {
-                return res.status(400).json({
-                    msg: 'There is no host for this email: ' + req.user.email,
-                });
-            }
+        if (!req.body.thisEvent || !uploadFileTypePassed()) {
+            // return res.status(400).json({
+            //     msg: uploadFileTypePassed()
+            //         ? 'There is no event found at req.body.thisEvent'
+            //         : "Invalid filetype. We're accepting only images and videos.",
+            // });
+            throw {
+                status_code: 400,
+                body: uploadFileTypePassed()
+                    ? 'There is no event found at req.body.thisEvent'
+                    : "Invalid filetype. We're accepting only images and videos.",
+            };
+        } else {
+            try {
+                const hostMe = await Host.findOne({
+                    email: req.user.email,
+                }); //ADD .select('-field'); to exclude [field] from the response
+                if (!hostMe) {
+                    throw {
+                        status_code: 500,
+                        body:
+                            'There is no host for this email: ' +
+                            req.user.email,
+                    }; // if undefined, falls back to 500 with "Internal server error".
+                    // return res.status(400).json({
+                    //     msg:
+                    //         'There is no host for this email: ' +
+                    //         req.user.email,
+                    // });
+                }
 
-            const theEvent = await Event.findOne({
-                _id: req.body.thisEvent,
-                confirmedHost: hostMe._id,
-            }).select('driveFolderID');
+                const theEvent = await Event.findOne({
+                    _id: req.body.thisEvent,
+                    confirmedHost: hostMe._id,
+                }).select('driveFolderID');
 
-            if (!theEvent.driveFolderID) {
-                console.log(
-                    'tusServer setup onUploadCreate THERE’S STILL NO theEvent.driveFolderID ?!?!',
-                    theEvent?.bookingWhen.toISOString().substring(0, 10)
-                );
-                return { res, metadata: { ...upload.metadata } };
-            } else {
-                console.log(
-                    `tusServer setup onUploadCreate theEvent.driveFolderID`,
-                    theEvent.driveFolderID
-                );
-                return {
-                    res,
-                    metadata: {
-                        ...upload.metadata,
-                        driveFolderID: theEvent.driveFolderID,
-                    },
-                };
+                if (!theEvent.driveFolderID) {
+                    console.log(
+                        'tusServer setup onUploadCreate THERE’S STILL NO theEvent.driveFolderID ?!?!',
+                        theEvent?.bookingWhen.toISOString().substring(0, 10)
+                    );
+                    return { res, metadata: { ...upload.metadata } };
+                } else {
+                    console.log(
+                        `tusServer setup onUploadCreate theEvent.driveFolderID`,
+                        theEvent.driveFolderID
+                    );
+                    return {
+                        res,
+                        metadata: {
+                            ...upload.metadata,
+                            driveFolderID: theEvent.driveFolderID,
+                        },
+                    };
+                }
+            } catch (err) {
+                console.log('error', err);
+                throw { status_code: 500, body: err }; // if undefined, falls back to 500 with "Internal server error".
+                // throw err;
             }
         }
     },

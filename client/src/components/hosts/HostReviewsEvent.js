@@ -83,8 +83,7 @@ const HostReviewsEvent = ({
         id: 'uppity',
         // autoProceed: true,
         autoProceed: false,
-        debug: true,
-        allowedFileTypes: ['image/*'],
+        // debug: true,
         formData: true,
         theme: 'dark',
         allowedFileTypes: ['image/*', 'video/*'],
@@ -108,7 +107,7 @@ const HostReviewsEvent = ({
         onBeforeRequest: async (req, file) => {
             // make sure it has a Google Drive Folder to go into
             // console.log('onBeforeRequest req', req);
-            console.log('onBeforeRequest file', file);
+            // console.log('onBeforeRequest file', file);
             if (numRequests === 0) {
                 //only make the folder once (we don't need a bunch of empty folders in the Drive)
                 try {
@@ -248,7 +247,7 @@ const HostReviewsEvent = ({
     const [theArtist, setTheArtist] = useState({});
     const [theUploadedFiles, setTheUploadedFiles] = useState([]);
 
-    console.log('HostReviewsEvent theEvent', theEvent);
+    // console.log('HostReviewsEvent theEvent', theEvent);
 
     useEffect(() => {
         if (
@@ -256,10 +255,10 @@ const HostReviewsEvent = ({
             theEvent.uploadedFiles &&
             theEvent.uploadedFiles.length > 0
         ) {
-            console.log(
-                'change in theEvent.uploadedFiles',
-                theEvent.uploadedFiles
-            );
+            // console.log(
+            //     'change in theEvent.uploadedFiles',
+            //     theEvent.uploadedFiles
+            // );
             setTheUploadedFiles(theEvent.uploadedFiles);
         }
     }, [theEvent.uploadedFiles]);
