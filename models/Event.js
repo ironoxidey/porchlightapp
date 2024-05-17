@@ -301,11 +301,12 @@ const EventSchema = new mongoose.Schema(
             ref: 'hostreviewsevent',
         },
         driveFolderID: { type: String },
-        uploadedImages: [
+        uploadedFiles: [
             {
                 name: { type: String },
                 url: { type: String },
                 driveID: { type: String },
+                filetype: { type: String },
             },
         ],
     },

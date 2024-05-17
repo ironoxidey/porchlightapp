@@ -110,8 +110,8 @@ const tusServer = new Server({
 
             uploadRes.url = `https://drive.usercontent.google.com/download?id=${uploadRes.id}`;
             uploadRes.driveID = uploadRes.id;
-            theEvent.uploadedImages.push(uploadRes);
-            theEvent.markModified('uploadedImages');
+            theEvent.uploadedFiles.push(uploadRes);
+            theEvent.markModified('uploadedFiles');
             await theEvent.save();
         }
         return uploadRes;
@@ -776,8 +776,8 @@ router.post('/createDriveFolder', auth, async (req, res) => {
 //         //                             if (uploadRes.id !== undefined) {
 //         //                                 uploadRes.url = `https://drive.usercontent.google.com/download?id=${uploadRes.id}`;
 //         //                                 uploadRes.driveID = uploadRes.id;
-//         //                                 theEvent.uploadedImages.push(uploadRes);
-//         //                                 theEvent.markModified('uploadedImages');
+//         //                                 theEvent.uploadedFiles.push(uploadRes);
+//         //                                 theEvent.markModified('uploadedFiles');
 //         //                                 await theEvent.save();
 //         //                             }
 //         //                             return uploadRes;
@@ -816,7 +816,7 @@ router.post('/createDriveFolder', auth, async (req, res) => {
 //         //                 msg: `Could not upload the files. ${err}`,
 //         //             });
 //         //         });
-//         //     // uploadedImages = results.filter((result) => result !== undefined);
+//         //     // uploadedFiles = results.filter((result) => result !== undefined);
 //         // }
 //         else {
 //             res.status(500).json({

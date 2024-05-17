@@ -21,6 +21,7 @@ import {
     DELETE_ADMIN_EVENT,
     ARTIST_REVIEWS_HOST,
     HOST_REVIEWS_EVENT,
+    HOST_UPLOADED_FILES,
 } from '../actions/types';
 
 const initialState = {
@@ -122,6 +123,24 @@ export default function (state = initialState, action) {
                 myHostEvents: state.myHostEvents.map((myHostEvent) => {
                     if (myHostEvent._id === payload.eventId) {
                         myHostEvent.hostReviewOfEvent = { ...payload };
+                        return myHostEvent;
+                    } else {
+                        return myHostEvent;
+                    }
+                }),
+                loading: false,
+            };
+        case HOST_UPLOADED_FILES:
+            console.log('HOST_UPLOADED_FILES payload', payload);
+            console.log(
+                'HOST_UPLOADED_FILES payload.uploadedFiles',
+                payload.uploadedFiles
+            );
+            return {
+                ...state,
+                myHostEvents: state.myHostEvents.map((myHostEvent) => {
+                    if (myHostEvent._id === payload._id) {
+                        myHostEvent.uploadedFiles = [...payload.uploadedFiles];
                         return myHostEvent;
                     } else {
                         return myHostEvent;

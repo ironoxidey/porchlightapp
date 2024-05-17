@@ -1,13 +1,18 @@
 import axios from 'axios'; //only for uploads as of December 31st, 2021
 import React, { Fragment, useState, useEffect, useRef } from 'react';
+
+import Uppy from '@uppy/core';
+import Tus from '@uppy/tus';
+
 import {
     Link,
     // withRouter,
     useLocation,
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { hostReviewsEvent } from '../../actions/host';
+
 import {
     TextField,
     //Button,
@@ -28,12 +33,15 @@ import {
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
 
+import { SpinnerCircular } from 'spinners-react';
+
 import HostProfile from '../hosts/HostProfile';
 
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveTwoToneIcon from '@mui/icons-material/SaveTwoTone';
 import FlareTwoToneIcon from '@mui/icons-material/FlareTwoTone';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -42,6 +50,8 @@ import styles from '../../formCards.css';
 
 import { toTitleCase, StackDateforDisplay } from '../../actions/app';
 import FileUploader from '../../common/components/FileUploader';
+
+// import { HOST_UPLOADED_FILES } from '../../actions/types';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -63,7 +73,172 @@ const HostReviewsEvent = ({
     auth,
     theEvent,
     hostReviewsEvent,
+    // thisHostEvent,
 }) => {
+    // const dispatch = useDispatch();
+    //File Uploading with Uppy
+    // if (localStorage.token) {
+    let numRequests = 0;
+    const uppy = new Uppy({
+        id: 'uppity',
+        // autoProceed: true,
+        autoProceed: false,
+        debug: true,
+        allowedFileTypes: ['image/*'],
+        formData: true,
+        theme: 'dark',
+        allowedFileTypes: ['image/*', 'video/*'],
+
+        meta: {
+            // bookingWhen: thisEvent.bookingWhen.slice(0, 10),
+            // artist: thisEvent.confirmedArtist || thisEvent.artist,
+            // host: thisEvent.confirmedHost,
+            thisEvent: theEvent._id,
+            // driveFolderID: thisEvent.driveFolderID,
+            // location:
+            //     thisEvent.bookingWhere.city +
+            //     ', ' +
+            //     thisEvent.bookingWhere.state,
+        },
+    }).use(Tus, {
+        endpoint: '/api/uploads/file',
+        headers: {
+            'x-auth-token': localStorage.token,
+        },
+        onBeforeRequest: async (req, file) => {
+            // make sure it has a Google Drive Folder to go into
+            // console.log('onBeforeRequest req', req);
+            console.log('onBeforeRequest file', file);
+            if (numRequests === 0) {
+                //only make the folder once (we don't need a bunch of empty folders in the Drive)
+                try {
+                    numRequests++;
+                    const config = {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    };
+                    const res = await axios.post(
+                        '/api/uploads/createDriveFolder',
+                        { thisEvent: file.meta.thisEvent },
+                        config
+                    );
+                    console.log(
+                        `/api/uploads/createDriveFolder res index(${numRequests})`,
+                        res
+                    );
+                } catch (err) {
+                    console.log('error: ' + err);
+                    // const errors = err.response.data.errors;
+                    // if (errors) {
+                    //     errors.forEach((error) =>
+                    //         dispatch(setAlert(error.msg, 'danger'))
+                    //     );
+                    // }
+                    // dispatch({
+                    //     type: UPDATE_EVENT_ERROR,
+                    //     payload: {
+                    //         msg: err.response.statusText,
+                    //         status: err.response.status,
+                    //     },
+                    // });
+                    // dispatch(setAlert('Update Error: ' + err, 'danger')); // alertType = 'success' to add a class of alert-success to the alert (alert.alertType used in /components/layout/Alert.js)
+                }
+            }
+        },
+    });
+
+    async function checkForUpdates(theEventId, delay = 3000) {
+        try {
+            const updatedEvent = await axios.get(
+                `/api/uploads/eventUploadedFiles/${theEventId}`
+            );
+            console.log('updatedEvent.data', updatedEvent.data);
+
+            setTheUploadedFiles(updatedEvent.data.uploadedFiles);
+
+            // Check if all images have driveIDs
+            const imagesWithoutDriveID = updatedEvent.data.uploadedFiles.filter(
+                (uploadedImage) => !uploadedImage.driveID
+            );
+
+            if (imagesWithoutDriveID.length === 0) {
+                console.log('All images have driveIDs now.');
+                // dispatch({
+                //     type: HOST_UPLOADED_FILES,
+                //     payload: updatedEvent.data,
+                // });
+                return; // Exit the recursion if all images have driveIDs
+            }
+
+            // If not, wait for the specified delay and check again
+            setTimeout(async () => {
+                await checkForUpdates(theEventId, delay);
+            }, delay);
+        } catch (error) {
+            console.error(error);
+            return;
+            // You might want to retry or exit the loop based on the error type
+        }
+    }
+
+    uppy.on('upload-success', async (file, response) => {
+        console.log('Rusty upload-success file, response', file, response);
+        // const config = {
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        // };
+
+        console.log('Rusty upload-success theEvent._id', theEvent._id);
+        console.log(
+            'Rusty upload-success file.meta.thisEvent',
+            file.meta.thisEvent
+        );
+        try {
+            // let updatedEvent = await axios.get(
+            //     '/api/uploads/eventUploadedFiles/' + theEvent._id
+            //     // { thisEvent: file.meta.thisEvent },
+            //     // { thisEvent: theEvent._id },
+            //     // config
+            // );
+
+            // console.log('updatedEvent', updatedEvent);
+            // console.log(
+            //     'updatedEvent.data.uploadedFiles.filter((uploadedImage) => !uploadedImage.driveID)',
+            //     updatedEvent.data.uploadedFiles.filter(
+            //         (uploadedImage) => !uploadedImage.driveID
+            //     )
+            // );
+            checkForUpdates(theEvent._id);
+
+            // do {
+            //     setTimeout(async () => {
+            //         updatedEvent = await axios.get(
+            //             '/api/uploads/eventUploadedFiles',
+            //             { thisEvent: theEvent._id },
+            //             config
+            //         );
+
+            //         console.log('do updatedEvent', updatedEvent);
+            //     }, 3000);
+            // } while (
+            //     updatedEvent &&
+            //     updatedEvent.data &&
+            //     updatedEvent.data.uploadedFiles &&
+            //     updatedEvent.data.uploadedFiles.length > 0 &&
+            //     updatedEvent.data.uploadedFiles.filter(
+            //         (uploadedImage) => !uploadedImage.driveID
+            //     ).length > 0
+            // );
+        } catch (error) {
+            console.error(error);
+        }
+
+        // start watching theEvent.uploadedFiles on a setInterval, for the driveID to be updated
+    });
+    // }
+
     const loading = false; //a bunch of things are dependent on it; I should really just take it out.
     // const dispatch = useDispatch();
 
@@ -71,8 +246,38 @@ const HostReviewsEvent = ({
     const [theOffer, setTheOffer] = useState({});
     const [theHost, setTheHost] = useState({});
     const [theArtist, setTheArtist] = useState({});
+    const [theUploadedFiles, setTheUploadedFiles] = useState([]);
 
     console.log('HostReviewsEvent theEvent', theEvent);
+
+    useEffect(() => {
+        if (
+            theEvent &&
+            theEvent.uploadedFiles &&
+            theEvent.uploadedFiles.length > 0
+        ) {
+            console.log(
+                'change in theEvent.uploadedFiles',
+                theEvent.uploadedFiles
+            );
+            setTheUploadedFiles(theEvent.uploadedFiles);
+        }
+    }, [theEvent.uploadedFiles]);
+
+    // useEffect(() => {
+    //     if (
+    //         thisHostEvent &&
+    //         thisHostEvent.uploadedFiles &&
+    //         thisHostEvent.uploadedFiles.length > 0
+    //     ) {
+    //         console.log(
+    //             'change in thisHostEvent.uploadedFiles',
+    //             thisHostEvent.uploadedFiles
+    //         );
+    //         setTheUploadedFiles(thisHostEvent.uploadedFiles);
+    //     }
+    // }, [thisHostEvent.uploadedFiles]);
+
     useEffect(() => {
         if (theEvent && theEvent._id) {
             const theAcceptedOffer = theEvent.offersFromHosts.filter(
@@ -971,65 +1176,97 @@ const HostReviewsEvent = ({
                 </FormLabel>,
             ],
             [
-                <FileUploader thisEvent={theEvent}></FileUploader>,
+                <FileUploader uppy={uppy} thisEvent={theEvent}></FileUploader>,
                 <>
-                    {theEvent.uploadedImages &&
-                        theEvent.uploadedImages.length > 0 && (
-                            <Grid
-                                container
-                                xs={12}
-                                sx={{ margin: '16px auto', width: '95%' }}
-                                className="uploadedImages"
-                                justifyContent={'center'}
-                            >
-                                <Typography
-                                    component="h2"
-                                    sx={{ width: '100%' }}
-                                >
-                                    {theEvent.uploadedImages.length > 1
-                                        ? 'These files are'
-                                        : 'This file is'}{' '}
-                                    attached to this event:
-                                </Typography>
-                                {theEvent.uploadedImages.map((image, idx) => (
-                                    <Grid
-                                        item
-                                        key={idx}
-                                        sx={{
-                                            width: '100px',
-                                            margin: '10px',
-                                            overflowWrap: 'break-word',
-                                            textAlign: 'center',
-                                            fontSize: '.75em',
-                                        }}
-                                    >
-                                        <a href={image.url} target="_blank">
-                                            <img
-                                                src={
-                                                    'https://lh3.googleusercontent.com/d/' +
-                                                    image.driveID
-                                                }
-                                                style={{
-                                                    width: '100px',
-                                                    padding: '3px',
-                                                    border: '1px solid var(--primary-color)',
-                                                }}
-                                            />
+                    {theUploadedFiles.length > 0 && (
+                        <Grid
+                            container
+                            xs={12}
+                            sx={{ margin: '16px auto', width: '95%' }}
+                            className="uploadedFiles"
+                            justifyContent={'center'}
+                        >
+                            <Typography component="h2" sx={{ width: '100%' }}>
+                                <AttachFileIcon
+                                    sx={{
+                                        fontSize: '1.4em',
+                                        marginRight: '5px',
+                                    }}
+                                />
+                                {theUploadedFiles.length > 1
+                                    ? 'These files are'
+                                    : 'This file is'}{' '}
+                                attached to this event:
+                            </Typography>
+                            {theUploadedFiles.map((image, idx) => {
+                                if (image.driveID) {
+                                    return (
+                                        <Grid
+                                            item
+                                            key={idx}
+                                            sx={{
+                                                width: '100px',
+                                                margin: '10px',
+                                                overflowWrap: 'break-word',
+                                                textAlign: 'center',
+                                                fontSize: '.75em',
+                                            }}
+                                        >
+                                            <a href={image.url} target="_blank">
+                                                <img
+                                                    src={
+                                                        'https://lh3.googleusercontent.com/d/' +
+                                                        image.driveID
+                                                    }
+                                                    style={{
+                                                        width: '100px',
+                                                        padding: '3px',
+                                                        border: '1px solid var(--primary-color)',
+                                                    }}
+                                                />
 
-                                            {image.name}
-                                        </a>
-                                    </Grid>
-                                    // <img
-                                    //     src={
-                                    //         'https://drive.google.com/file/d/' +
-                                    //         image.driveID +
-                                    //         '/uc?export=view'
-                                    //     }
-                                    //     alt="Image Description"
-                                    // ></img>
-                                ))}
-                            </Grid>
-                        )}
+                                                <p>{image.name}</p>
+                                            </a>
+                                        </Grid>
+                                        // <img
+                                        //     src={
+                                        //         'https://drive.google.com/file/d/' +
+                                        //         image.driveID +
+                                        //         '/uc?export=view'
+                                        //     }
+                                        //     alt="Image Description"
+                                        // ></img>
+                                    );
+                                } else {
+                                    return (
+                                        <>
+                                            <Grid
+                                                item
+                                                key={idx}
+                                                sx={{
+                                                    width: '100px',
+                                                    margin: '10px',
+                                                    overflowWrap: 'break-word',
+                                                    textAlign: 'center',
+                                                    fontSize: '.75em',
+                                                }}
+                                            >
+                                                <SpinnerCircular
+                                                    size={60}
+                                                    thickness={130}
+                                                    speed={75}
+                                                    color="rgba(255, 255, 217, 1)"
+                                                    secondaryColor="rgba(16, 15, 14, 1)"
+                                                />
+
+                                                <p>{image.name}</p>
+                                            </Grid>
+                                        </>
+                                    );
+                                }
+                            })}
+                        </Grid>
+                    )}
                 </>,
             ],
         ],
@@ -1439,15 +1676,27 @@ const HostReviewsEvent = ({
 
 HostReviewsEvent.propTypes = {
     hostMe: PropTypes.object.isRequired,
-    theEvent: PropTypes.object,
+    theEvent: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     hostReviewsEvent: PropTypes.func.isRequired,
+    // thisHostEvent: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-    auth: state.auth,
-    hostMe: state.host.me,
-});
+const mapStateToProps = (state, ownProps) => {
+    // console.log('HostReviewsEvent mapStateToProps ownProps', ownProps);
+    // const thisHostEvent = state.event.myHostEvents.find(
+    //     (myHostEvent) => myHostEvent._id === ownProps.theEvent._id
+    // );
+    // console.log(
+    //     'HostReviewsEvent mapStateToProps thisHostEvent',
+    //     thisHostEvent
+    // );
+    return {
+        auth: state.auth,
+        hostMe: state.host.me,
+        // thisHostEvent: thisHostEvent,
+    };
+};
 
 export default connect(mapStateToProps, {
     hostReviewsEvent,
