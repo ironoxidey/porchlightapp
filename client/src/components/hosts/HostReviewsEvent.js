@@ -29,6 +29,7 @@ import {
     Dialog,
     DialogContent,
 } from '@mui/material';
+import Masonry from '@mui/lab/Masonry';
 // import { PhoneInput as ReactPhoneInput } from 'react-phone-input-2';
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
@@ -147,8 +148,9 @@ const HostReviewsEvent = ({
         },
     });
 
-    async function checkForUpdates(theEventId, delay = 3000) {
+    async function checkForUpdates(theEventId, delay = 2000) {
         try {
+            // if (delay < 1000 * 100) {
             const updatedEvent = await axios.get(
                 `/api/uploads/eventUploadedFiles/${theEventId}`
             );
@@ -172,8 +174,14 @@ const HostReviewsEvent = ({
 
             // If not, wait for the specified delay and check again
             setTimeout(async () => {
-                await checkForUpdates(theEventId, delay);
+                await checkForUpdates(theEventId, delay + 2000); //add a second to the delay every time we run it — just trying to save on resources
             }, delay);
+            // } else {
+            //     console.log(
+            //         'The images don’t all have driveIDs, but we can’t be waiting FOREVER!'
+            //     );
+            //     return;
+            // }
         } catch (error) {
             console.error(error);
             return;
@@ -1185,7 +1193,10 @@ const HostReviewsEvent = ({
                             className="uploadedFiles"
                             justifyContent={'center'}
                         >
-                            <Typography component="h2" sx={{ width: '100%' }}>
+                            <Typography
+                                component="h2"
+                                sx={{ width: '100%', marginBottom: '10px' }}
+                            >
                                 <AttachFileIcon
                                     sx={{
                                         fontSize: '1.4em',
@@ -1197,48 +1208,20 @@ const HostReviewsEvent = ({
                                     : 'This file is'}{' '}
                                 attached to this event:
                             </Typography>
-                            {theUploadedFiles.map((image, idx) => {
-                                if (image.driveID) {
-                                    return (
-                                        <Grid
-                                            item
-                                            key={idx}
-                                            sx={{
-                                                width: '100px',
-                                                margin: '10px',
-                                                overflowWrap: 'break-word',
-                                                textAlign: 'center',
-                                                fontSize: '.75em',
-                                            }}
-                                        >
-                                            <a href={image.url} target="_blank">
-                                                <img
-                                                    src={
-                                                        'https://lh3.googleusercontent.com/d/' +
-                                                        image.driveID
-                                                    }
-                                                    style={{
-                                                        width: '100px',
-                                                        padding: '3px',
-                                                        border: '1px solid var(--primary-color)',
-                                                    }}
-                                                />
-
-                                                <p>{image.name}</p>
-                                            </a>
-                                        </Grid>
-                                        // <img
-                                        //     src={
-                                        //         'https://drive.google.com/file/d/' +
-                                        //         image.driveID +
-                                        //         '/uc?export=view'
-                                        //     }
-                                        //     alt="Image Description"
-                                        // ></img>
-                                    );
-                                } else {
-                                    return (
-                                        <>
+                            <Masonry
+                                columns={{ xs: 3, sm: 4, md: 7, lg: 7 }}
+                                spacing={2}
+                            >
+                                {theUploadedFiles.map((image, idx) => {
+                                    const theFileLink =
+                                        image.filetype &&
+                                        image.filetype.split('/')[0] === 'image'
+                                            ? 'https://lh3.googleusercontent.com/d/' +
+                                              image.driveID
+                                            : 'https://drive.google.com/file/d/' +
+                                              image.driveID;
+                                    if (image.driveID) {
+                                        return (
                                             <Grid
                                                 item
                                                 key={idx}
@@ -1250,20 +1233,65 @@ const HostReviewsEvent = ({
                                                     fontSize: '.75em',
                                                 }}
                                             >
-                                                <SpinnerCircular
-                                                    size={60}
-                                                    thickness={130}
-                                                    speed={75}
-                                                    color="rgba(255, 255, 217, 1)"
-                                                    secondaryColor="rgba(16, 15, 14, 1)"
-                                                />
+                                                <a
+                                                    // href={image.url}
+                                                    href={theFileLink}
+                                                    target="_blank"
+                                                >
+                                                    <img
+                                                        src={
+                                                            'https://lh3.googleusercontent.com/d/' +
+                                                            image.driveID
+                                                        }
+                                                        style={{
+                                                            width: '100px',
+                                                            padding: '3px',
+                                                            border: '1px solid var(--primary-color)',
+                                                        }}
+                                                    />
 
-                                                <p>{image.name}</p>
+                                                    <p>{image.name}</p>
+                                                </a>
                                             </Grid>
-                                        </>
-                                    );
-                                }
-                            })}
+                                            // <img
+                                            //     src={
+                                            //         'https://drive.google.com/file/d/' +
+                                            //         image.driveID +
+                                            //         '/uc?export=view'
+                                            //     }
+                                            //     alt="Image Description"
+                                            // ></img>
+                                        );
+                                    } else {
+                                        return (
+                                            <>
+                                                <Grid
+                                                    item
+                                                    key={idx}
+                                                    sx={{
+                                                        width: '100px',
+                                                        margin: '10px',
+                                                        overflowWrap:
+                                                            'break-word',
+                                                        textAlign: 'center',
+                                                        fontSize: '.75em',
+                                                    }}
+                                                >
+                                                    <SpinnerCircular
+                                                        size={60}
+                                                        thickness={130}
+                                                        speed={75}
+                                                        color="rgba(255, 255, 217, 1)"
+                                                        secondaryColor="rgba(16, 15, 14, 1)"
+                                                    />
+
+                                                    <p>{image.name}</p>
+                                                </Grid>
+                                            </>
+                                        );
+                                    }
+                                })}
+                            </Masonry>
                         </Grid>
                     )}
                 </>,
