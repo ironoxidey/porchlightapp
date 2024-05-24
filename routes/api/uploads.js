@@ -7,8 +7,15 @@ const fs = require('fs');
 const { google } = require('googleapis');
 
 // const apikeys = config['googleDriveApiKey'];
+// const buff = Buffer.from(googleDrivePrivateKey).toString('base64');
+// console.log('buff', buff);
+
 const googleDriveClientEmail = config['googleDriveApiClientEmail'];
-const googleDrivePrivateKey = config['googleDriveApiPrivateKey'];
+const googleDrivePrivateKeyBase64 = config['googleDriveApiPrivateKey'];
+const googleDrivePrivateKey = Buffer.from(
+    googleDrivePrivateKeyBase64,
+    'base64'
+).toString('ascii');
 const googleDriveRootFolder = config['googleDriveRootFolder'];
 
 const router = express.Router();
