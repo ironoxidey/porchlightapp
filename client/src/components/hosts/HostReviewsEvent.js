@@ -1784,7 +1784,7 @@ const HostReviewsEvent = ({
                     </Typography>
                 </Box>
             )}
-            <Grid item style={{ margin: '20px auto 0', alignSelf: 'center' }}>
+            {/* <Grid item style={{ margin: '20px auto 0', alignSelf: 'center' }}>
                 <Button btnwidth="250" onClick={() => setDialogOpen(true)}>
                     {theEvent &&
                     theEvent.hostReviewOfEvent &&
@@ -1792,7 +1792,7 @@ const HostReviewsEvent = ({
                         ? 'Edit Your Review'
                         : 'Review Your Experience'}
                 </Button>
-            </Grid>
+            </Grid> */}
         </Fragment>
     );
 };
