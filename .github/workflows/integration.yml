@@ -53,7 +53,8 @@ jobs:
                   export mailChimpApiKey=${{secrets.MAILCHIMP_API_KEY}}
                   export eventbritePrivateToken=${{secrets.EVENTBRITEPRIVATETOKEN}}
                   export courierApiKey=${{secrets.COURIER_API_KEY}}
-                  export googleDriveApiKey=${{secrets.GOOGLE_DRIVE_API_KEY}}
+                  export googleDriveApiClientEmail=${{secrets.GOOGLE_DRIVE_API_CLIENT_EMAIL}}
+                  export googleDriveApiPrivateKey=${{secrets.GOOGLE_DRIVE_API_PRIVATE_KEY}}
                   export googleDriveRootFolder=${{secrets.GOOGLE_DRIVE_ROOT_FOLDER}}
                   export SUPPRESS_NO_CONFIG_WARNING=TRUE
                   pm2 reload server --update-env

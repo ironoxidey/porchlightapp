@@ -6,7 +6,9 @@ const auth = require('../../middleware/auth');
 const fs = require('fs');
 const { google } = require('googleapis');
 
-const apikeys = config['googleDriveApiKey'];
+// const apikeys = config['googleDriveApiKey'];
+const googleDriveClientEmail = config['googleDriveApiClientEmail'];
+const googleDrivePrivateKey = config['googleDriveApiPrivateKey'];
 const googleDriveRootFolder = config['googleDriveRootFolder'];
 
 const router = express.Router();
@@ -347,9 +349,9 @@ tusServer.on(EVENTS.POST_FINISH, async (req, res, upload) => {
 
 async function authorize() {
     const jwtClient = new google.auth.JWT(
-        apikeys.client_email,
+        googleDriveClientEmail,
         null,
-        apikeys.private_key,
+        googleDrivePrivateKey,
         ['https://www.googleapis.com/auth/drive']
     );
 
