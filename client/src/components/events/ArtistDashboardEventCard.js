@@ -180,7 +180,11 @@ const ArtistDashboardEventCard = ({
                         position: 'relative',
                         filter: iDeclined ? 'grayscale(100%)' : '',
                         // flexDirection: { xs: 'column', sm: 'row' },
-                        flexDirection: 'column',
+                        flexDirection:
+                            thisEvent.status === 'CONFIRMED' &&
+                            new Date(thisEvent.bookingWhen) < new Date()
+                                ? 'column'
+                                : 'row',
                     }}
                 >
                     <svg

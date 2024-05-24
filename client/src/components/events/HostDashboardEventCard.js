@@ -150,7 +150,11 @@ const HostDashboardEventCard = ({
                             ? '4px dashed var(--primary-color)!important'
                             : '1px solid transparent',
                     opacity: thisEvent.status === 'DRAFT' ? '0.7' : '1',
-                    flexDirection: 'column',
+                    flexDirection:
+                        thisEvent.status === 'CONFIRMED' &&
+                        new Date(thisEvent.bookingWhen) < new Date()
+                            ? 'column'
+                            : 'row',
                 }}
             >
                 <svg

@@ -902,7 +902,7 @@ const Dashboard = ({
                                     (myEvent) =>
                                         myEvent.confirmedHost &&
                                         myEvent.status === 'CONFIRMED' &&
-                                        new Date(myEvent.bookingWhen) >
+                                        new Date(myEvent.bookingWhen) <=
                                             dayBeforeYesterday
                                 ).length > 0 && (
                                     <Grid
@@ -915,8 +915,27 @@ const Dashboard = ({
                                         <Grid item xs={12}>
                                             <Typography component="h2">
                                                 You have offered to host{' '}
-                                                {myHostEvents.length > 1
-                                                    ? `these ${myHostEvents.length} shows`
+                                                {myHostEvents.filter(
+                                                    (myEvent) =>
+                                                        myEvent.confirmedHost &&
+                                                        myEvent.status ===
+                                                            'CONFIRMED' &&
+                                                        new Date(
+                                                            myEvent.bookingWhen
+                                                        ) <= dayBeforeYesterday
+                                                ).length > 1
+                                                    ? `these ${
+                                                          myHostEvents.filter(
+                                                              (myEvent) =>
+                                                                  myEvent.confirmedHost &&
+                                                                  myEvent.status ===
+                                                                      'CONFIRMED' &&
+                                                                  new Date(
+                                                                      myEvent.bookingWhen
+                                                                  ) <=
+                                                                      dayBeforeYesterday
+                                                          ).length
+                                                      } shows`
                                                     : `this show`}
                                                 :
                                             </Typography>

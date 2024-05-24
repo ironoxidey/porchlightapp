@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.865ee546.css",
-    "main.js": "/static/js/main.afeadc84.js",
+    "main.css": "/static/css/main.12a48730.css",
+    "main.js": "/static/js/main.fff11f68.js",
     "reactPlayerYouTube.js": "/static/js/reactPlayerYouTube.ac6284fb.chunk.js",
     "reactPlayerSoundCloud.js": "/static/js/reactPlayerSoundCloud.6a0de867.chunk.js",
     "reactPlayerVimeo.js": "/static/js/reactPlayerVimeo.b84f8494.chunk.js",
@@ -19,8 +19,8 @@
     "static/media/Porchlight_bg_design-01.png": "/static/media/Porchlight_bg_design-01.6eaab8f42f48788c09f8.png",
     "static/media/Porchlight_logo05-17.svg": "/static/media/Porchlight_logo05-17.a3dce919fa9e6ed2f5e2fb7b6e4934dd.svg",
     "index.html": "/index.html",
-    "main.865ee546.css.map": "/static/css/main.865ee546.css.map",
-    "main.afeadc84.js.map": "/static/js/main.afeadc84.js.map",
+    "main.12a48730.css.map": "/static/css/main.12a48730.css.map",
+    "main.fff11f68.js.map": "/static/js/main.fff11f68.js.map",
     "reactPlayerYouTube.ac6284fb.chunk.js.map": "/static/js/reactPlayerYouTube.ac6284fb.chunk.js.map",
     "reactPlayerSoundCloud.6a0de867.chunk.js.map": "/static/js/reactPlayerSoundCloud.6a0de867.chunk.js.map",
     "reactPlayerVimeo.b84f8494.chunk.js.map": "/static/js/reactPlayerVimeo.b84f8494.chunk.js.map",
@@ -37,7 +37,7 @@
     "reactPlayerPreview.4b93da6a.chunk.js.map": "/static/js/reactPlayerPreview.4b93da6a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.865ee546.css",
-    "static/js/main.afeadc84.js"
+    "static/css/main.12a48730.css",
+    "static/js/main.fff11f68.js"
   ]
 }
