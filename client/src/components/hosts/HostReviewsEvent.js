@@ -12,6 +12,7 @@ import {
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { hostReviewsEvent } from '../../actions/host';
+import porchlightLogo from '../../img/Porchlight_logo05-17.svg';
 
 import {
     TextField,
@@ -33,6 +34,8 @@ import Masonry from '@mui/lab/Masonry';
 // import { PhoneInput as ReactPhoneInput } from 'react-phone-input-2';
 import { styled } from '@mui/material/styles';
 import Button from '../layout/SvgButton';
+
+import MenuBookTwoToneIcon from '@mui/icons-material/MenuBookTwoTone';
 
 import { SpinnerCircular } from 'spinners-react';
 
@@ -298,8 +301,8 @@ const HostReviewsEvent = ({
             // console.log('theAcceptedOffer', theAcceptedOffer);
             setTheOffer(theAcceptedOffer);
         }
-        if (theEvent.artistReviewOfHost) {
-            setTheReview(theEvent.artistReviewOfHost);
+        if (theEvent.hostReviewOfEvent) {
+            setTheReview(theEvent.hostReviewOfEvent);
         }
         if (theEvent.artist) {
             setTheArtist(theEvent.artist);
@@ -316,10 +319,10 @@ const HostReviewsEvent = ({
         }
     }, [theEvent]);
     useEffect(() => {
-        if (theEvent.artistReviewOfHost) {
-            setTheReview(theEvent.artistReviewOfHost);
+        if (theEvent.hostReviewOfEvent) {
+            setTheReview(theEvent.hostReviewOfEvent);
         }
-    }, [theEvent?.artistReviewOfHost]);
+    }, [theEvent?.hostReviewOfEvent]);
 
     useEffect(() => {
         if (theOffer && theOffer.host) {
@@ -649,9 +652,20 @@ const HostReviewsEvent = ({
             ],
         ],
         howMuchAttentionToGuide: [
-            <FormLabel component="legend">
-                How much attention did you pay to the Hosting Guide?
-            </FormLabel>,
+            [
+                <MenuBookTwoToneIcon
+                    sx={{
+                        fontSize: '3em',
+                        margin: '0 auto',
+                        width: '100%',
+                        textAlign: 'center',
+                        color: 'var(--primary-color)',
+                    }}
+                />,
+                <FormLabel component="legend">
+                    How much attention did you pay to the Hosting Guide?
+                </FormLabel>,
+            ],
             [
                 <FormControl component="fieldset">
                     <RadioGroup
@@ -689,57 +703,83 @@ const HostReviewsEvent = ({
                 </FormControl>,
             ],
         ],
-        howHelpfulWasGuide: [
-            [
-                <FormLabel component="legend">
-                    How helpful was the Hosting Guide?
-                </FormLabel>,
+        ...(howMuchAttentionToGuide !== 'neverLookedAtIt' && {
+            howHelpfulWasGuide: [
+                [
+                    <MenuBookTwoToneIcon
+                        sx={{
+                            fontSize: '3em',
+                            margin: '0 auto',
+                            width: '100%',
+                            textAlign: 'center',
+                            color: 'var(--primary-color)',
+                        }}
+                    />,
+                    <FormLabel component="legend">
+                        How helpful was the Hosting Guide?
+                    </FormLabel>,
+                ],
+                [
+                    <FormControl component="fieldset">
+                        <Rating
+                            size="large"
+                            id="howHelpfulWasGuide"
+                            value={howHelpfulWasGuide}
+                            name="howHelpfulWasGuide"
+                            onChange={(e) => onChange(e)}
+                        />
+                    </FormControl>,
+                ],
             ],
-            [
-                <FormControl component="fieldset">
-                    <Rating
-                        size="large"
-                        id="howHelpfulWasGuide"
-                        value={howHelpfulWasGuide}
-                        name="howHelpfulWasGuide"
-                        onChange={(e) => onChange(e)}
-                    />
-                </FormControl>,
+        }),
+        ...(howMuchAttentionToGuide !== 'neverLookedAtIt' && {
+            guideSuggestions: [
+                [
+                    [
+                        <MenuBookTwoToneIcon
+                            sx={{
+                                fontSize: '3em',
+                                margin: '0 auto',
+                                width: '100%',
+                                textAlign: 'center',
+                                color: 'var(--primary-color)',
+                            }}
+                        />,
+                        <FormLabel component="legend">
+                            Do you have any suggested edits for the Hosting
+                            Guide?
+                        </FormLabel>,
+                    ],
+                    <FormLabel
+                        component="small"
+                        sx={{ textAlign: 'center', display: 'block' }}
+                    >
+                        If so, let us know what they are! If not, feel free to
+                        skip.
+                    </FormLabel>,
+                ],
+                [
+                    <Grid
+                        item
+                        xs={12}
+                        sx={{ margin: '16px auto', width: '70%' }}
+                        className="artistNotes_textarea"
+                        justifyContent={'center'}
+                    >
+                        <TextField
+                            multiline
+                            variant="standard"
+                            name="guideSuggestions"
+                            id="guideSuggestions"
+                            placeholder={'Type your response here'}
+                            value={guideSuggestions}
+                            onChange={(e) => onChange(e)}
+                            sx={{ width: '100%' }}
+                        />
+                    </Grid>,
+                ],
             ],
-        ],
-        guideSuggestions: [
-            [
-                <FormLabel component="legend">
-                    Do you have any suggested edits for the Hosting Guide?
-                </FormLabel>,
-                <FormLabel
-                    component="small"
-                    sx={{ textAlign: 'center', display: 'block' }}
-                >
-                    If so, let us know what they are! If not, feel free to skip.
-                </FormLabel>,
-            ],
-            [
-                <Grid
-                    item
-                    xs={12}
-                    sx={{ margin: '16px auto', width: '70%' }}
-                    className="artistNotes_textarea"
-                    justifyContent={'center'}
-                >
-                    <TextField
-                        multiline
-                        variant="standard"
-                        name="guideSuggestions"
-                        id="guideSuggestions"
-                        placeholder={'Type your response here'}
-                        value={guideSuggestions}
-                        onChange={(e) => onChange(e)}
-                        sx={{ width: '100%' }}
-                    />
-                </Grid>,
-            ],
-        ],
+        }),
         eventbriteExperience: [
             [
                 <FormLabel component="legend">
@@ -794,7 +834,34 @@ const HostReviewsEvent = ({
         ],
         porchlightCommunications: [
             [
-                <FormLabel component="legend">
+                <Box
+                    // className="squareImgInACircle"
+                    sx={{
+                        // height: '250px',
+                        width: '220px',
+                        // maxHeight: '250px',
+                        maxWidth: '220px',
+                        // borderRadius: '50%',
+                        // overflow: 'hidden',
+                        // backgroundImage: `url("${theArtist.squareImg}")`,
+                        // backgroundPosition: '50% 25%',
+                        backgroundSize: 'cover',
+                        // padding: '4px',
+                        backgroundClip: 'content-box',
+                        //border: '1px solid var(--primary-color)',
+                        // border: '1px solid var(--primary-color)',
+
+                        margin: '-20px auto -20px',
+                    }}
+                >
+                    {' '}
+                    <img
+                        src={porchlightLogo}
+                        alt=""
+                        className="porchlightLogo"
+                    />
+                </Box>,
+                <FormLabel component="legend" sx={{ marginTop: '0px' }}>
                     Leading up to the show, were communications from Porchlight
                     timely, efficient, and personable?
                 </FormLabel>,
@@ -813,6 +880,30 @@ const HostReviewsEvent = ({
         ],
         artistCommunications: [
             [
+                <Box
+                    className="squareImgInACircle"
+                    sx={{
+                        height: '150px',
+                        width: '150px',
+                        maxHeight: '150px',
+                        maxWidth: '150px',
+                        borderRadius: '50%',
+                        overflow: 'hidden',
+                        backgroundImage: `url("${theArtist.squareImg}")`,
+                        backgroundPosition: '50% 25%',
+                        backgroundSize: 'cover',
+                        padding: '4px',
+                        backgroundClip: 'content-box',
+                        //border: '1px solid var(--primary-color)',
+                        border: '1px solid var(--primary-color)',
+
+                        margin: '0 auto',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'end',
+                        aspectRatio: '1 / 1',
+                    }}
+                ></Box>,
                 <FormLabel component="legend">
                     Leading up to the show, were communications from{' '}
                     {theArtist.stageName} timely, efficient, and personable?
@@ -1328,7 +1419,8 @@ const HostReviewsEvent = ({
         ],
         willingToShareMore: [
             <FormLabel component="legend">
-                Did this revenue live up to your expectations?
+                Are you willing/interested in sharing your experience and
+                stories around hosting with our team?
             </FormLabel>,
             [
                 <FormControl component="fieldset">
@@ -1440,7 +1532,7 @@ const HostReviewsEvent = ({
 
     //// CARD INDEX ///////
     // const [formCardIndex, setIndex] = useState(formStartIndex);
-    const [formCardIndex, setIndex] = useState(22);
+    const [formCardIndex, setIndex] = useState(0);
 
     const cardIndex = formCardIndex;
 
@@ -1639,8 +1731,12 @@ const HostReviewsEvent = ({
                                         <Grid
                                             item
                                             xs={12}
-                                            sx={{ '--form-num': `'${i + 1}'` }}
-                                            data-form-num={i + 1}
+                                            sx={
+                                                i > 0 && {
+                                                    '--form-num': `'${i}'`,
+                                                }
+                                            } // this is where the form number is set
+                                            data-form-num={i}
                                             className="formInquiry"
                                         >
                                             {
@@ -1661,8 +1757,8 @@ const HostReviewsEvent = ({
                     </form>
                 </DialogContent>
             </Dialog>
-            {(!theEvent.artistReviewOfHost ||
-                !theEvent.artistReviewOfHost._id) && (
+            {(!theEvent.hostReviewOfEvent ||
+                !theEvent.hostReviewOfEvent._id) && (
                 <Box
                     className="createdAt"
                     sx={{
@@ -1691,8 +1787,8 @@ const HostReviewsEvent = ({
             <Grid item style={{ margin: '20px auto 0', alignSelf: 'center' }}>
                 <Button btnwidth="250" onClick={() => setDialogOpen(true)}>
                     {theEvent &&
-                    theEvent.artistReviewOfHost &&
-                    theEvent.artistReviewOfHost._id
+                    theEvent.hostReviewOfEvent &&
+                    theEvent.hostReviewOfEvent._id
                         ? 'Edit Your Review'
                         : 'Review Your Experience'}
                 </Button>

@@ -30,6 +30,7 @@ import EditArtistEvent from '../events/EditArtistEvent';
 import HostDashboardEventCard from '../events/HostDashboardEventCard';
 import HostAdminActiveFalse from '../hosts/HostAdminActiveFalse';
 import PastArtistEvents from './PastArtistEvents';
+import PastHostEvents from './PastHostEvents';
 
 import {
     getMyArtistEventsOffers,
@@ -895,50 +896,70 @@ const Dashboard = ({
                             md={6}
                             sx={{ padding: { xs: '0', md: '0 20px' } }}
                         >
-                            {myHostEvents && myHostEvents.length > 0 && (
-                                <Grid
-                                    item
-                                    container
-                                    direction="column"
-                                    xs={12}
-                                    md={12}
-                                >
-                                    <Grid item xs={12}>
-                                        <Typography component="h2">
-                                            You have offered to host{' '}
-                                            {myHostEvents.length > 1
-                                                ? `these ${myHostEvents.length} shows`
-                                                : `this show`}
-                                            :
-                                        </Typography>
-                                    </Grid>
-                                    {/* {bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry */}
+                            {myHostEvents &&
+                                myHostEvents.length > 0 &&
+                                myHostEvents.filter(
+                                    (myEvent) =>
+                                        myEvent.confirmedHost &&
+                                        myEvent.status === 'CONFIRMED' &&
+                                        new Date(myEvent.bookingWhen) >
+                                            dayBeforeYesterday
+                                ).length > 0 && (
                                     <Grid
+                                        item
                                         container
-                                        className="whenBooking"
-                                        direction="row"
-                                        justifyContent="center"
-                                        alignItems="center"
-                                        spacing={2}
-                                        sx={{
-                                            margin: '0px auto 16px',
-                                            width: '100%',
-                                        }}
-                                    ></Grid>
-                                    {myHostEvents
-                                        .filter((e) => e) //.filter(e => e) to remove any null values
-                                        .map(
-                                            (thisEvent, idx, whenWhereOrig) =>
-                                                thisEvent.bookingWhen &&
-                                                thisEvent.bookingWhere && (
-                                                    <HostDashboardEventCard
-                                                        key={idx}
-                                                        thisEvent={thisEvent}
-                                                    ></HostDashboardEventCard>
-                                                )
-                                        )}
-                                </Grid>
-                            )}
+                                        direction="column"
+                                        xs={12}
+                                        md={12}
+                                    >
+                                        <Grid item xs={12}>
+                                            <Typography component="h2">
+                                                You have offered to host{' '}
+                                                {myHostEvents.length > 1
+                                                    ? `these ${myHostEvents.length} shows`
+                                                    : `this show`}
+                                                :
+                                            </Typography>
+                                        </Grid>
+                                        {/* {bookingWhenWhere && bookingWhenWhere.length > 0 && bookingWhenWhere[0].when ? //check to be sure there's a valid first entry */}
+                                        <Grid
+                                            container
+                                            className="whenBooking"
+                                            direction="row"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            spacing={2}
+                                            sx={{
+                                                margin: '0px auto 16px',
+                                                width: '100%',
+                                            }}
+                                        ></Grid>
+                                        {myHostEvents
+                                            .filter((e) => e) //.filter(e => e) to remove any null values
+                                            .map(
+                                                (
+                                                    thisEvent,
+                                                    idx,
+                                                    whenWhereOrig
+                                                ) =>
+                                                    thisEvent.bookingWhen &&
+                                                    thisEvent.bookingWhere &&
+                                                    new Date(
+                                                        thisEvent.bookingWhen
+                                                    ) > dayBeforeYesterday && (
+                                                        <HostDashboardEventCard
+                                                            key={idx}
+                                                            thisEvent={
+                                                                thisEvent
+                                                            }
+                                                        ></HostDashboardEventCard>
+                                                    )
+                                            )}
+                                    </Grid>
+                                )}
+                            <PastHostEvents
+                                iConfirmed={iConfirmed}
+                            ></PastHostEvents>
                             {/* End myHostEvents */}
                             {Array.isArray(user.role) &&
                                 user.role.indexOf('HOST') != -1 &&

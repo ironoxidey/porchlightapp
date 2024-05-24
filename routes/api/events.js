@@ -306,6 +306,7 @@ router.post(
         delete eventFields.confirmedArtist;
         delete eventFields.declinedArtists;
         delete eventFields.artistReviewOfHost;
+        delete eventFields.hostReviewOfEvent;
 
         let userRole = req.user.role;
 
@@ -555,6 +556,7 @@ router.post(
             delete eventFields.confirmedArtist;
             delete eventFields.declinedArtists;
             delete eventFields.artistReviewOfHost;
+            delete eventFields.hostReviewOfEvent;
 
             try {
                 console.log('eventFields', eventFields);
@@ -1453,6 +1455,7 @@ router.get('/myEventsOfferedToHost', auth, async (req, res) => {
                 'artist',
                 '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
             )
+            .populate('hostReviewOfEvent')
             // I don't think we need to populate preferredArtists here, because we're only getting ARTIST created events
             // .populate(
             //     'preferredArtists',
@@ -1475,6 +1478,7 @@ router.get('/myEventsOfferedToHost', auth, async (req, res) => {
                 'preferredArtists',
                 '-email -phone -streetAddress -payoutHandle -companionTravelers -travelingCompanions -artistNotes -agreeToPayAdminFee -sentFollowUp'
             )
+            .populate('hostReviewOfEvent')
             .sort({ bookingWhen: 1 });
 
         // console.log(
@@ -2057,7 +2061,8 @@ router.get('/edit', [auth], async (req, res) => {
                 .populate('confirmedHost')
                 .populate('preferredArtists')
                 .populate('confirmedArtist')
-                .populate('artistReviewOfHost');
+                .populate('artistReviewOfHost')
+                .populate('hostReviewOfEvent');
 
             events.forEach(async (eventDetails) => {
                 if (

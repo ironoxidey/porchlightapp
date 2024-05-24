@@ -32,11 +32,11 @@ const FileUploader = ({ uppy, thisEvent }) => {
             { thisEvent: thisEvent },
             config
         );
-        console.log(
-            `/api/uploads/createDriveFolder res`,
-            // `/api/uploads/createDriveFolder res index(${numRequests})`,
-            res
-        );
+        // console.log(
+        //     `/api/uploads/createDriveFolder res`,
+        //     // `/api/uploads/createDriveFolder res index(${numRequests})`,
+        //     res
+        // );
     };
 
     useEffect(() => {

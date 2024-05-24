@@ -93,7 +93,7 @@ const HostDashboardEventCard = ({
         setHeight(dashboardEventCardRef.current.offsetHeight);
         setWidth(dashboardEventCardRef.current.offsetWidth);
 
-        console.log('HostDashboardEventCard thisEvent', thisEvent);
+        // console.log('HostDashboardEventCard thisEvent', thisEvent);
     }, []);
 
     useEffect(() => {
@@ -150,6 +150,7 @@ const HostDashboardEventCard = ({
                             ? '4px dashed var(--primary-color)!important'
                             : '1px solid transparent',
                     opacity: thisEvent.status === 'DRAFT' ? '0.7' : '1',
+                    flexDirection: 'column',
                 }}
             >
                 <svg
@@ -198,6 +199,10 @@ const HostDashboardEventCard = ({
                     direction="row"
                     alignItems="center"
                     className="dateLocationForBookingWrapper"
+                    sx={{
+                        // flexWrap: 'nowrap'
+                        margin: { xs: '10px auto', sm: '0px auto' },
+                    }}
                     xs={12}
                 >
                     {thisEvent.artist &&
@@ -768,9 +773,12 @@ const HostDashboardEventCard = ({
                         </Grid>
                     </Grid>
                 )}
-                {thisEvent.status === 'CONFIRMED' && (
-                    <HostReviewsEvent theEvent={thisEvent}></HostReviewsEvent>
-                )}
+                {thisEvent.status === 'CONFIRMED' &&
+                    new Date(thisEvent.bookingWhen) < new Date() && ( //bookingWhen is older than today
+                        <HostReviewsEvent
+                            theEvent={thisEvent}
+                        ></HostReviewsEvent>
+                    )}
             </Grid>
         </>
     );

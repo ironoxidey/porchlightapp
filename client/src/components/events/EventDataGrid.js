@@ -40,6 +40,7 @@ import PlaceTwoToneIcon from '@mui/icons-material/PlaceTwoTone';
 import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ArtistReviewsHostDisplay from '../artists/ArtistReviewsHostDisplay';
+import HostReviewsEventDisplay from '../hosts/HostReviewsEventDisplay';
 
 const CustomWidthTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -1147,9 +1148,9 @@ const EventDataGrid = ({
             editable: false,
             type: 'string',
             sortable: true,
-            sortComparator: lengthSort,
+            // sortComparator: lengthSort,
             renderCell: (params) => {
-                console.log('artistReviewOfHost params', params);
+                // console.log('artistReviewOfHost params', params);
 
                 if (params.value) {
                     let artistReview = params.value;
@@ -1172,6 +1173,48 @@ const EventDataGrid = ({
                                 }}
                             >
                                 Artist Review
+                            </span>
+                        </CustomWidthTooltip>
+                    );
+                } else {
+                    return;
+                }
+            },
+        },
+        {
+            field: 'hostReviewOfEvent',
+            headerName: 'Host Review',
+            width: 150,
+            editable: false,
+            type: 'string',
+            sortable: true,
+            // sortComparator: lengthSort,
+            renderCell: (params) => {
+                console.log('hostReviewOfEvent params', params);
+
+                if (
+                    params.row.theEvent.hostReviewOfEvent &&
+                    params.row.theEvent.hostReviewOfEvent._id
+                ) {
+                    return (
+                        <CustomWidthTooltip
+                            arrow={true}
+                            placement="bottom"
+                            title={
+                                <>
+                                    <HostReviewsEventDisplay
+                                        theEvent={params.row.theEvent}
+                                    />
+                                </>
+                            }
+                        >
+                            <span
+                                style={{
+                                    color: 'var(--link-color)',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Host Review
                             </span>
                         </CustomWidthTooltip>
                     );
