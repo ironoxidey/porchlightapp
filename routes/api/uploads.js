@@ -18,6 +18,7 @@ const googleDriveClientEmail = config['googleDriveApiClientEmail'];
 //     'base64'
 // ).toString('ascii');
 // const googleDrivePrivateKeyPath = config['googleDriveApiPrivateKeyPath'];
+console.log("config['mongoURI']", config['mongoURI']);
 console.log(
     "config['googleDriveApiPrivateKeyPath']",
     config['googleDriveApiPrivateKeyPath']
