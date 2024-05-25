@@ -23,8 +23,8 @@ console.log(
     "config['googleDriveApiPrivateKeyPath']",
     config['googleDriveApiPrivateKeyPath']
 );
-console.log('process.env.NODE_ENV', process.env.NODE_ENV);
-const googleDrivePrivateKey = process.env.NODE_ENV
+console.log("config['NODE_ENV']", config['NODE_ENV']);
+const googleDrivePrivateKey = config['NODE_ENV']
     ? fs.readFileSync(config['googleDriveApiPrivateKeyPath'], 'utf8')
     : config['googleDriveApiPrivateKey'];
 console.log('googleDrivePrivateKey', googleDrivePrivateKey);
