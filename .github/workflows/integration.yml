@@ -5,10 +5,36 @@ on:
         branches:
             - main
 
+env:
+    NODE_ENV: production
+    mongoURI: ${{ secrets.MONGOURI }}
+    jwtSecret: ${{ secrets.JWTSECRET }}
+    resetPasswordKey: ${{ secrets.RESETPASSWORDKEY }}
+    GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+    calendlyID: ${{ secrets.CALENDLYID }}
+    calendlySecret: ${{ secrets.CALENDLYSECRET }}
+    cloud_name: ${{ secrets.CLOUD_NAME }}
+    cloudinary_api_key: ${{ secrets.CLOUDINARY_API_KEY }}
+    cloudinary_api_secret: ${{ secrets.CLOUDINARY_API_SECRET }}
+    mailChimpApiKey: ${{ secrets.MAILCHIMP_API_KEY }}
+    eventbritePrivateToken: ${{ secrets.EVENTBRITEPRIVATETOKEN }}
+    courierApiKey: ${{ secrets.COURIER_API_KEY }}
+    googleDriveApiClientEmail: ${{secrets.GOOGLE_DRIVE_API_CLIENT_EMAIL}}
+    googleDriveApiKey: ${{ secrets.GOOGLE_DRIVE_API_PRIVATE_KEY }}
+    googleDriveRootFolder: ${{ secrets.GOOGLE_DRIVE_ROOT_FOLDER }}
+    SUPPRESS_NO_CONFIG_WARNING: TRUE
+
 jobs:
     installation:
         runs-on: self-hosted
         steps:
+            - name: Set up environment
+              run: |
+                  # Verify the environment variables are set (optional)
+                  echo "NODE_ENV=$NODE_ENV"
+                  echo "mongoURI=$mongoURI"
+                  echo "jwtSecret=$jwtSecret"
+
             - name: Checkout main branch
               uses: actions/checkout@v4
 
@@ -35,31 +61,6 @@ jobs:
         needs: installation
         runs-on: self-hosted
         steps:
-            - name: Set up environment
-              env:
-                  NODE_ENV: production
-                  mongoURI: ${{ secrets.MONGOURI }}
-                  jwtSecret: ${{ secrets.JWTSECRET }}
-                  resetPasswordKey: ${{ secrets.RESETPASSWORDKEY }}
-                  GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
-                  calendlyID: ${{ secrets.CALENDLYID }}
-                  calendlySecret: ${{ secrets.CALENDLYSECRET }}
-                  cloud_name: ${{ secrets.CLOUD_NAME }}
-                  cloudinary_api_key: ${{ secrets.CLOUDINARY_API_KEY }}
-                  cloudinary_api_secret: ${{ secrets.CLOUDINARY_API_SECRET }}
-                  mailChimpApiKey: ${{ secrets.MAILCHIMP_API_KEY }}
-                  eventbritePrivateToken: ${{ secrets.EVENTBRITEPRIVATETOKEN }}
-                  courierApiKey: ${{ secrets.COURIER_API_KEY }}
-                  googleDriveApiClientEmail: ${{secrets.GOOGLE_DRIVE_API_CLIENT_EMAIL}}
-                  googleDriveApiKey: ${{ secrets.GOOGLE_DRIVE_API_PRIVATE_KEY }}
-                  googleDriveRootFolder: ${{ secrets.GOOGLE_DRIVE_ROOT_FOLDER }}
-                  SUPPRESS_NO_CONFIG_WARNING: TRUE
-              run: |
-                  # Verify the environment variables are set (optional)
-                  echo "NODE_ENV=$NODE_ENV"
-                  echo "mongoURI=$mongoURI"
-                  echo "jwtSecret=$jwtSecret"
-
             - name: Restart server
               #environment variables set in GitHub Secrets (don't use quotes in values!)
               #"pm2 reload server --update-env" INSTEAD OF "pm2 restart server --update-env" to have zero downtime
