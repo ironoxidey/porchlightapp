@@ -1265,97 +1265,60 @@ const HostReviewsEvent = ({
                 </Grid>,
             ],
         ],
-        mediaContent: [
-            //23
-            [
-                <FormLabel component="legend">
-                    Please share any photo/video content you’d be willing for us
-                    to share in our newsletters/social media!
-                </FormLabel>,
-            ],
-            [
-                <FileUploader uppy={uppy} thisEvent={theEvent}></FileUploader>,
-                <>
-                    {theUploadedFiles.length > 0 && (
-                        <Grid
-                            container
-                            xs={12}
-                            sx={{ margin: '16px auto', width: '95%' }}
-                            className="uploadedFiles"
-                            justifyContent={'center'}
-                        >
-                            <Typography
-                                component="h2"
-                                sx={{ width: '100%', marginBottom: '10px' }}
+        ...(false && {
+            //I'm intentionally hiding it right now because it's broken
+            mediaContent: [
+                //23
+                [
+                    <FormLabel component="legend">
+                        Please share any photo/video content you’d be willing
+                        for us to share in our newsletters/social media!
+                    </FormLabel>,
+                ],
+                [
+                    <FileUploader
+                        uppy={uppy}
+                        thisEvent={theEvent}
+                    ></FileUploader>,
+                    <>
+                        {theUploadedFiles.length > 0 && (
+                            <Grid
+                                container
+                                xs={12}
+                                sx={{ margin: '16px auto', width: '95%' }}
+                                className="uploadedFiles"
+                                justifyContent={'center'}
                             >
-                                <AttachFileIcon
-                                    sx={{
-                                        fontSize: '1.4em',
-                                        marginRight: '5px',
-                                    }}
-                                />
-                                {theUploadedFiles.length > 1
-                                    ? 'These files are'
-                                    : 'This file is'}{' '}
-                                attached to this event:
-                            </Typography>
-                            <Masonry
-                                columns={{ xs: 3, sm: 4, md: 7, lg: 7 }}
-                                spacing={2}
-                            >
-                                {theUploadedFiles.map((image, idx) => {
-                                    const theFileLink =
-                                        image.filetype &&
-                                        image.filetype.split('/')[0] === 'image'
-                                            ? 'https://lh3.googleusercontent.com/d/' +
-                                              image.driveID
-                                            : 'https://drive.google.com/file/d/' +
-                                              image.driveID;
-                                    if (image.driveID) {
-                                        return (
-                                            <Grid
-                                                item
-                                                key={idx}
-                                                sx={{
-                                                    width: '100px',
-                                                    margin: '10px',
-                                                    overflowWrap: 'break-word',
-                                                    textAlign: 'center',
-                                                    fontSize: '.75em',
-                                                }}
-                                            >
-                                                <a
-                                                    // href={image.url}
-                                                    href={theFileLink}
-                                                    target="_blank"
-                                                >
-                                                    <img
-                                                        src={
-                                                            'https://lh3.googleusercontent.com/d/' +
-                                                            image.driveID
-                                                        }
-                                                        style={{
-                                                            width: '100px',
-                                                            padding: '3px',
-                                                            border: '1px solid var(--primary-color)',
-                                                        }}
-                                                    />
-
-                                                    <p>{image.name}</p>
-                                                </a>
-                                            </Grid>
-                                            // <img
-                                            //     src={
-                                            //         'https://drive.google.com/file/d/' +
-                                            //         image.driveID +
-                                            //         '/uc?export=view'
-                                            //     }
-                                            //     alt="Image Description"
-                                            // ></img>
-                                        );
-                                    } else {
-                                        return (
-                                            <>
+                                <Typography
+                                    component="h2"
+                                    sx={{ width: '100%', marginBottom: '10px' }}
+                                >
+                                    <AttachFileIcon
+                                        sx={{
+                                            fontSize: '1.4em',
+                                            marginRight: '5px',
+                                        }}
+                                    />
+                                    {theUploadedFiles.length > 1
+                                        ? 'These files are'
+                                        : 'This file is'}{' '}
+                                    attached to this event:
+                                </Typography>
+                                <Masonry
+                                    columns={{ xs: 3, sm: 4, md: 7, lg: 7 }}
+                                    spacing={2}
+                                >
+                                    {theUploadedFiles.map((image, idx) => {
+                                        const theFileLink =
+                                            image.filetype &&
+                                            image.filetype.split('/')[0] ===
+                                                'image'
+                                                ? 'https://lh3.googleusercontent.com/d/' +
+                                                  image.driveID
+                                                : 'https://drive.google.com/file/d/' +
+                                                  image.driveID;
+                                        if (image.driveID) {
+                                            return (
                                                 <Grid
                                                     item
                                                     key={idx}
@@ -1368,26 +1331,71 @@ const HostReviewsEvent = ({
                                                         fontSize: '.75em',
                                                     }}
                                                 >
-                                                    <SpinnerCircular
-                                                        size={60}
-                                                        thickness={130}
-                                                        speed={75}
-                                                        color="rgba(255, 255, 217, 1)"
-                                                        secondaryColor="rgba(16, 15, 14, 1)"
-                                                    />
+                                                    <a
+                                                        // href={image.url}
+                                                        href={theFileLink}
+                                                        target="_blank"
+                                                    >
+                                                        <img
+                                                            src={
+                                                                'https://lh3.googleusercontent.com/d/' +
+                                                                image.driveID
+                                                            }
+                                                            style={{
+                                                                width: '100px',
+                                                                padding: '3px',
+                                                                border: '1px solid var(--primary-color)',
+                                                            }}
+                                                        />
 
-                                                    <p>{image.name}</p>
+                                                        <p>{image.name}</p>
+                                                    </a>
                                                 </Grid>
-                                            </>
-                                        );
-                                    }
-                                })}
-                            </Masonry>
-                        </Grid>
-                    )}
-                </>,
+                                                // <img
+                                                //     src={
+                                                //         'https://drive.google.com/file/d/' +
+                                                //         image.driveID +
+                                                //         '/uc?export=view'
+                                                //     }
+                                                //     alt="Image Description"
+                                                // ></img>
+                                            );
+                                        } else {
+                                            return (
+                                                <>
+                                                    <Grid
+                                                        item
+                                                        key={idx}
+                                                        sx={{
+                                                            width: '100px',
+                                                            margin: '10px',
+                                                            overflowWrap:
+                                                                'break-word',
+                                                            textAlign: 'center',
+                                                            fontSize: '.75em',
+                                                        }}
+                                                    >
+                                                        <SpinnerCircular
+                                                            size={60}
+                                                            thickness={130}
+                                                            speed={75}
+                                                            color="rgba(255, 255, 217, 1)"
+                                                            secondaryColor="rgba(16, 15, 14, 1)"
+                                                        />
+
+                                                        <p>{image.name}</p>
+                                                    </Grid>
+                                                </>
+                                            );
+                                        }
+                                    })}
+                                </Masonry>
+                            </Grid>
+                        )}
+                    </>,
+                ],
             ],
-        ],
+        }),
         testimonial: [
             [
                 <FormLabel component="legend">
