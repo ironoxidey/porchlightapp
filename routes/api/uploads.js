@@ -11,25 +11,6 @@ const { google } = require('googleapis');
 // const buff = Buffer.from(googleDrivePrivateKey).toString('base64');
 // console.log('buff', buff);
 
-const googleDriveClientEmail = config['googleDriveApiClientEmail'];
-// const googleDrivePrivateKeyBase64 = config['googleDriveApiPrivateKey'];
-// const googleDrivePrivateKey = Buffer.from(
-//     googleDrivePrivateKeyBase64,
-//     'base64'
-// ).toString('ascii');
-// const googleDrivePrivateKeyPath = config['googleDriveApiPrivateKeyPath'];
-console.log("config['mongoURI']", config['mongoURI']);
-console.log(
-    "config['googleDriveApiPrivateKeyPath']",
-    config['googleDriveApiPrivateKeyPath']
-);
-console.log("config['NODE_ENV']", config['NODE_ENV']);
-const googleDrivePrivateKey = config['NODE_ENV']
-    ? fs.readFileSync(config['googleDriveApiPrivateKeyPath'], 'utf8')
-    : config['googleDriveApiPrivateKey'];
-console.log('googleDrivePrivateKey', googleDrivePrivateKey);
-const googleDriveRootFolder = config['googleDriveRootFolder'];
-
 const router = express.Router();
 const Event = require('../../models/Event');
 const Host = require('../../models/Host');
@@ -367,6 +348,25 @@ tusServer.on(EVENTS.POST_FINISH, async (req, res, upload) => {
 });
 
 async function authorize() {
+    const googleDriveClientEmail = config['googleDriveApiClientEmail'];
+    // const googleDrivePrivateKeyBase64 = config['googleDriveApiPrivateKey'];
+    // const googleDrivePrivateKey = Buffer.from(
+    //     googleDrivePrivateKeyBase64,
+    //     'base64'
+    // ).toString('ascii');
+    // const googleDrivePrivateKeyPath = config['googleDriveApiPrivateKeyPath'];
+    console.log("config['mongoURI']", config['mongoURI']);
+    console.log(
+        "config['googleDriveApiPrivateKeyPath']",
+        config['googleDriveApiPrivateKeyPath']
+    );
+    console.log("config['NODE_ENV']", config['NODE_ENV']);
+    const googleDrivePrivateKey = config['NODE_ENV']
+        ? fs.readFileSync(config['googleDriveApiPrivateKeyPath'], 'utf8')
+        : config['googleDriveApiPrivateKey'];
+    console.log('googleDrivePrivateKey', googleDrivePrivateKey);
+    const googleDriveRootFolder = config['googleDriveRootFolder'];
+
     const jwtClient = new google.auth.JWT(
         googleDriveClientEmail,
         null,
