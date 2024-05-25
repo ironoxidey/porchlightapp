@@ -4,6 +4,7 @@ const config = !process.env.NODE_ENV ? require('config') : process.env;
 const auth = require('../../middleware/auth');
 
 const fs = require('fs');
+const path = require('path');
 const { google } = require('googleapis');
 
 // const apikeys = config['googleDriveApiKey'];
@@ -11,11 +12,16 @@ const { google } = require('googleapis');
 // console.log('buff', buff);
 
 const googleDriveClientEmail = config['googleDriveApiClientEmail'];
-const googleDrivePrivateKeyBase64 = config['googleDriveApiPrivateKey'];
-const googleDrivePrivateKey = Buffer.from(
-    googleDrivePrivateKeyBase64,
-    'base64'
-).toString('ascii');
+// const googleDrivePrivateKeyBase64 = config['googleDriveApiPrivateKey'];
+// const googleDrivePrivateKey = Buffer.from(
+//     googleDrivePrivateKeyBase64,
+//     'base64'
+// ).toString('ascii');
+const googleDrivePrivateKeyPath = config['googleDriveApiPrivateKeyPath'];
+const googleDrivePrivateKey = process.env.NODE_ENV
+    ? fs.readFileSync(googleDrivePrivateKeyPath, 'utf8')
+    : config['googleDriveApiPrivateKey'];
+console.log('googleDrivePrivateKey', googleDrivePrivateKey);
 const googleDriveRootFolder = config['googleDriveRootFolder'];
 
 const router = express.Router();
