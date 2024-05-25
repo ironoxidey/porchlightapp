@@ -35,13 +35,13 @@ jobs:
         needs: installation
         runs-on: self-hosted
         steps:
-            - name: Restart server
+            - name: Setup Environment Variables and Restart server
               #environment variables set in GitHub Secrets (don't use quotes in values!)
               #"pm2 reload server --update-env" INSTEAD OF "pm2 restart server --update-env" to have zero downtime
               run: |
                   unset mongoURI jwtSecret resetPasswordKey GOOGLE_MAPS_API_KEY calendlyID calendlySecret cloud_name cloudinary_api_key cloudinary_api_secret mailChimpApiKey eventbritePrivateToken courierApiKey googleDriveApiClientEmail googleDriveApiPrivateKeyPath googleDriveRootFolder
                   export NODE_ENV=production
-                  echo "${{ secrets.GOOGLE_DRIVE_API_PRIVATE_KEY }}" > gd_private_key.pem
+                  echo "${{secrets.GOOGLE_DRIVE_API_PRIVATE_KEY}}" > gd_private_key.pem
                   chmod 600 gd_private_key.pem
                   export googleDriveApiPrivateKeyPath=$(pwd)/gd_private_key.pem
                   export mongoURI=${{secrets.MONGOURI}}
@@ -62,9 +62,6 @@ jobs:
                   pm2 reload server --update-env
                   pm2 save
                   sudo service nginx restart
-
-            - name: Environment Variables again
-              run: |
                   # Verify the environment variables are still set (optional)
                   echo "NODE_ENV=$NODE_ENV"
                   echo "mongoURI=$mongoURI"
