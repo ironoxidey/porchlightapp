@@ -11,15 +11,6 @@ const User = require('../../models/User');
 const Artist = require('../../models/Artist');
 const Host = require('../../models/Host');
 
-console.log('process.env');
-console.dir(process.env, { depth: null });
-console.log('process.env.env');
-console.dir(process.env.env, { depth: null });
-console.log('config');
-console.dir(config, { depth: null });
-console.log("config['jwtSecret']");
-console.dir(config['jwtSecret'], { depth: null });
-
 // @route   GET api/auth
 // @desc    Test Route
 // @access  Private
