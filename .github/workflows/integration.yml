@@ -41,9 +41,6 @@ jobs:
               run: |
                   unset mongoURI jwtSecret resetPasswordKey GOOGLE_MAPS_API_KEY calendlyID calendlySecret cloud_name cloudinary_api_key cloudinary_api_secret mailChimpApiKey eventbritePrivateToken courierApiKey googleDriveApiClientEmail googleDriveApiPrivateKey googleDriveRootFolder
                   export NODE_ENV='production'
-                  echo "${{ secrets.GOOGLE_DRIVE_API_PRIVATE_KEY }}" > gd_private_key.pem
-                  chmod 600 gd_private_key.pem
-                  export googleDriveApiPrivateKeyPath=$(pwd)/gd_private_key.pem
                   export mongoURI=${{secrets.MONGOURI}}
                   export jwtSecret=${{secrets.JWTSECRET}}
                   export resetPasswordKey=${{secrets.RESETPASSWORDKEY}}
