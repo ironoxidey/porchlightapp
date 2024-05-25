@@ -1,5 +1,7 @@
 const express = require('express');
-const config = !process.env.NODE_ENV ? require('config') : process.env;
+const config = !process.env
+    ? require('config')
+    : require('../../../porchlight-config/default.json'); //if there's no process.env then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
 
 const auth = require('../../middleware/auth');
 
@@ -19,6 +21,8 @@ const { Server, EVENTS } = require('@tus/server');
 const { FileStore } = require('@tus/file-store');
 
 const { Metadata, ERRORS } = require('@tus/utils');
+
+const googleDriveRootFolder = config['googleDriveRootFolder'];
 
 const uploadFolderName = (theEvent) => {
     if (theEvent?.bookingWhen) {
@@ -349,23 +353,7 @@ tusServer.on(EVENTS.POST_FINISH, async (req, res, upload) => {
 
 async function authorize() {
     const googleDriveClientEmail = config['googleDriveApiClientEmail'];
-    // const googleDrivePrivateKeyBase64 = config['googleDriveApiPrivateKey'];
-    // const googleDrivePrivateKey = Buffer.from(
-    //     googleDrivePrivateKeyBase64,
-    //     'base64'
-    // ).toString('ascii');
-    // const googleDrivePrivateKeyPath = config['googleDriveApiPrivateKeyPath'];
-    console.log("config['mongoURI']", config['mongoURI']);
-    console.log(
-        "config['googleDriveApiPrivateKeyPath']",
-        config['googleDriveApiPrivateKeyPath']
-    );
-    console.log("config['NODE_ENV']", config['NODE_ENV']);
-    const googleDrivePrivateKey = config['NODE_ENV']
-        ? fs.readFileSync(config['googleDriveApiPrivateKeyPath'], 'utf8')
-        : config['googleDriveApiPrivateKey'];
-    console.log('googleDrivePrivateKey', googleDrivePrivateKey);
-    const googleDriveRootFolder = config['googleDriveRootFolder'];
+    const googleDrivePrivateKey = config['googleDriveApiPrivateKey'];
 
     const jwtClient = new google.auth.JWT(
         googleDriveClientEmail,
