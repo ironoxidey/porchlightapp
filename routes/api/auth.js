@@ -12,6 +12,7 @@ const Artist = require('../../models/Artist');
 const Host = require('../../models/Host');
 
 console.log('process.env', process.env);
+console.log('process.env.env', process.env.env);
 console.log('config', config);
 
 // @route   GET api/auth
