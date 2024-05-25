@@ -11,6 +11,17 @@ const User = require('../../models/User');
 const Artist = require('../../models/Artist');
 const Host = require('../../models/Host');
 
+console.log("config['mongoURI']", config['mongoURI']);
+console.log(
+    "config['googleDriveApiPrivateKeyPath']",
+    config['googleDriveApiPrivateKeyPath']
+);
+console.log("config['NODE_ENV']", config['NODE_ENV']);
+const googleDrivePrivateKey = config['NODE_ENV']
+    ? fs.readFileSync(config['googleDriveApiPrivateKeyPath'], 'utf8')
+    : config['googleDriveApiPrivateKey'];
+console.log('googleDrivePrivateKey', googleDrivePrivateKey);
+
 // @route   GET api/auth
 // @desc    Test Route
 // @access  Private
