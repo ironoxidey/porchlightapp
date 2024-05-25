@@ -63,25 +63,6 @@ jobs:
               #environment variables set in GitHub Secrets (don't use quotes in values!)
               #"pm2 reload server --update-env" INSTEAD OF "pm2 restart server --update-env" to have zero downtime
               run: |
-                  # unset mongoURI jwtSecret resetPasswordKey GOOGLE_MAPS_API_KEY calendlyID calendlySecret cloud_name cloudinary_api_key cloudinary_api_secret mailChimpApiKey eventbritePrivateToken courierApiKey googleDriveApiClientEmail googleDriveApiPrivateKeyPath googleDriveRootFolder
-                  # export NODE_ENV='production'
-                  # echo "${{ secrets.GOOGLE_DRIVE_API_PRIVATE_KEY }}" > gd_private_key.pem
-                  # chmod 600 gd_private_key.pem
-                  # export googleDriveApiPrivateKeyPath=$(pwd)/gd_private_key.pem
-                  # export mongoURI=${{secrets.MONGOURI}}
-                  # export jwtSecret=${{secrets.JWTSECRET}}
-                  # export resetPasswordKey=${{secrets.RESETPASSWORDKEY}}
-                  # export GOOGLE_MAPS_API_KEY=${{secrets.GOOGLE_MAPS_API_KEY}}
-                  # export calendlyID=${{secrets.CALENDLYID}}
-                  # export calendlySecret=${{secrets.CALENDLYSECRET}}
-                  # export cloud_name=${{secrets.CLOUD_NAME}}
-                  # export cloudinary_api_key=${{secrets.CLOUDINARY_API_KEY}}
-                  # export cloudinary_api_secret=${{secrets.CLOUDINARY_API_SECRET}}
-                  # export mailChimpApiKey=${{secrets.MAILCHIMP_API_KEY}}
-                  # export eventbritePrivateToken=${{secrets.EVENTBRITEPRIVATETOKEN}}
-                  # export courierApiKey=${{secrets.COURIER_API_KEY}}
-                  # export googleDriveApiClientEmail=${{secrets.GOOGLE_DRIVE_API_CLIENT_EMAIL}}
-                  # export googleDriveRootFolder=${{secrets.GOOGLE_DRIVE_ROOT_FOLDER}}
                   export SUPPRESS_NO_CONFIG_WARNING=TRUE
                   pm2 reload server --update-env
                   pm2 save
