@@ -9,15 +9,7 @@ const config =
 //: require('../../../porchlight-config/default.json'); //if there's no process.env then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
 const db = config['mongoURI'];
 
-// console.log('config', config);
-
-console.log(`process.env.HOME: ${process.env.HOME}`);
-// console.log(
-//     `process.env.HOME === '/Users/rustyhein'`,
-//     process.env.HOME === '/Users/rustyhein'
-// );
-
-console.log(`Database URI: ${db}`);
+// console.log(`Database URI: ${db}`);
 
 const connectDB = async () => {
     try {

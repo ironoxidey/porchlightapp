@@ -144,7 +144,10 @@ const tusServer = new Server({
             }
         };
 
-        if (!req.body.thisEvent || !uploadFileTypePassed()) {
+        if (
+            (!req.body.thisEvent && !upload.metadata.thisEvent) ||
+            !uploadFileTypePassed()
+        ) {
             // return res.status(400).json({
             //     msg: uploadFileTypePassed()
             //         ? 'There is no event found at req.body.thisEvent'
@@ -153,7 +156,7 @@ const tusServer = new Server({
             throw {
                 status_code: 400,
                 body: uploadFileTypePassed()
-                    ? 'There is no event found at req.body.thisEvent'
+                    ? 'uploadFileTypePassed | There is no event found at req.body.thisEvent'
                     : "Invalid filetype. We're accepting only images and videos.",
             };
         } else {
@@ -177,7 +180,7 @@ const tusServer = new Server({
                 }
 
                 const theEvent = await Event.findOne({
-                    _id: req.body.thisEvent,
+                    _id: req.body.thisEvent || upload.metadata.thisEvent,
                     confirmedHost: hostMe._id,
                     status: 'CONFIRMED',
                 }).select('driveFolderID');
