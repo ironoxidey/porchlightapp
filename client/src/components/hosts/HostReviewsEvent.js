@@ -104,7 +104,8 @@ const HostReviewsEvent = ({
             //     thisEvent.bookingWhere.state,
         },
     }).use(Tus, {
-        endpoint: '/api/uploads/file',
+        endpoint: 'https://app.porchlight.art/api/uploads/file', //needs to be called over https
+        // endpoint: '/api/uploads/file',
         headers: {
             'x-auth-token': localStorage.token,
         },
