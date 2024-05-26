@@ -10,6 +10,7 @@ const config =
 const db = config['mongoURI'];
 
 console.log(`Database URI: ${db}`);
+console.log(`process.env.HOME: ${process.env.HOME}`);
 
 const connectDB = async () => {
     try {
