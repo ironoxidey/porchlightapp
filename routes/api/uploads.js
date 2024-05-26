@@ -21,6 +21,7 @@ const { FileStore } = require('@tus/file-store');
 // const { Metadata, ERRORS } = require('@tus/utils');
 
 const googleDriveRootFolder = config['googleDriveRootFolder'];
+console.log('googleDriveRootFolder', googleDriveRootFolder);
 
 // const buff = Buffer.from(config['googleDriveApiPrivateKey']).toString('base64');
 // console.log('buff', buff);
