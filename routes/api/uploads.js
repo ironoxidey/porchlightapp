@@ -29,7 +29,7 @@ const googleDriveRootFolder = config['googleDriveRootFolder'];
 // console.log('buff', buff);
 
 const uploadFolderName = (theEvent) => {
-    console.log('uploadFolderName()');
+    // console.log('uploadFolderName()');
     if (theEvent?.bookingWhen) {
         return (
             theEvent?.bookingWhen.toISOString().substring(0, 10) +
@@ -46,7 +46,7 @@ const uploadFolderName = (theEvent) => {
 };
 
 const searchInGoogleDrive = async (theQuery) => {
-    console.log('searchInGoogleDrive()');
+    // console.log('searchInGoogleDrive()');
     const authClient = await authorize();
     const drive = google.drive({
         version: 'v3',
@@ -68,7 +68,7 @@ const searchInGoogleDrive = async (theQuery) => {
 };
 
 const searchForFolderInGoogleDrive = async (theEvent) => {
-    console.log('searchForFolderInGoogleDrive()');
+    // console.log('searchForFolderInGoogleDrive()');
     const authClient = await authorize();
     const drive = google.drive({
         version: 'v3',
@@ -362,7 +362,7 @@ tusServer.on(EVENTS.POST_FINISH, async (req, res, upload) => {
 });
 
 async function authorize() {
-    console.log('authorize()');
+    // console.log('authorize()');
     const googleDriveClientEmail = config['googleDriveApiClientEmail'];
     // const googleDrivePrivateKey = config['googleDriveApiPrivateKey'];
     const googleDrivePrivateKeyBase64 = config['googleDriveApiPrivateKey'];
@@ -386,7 +386,7 @@ async function authorize() {
 }
 
 const decodeMetadataMiddleWare = async (req, res, next) => {
-    console.log('decodeMetadataMiddleWare()');
+    // console.log('decodeMetadataMiddleWare()');
     // metadata from Uppy came in on req.rawHeaders and is encoded
 
     const uploadMetadataHeaderIndex = req.rawHeaders.indexOf('upload-metadata');
@@ -421,7 +421,7 @@ const decodeMetadataMiddleWare = async (req, res, next) => {
 };
 
 const createFolder = async (req, theEvent, hostMe) => {
-    console.log('createFolder()');
+    // console.log('createFolder()');
 
     //create folder for the event on Google Drive for the files to be uploaded into
     const authClient = await authorize();
@@ -537,7 +537,7 @@ const createFolder = async (req, theEvent, hostMe) => {
 };
 
 async function uploadFile(req, res, upload) {
-    console.log('uploadFile()');
+    // console.log('uploadFile()');
     //upload the file to Google Drive
     // console.log('uploadFile upload ', upload);
     // console.log('uploadFile req.body', req.body);
