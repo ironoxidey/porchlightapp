@@ -24,14 +24,6 @@ const googleDriveRootFolder = config['googleDriveRootFolder'];
 // const buff = Buffer.from(config['googleDriveApiPrivateKey']).toString('base64');
 // console.log('buff', buff);
 
-const googleDrivePrivateKeyBase64 = config['googleDriveApiPrivateKey'];
-// const googleDrivePrivateKeyBase64 = buff;
-const googleDrivePrivateKey = Buffer.from(
-    googleDrivePrivateKeyBase64,
-    'base64'
-).toString('ascii');
-const googleDriveClientEmail = config['googleDriveApiClientEmail'];
-
 const uploadFolderName = (theEvent) => {
     if (theEvent?.bookingWhen) {
         return (
@@ -360,8 +352,14 @@ tusServer.on(EVENTS.POST_FINISH, async (req, res, upload) => {
 });
 
 async function authorize() {
-    // const googleDriveClientEmail = config['googleDriveApiClientEmail'];
+    const googleDriveClientEmail = config['googleDriveApiClientEmail'];
     // const googleDrivePrivateKey = config['googleDriveApiPrivateKey'];
+    const googleDrivePrivateKeyBase64 = config['googleDriveApiPrivateKey'];
+    // const googleDrivePrivateKeyBase64 = buff;
+    const googleDrivePrivateKey = Buffer.from(
+        googleDrivePrivateKeyBase64,
+        'base64'
+    ).toString('ascii');
 
     const jwtClient = new google.auth.JWT(
         googleDriveClientEmail,
