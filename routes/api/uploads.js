@@ -6,7 +6,6 @@ const config = !process.env
 const auth = require('../../middleware/auth');
 
 const fs = require('fs');
-// const path = require('path');
 const { google } = require('googleapis');
 
 // const apikeys = config['googleDriveApiKey'];
