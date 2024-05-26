@@ -104,8 +104,8 @@ const HostReviewsEvent = ({
             //     thisEvent.bookingWhere.state,
         },
     }).use(Tus, {
-        endpoint: 'https://app.porchlight.art/api/uploads/file', //needs to be called over https
-        // endpoint: '/api/uploads/file',
+        // endpoint: 'https://app.porchlight.art/api/uploads/file', //needs to be called over https
+        endpoint: '/api/uploads/file',
         headers: {
             'x-auth-token': localStorage.token,
         },
@@ -127,10 +127,10 @@ const HostReviewsEvent = ({
                         { thisEvent: file.meta.thisEvent },
                         config
                     );
-                    console.log(
-                        `/api/uploads/createDriveFolder res index(${numRequests})`,
-                        res
-                    );
+                    // console.log(
+                    //     `/api/uploads/createDriveFolder res index(${numRequests})`,
+                    //     res
+                    // );
                 } catch (err) {
                     console.log('error: ' + err);
                     // const errors = err.response.data.errors;
@@ -1266,7 +1266,7 @@ const HostReviewsEvent = ({
                 </Grid>,
             ],
         ],
-        ...(true && {
+        ...(false && {
             //I'm intentionally hiding it right now because it's broken
             mediaContent: [
                 //23
