@@ -41,7 +41,7 @@ jobs:
               #I moved googleDriveApiClientEmail, googleDriveApiPrivateKeyPath, and googleDriveRootFolder to '../../../porchlight-config/default.json' on the server, because I had too much trouble with the GitHub Secrets and I guess the length of the Google Drive Private Key
               run: |
                   unset mongoURI jwtSecret resetPasswordKey GOOGLE_MAPS_API_KEY calendlyID calendlySecret cloud_name cloudinary_api_key cloudinary_api_secret mailChimpApiKey eventbritePrivateToken courierApiKey
-                  export NODE_ENV=production
+                  export NODE_ENV='production'
                   export mongoURI=${{secrets.MONGOURI}}
                   export jwtSecret=${{secrets.JWTSECRET}}
                   export resetPasswordKey=${{secrets.RESETPASSWORDKEY}}
