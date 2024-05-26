@@ -48,7 +48,7 @@ app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/artists', require('./routes/api/artists'));
 app.use('/api/hosts', require('./routes/api/hosts'));
 app.use('/api/events', require('./routes/api/events'));
-// app.use('/api/uploads', require('./routes/api/uploads'));
+app.use('/api/uploads', require('./routes/api/uploads'));
 // app.use('/api/cloudinary', require('./routes/api/cloudinary'));
 
 app.use(express.static('client/build'));
