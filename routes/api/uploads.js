@@ -1,7 +1,8 @@
 const express = require('express');
-const config = !process.env
-    ? require('config')
-    : require('../../../porchlight-config/default.json'); //TODO: figure out a better condition for determining dev vs prod ---- if there's no process.env then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
+//DEV
+// const config = require('config')
+//PRODUCTION
+const config = require('../../../porchlight-config/default.json'); //TODO: figure out a better condition for determining dev vs prod ---- if there's no process.env then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
 
 const auth = require('../../middleware/auth');
 
@@ -17,7 +18,7 @@ const Host = require('../../models/Host');
 const { Server, EVENTS } = require('@tus/server');
 const { FileStore } = require('@tus/file-store');
 
-const { Metadata, ERRORS } = require('@tus/utils');
+// const { Metadata, ERRORS } = require('@tus/utils');
 
 const googleDriveRootFolder = config['googleDriveRootFolder'];
 
@@ -390,9 +391,9 @@ const decodeMetadataMiddleWare = async (req, res, next) => {
                         acc[key] = Buffer.from(value, 'base64').toString(
                             'utf-8'
                         );
-                    } catch {
+                    } catch (err) {
                         console.log('error parsing upload metadata');
-                        throw ERRORS.INVALID_METADATA;
+                        throw err;
                     }
                     return acc;
                 }, {});
