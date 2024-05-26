@@ -109,248 +109,248 @@ const searchForFolderInGoogleDrive = async (theEvent) => {
     return googleDriveFolderSearch.data.files[0]; //essentially return empty
 };
 
-const tusServer = new Server({
-    path: '/api/uploads/file',
-    datastore: new FileStore({ directory: './uploads' }),
+// const tusServer = new Server({
+//     path: '/api/uploads/file',
+//     datastore: new FileStore({ directory: './uploads' }),
 
-    // https://www.npmjs.com/package/@tus/server#example-validate-metadata-when-an-upload-is-created
-    async onUploadCreate(req, res, upload) {
-        console.log('tusServer setup onUploadCreate req.user', req.user);
-        console.log('tusServer setup onUploadCreate req.body', req.body);
-        console.log('tusServer setup onUploadCreate upload', upload);
+//     // https://www.npmjs.com/package/@tus/server#example-validate-metadata-when-an-upload-is-created
+//     async onUploadCreate(req, res, upload) {
+//         console.log('tusServer setup onUploadCreate req.user', req.user);
+//         console.log('tusServer setup onUploadCreate req.body', req.body);
+//         console.log('tusServer setup onUploadCreate upload', upload);
 
-        const uploadFileTypePassed = () => {
-            if (
-                upload.metadata.filetype.split('/')[0] === 'image' ||
-                upload.metadata.filetype.split('/')[0] === 'video'
-            ) {
-                // console.log(
-                //     'FILETYPE PASSED tusServer setup onUploadCreate upload.metadata.filetype',
-                //     upload.metadata.filetype
-                // );
-                return true;
-            } else {
-                // console.log(
-                //     'WRONG FILETYPE tusServer setup onUploadCreate upload.metadata.filetype',
-                //     upload.metadata.filetype
-                // );
-                return false;
-            }
-        };
+//         const uploadFileTypePassed = () => {
+//             if (
+//                 upload.metadata.filetype.split('/')[0] === 'image' ||
+//                 upload.metadata.filetype.split('/')[0] === 'video'
+//             ) {
+//                 // console.log(
+//                 //     'FILETYPE PASSED tusServer setup onUploadCreate upload.metadata.filetype',
+//                 //     upload.metadata.filetype
+//                 // );
+//                 return true;
+//             } else {
+//                 // console.log(
+//                 //     'WRONG FILETYPE tusServer setup onUploadCreate upload.metadata.filetype',
+//                 //     upload.metadata.filetype
+//                 // );
+//                 return false;
+//             }
+//         };
 
-        if (!req.body.thisEvent || !uploadFileTypePassed()) {
-            // return res.status(400).json({
-            //     msg: uploadFileTypePassed()
-            //         ? 'There is no event found at req.body.thisEvent'
-            //         : "Invalid filetype. We're accepting only images and videos.",
-            // });
-            throw {
-                status_code: 400,
-                body: uploadFileTypePassed()
-                    ? 'There is no event found at req.body.thisEvent'
-                    : "Invalid filetype. We're accepting only images and videos.",
-            };
-        } else {
-            try {
-                const hostMe = await Host.findOne({
-                    email: req.user.email,
-                    adminActive: true,
-                }); //ADD .select('-field'); to exclude [field] from the response
-                if (!hostMe) {
-                    throw {
-                        status_code: 500,
-                        body:
-                            'There is no host for this email: ' +
-                            req.user.email,
-                    }; // if undefined, falls back to 500 with "Internal server error".
-                    // return res.status(400).json({
-                    //     msg:
-                    //         'There is no host for this email: ' +
-                    //         req.user.email,
-                    // });
-                }
+//         if (!req.body.thisEvent || !uploadFileTypePassed()) {
+//             // return res.status(400).json({
+//             //     msg: uploadFileTypePassed()
+//             //         ? 'There is no event found at req.body.thisEvent'
+//             //         : "Invalid filetype. We're accepting only images and videos.",
+//             // });
+//             throw {
+//                 status_code: 400,
+//                 body: uploadFileTypePassed()
+//                     ? 'There is no event found at req.body.thisEvent'
+//                     : "Invalid filetype. We're accepting only images and videos.",
+//             };
+//         } else {
+//             try {
+//                 const hostMe = await Host.findOne({
+//                     email: req.user.email,
+//                     adminActive: true,
+//                 }); //ADD .select('-field'); to exclude [field] from the response
+//                 if (!hostMe) {
+//                     throw {
+//                         status_code: 500,
+//                         body:
+//                             'There is no host for this email: ' +
+//                             req.user.email,
+//                     }; // if undefined, falls back to 500 with "Internal server error".
+//                     // return res.status(400).json({
+//                     //     msg:
+//                     //         'There is no host for this email: ' +
+//                     //         req.user.email,
+//                     // });
+//                 }
 
-                const theEvent = await Event.findOne({
-                    _id: req.body.thisEvent,
-                    confirmedHost: hostMe._id,
-                    status: 'CONFIRMED',
-                }).select('driveFolderID');
+//                 const theEvent = await Event.findOne({
+//                     _id: req.body.thisEvent,
+//                     confirmedHost: hostMe._id,
+//                     status: 'CONFIRMED',
+//                 }).select('driveFolderID');
 
-                if (!theEvent.driveFolderID) {
-                    //this should not happen, because the drive folder should have been created and attached to the event in the onBeforeRequest call to /createDriveFolder
-                    console.log(
-                        'tusServer setup onUploadCreate THERE’S STILL NO theEvent.driveFolderID ?!?!',
-                        theEvent?.bookingWhen.toISOString().substring(0, 10)
-                    );
-                    // return { res, metadata: { ...upload.metadata } };
-                    throw {
-                        status_code: 500,
-                        body: 'An upload folder could not be found for this event. Please try again.',
-                    }; // if undefined, falls back to 500 with "Internal server error".
-                } else {
-                    //there's a driveFolderID on theEvent (this should really always be the case)
-                    console.log(
-                        `tusServer setup onUploadCreate theEvent.driveFolderID`,
-                        theEvent.driveFolderID
-                    );
-                    //Check the Drive for a file by this name (prevent duplicates)
-                    const googleDriveSearchRes = await searchInGoogleDrive(
-                        `'${theEvent.driveFolderID}' in parents and name = '${upload.metadata.filename}' and trashed = false`
-                    );
+//                 if (!theEvent.driveFolderID) {
+//                     //this should not happen, because the drive folder should have been created and attached to the event in the onBeforeRequest call to /createDriveFolder
+//                     console.log(
+//                         'tusServer setup onUploadCreate THERE’S STILL NO theEvent.driveFolderID ?!?!',
+//                         theEvent?.bookingWhen.toISOString().substring(0, 10)
+//                     );
+//                     // return { res, metadata: { ...upload.metadata } };
+//                     throw {
+//                         status_code: 500,
+//                         body: 'An upload folder could not be found for this event. Please try again.',
+//                     }; // if undefined, falls back to 500 with "Internal server error".
+//                 } else {
+//                     //there's a driveFolderID on theEvent (this should really always be the case)
+//                     console.log(
+//                         `tusServer setup onUploadCreate theEvent.driveFolderID`,
+//                         theEvent.driveFolderID
+//                     );
+//                     //Check the Drive for a file by this name (prevent duplicates)
+//                     const googleDriveSearchRes = await searchInGoogleDrive(
+//                         `'${theEvent.driveFolderID}' in parents and name = '${upload.metadata.filename}' and trashed = false`
+//                     );
 
-                    console.log(
-                        'googleDriveSearchRes.data.files',
-                        googleDriveSearchRes.data.files
-                    );
-                    if (googleDriveSearchRes.data.files.length > 0) {
-                        //if the file exists already, attach driveID to upload.metadata
-                        const theDriveId =
-                            googleDriveSearchRes.data.files[
-                                googleDriveSearchRes.data.files.length - 1
-                            ].id;
+//                     console.log(
+//                         'googleDriveSearchRes.data.files',
+//                         googleDriveSearchRes.data.files
+//                     );
+//                     if (googleDriveSearchRes.data.files.length > 0) {
+//                         //if the file exists already, attach driveID to upload.metadata
+//                         const theDriveId =
+//                             googleDriveSearchRes.data.files[
+//                                 googleDriveSearchRes.data.files.length - 1
+//                             ].id;
 
-                        console.log('FILE EXISTS IN DRIVE -', theDriveId);
-                        return {
-                            res,
-                            metadata: {
-                                ...upload.metadata,
-                                driveFolderID: theEvent.driveFolderID,
-                                driveID: theDriveId,
-                            },
-                        };
-                    } else {
-                        //Add the Drive folder ID to the metadata of the files coming in
-                        return {
-                            res,
-                            metadata: {
-                                ...upload.metadata,
-                                driveFolderID: theEvent.driveFolderID,
-                            },
-                        };
-                    }
-                }
-            } catch (err) {
-                console.log('error', err);
-                throw { status_code: 500, body: err }; // if undefined, falls back to 500 with "Internal server error".
-                // throw err;
-            }
-        }
-    },
-});
-tusServer.on(EVENTS.POST_FINISH, async (req, res, upload) => {
-    console.log('tusServer EVENTS.POST_FINISH upload', upload);
-    //upload to server finished, uploadFile to Google Drive from here
-    // console.log('onUploadFinish upload', upload);
-    // uploadFile(req, res, upload);
+//                         console.log('FILE EXISTS IN DRIVE -', theDriveId);
+//                         return {
+//                             res,
+//                             metadata: {
+//                                 ...upload.metadata,
+//                                 driveFolderID: theEvent.driveFolderID,
+//                                 driveID: theDriveId,
+//                             },
+//                         };
+//                     } else {
+//                         //Add the Drive folder ID to the metadata of the files coming in
+//                         return {
+//                             res,
+//                             metadata: {
+//                                 ...upload.metadata,
+//                                 driveFolderID: theEvent.driveFolderID,
+//                             },
+//                         };
+//                     }
+//                 }
+//             } catch (err) {
+//                 console.log('error', err);
+//                 throw { status_code: 500, body: err }; // if undefined, falls back to 500 with "Internal server error".
+//                 // throw err;
+//             }
+//         }
+//     },
+// });
+// tusServer.on(EVENTS.POST_FINISH, async (req, res, upload) => {
+//     console.log('tusServer EVENTS.POST_FINISH upload', upload);
+//     //upload to server finished, uploadFile to Google Drive from here
+//     // console.log('onUploadFinish upload', upload);
+//     // uploadFile(req, res, upload);
 
-    //update a file that has already been uploaded before
-    const theEventPullUploadedFile = await Event.findOneAndUpdate(
-        {
-            _id: upload.metadata.thisEvent,
-        },
-        {
-            $pull: {
-                //remove from array (overwrite to prevent duplicates)
-                uploadedFiles: {
-                    name: upload.metadata.name,
-                },
-            },
-        },
-        {
-            new: true, //set the new option to true to return the document after update was applied.
-            includeResultMetadata: true,
-        }
-    );
-    // console.log('theEventPullUploadedFile', theEventPullUploadedFile);
-    // if (!theEventSetUploaded.updatedExisting) {
-    //create an entry for the uploaded file in the database
-    const theEventBefore = await Event.findOneAndUpdate(
-        {
-            _id: upload.metadata.thisEvent,
-        },
-        {
-            $addToSet: {
-                uploadedFiles: {
-                    name: upload.metadata.name,
-                },
-            },
-        },
-        {
-            new: true,
-        }
-    );
-    // }
+//     //update a file that has already been uploaded before
+//     const theEventPullUploadedFile = await Event.findOneAndUpdate(
+//         {
+//             _id: upload.metadata.thisEvent,
+//         },
+//         {
+//             $pull: {
+//                 //remove from array (overwrite to prevent duplicates)
+//                 uploadedFiles: {
+//                     name: upload.metadata.name,
+//                 },
+//             },
+//         },
+//         {
+//             new: true, //set the new option to true to return the document after update was applied.
+//             includeResultMetadata: true,
+//         }
+//     );
+//     // console.log('theEventPullUploadedFile', theEventPullUploadedFile);
+//     // if (!theEventSetUploaded.updatedExisting) {
+//     //create an entry for the uploaded file in the database
+//     const theEventBefore = await Event.findOneAndUpdate(
+//         {
+//             _id: upload.metadata.thisEvent,
+//         },
+//         {
+//             $addToSet: {
+//                 uploadedFiles: {
+//                     name: upload.metadata.name,
+//                 },
+//             },
+//         },
+//         {
+//             new: true,
+//         }
+//     );
+//     // }
 
-    //uploadFile to Google Drive
-    const uploadRes = await uploadFile(req, res, upload).then((result) => {
-        // console.log('onUploadFinish uploadFile result', result);
-        return result.data;
-    });
-    // console.log(
-    //     'uploadFile uploadRes.name and id',
-    //     uploadRes.name,
-    //     uploadRes.id
-    // );
+//     //uploadFile to Google Drive
+//     const uploadRes = await uploadFile(req, res, upload).then((result) => {
+//         // console.log('onUploadFinish uploadFile result', result);
+//         return result.data;
+//     });
+//     // console.log(
+//     //     'uploadFile uploadRes.name and id',
+//     //     uploadRes.name,
+//     //     uploadRes.id
+//     // );
 
-    if (uploadRes.id !== undefined) {
-        //file uploaded to Google Drive
+//     if (uploadRes.id !== undefined) {
+//         //file uploaded to Google Drive
 
-        uploadRes.url = `https://drive.usercontent.google.com/download?id=${uploadRes.id}`;
-        uploadRes.driveID = uploadRes.id;
-        uploadRes.filetype = upload.metadata.filetype;
+//         uploadRes.url = `https://drive.usercontent.google.com/download?id=${uploadRes.id}`;
+//         uploadRes.driveID = uploadRes.id;
+//         uploadRes.filetype = upload.metadata.filetype;
 
-        const theEvent = await Event.findOneAndUpdate(
-            {
-                _id: upload.metadata.thisEvent,
-                uploadedFiles: {
-                    $elemMatch: { name: upload.metadata.name },
-                },
-            },
-            {
-                $set: {
-                    'uploadedFiles.$': {
-                        ...uploadRes,
-                        name: uploadRes.name,
-                    },
-                },
-            },
-            {
-                new: true,
-            }
-        );
+//         const theEvent = await Event.findOneAndUpdate(
+//             {
+//                 _id: upload.metadata.thisEvent,
+//                 uploadedFiles: {
+//                     $elemMatch: { name: upload.metadata.name },
+//                 },
+//             },
+//             {
+//                 $set: {
+//                     'uploadedFiles.$': {
+//                         ...uploadRes,
+//                         name: uploadRes.name,
+//                     },
+//                 },
+//             },
+//             {
+//                 new: true,
+//             }
+//         );
 
-        // console.log('EVENTS.POST_FINISH findOneAndUpdated theEvent', theEvent);
+//         // console.log('EVENTS.POST_FINISH findOneAndUpdated theEvent', theEvent);
 
-        // theEvent.uploadedFiles.push(uploadRes);
-        // theEvent.markModified('uploadedFiles');
-        // await theEvent.save();
+//         // theEvent.uploadedFiles.push(uploadRes);
+//         // theEvent.markModified('uploadedFiles');
+//         // await theEvent.save();
 
-        // delete file from server
-        const serverFilePath = './uploads/' + upload.id; //the server file id (not the Google Drive file id in uploadRes.id)
-        fs.unlink(serverFilePath, (err) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            // console.log(serverFilePath, 'successfully deleted from the server');
-        });
-        fs.unlink(serverFilePath + '.json', (err) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            // console.log(
-            //     serverFilePath + '.json successfully deleted from the server'
-            // );
-        });
-        // console.log('onUploadFinish uploadRes:', uploadRes);
-        return uploadRes;
-    } else {
-        return res.status(400).json({
-            msg: 'Failed to upload to Googlge Drive.',
-        });
-    }
-});
+//         // delete file from server
+//         const serverFilePath = './uploads/' + upload.id; //the server file id (not the Google Drive file id in uploadRes.id)
+//         fs.unlink(serverFilePath, (err) => {
+//             if (err) {
+//                 console.error(err);
+//                 return;
+//             }
+//             // console.log(serverFilePath, 'successfully deleted from the server');
+//         });
+//         fs.unlink(serverFilePath + '.json', (err) => {
+//             if (err) {
+//                 console.error(err);
+//                 return;
+//             }
+//             // console.log(
+//             //     serverFilePath + '.json successfully deleted from the server'
+//             // );
+//         });
+//         // console.log('onUploadFinish uploadRes:', uploadRes);
+//         return uploadRes;
+//     } else {
+//         return res.status(400).json({
+//             msg: 'Failed to upload to Googlge Drive.',
+//         });
+//     }
+// });
 
 async function authorize() {
     const googleDriveClientEmail = config['googleDriveApiClientEmail'];
