@@ -40,20 +40,20 @@ jobs:
               #"pm2 reload server --update-env" INSTEAD OF "pm2 restart server --update-env" to have zero downtime
               #I moved googleDriveApiClientEmail, googleDriveApiPrivateKeyPath, and googleDriveRootFolder to '../../../porchlight-config/default.json' on the server, because I had too much trouble with the GitHub Secrets and I guess the length of the Google Drive Private Key
               run: |
-                  unset mongoURI jwtSecret resetPasswordKey GOOGLE_MAPS_API_KEY calendlyID calendlySecret cloud_name cloudinary_api_key cloudinary_api_secret mailChimpApiKey eventbritePrivateToken courierApiKey
-                  export NODE_ENV='production'
-                  export mongoURI=${{secrets.MONGOURI}}
-                  export jwtSecret=${{secrets.JWTSECRET}}
-                  export resetPasswordKey=${{secrets.RESETPASSWORDKEY}}
-                  export GOOGLE_MAPS_API_KEY=${{secrets.GOOGLE_MAPS_API_KEY}}
-                  export calendlyID=${{secrets.CALENDLYID}}
-                  export calendlySecret=${{secrets.CALENDLYSECRET}}
-                  export cloud_name=${{secrets.CLOUD_NAME}}
-                  export cloudinary_api_key=${{secrets.CLOUDINARY_API_KEY}}
-                  export cloudinary_api_secret=${{secrets.CLOUDINARY_API_SECRET}}
-                  export mailChimpApiKey=${{secrets.MAILCHIMP_API_KEY}}
-                  export eventbritePrivateToken=${{secrets.EVENTBRITEPRIVATETOKEN}}
-                  export courierApiKey=${{secrets.COURIER_API_KEY}}
+                  # unset mongoURI jwtSecret resetPasswordKey GOOGLE_MAPS_API_KEY calendlyID calendlySecret cloud_name cloudinary_api_key cloudinary_api_secret mailChimpApiKey eventbritePrivateToken courierApiKey
+                  # export NODE_ENV='production'
+                  # export mongoURI=${{secrets.MONGOURI}}
+                  # export jwtSecret=${{secrets.JWTSECRET}}
+                  # export resetPasswordKey=${{secrets.RESETPASSWORDKEY}}
+                  # export GOOGLE_MAPS_API_KEY=${{secrets.GOOGLE_MAPS_API_KEY}}
+                  # export calendlyID=${{secrets.CALENDLYID}}
+                  # export calendlySecret=${{secrets.CALENDLYSECRET}}
+                  # export cloud_name=${{secrets.CLOUD_NAME}}
+                  # export cloudinary_api_key=${{secrets.CLOUDINARY_API_KEY}}
+                  # export cloudinary_api_secret=${{secrets.CLOUDINARY_API_SECRET}}
+                  # export mailChimpApiKey=${{secrets.MAILCHIMP_API_KEY}}
+                  # export eventbritePrivateToken=${{secrets.EVENTBRITEPRIVATETOKEN}}
+                  # export courierApiKey=${{secrets.COURIER_API_KEY}}
                   export SUPPRESS_NO_CONFIG_WARNING=TRUE
                   pm2 reload server --update-env
                   pm2 save
