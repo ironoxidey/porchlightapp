@@ -1,4 +1,5 @@
 const express = require('express');
+const router = express.Router();
 //DEV
 // const config = require('config')
 //PRODUCTION
@@ -11,7 +12,6 @@ const { google } = require('googleapis');
 
 // const apikeys = config['googleDriveApiKey'];
 
-const router = express.Router();
 const Event = require('../../models/Event');
 const Host = require('../../models/Host');
 
