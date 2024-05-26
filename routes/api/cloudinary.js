@@ -2,7 +2,14 @@ const express = require('express');
 const router = express.Router();
 //const controller = require("../../controller/file.controller");
 
-const config = !process.env.NODE_ENV ? require('config') : process.env;
+// const config = !process.env.NODE_ENV ? require('config') : process.env;
+const config =
+    !process.env.HOME !== '/root'
+        ? //DEV
+          require('config')
+        : //PRODUCTION
+          require('../../../porchlight-config/default.json'); // if there's no !process.env.HOME !== '/root' then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
+
 //: require('../../../porchlight-config/default.json'); //if there's no process.env then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
 
 const auth = require('../../middleware/auth');

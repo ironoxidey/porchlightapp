@@ -2,7 +2,14 @@ const express = require('express');
 const request = require('request'); //for eventBrite
 const _ = require('lodash');
 const { DateTime } = require('luxon'); //for sending dateTimes in the right timezone to eventBrite
-const config = !process.env.NODE_ENV ? require('config') : process.env;
+// const config = !process.env.NODE_ENV ? require('config') : process.env;
+const config =
+    !process.env.HOME !== '/root'
+        ? //DEV
+          require('config')
+        : //PRODUCTION
+          require('../../../porchlight-config/default.json'); // if there's no !process.env.HOME !== '/root' then it's 'development', otherwise it will be 'production' and it will need to look outside of the app directory because the Github action runner overwrites it every time we push to main
+
 var mongoose = require('mongoose');
 //const request = require('request'); //I don't theink I need this. Maybe carried over from profile.js for github stuff ~ Jan 5th, 2022
 //const config = require('../../../porchlight-config/default.json');//require('config'); //I don't theink I need this. Maybe carried over from profile.js for github stuff ~ Jan 5th, 2022
