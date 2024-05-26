@@ -10,8 +10,6 @@ const fs = require('fs');
 const { google } = require('googleapis');
 
 // const apikeys = config['googleDriveApiKey'];
-// const buff = Buffer.from(googleDrivePrivateKey).toString('base64');
-// console.log('buff', buff);
 
 const router = express.Router();
 const Event = require('../../models/Event');
@@ -23,6 +21,17 @@ const { FileStore } = require('@tus/file-store');
 const { Metadata, ERRORS } = require('@tus/utils');
 
 const googleDriveRootFolder = config['googleDriveRootFolder'];
+
+// const buff = Buffer.from(config['googleDriveApiPrivateKey']).toString('base64');
+// console.log('buff', buff);
+
+const googleDrivePrivateKeyBase64 = config['googleDriveApiPrivateKey'];
+// const googleDrivePrivateKeyBase64 = buff;
+const googleDrivePrivateKey = Buffer.from(
+    googleDrivePrivateKeyBase64,
+    'base64'
+).toString('ascii');
+const googleDriveClientEmail = config['googleDriveApiClientEmail'];
 
 const uploadFolderName = (theEvent) => {
     if (theEvent?.bookingWhen) {
@@ -352,8 +361,8 @@ tusServer.on(EVENTS.POST_FINISH, async (req, res, upload) => {
 });
 
 async function authorize() {
-    const googleDriveClientEmail = config['googleDriveApiClientEmail'];
-    const googleDrivePrivateKey = config['googleDriveApiPrivateKey'];
+    // const googleDriveClientEmail = config['googleDriveApiClientEmail'];
+    // const googleDrivePrivateKey = config['googleDriveApiPrivateKey'];
 
     const jwtClient = new google.auth.JWT(
         googleDriveClientEmail,
