@@ -12,9 +12,6 @@ jobs:
             - name: Checkout main branch
               uses: actions/checkout@v4
 
-            - name: Clear npm cache
-              run: npm cache clean --force
-
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
