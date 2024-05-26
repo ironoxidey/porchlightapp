@@ -5,7 +5,7 @@ const auth = require('../../middleware/auth');
 const jwt = require('jsonwebtoken');
 // const config = !process.env.NODE_ENV ? require('config') : process.env;
 const config =
-    !process.env.HOME !== '/root'
+    process.env.HOME !== '/root'
         ? //DEV
           require('config')
         : //PRODUCTION

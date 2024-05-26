@@ -4,7 +4,7 @@ const _ = require('lodash');
 const { DateTime } = require('luxon'); //for sending dateTimes in the right timezone to eventBrite
 // const config = !process.env.NODE_ENV ? require('config') : process.env;
 const config =
-    !process.env.HOME !== '/root'
+    process.env.HOME !== '/root'
         ? //DEV
           require('config')
         : //PRODUCTION

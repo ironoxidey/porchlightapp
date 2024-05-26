@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const config =
-    !process.env.HOME !== '/root'
+    process.env.HOME !== '/root'
         ? //DEV
           require('config')
         : //PRODUCTION
