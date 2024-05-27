@@ -19,8 +19,6 @@ jobs:
 
             - name: Install Server Dependencies
               run: |
-                  sudo chown -R ironoxidey:ironoxidey uploads
-                  sudo rm -rf uploads
                   npm ci
 
             # Removed the permissions thing from here
