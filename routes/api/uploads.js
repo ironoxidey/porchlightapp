@@ -121,15 +121,9 @@ const tusServer = new Server({
     relativeLocation: true,
     respectForwardedHeaders: true,
     generateUrl(req, { proto, host, path, id }) {
-        const forwardPort = req.headers['x-forwarded-port'];
-        const forwardPrefix = req.headers['x-forwarded-prefix'];
+        console.log('generateUrl proto', proto, 'host', host, 'path', path);
 
-        host ??=
-            forwardHost +
-            (forwardPort ? `:${forwardPort}` : '') +
-            (forwardPrefix ? forwardPrefix.slice(1, -1) : '');
-
-        return `${proto}://${host}${path}/${id}`;
+        return `https://${host}${path}/${id}`;
     },
     // https://www.npmjs.com/package/@tus/server#example-validate-metadata-when-an-upload-is-created
     async onUploadCreate(req, res, upload) {
