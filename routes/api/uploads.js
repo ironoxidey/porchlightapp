@@ -121,7 +121,9 @@ const tusServer = new Server({
     relativeLocation: true,
     respectForwardedHeaders: true,
     generateUrl(req, { proto, host, path, id }) {
-        console.log('generateUrl proto', proto, 'host', host, 'path', path);
+        console.log('generateUrl proto', proto);
+        console.log('generateUrl host', host);
+        console.log('generateUrl path', path);
 
         return `https://${host}${path}/${id}`;
     },
