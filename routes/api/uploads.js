@@ -120,13 +120,13 @@ const tusServer = new Server({
     datastore: new FileStore({ directory: './uploads' }),
     relativeLocation: true,
     respectForwardedHeaders: true,
-    generateUrl(req, { proto, host, path, id }) {
-        console.log('generateUrl req', req);
+    async generateUrl(req, { proto, host, path, id }) {
+        // console.log('generateUrl req', req);
         console.log('generateUrl proto', proto);
         console.log('generateUrl host', host);
         console.log('generateUrl path', path);
 
-        return `https://${host}${path}/${id}`;
+        return `${proto}://${host}${path}/${id}`;
     },
     // https://www.npmjs.com/package/@tus/server#example-validate-metadata-when-an-upload-is-created
     async onUploadCreate(req, res, upload) {
