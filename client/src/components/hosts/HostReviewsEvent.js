@@ -87,7 +87,7 @@ const HostReviewsEvent = ({
         id: 'uppity',
         // autoProceed: true,
         autoProceed: false,
-        // debug: true,
+        debug: true,
         formData: true,
         theme: 'dark',
         allowedFileTypes: ['image/*', 'video/*'],
