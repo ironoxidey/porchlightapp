@@ -118,9 +118,19 @@ const searchForFolderInGoogleDrive = async (theEvent) => {
 const tusServer = new Server({
     path: '/api/uploads/file',
     datastore: new FileStore({ directory: './uploads' }),
-
+    relativeLocation: true,
     respectForwardedHeaders: true,
+    generateUrl(req, { proto, host, path, id }) {
+        const forwardPort = req.headers['x-forwarded-port'];
+        const forwardPrefix = req.headers['x-forwarded-prefix'];
 
+        host ??=
+            forwardHost +
+            (forwardPort ? `:${forwardPort}` : '') +
+            (forwardPrefix ? forwardPrefix.slice(1, -1) : '');
+
+        return `${proto}://${host}${path}/${id}`;
+    },
     // https://www.npmjs.com/package/@tus/server#example-validate-metadata-when-an-upload-is-created
     async onUploadCreate(req, res, upload) {
         console.log('tusServer setup onUploadCreate req.user', req.user);
