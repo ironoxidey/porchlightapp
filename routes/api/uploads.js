@@ -119,6 +119,8 @@ const tusServer = new Server({
     path: '/api/uploads/file',
     datastore: new FileStore({ directory: './uploads' }),
 
+    respectForwardedHeaders: true,
+
     // https://www.npmjs.com/package/@tus/server#example-validate-metadata-when-an-upload-is-created
     async onUploadCreate(req, res, upload) {
         console.log('tusServer setup onUploadCreate req.user', req.user);
