@@ -1266,7 +1266,7 @@ const HostReviewsEvent = ({
                 </Grid>,
             ],
         ],
-        ...(false && {
+        ...(true && {
             //I'm intentionally hiding it right now because it's broken
             mediaContent: [
                 //23
