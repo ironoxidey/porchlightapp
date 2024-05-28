@@ -120,7 +120,7 @@ const tusServer = new Server({
     datastore: new FileStore({ directory: './uploads' }),
     relativeLocation: true,
     respectForwardedHeaders: true,
-    async generateUrl(req, { proto, host, path, id }) {
+    generateUrl(req, { proto, host, path, id }) {
         // console.log('generateUrl req', req);
         console.log('generateUrl proto', proto);
         console.log('generateUrl host', host);
