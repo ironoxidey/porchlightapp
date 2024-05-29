@@ -118,8 +118,14 @@ const searchForFolderInGoogleDrive = async (theEvent) => {
 const tusServer = new Server({
     path: '/api/uploads/file',
     datastore: new FileStore({ directory: './uploads' }),
-    // relativeLocation: true,
+    relativeLocation: true,
     respectForwardedHeaders: true,
+    generateUrl: (req, { id }) => {
+        // Respect the X-Forwarded-Proto header to generate HTTPS URLs
+        const proto = req.headers['x-forwarded-proto'] || req.protocol;
+        const host = req.headers['x-forwarded-host'] || req.headers.host;
+        return `${proto}://${host}${req.baseUrl}/${id}`;
+    },
     // generateUrl(req, { proto, host, path, id }) {
     //     // console.log('generateUrl req', req);
     //     console.log('generateUrl proto', proto);
