@@ -290,13 +290,28 @@ const HostReviewsEvent = ({
     // }, [thisHostEvent.uploadedFiles]);
 
     useEffect(() => {
-        if (theEvent && theEvent._id) {
+        if (
+            theEvent &&
+            theEvent._id &&
+            theEvent.offersFromHosts &&
+            theEvent.offersFromHosts.length > 0 &&
+            theEvent.offersFromHosts.filter((thisOffer) => {
+                // console.log('thisOffer.status', thisOffer.status);
+                if (thisOffer.status === 'ACCEPTED') {
+                    return thisOffer;
+                }
+                // else return thisOffer;
+                else return false;
+            }).length > 0
+        ) {
             const theAcceptedOffer = theEvent.offersFromHosts.filter(
                 (thisOffer) => {
-                    // console.log('thisOffer.status', thisOffer.status);
+                    console.log('thisOffer.status', thisOffer.status);
                     if (thisOffer.status === 'ACCEPTED') {
                         return thisOffer;
-                    } else return thisOffer;
+                    }
+                    // else return thisOffer;
+                    else return false;
                 }
             )[0];
             // console.log('theAcceptedOffer', theAcceptedOffer);
