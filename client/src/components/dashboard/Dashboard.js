@@ -148,7 +148,27 @@ const Dashboard = ({
 
     const dayBeforeYesterday = new Date();
     dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
-    // console.log('dayBeforeYesterday', dayBeforeYesterday);
+    console.log('dayBeforeYesterday', dayBeforeYesterday);
+
+    const isFuture = (bookingWhen) => {
+        if (new Date(bookingWhen) >= dayBeforeYesterday) {
+            // console.log(
+            //     'new Date(bookingWhen) is greater than dayBeforeYesterday',
+            //     new Date(bookingWhen),
+            //     'dayBeforeYesterday',
+            //     dayBeforeYesterday
+            // );
+            return true;
+        } else {
+            // console.log(
+            //     'new Date(bookingWhen) is less than dayBeforeYesterday',
+            //     new Date(bookingWhen),
+            //     'dayBeforeYesterday',
+            //     dayBeforeYesterday
+            // );
+            return false;
+        }
+    };
 
     return loading && user === null ? (
         <Spinner />
@@ -902,8 +922,10 @@ const Dashboard = ({
                                     (myEvent) =>
                                         myEvent.confirmedHost &&
                                         myEvent.status === 'CONFIRMED' &&
-                                        new Date(myEvent.bookingWhen) <=
-                                            dayBeforeYesterday
+                                        isFuture(myEvent.bookingWhen)
+                                    // &&
+                                    // new Date(myEvent.bookingWhen) <=
+                                    //     dayBeforeYesterday
                                 ).length > 0 && (
                                     <Grid
                                         item
